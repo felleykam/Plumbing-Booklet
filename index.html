@@ -8,23 +8,22 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Plumbing Book">
+<meta name="apple-mobile-web-app-title" content="Plumbiverse">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
-<title>Jobsite Plumbing Book</title>
+<title>PlumChum's Guide to the Plumbiverse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Monoton&family=Chakra+Petch:wght@600;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
 /* Look: retro neon on a dark grid. Each group of tabs glows its own color (--acc), so you can tell where you are at a glance.
    Layout: a dense spec-sheet binder. Every section is a boxed table; sections flow in newspaper columns on wide screens, one column on phones. */
 :root{
   --paper:#07060f; --sheet:#0e0b1d; --ink:#ece9ff; --muted:#a29bd0; --rule:#251f47; --edge:#7a6bc8;
   --zebra:#130f29; --line:#22e5ff; --line-soft:#0b2632; --flag:#ff3ea5; --flag-soft:#2b0a20; --ok:#39ff88; --warn:#ffe14d;
-  --cyan:#22e5ff; --pink:#ff3ea5; --green:#39ff88; --yellow:#ffe14d; --orange:#ff9a3c; --violet:#b77bff;
+  --cyan:#22e5ff; --pink:#ff3ea5; --green:#39ff88; --yellow:#ffe14d; --orange:#ff7040; --violet:#b77bff;
   --acc:var(--cyan);
   --glow:0 0 0 1px color-mix(in srgb,var(--acc) 70%,transparent),0 0 14px color-mix(in srgb,var(--acc) 28%,transparent);
-  --neon:"Monoton","Chakra Petch",Impact,sans-serif;
   --display:"Chakra Petch","Arial Narrow",Arial,sans-serif;
   --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -33,7 +32,7 @@
 /* group colors */
 [data-group="rough"],section[data-sec="holes"],section[data-sec="field"],section[data-sec="sizing"],section[data-sec="materials"],section[data-sec="gas"]{--acc:var(--cyan)}
 [data-group="trim"],section[data-sec="trim"]{--acc:var(--pink)}
-[data-group="math"],section[data-sec="math"]{--acc:var(--green)}
+[data-group="math"],section[data-sec="math"],section[data-sec="conv"],section[data-sec="water"],section[data-sec="ref"]{--acc:var(--green)}
 [data-group="utah"],section[data-sec="local"],section[data-sec="tests"]{--acc:var(--orange)}
 [data-group="calls"],section[data-sec="support"],section[data-sec="safety"]{--acc:var(--yellow)}
 [data-group="learn"],section[data-sec="how"],section[data-sec="study"],section[data-sec="words"],section[data-sec="code"],section[data-sec="career"]{--acc:var(--violet)}
@@ -60,8 +59,8 @@ b{font-weight:600}
 
 /* header */
 .tb{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;padding:6px 0 10px;border-bottom:2px solid var(--pink);box-shadow:0 8px 18px -12px var(--pink)}
-.tb h1{font-family:var(--neon);font-weight:400;font-size:clamp(22px,6.4vw,34px);line-height:1.05;margin:0;letter-spacing:.02em;color:#fff;
-  text-shadow:0 0 2px #fff,0 0 8px var(--pink),0 0 18px var(--pink),0 0 32px rgba(255,62,165,.6)}
+.tb h1{font-family:var(--body);font-weight:600;font-size:clamp(21px,5.6vw,30px);line-height:1.15;margin:0;letter-spacing:0;color:#fff;
+  text-shadow:0 0 10px rgba(255,62,165,.75),0 0 22px rgba(255,62,165,.35)}
 .tb .meta{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:.04em;text-shadow:0 0 6px rgba(34,229,255,.5)}
 .banner{font-size:12.5px;color:var(--ink);background:var(--flag-soft);border:1px solid var(--pink);border-radius:6px;padding:6px 10px;margin-top:10px;box-shadow:0 0 12px -4px var(--pink)}
 .banner summary{cursor:pointer;min-height:32px;display:flex;align-items:center;gap:6px;list-style:none}
@@ -80,7 +79,7 @@ b{font-weight:600}
 .subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 24px 3px 2px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
 .subtabs::-webkit-scrollbar{display:none}
 @media (min-width:760px){.subtabs{flex-wrap:wrap;-webkit-mask-image:none;mask-image:none;padding-right:2px}}
-.tabs button{flex:0 0 auto;font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;min-height:34px;border:1px solid color-mix(in srgb,var(--acc) 45%,transparent);background:var(--sheet);color:var(--acc);border-radius:999px;cursor:pointer;transition:box-shadow .15s,background .15s}
+.tabs button{flex:0 0 auto;font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;min-height:34px;border:1px solid color-mix(in srgb,var(--acc) 75%,transparent);background:var(--sheet);color:var(--acc);border-radius:999px;cursor:pointer;transition:box-shadow .15s,background .15s}
 .tabs button:hover{box-shadow:var(--glow)}
 .tabs button[aria-pressed="true"]{background:var(--acc);color:#07060f;border-color:var(--acc);box-shadow:0 0 16px color-mix(in srgb,var(--acc) 60%,transparent)}
 .subtabs button{flex:0 0 auto;font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;padding:4px 12px;min-height:32px;border:1px solid var(--edge);border-radius:999px;background:var(--sheet);color:var(--ink);cursor:pointer}
@@ -110,7 +109,11 @@ section{break-inside:avoid;display:block;background:var(--sheet);border:1px soli
 .t.wrap .n{white-space:normal}
 .t .sub{color:var(--muted);font-size:12.5px}
 .t td a,.note a{text-decoration:underline;text-underline-offset:2px;text-decoration-color:color-mix(in srgb,var(--line) 55%,transparent)}
-.ut{display:inline-block;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.06em;color:var(--orange);border:1px solid var(--orange);border-radius:3px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:3px;text-shadow:0 0 6px rgba(255,154,60,.6)}
+.keys{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-bottom:1px solid var(--rule)}
+.keys button{appearance:none;flex:1 0 auto;min-width:44px;min-height:36px;padding:4px 10px;font-family:var(--mono);font-size:14px;color:var(--acc);background:var(--zebra);border:1px solid color-mix(in srgb,var(--acc) 70%,transparent);border-radius:6px;cursor:pointer}
+.keys button:active{background:color-mix(in srgb,var(--acc) 18%,var(--zebra))}
+.keys button[data-k="clear"],.keys button[data-k="back"]{color:var(--flag);border-color:color-mix(in srgb,var(--flag) 70%,transparent)}
+.ut{display:inline-block;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.06em;color:var(--orange);border:1px solid var(--orange);border-radius:3px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:3px;text-shadow:0 0 6px rgba(255,112,64,.6)}
 .why{display:inline-block;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.06em;color:var(--violet);border:1px solid var(--violet);border-radius:3px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:3px}
 .pn{display:inline-block;font-family:var(--mono);font-size:12px;background:var(--line-soft);border:1px solid color-mix(in srgb,var(--cyan) 75%,transparent);border-radius:4px;padding:1px 6px;margin:1px 0;cursor:pointer;white-space:nowrap;color:var(--ink)}
 .pn{text-decoration:none}
@@ -211,7 +214,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
 /* phones and tablets: 16px inputs stop iOS from zooming on tap; bigger targets for thumbs */
 @media (pointer:coarse){
   #q,.calc input,.calc select,.up input,.up select{font-size:16px;min-height:44px}
-  .tabs button,.subtabs button,.seg button,.mode button,.ro-view button,.btn,.del{min-height:44px}
+  .tabs button,.subtabs button,.seg button,.mode button,.ro-view button,.btn,.del,.keys button{min-height:44px}
   .ro-view button{padding-inline:16px}
   .inch select{flex-basis:5.2rem;width:5.2rem}
   .pn{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;margin:2px 0}
@@ -245,10 +248,10 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
 <div id="sr-status" role="status" class="sr-only"></div>
 <div class="wrap">
   <header class="tb">
-    <h1>Jobsite Plumbing Book</h1>
-    <span class="meta">Utah · 2021 IRC · 2024 IPC/IFGC</span>
+    <h1>PlumChum's Guide to the Plumbiverse</h1>
+    <span class="meta">Utah · 2021 IRC · 2021 &amp; 2024 IPC</span>
   </header>
-  <details class="banner"><summary><b>Which code?</b> Houses: 2021 IRC + Utah</summary><p>Houses: <b>2021 IRC</b> plumbing chapters + Utah amendments. Other buildings: <b>2024 IPC</b>. Gas: <b>IRC ch. 24</b> on houses, <b>2024 IFGC</b> on other buildings. Tables here are IPC, usually the safe side. <span class="ut">UT</span> = Utah amendment; ask your inspector when in doubt.</p></details>
+  <details class="banner"><summary><b>Which code?</b> Houses: 2021 IRC + Utah</summary><p>Houses: <b>2021 IRC</b> plumbing chapters + Utah amendments. Other buildings: <b>2024 IPC</b> (permits from before 7/1/2026: usually <b>2021 IPC</b>). Gas: <b>IRC ch. 24</b> on houses, <b>2024 IFGC</b> on other buildings. Tables here are IPC, usually the safe side. <span class="ut">UT</span> = Utah amendment; ask your inspector when in doubt.</p></details>
 
   <div class="tools">
     <input id="q" type="search" placeholder="Search: hole, TJI, vent, Moen, 811…" aria-label="Search the book">
@@ -347,9 +350,31 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><th>Houses</th><td><b>2021 IRC</b> still. Utah did <b>not</b> move to the 2024 IRC.</td></tr>
         <tr><th>Everything else</th><td><b>2024</b> IBC, IPC, IMC, IFGC, IECC. 2023 NEC. No grace period.</td></tr>
         <tr><th>Utah changes</th><td>Amendments live in Utah Code Title 15A, chapter 3 (marked <span class="ut">UT</span> in this book).</td></tr>
+        <tr><th>Older permits</th><td>Applied for before 7/1/2026? Usually still <b>2021 IPC</b>. See <b>2021 IPC vs 2024 IPC</b> below.</td></tr>
         <tr><th>School vs. job</th><td>MTECH teaches from the IPC. On a house the inspector enforces IRC plumbing chapters + Utah amendments. Most numbers match; when they don't, the IRC wins on a house.</td></tr>
       </tbody></table></div>
     <p class="note">Links: <b>Learn → Code links</b>.</p>
+  </section>
+
+  <section data-sec="local" data-kw="2021 ipc 2024 ipc edition difference older permit which code changes vacuum test">
+    <div class="sec-head"><h2>2021 IPC vs 2024 IPC</h2><small>Both still on the job</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Which one?</th><td>A job generally stays on the code in effect when its permit was applied for. Permits from before <b>7/1/2026</b> are usually <b>2021 IPC</b> (with the Utah amendments of that time); newer ones are 2024. Check the permit card or ask the inspector.</td></tr>
+        <tr><th>The tables here</th><td>DFU, trap-to-vent, slopes, pipe supports and test values in this book are the <b>same in 2021 and 2024</b>. Houses still go by the 2021 IRC either way.</td></tr>
+        <tr><th>Section numbers</th><td>Mostly the same between editions. If a cite doesn't match your book, search the topic, not the number.</td></tr>
+      </tbody></table></div>
+    <div class="x"><table class="t">
+      <thead><tr><th>New or changed in 2024</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td class="n">312.4</td><td>Vacuum test written in as a DWV test method: −5 psi (−10" Hg), 15 min. Handy in winter.</td></tr>
+        <tr><td class="n">504.7</td><td>Plastic pans under <b>gas</b> water heaters must meet flame-spread (≤25) and smoke (≤450) limits.</td></tr>
+        <tr><td class="n">501.9</td><td>Water heaters must meet NSF 372 (lead-free, ≤0.25% weighted average).</td></tr>
+        <tr><td class="n">705</td><td>Above-ground mechanical joints on ABS/PVC: shielded type, marked for the use.</td></tr>
+        <tr><td class="n">605</td><td>Stainless steel tubing added to supply pipe tables; one-step solvent cement allowed where the maker's instructions allow it.</td></tr>
+        <tr><td class="n">606.1</td><td>Multi-tenant buildings (3 stories or less) on one supply: a shutoff for each tenant.</td></tr>
+      </tbody></table></div>
+    <p class="note">From ICC's 2024 IPC significant-changes presentation. Confirm the exact wording in the edition your job is under.</p>
   </section>
 
   <section data-sec="tests">
@@ -442,7 +467,33 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     <p class="note">By hand: <b>true offset × multiplier</b>. For a simple offset the true offset is just the offset.</p>
   </section>
 
-  <section data-sec="math">
+  <section data-sec="math" data-kw="feet inches fraction add subtract calculator tape measure ft in">
+    <div class="sec-head"><h2>Feet-inch calculator</h2><small>Add, subtract, ×, ÷ · to ¹⁄₁₆"</small></div>
+    <div class="calc">
+      <label for="fi-expr" style="flex:1 1 100%">Measurements<input id="fi-expr" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10' 4 3/8&quot; - 2 x 5 1/16&quot;" aria-describedby="fi-help"></label>
+    </div>
+    <div class="keys" role="group" aria-label="Quick keys">
+      <button type="button" data-k="'">ft '</button><button type="button" data-k='"'>in "</button><button type="button" data-k=" ">space</button><button type="button" data-k="/">/</button>
+      <button type="button" data-k=" + ">+</button><button type="button" data-k=" - ">−</button><button type="button" data-k=" x ">×</button><button type="button" data-k=" ÷ ">÷</button>
+      <button type="button" data-k="back" aria-label="Backspace">⌫</button><button type="button" data-k="clear">Clear</button>
+    </div>
+    <div class="x"><table class="t ro-out"><tbody>
+      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Answer</th><td id="fi-out" class="big">—</td><td class="sub" id="fi-sub"></td></tr>
+    </tbody></table></div>
+    <p class="note" id="fi-help">Type like a tape reads: <b>10' 4 3/8"</b>, <b>7 1/2</b> (plain numbers are inches), <b>3'</b>. Multiply or divide by a plain number: <b>2 x 5"</b>, <b>12' ÷ 3</b>. Use it to subtract take-offs from a center-to-center.</p>
+  </section>
+
+  <section data-sec="math" data-kw="grade slope fall laser elevation check quarter eighth inch per foot percent">
+    <div class="sec-head"><h2>Grade check</h2><small>What slope did I actually get?</small></div>
+    <div class="calc">
+      <label for="g2-run">Run (ft)<input id="g2-run" type="number" inputmode="decimal" min="0" step="any" value="20"></label>
+      <label for="g2-fall">Fall (in)<input id="g2-fall" type="number" inputmode="decimal" min="0" step="any" value="4"></label>
+      <div class="ans" id="g2-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <p class="note">Fall = difference in your laser or rod readings between the two ends (convert decimal feet with <b>Job tables → Inches to decimal feet</b>). Code minimums: ¼"/ft for 2½" and smaller, ⅛"/ft for 3"–6".</p>
+  </section>
+
+  <section data-sec="conv" data-kw="unit converter convert">
     <div class="sec-head"><h2>Unit converter</h2><small>Type a number</small></div>
     <div class="seg" id="c-kind" role="group" aria-label="What to convert">
       <button type="button" data-kind="volume" aria-pressed="true">Volume</button>
@@ -450,6 +501,9 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <button type="button" data-kind="length" aria-pressed="false">Length</button>
       <button type="button" data-kind="flow" aria-pressed="false">Flow</button>
       <button type="button" data-kind="temp" aria-pressed="false">Temp</button>
+      <button type="button" data-kind="area" aria-pressed="false">Area</button>
+      <button type="button" data-kind="weight" aria-pressed="false">Weight</button>
+      <button type="button" data-kind="heat" aria-pressed="false">Heat</button>
     </div>
     <div class="calc">
       <label for="c-val">Amount<input id="c-val" type="number" inputmode="decimal" value="1" step="any"></label>
@@ -458,7 +512,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     <div class="x"><table class="t num"><tbody id="c-out" aria-live="polite"></tbody></table></div>
   </section>
 
-  <section data-sec="math">
+  <section data-sec="water">
     <div class="sec-head"><h2>Pressure vs. height</h2><small>1 ft = 0.433 psi · 1 psi = 2.31 ft</small></div>
     <div class="calc">
       <label for="h-ft">Height (ft)<input id="h-ft" type="number" inputmode="decimal" value="20" step="any"></label>
@@ -468,7 +522,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     <p class="note">About 4.3 psi lost per floor (10 ft), before friction.</p>
   </section>
 
-  <section data-sec="math">
+  <section data-sec="water">
     <div class="sec-head"><h2>Water in the pipe</h2><small>From actual ID</small></div>
     <div class="calc">
       <label for="p-size">Pipe<select id="p-size"></select></label>
@@ -479,6 +533,42 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <thead><tr><th>Pipe</th><th>ID"</th><th>Gal/ft</th><th>Gal/100'</th><th>Lb/100'</th></tr></thead><tbody></tbody>
     </table></div>
     <p class="note">Copper L, PEX CTS SDR-9, PVC Sch 40. Hot-water wait: gallons in line ÷ gpm = minutes.</p>
+  </section>
+
+  <section data-sec="water" data-kw="velocity flow speed ft/s gpm pipe noise erosion">
+    <div class="sec-head"><h2>Flow velocity</h2><small>gpm → feet per second</small></div>
+    <div class="calc">
+      <label for="v-pipe">Pipe<select id="v-pipe"></select></label>
+      <label for="v-gpm">Flow (gpm)<input id="v-gpm" type="number" inputmode="decimal" min="0" step="any" value="8"></label>
+      <div class="ans" id="v-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <p class="note">ft/s = gpm × 0.4085 ÷ ID². <span class="why">WHY</span> Fast water whistles, hammers and wears out copper from the inside, especially hot. Many design guides keep cold under about 8 ft/s and hot copper under about 5 ft/s; the pipe maker's limit wins.</p>
+  </section>
+
+  <section data-sec="water" data-kw="thermal expansion growth pex cpvc pvc abs copper long run hot loop offset">
+    <div class="sec-head"><h2>Pipe expansion</h2><small>How much a run grows</small></div>
+    <div class="calc">
+      <label for="te-mat">Pipe<select id="te-mat"></select></label>
+      <label for="te-len">Run (ft)<input id="te-len" type="number" inputmode="decimal" min="0" step="any" value="50"></label>
+      <label for="te-dt">Temp change (°F)<input id="te-dt" type="number" inputmode="decimal" step="any" value="80"></label>
+      <div class="ans" id="te-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <p class="note">ΔL = coefficient × length × °F change. Typical coefficients; the maker's number wins. <span class="why">WHY</span> Plastic grows 3–10× more than copper. That's why PEX gets slack and CPVC hot lines get offsets or loops.</p>
+  </section>
+
+  <section data-sec="water" data-kw="tank volume gallons cylinder round rectangle tub sump pit how many gallons">
+    <div class="sec-head"><h2>Tank &amp; tub volume</h2><small>Gallons from measurements</small></div>
+    <div class="mode" id="tv-mode" role="group" aria-label="Shape">
+      <button type="button" data-tv="round" aria-pressed="true">Round</button>
+      <button type="button" data-tv="box" aria-pressed="false">Rectangular</button>
+    </div>
+    <div class="calc">
+      <label for="tv-a" id="tv-a-l">Diameter (in)<input id="tv-a" type="number" inputmode="decimal" min="0" step="any" value="18"></label>
+      <label for="tv-b" id="tv-b-l" hidden>Width (in)<input id="tv-b" type="number" inputmode="decimal" min="0" step="any" value="30"></label>
+      <label for="tv-h">Water depth (in)<input id="tv-h" type="number" inputmode="decimal" min="0" step="any" value="48"></label>
+      <div class="ans" id="tv-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <p class="note">Gallons = cubic inches ÷ 231. Measure inside dimensions. Water weighs 8.34 lb/gal, so check what the floor is holding.</p>
   </section>
 
   <section data-sec="math">
@@ -500,7 +590,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       </tbody></table></div>
   </section>
 
-  <section data-sec="math">
+  <section data-sec="conv">
     <div class="sec-head"><h2>Quick numbers</h2><small>Memorize</small></div>
     <div class="x"><table class="t">
       <tbody>
@@ -515,10 +605,66 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       </tbody></table></div>
   </section>
 
-  <section data-sec="math">
+  <section data-sec="conv">
     <div class="sec-head"><h2>Tape fractions</h2><small>16ths to decimal</small></div>
     <div class="frac" id="frac"></div>
   </section>
+
+  <section data-sec="ref" data-kw="npt thread makeup engagement tpi threads per inch pipe nipple cut length">
+    <div class="sec-head"><h2>Pipe thread makeup</h2><small>NPT · approximate</small></div>
+    <div class="x"><table class="t num">
+      <thead><tr><th>Pipe</th><th>Threads/in</th><th>Makeup (into fitting)</th></tr></thead>
+      <tbody>
+        <tr><td>⅛"</td><td>27</td><td>¼"</td></tr>
+        <tr><td>¼"</td><td>18</td><td>⅜"</td></tr>
+        <tr><td>⅜"</td><td>18</td><td>⅜"</td></tr>
+        <tr><td>½"</td><td>14</td><td>½"</td></tr>
+        <tr><td>¾"</td><td>14</td><td>9/16"</td></tr>
+        <tr><td>1"</td><td>11½</td><td>11/16"</td></tr>
+        <tr><td>1¼"</td><td>11½</td><td>11/16"</td></tr>
+        <tr><td>1½"</td><td>11½</td><td>11/16"</td></tr>
+        <tr><td>2"</td><td>11½</td><td>¾"</td></tr>
+      </tbody></table></div>
+    <p class="note">Nipple or cut length = center-to-center − both fitting take-offs + both makeups. Makeup varies with the fitting and how tight you go; measure your own.</p>
+  </section>
+
+  <section data-sec="ref" data-kw="copper pex pvc pipe od id outside inside diameter dimensions k l m sdr schedule 40">
+    <div class="sec-head"><h2>Pipe sizes: OD &amp; ID</h2><small>Inches</small></div>
+    <div class="x"><table class="t num">
+      <thead><tr><th>Nominal</th><th>OD</th><th>Cu K ID</th><th>Cu L ID</th><th>Cu M ID</th><th>PEX ID</th></tr></thead>
+      <tbody>
+        <tr><td>½"</td><td>0.625</td><td>0.527</td><td>0.545</td><td>0.569</td><td>0.475</td></tr>
+        <tr><td>¾"</td><td>0.875</td><td>0.745</td><td>0.785</td><td>0.811</td><td>0.671</td></tr>
+        <tr><td>1"</td><td>1.125</td><td>0.995</td><td>1.025</td><td>1.055</td><td>0.862</td></tr>
+      </tbody></table></div>
+    <div class="x"><table class="t num">
+      <thead><tr><th>Sch 40 PVC/ABS</th><th>OD</th><th>ID</th></tr></thead>
+      <tbody>
+        <tr><td>1½"</td><td>1.900</td><td>1.610</td></tr>
+        <tr><td>2"</td><td>2.375</td><td>2.067</td></tr>
+        <tr><td>3"</td><td>3.500</td><td>3.068</td></tr>
+        <tr><td>4"</td><td>4.500</td><td>4.026</td></tr>
+      </tbody></table></div>
+    <p class="note"><span class="why">WHY</span> Copper and CTS PEX share an OD (nominal + ⅛"), so the same fittings fit. PEX has a thicker wall, so its ID is smaller and it carries less water at the same size.</p>
+  </section>
+
+  <section data-sec="ref" data-kw="decimal feet inches laser rod grade elevation tenths hundredths">
+    <div class="sec-head"><h2>Inches to decimal feet</h2><small>For laser and grade rods</small></div>
+    <div class="x"><table class="t num"><thead><tr><th>Inches</th><th>Feet</th><th>Inches</th><th>Feet</th></tr></thead><tbody id="dec-ft"></tbody></table></div>
+    <p class="note">Rods read in feet and hundredths. 0.01 ft ≈ ⅛". Quick trick: inches ÷ 12.</p>
+  </section>
+
+  <section data-sec="ref" data-kw="square layout 3 4 5 right angle diagonal pythagorean">
+    <div class="sec-head"><h2>Squaring &amp; triangles</h2><small>Lay it out square</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>3-4-5</th><td>Mark 3 ft on one line and 4 ft on the other; the diagonal is exactly <b>5 ft</b> when square. Scale it up: 6-8-10, 9-12-15.</td></tr>
+        <tr><th>Any triangle</th><td>Diagonal = √(a² + b²). That's the same math as the true offset in the offset calculator.</td></tr>
+        <tr><th>45° offset</th><td>Travel = offset × 1.414 · run = offset.</td></tr>
+        <tr><th>Circle</th><td>Area = 0.7854 × D² · circumference = 3.1416 × D.</td></tr>
+      </tbody></table></div>
+  </section>
+
 
   <section data-sec="sizing" data-kw="dfu counter drain size fixture units">
     <div class="sec-head"><h2>DFU counter</h2><small>Count fixtures → drain size</small></div>
@@ -1231,7 +1377,8 @@ const LIB = {
     ["ESR-1305","ICC-ES report: LP I-joists","2021 issue; LP I-joists are now Pacific Woodtech, so confirm the current report at icc-es.org","https://lpcorp.com/resources/product-literature/code-reports-certificates/esr-1305"]
   ],
   code: [
-    ["IPC 2024","International Plumbing Code","Utah's current code","https://codes.iccsafe.org/content/IPC2024P1"],
+    ["IPC 2024","International Plumbing Code","Utah's current code (permits from 7/1/2026)","https://codes.iccsafe.org/content/IPC2024P1"],
+    ["IPC 2021","International Plumbing Code, all editions","ICC page; pick 2021 for older permits","https://www.iccsafe.org/codes/ipc/"],
     ["15A-3","Utah IPC amendments","Utah Code Title 15A ch. 3","https://le.utah.gov/xcode/Title15A/Chapter3/15A-3.html"],
     ["15A-2-103","Utah adopted editions","Effective 7/1/2026","https://le.utah.gov/xcode/Title15A/Chapter2/C15A-2-S103_2026050620260701.pdf"],
     ["IRC 2021","International Residential Code","Framing, boring and notching","https://codes.iccsafe.org/content/IRC2021P2"],
@@ -1354,7 +1501,7 @@ document.querySelectorAll(".pn").forEach(n => {
 const GROUPS = {
   rough: [["holes","Joist holes"],["field","Code rules"],["sizing","Sizing"],["materials","Materials"],["gas","Gas & heaters"]],
   trim:  [["trim","Trim & valves"]],
-  math:  [["math","Field math"]],
+  math:  [["math","Calculators"],["conv","Converters"],["water","Water & pipe"],["ref","Job tables"]],
   utah:  [["local","Local"],["tests","Tests"]],
   calls: [["support","Phone numbers"],["safety","Safety"]],
   learn: [["how","How it works"],["study","Flashcards"],["words","Glossary"],["career","License"],["code","Code links"]],
@@ -1449,7 +1596,10 @@ const UNITS = {
   volume:[["gal","gallons",1],["L","liters",0.264172],["in3","cubic inches",1/231],["ft3","cubic feet",7.48052],["qt","quarts",0.25],["mL","milliliters",0.000264172],["m3","cubic meters",264.172]],
   pressure:[["psi","psi",1],["ftH2O","feet of water",0.433527],["inH2O","inches of water",0.433527/12],["kPa","kilopascals",0.145038],["bar","bar",14.5038],["inHg","inches of mercury",0.491154]],
   length:[["in","inches",1],["ft","feet",12],["yd","yards",36],["mm","millimeters",1/25.4],["cm","centimeters",1/2.54],["m","meters",39.3701]],
-  flow:[["gpm","gallons/min",1],["gph","gallons/hour",1/60],["Lpm","liters/min",0.264172],["cfm","cubic ft/min",7.48052],["Ls","liters/sec",15.8503]]
+  flow:[["gpm","gallons/min",1],["gph","gallons/hour",1/60],["Lpm","liters/min",0.264172],["cfm","cubic ft/min",7.48052],["Ls","liters/sec",15.8503]],
+  area:[["in2","square inches",1],["ft2","square feet",144],["yd2","square yards",1296],["cm2","square cm",0.15500031],["m2","square meters",1550.0031]],
+  weight:[["lb","pounds",1],["oz","ounces",1/16],["kg","kilograms",2.20462262],["g","grams",0.00220462262],["ton","US tons",2000],["galw","gallons of water",8.34]],
+  heat:[["btuh","BTU/h",1],["mbh","MBH (1,000 BTU/h)",1000],["w","watts",3.41214163],["kw","kilowatts",3412.14163],["hp","horsepower",2544.4336],["thm","therms/hour",100000],["ton","tons (cooling)",12000]]
 };
 let kind = "volume";
 const cFrom = document.getElementById("c-from"), cOut = document.getElementById("c-out");
@@ -1513,7 +1663,7 @@ const pSize = document.getElementById("p-size");
 pSize.innerHTML = PIPES.map((p,i) => `<option value="${i}"${i===4?" selected":""}>${p[0]}</option>`).join("");
 function pipeCalc(){
   const g = galPerFt(PIPES[+pSize.value][1]) * val("p-len");
-  document.getElementById("p-ans").innerHTML = isFinite(g) && g >= 0 ? `${nf(g,2)} gal<small>${nf(g*3.785,2)} L · ${nf(g*8.34,1)} lb</small>` : "—";
+  document.getElementById("p-ans").innerHTML = isFinite(g) && g >= 0 ? `${nf(g,2)} gal<small>${nf(g*3.78541,2)} L · ${nf(g*8.34,1)} lb</small>` : "—";
 }
 pSize.addEventListener("change", pipeCalc); document.getElementById("p-len").addEventListener("input", pipeCalc); pipeCalc();
 
@@ -1735,6 +1885,121 @@ let fg = "";
 for (let i=1;i<=16;i++) fg += `<div class="${i%4===0?"q":""}"><b>${i===16?'1"':toFrac16(i/16)}</b><span>${(i/16).toFixed(4)}</span></div>`;
 document.getElementById("frac").innerHTML = fg;
 
+/* ---------- feet-inch calculator: tape-style input, answers to the nearest 1/16" ---------- */
+const LEN_RE = /^(?:(\d+(?:\.\d+)?)\s*')?\s*(?:(\d+(?:\.\d+)?)(?:\s+(\d+)\s*\/\s*(\d+))?|(\d+)\s*\/\s*(\d+))?\s*"?$/;
+function parseLen(tok){ /* inches; a plain number is inches */
+  const s = tok.trim(); if (!s) return NaN;
+  const m = s.match(LEN_RE); if (!m || m[0].trim() === "" || !/\d/.test(s)) return NaN;
+  const [, ft, whole, fn, fd, on, od] = m;
+  if ((fd && +fd === 0) || (od && +od === 0)) return NaN;
+  return (ft ? +ft*12 : 0) + (whole ? +whole : 0) + (fn ? +fn/+fd : 0) + (on ? +on/+od : 0);
+}
+function fmtFtIn(x){
+  if (!isFinite(x)) return "—";
+  const neg = x < 0, t16 = Math.round(Math.abs(x)*16), ft = Math.floor(t16/192), r16 = t16 - ft*192;
+  const inch = Math.floor(r16/16); let n = r16 % 16, d = 16; while (n && n % 2 === 0){ n /= 2; d /= 2; }
+  const ins = (inch || !n ? inch : "") + (n ? (inch ? " " : "") + n + "/" + d : "") + '"';
+  return (neg && t16 ? "−" : "") + (ft ? ft + "' " : "") + ins;
+}
+function fiCalc(){
+  const raw = $("fi-expr").value.replace(/[″”]/g,'"').replace(/[′’]/g,"'").replace(/(\d)\s*ft\b/gi,"$1'").replace(/(\d)\s*in\b/gi,'$1"').replace(/[−–]/g,"-").replace(/\*/g,"x");
+  const out = $("fi-out"), sub = $("fi-sub");
+  if (!raw.trim()){ out.textContent = "—"; sub.textContent = ""; return; }
+  const parts = raw.split(/\s*([+\-x×÷])\s*/i).map(p => p.trim());
+  if (parts[0] === "") parts.shift();
+  if (parts.length > 1 && parts[parts.length-1] === "") parts.pop();
+  const fail = msg => { out.innerHTML = `<span class="warn">${msg}</span>`; sub.textContent = ""; };
+  if (parts.length % 2 === 0) return fail("Finish the last measurement.");
+  const terms = [], ops = [];
+  for (let i = 0; i < parts.length; i++){
+    if (i % 2){ ops.push(parts[i].toLowerCase()); continue; }
+    const v = parseLen(parts[i]); if (!isFinite(v)) return fail(`Can't read "${esc(parts[i])}". Try 10' 4 3/8"`);
+    terms.push({v, unit: /['"]/.test(parts[i])});
+  }
+  /* × and ÷ first: one side is a length, the other a plain count */
+  const t2 = [terms[0]], o2 = [];
+  for (let i = 0; i < ops.length; i++){
+    const op = ops[i], a = t2[t2.length-1], b = terms[i+1];
+    if (op === "x" || op === "×"){ if (a.unit && b.unit) return fail("Multiply a length by a plain number, like 2 x 5\"."); t2[t2.length-1] = {v: a.v*b.v, unit: a.unit || b.unit}; }
+    else if (op === "÷"){ if (b.unit) return fail("Divide by a plain number, like 12' ÷ 3."); if (b.v === 0) return fail("Can't divide by 0."); t2[t2.length-1] = {v: a.v/b.v, unit: a.unit}; }
+    else { t2.push(b); o2.push(op); }
+  }
+  let total = t2[0].v; o2.forEach((op,i) => total += op === "-" ? -t2[i+1].v : t2[i+1].v);
+  out.textContent = fmtFtIn(total);
+  sub.textContent = `${nf(total,4)} in · ${nf(total/12,4)} ft · ${nf(total*25.4,1)} mm`;
+}
+/* remember the cursor ourselves: browsers reset it when the box loses focus to a quick key */
+let fiSel = null;
+const fiTrack = () => { const i = $("fi-expr"); fiSel = [i.selectionStart, i.selectionEnd]; };
+["input","keyup","click","select"].forEach(ev => $("fi-expr").addEventListener(ev, fiTrack));
+$("fi-expr").addEventListener("input", fiCalc);
+document.querySelector(".keys").addEventListener("click", e => {
+  const b = e.target.closest("button[data-k]"); if (!b) return;
+  const inp = $("fi-expr"), k = b.dataset.k, len = inp.value.length;
+  const [s0, s1] = fiSel ? [Math.min(fiSel[0], len), Math.min(fiSel[1], len)] : [len, len];
+  let c;
+  if (k === "clear"){ inp.value = ""; c = 0; }
+  else if (k === "back"){ c = s0 === s1 ? Math.max(0, s0-1) : s0; inp.value = inp.value.slice(0,c) + inp.value.slice(s1); }
+  else { inp.value = inp.value.slice(0,s0) + k + inp.value.slice(s1); c = s0 + k.length; }
+  fiSel = [c, c]; inp.focus({preventScroll:true}); try { inp.setSelectionRange(c, c); } catch(err){}  /* keep the keyboard up for the next number */
+  fiCalc();
+});
+fiCalc();
+
+/* ---------- grade check ---------- */
+function gradeCalc(){
+  const run = val("g2-run"), fall = val("g2-fall"), el = $("g2-ans");
+  if (!(run > 0) || !(fall >= 0)){ el.innerHTML = `<span class="warn">Enter a run over 0 and a fall of 0 or more.</span>`; return; }
+  const s = fall / run, pct = fall / (run*12) * 100, e = 1e-9;
+  const verdict = s + e >= 0.25 ? "Meets ¼\"/ft (any size)" : s + e >= 0.125 ? "Meets ⅛\"/ft: OK for 3\" and up only" : "Under ⅛\"/ft: too flat for a drain";
+  el.innerHTML = `${toFrac16(s).replace('"','')}"/ft<small>${nf(s,3)} in/ft · ${nf(pct,2)}% · ${verdict}</small>`;
+}
+["g2-run","g2-fall"].forEach(id => $(id).addEventListener("input", gradeCalc)); gradeCalc();
+
+/* ---------- flow velocity ---------- */
+$("v-pipe").innerHTML = PIPES.map((p,i) => `<option value="${i}"${i===1?" selected":""}>${p[0]}</option>`).join("");
+function velCalc(){
+  const gpm = val("v-gpm"), id = PIPES[+$("v-pipe").value][1], el = $("v-ans");
+  if (!(gpm >= 0)){ el.innerHTML = `<span class="warn">Enter a flow of 0 or more.</span>`; return; }
+  const v = gpm * 0.4085 / (id*id);
+  el.innerHTML = `${nf(v,2)} ft/s<small>${v > 8 ? "Fast: over 8 ft/s, expect noise and wear" : v > 5 ? "Over 5 ft/s: too fast for hot copper per many guides" : "In the usual range"}</small>`;
+}
+$("v-pipe").addEventListener("change", velCalc); $("v-gpm").addEventListener("input", velCalc); velCalc();
+
+/* ---------- thermal expansion ---------- */
+/* in/in/°F; PEX from Uponor's 1.1" per 100 ft per 10°F */
+const EXP = [["PEX",1.1/12000],["CPVC",3.4e-5],["PVC",3.0e-5],["ABS",5.5e-5],["Copper",9.4e-6],["Steel",6.5e-6]];
+$("te-mat").innerHTML = EXP.map(([n],i) => `<option value="${i}">${n}</option>`).join("");
+function expCalc(){
+  const [, k] = EXP[+$("te-mat").value], len = val("te-len"), dt = val("te-dt"), el = $("te-ans");
+  if (!(len >= 0) || !isFinite(dt)){ el.innerHTML = `<span class="warn">Enter a run and a temperature change.</span>`; return; }
+  const d = k * len * 12 * Math.abs(dt);
+  el.innerHTML = `${toFrac16(d)} growth<small>${nf(d,3)} in · ${nf(k*1200*10,3)}" per 100 ft per 10°F</small>`;
+}
+["te-len","te-dt"].forEach(id => $(id).addEventListener("input", expCalc)); $("te-mat").addEventListener("change", expCalc); expCalc();
+
+/* ---------- tank & tub volume ---------- */
+let tvShape = "round";
+function tvCalc(){
+  const a = val("tv-a"), b = val("tv-b"), h = val("tv-h"), el = $("tv-ans");
+  const ok = a > 0 && h >= 0 && (tvShape === "round" || b > 0);
+  if (!ok){ el.innerHTML = `<span class="warn">Enter sizes over 0.</span>`; return; }
+  const in3 = tvShape === "round" ? Math.PI/4 * a*a * h : a*b*h, gal = in3/231;
+  el.innerHTML = `${nf(gal,1)} gal<small>${nf(gal*3.78541,1)} L · ${Math.round(gal*8.34).toLocaleString()} lb of water</small>`;
+}
+document.querySelectorAll("#tv-mode button").forEach(btn => btn.addEventListener("click", () => {
+  tvShape = btn.dataset.tv;
+  document.querySelectorAll("#tv-mode button").forEach(x => x.setAttribute("aria-pressed", String(x === btn)));
+  $("tv-b-l").hidden = tvShape === "round";
+  $("tv-a-l").firstChild.textContent = tvShape === "round" ? "Diameter (in)" : "Length (in)";
+  tvCalc();
+}));
+["tv-a","tv-b","tv-h"].forEach(id => $(id).addEventListener("input", tvCalc)); tvCalc();
+
+/* ---------- inches to decimal feet ---------- */
+$("dec-ft").innerHTML = Array.from({length:6}, (_,i) => `<tr><td>${i+1}"</td><td>${((i+1)/12).toFixed(2)}</td><td>${i+7}"</td><td>${((i+7)/12).toFixed(2)}</td></tr>`).join("");
+
+
 /* ---------- DFU counter ---------- */
 /* [name, DFU, toilet?, min trap inches] */
 const FIX = [
@@ -1909,7 +2174,15 @@ const CARDS = [
   ["Utah","Through-wall vent in Utah ends how?","≥12\" out from the wall, elbow pointing down"],
   ["Utah","Incoming water temp for sizing a Utah winter heater?","40°F"],
   ["Sizing","Shower trap size on a house (IRC)?","2\" (IPC table allows 1½\")"],
-  ["Gas","Gas shield plate thickness?","Steel at least ¹⁄₁₆\" (heavier than 16 ga)"]
+  ["Gas","Gas shield plate thickness?","Steel at least ¹⁄₁₆\" (heavier than 16 ga)"],
+  ["Utah","Permit applied for before 7/1/2026: which IPC?","Usually the 2021 IPC (check the permit card)"],
+  ["Tests","2024 IPC vacuum test on DWV?","−5 psi (−10\" Hg) for 15 min"],
+  ["Math","Threads per inch on ½\" and ¾\" NPT?","14"],
+  ["Math","Thread makeup for ½\" pipe?","About ½\""],
+  ["Math","Velocity formula from gpm?","ft/s = gpm × 0.4085 ÷ ID²"],
+  ["Math","1\" in decimal feet?","0.08 ft (6\" = 0.50 ft)"],
+  ["Math","Gallons from cubic inches?","÷ 231"],
+  ["Math","PEX expansion rule (Uponor)?","1.1\" per 100 ft per 10°F"]
 ];
 const topics = ["All", ...new Set(CARDS.map(c => c[0]))];
 $("fc-filter").innerHTML = topics.map(t => `<option>${t}</option>`).join("");
@@ -2003,7 +2276,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device */
-var BUILD = "neon-2026-10-11b";
+var BUILD = "plumbiverse-2026-10-11";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status"; note.style.cssText = "margin-top:4px;font-weight:600";

@@ -1,6 +1,6 @@
 {
- "name": "Jobsite Plumbing Book",
- "short_name": "Plumbing Book",
+ "name": "PlumChum's Guide to the Plumbiverse",
+ "short_name": "Plumbiverse",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
