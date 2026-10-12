@@ -1,5 +1,5 @@
 /* Jobsite Plumbing Book offline cache. Version changes on every build so phones pick up updates. */
-const CACHE = "jpb-neon-2026-10-11";
+const CACHE = "jpb-neon-2026-10-11b";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon-180.png", "./icon-192.png", "./icon-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

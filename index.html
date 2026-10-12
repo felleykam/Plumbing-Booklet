@@ -19,7 +19,7 @@
 /* Look: retro neon on a dark grid. Each group of tabs glows its own color (--acc), so you can tell where you are at a glance.
    Layout: a dense spec-sheet binder. Every section is a boxed table; sections flow in newspaper columns on wide screens, one column on phones. */
 :root{
-  --paper:#07060f; --sheet:#0e0b1d; --ink:#ece9ff; --muted:#a29bd0; --rule:#251f47; --edge:#4b3f8a;
+  --paper:#07060f; --sheet:#0e0b1d; --ink:#ece9ff; --muted:#a29bd0; --rule:#251f47; --edge:#7a6bc8;
   --zebra:#130f29; --line:#22e5ff; --line-soft:#0b2632; --flag:#ff3ea5; --flag-soft:#2b0a20; --ok:#39ff88; --warn:#ffe14d;
   --cyan:#22e5ff; --pink:#ff3ea5; --green:#39ff88; --yellow:#ffe14d; --orange:#ff9a3c; --violet:#b77bff;
   --acc:var(--cyan);
@@ -42,7 +42,7 @@
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{background:var(--paper)}
+html{background:var(--paper);scroll-padding-top:180px}
 body{margin:0;color:var(--ink);font-family:var(--body);font-size:13px;line-height:1.45;padding-inline:max(12px,env(safe-area-inset-left));padding-block:12px 32px;min-height:100vh;
   background:
     radial-gradient(120% 60% at 50% -10%,rgba(255,62,165,.16),transparent 60%),
@@ -63,22 +63,28 @@ b{font-weight:600}
 .tb h1{font-family:var(--neon);font-weight:400;font-size:clamp(22px,6.4vw,34px);line-height:1.05;margin:0;letter-spacing:.02em;color:#fff;
   text-shadow:0 0 2px #fff,0 0 8px var(--pink),0 0 18px var(--pink),0 0 32px rgba(255,62,165,.6)}
 .tb .meta{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:.04em;text-shadow:0 0 6px rgba(34,229,255,.5)}
-.banner{font-size:12px;color:var(--ink);background:var(--flag-soft);border:1px solid var(--pink);border-radius:6px;padding:6px 10px;margin-top:10px;box-shadow:0 0 12px -4px var(--pink)}
+.banner{font-size:12.5px;color:var(--ink);background:var(--flag-soft);border:1px solid var(--pink);border-radius:6px;padding:6px 10px;margin-top:10px;box-shadow:0 0 12px -4px var(--pink)}
+.banner summary{cursor:pointer;min-height:32px;display:flex;align-items:center;gap:6px;list-style:none}
+.banner summary::-webkit-details-marker{display:none}
+.banner summary::after{content:"＋";margin-left:auto;color:var(--pink)}
+.banner[open] summary::after{content:"－"}
+.banner p{margin:4px 0 2px}
 
 /* sticky tools: search, group row, sub-tab row */
-.tools{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;background:linear-gradient(var(--paper) 85%,rgba(7,6,15,.0));padding-block:10px 12px;display:flex;flex-direction:column;gap:7px}
+.tools{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;background:linear-gradient(var(--paper) 85%,rgba(7,6,15,.0));padding-block:10px 12px;display:flex;flex-direction:column;gap:7px;transition:transform .2s}
+.tools.tuck{transform:translateY(-110%)}
 #q{width:100%;font:inherit;font-size:14px;padding:8px 12px;min-height:38px;border:1px solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:6px}
 #q::placeholder{color:var(--muted)}
 #q:focus{border-color:var(--cyan);outline:none;box-shadow:0 0 0 1px var(--cyan),0 0 14px rgba(34,229,255,.35)}
-.tabs,.subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 24px 3px 2px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
-.tabs::-webkit-scrollbar,.subtabs::-webkit-scrollbar{display:none}
-@media (min-width:760px){.tabs,.subtabs{flex-wrap:wrap;-webkit-mask-image:none;mask-image:none;padding-right:2px}}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;padding:2px}
+.subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 24px 3px 2px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.subtabs::-webkit-scrollbar{display:none}
+@media (min-width:760px){.subtabs{flex-wrap:wrap;-webkit-mask-image:none;mask-image:none;padding-right:2px}}
 .tabs button{flex:0 0 auto;font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;min-height:34px;border:1px solid color-mix(in srgb,var(--acc) 45%,transparent);background:var(--sheet);color:var(--acc);border-radius:999px;cursor:pointer;transition:box-shadow .15s,background .15s}
 .tabs button:hover{box-shadow:var(--glow)}
 .tabs button[aria-pressed="true"]{background:var(--acc);color:#07060f;border-color:var(--acc);box-shadow:0 0 16px color-mix(in srgb,var(--acc) 60%,transparent)}
-.subtabs{gap:4px}
-.subtabs button{flex:0 0 auto;font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;min-height:30px;border:0;border-bottom:2px solid transparent;background:none;color:var(--muted);cursor:pointer}
-.subtabs button[aria-pressed="true"]{color:var(--acc);border-bottom-color:var(--acc);text-shadow:0 0 8px color-mix(in srgb,var(--acc) 70%,transparent)}
+.subtabs button{flex:0 0 auto;font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;padding:4px 12px;min-height:32px;border:1px solid var(--edge);border-radius:999px;background:var(--sheet);color:var(--ink);cursor:pointer}
+.subtabs button[aria-pressed="true"]{color:var(--acc);border-color:var(--acc);background:color-mix(in srgb,var(--acc) 14%,var(--sheet));box-shadow:0 0 10px -2px color-mix(in srgb,var(--acc) 70%,transparent)}
 .tools.searching .tabs button[aria-pressed="true"]{background:var(--sheet);color:var(--acc);box-shadow:none}
 .tools.searching .subtabs{display:none}
 .no-hits{padding:14px;color:var(--muted);text-align:center;font-size:12px}
@@ -86,10 +92,10 @@ b{font-weight:600}
 /* flowing columns of sections */
 .book{columns:2 480px;column-gap:16px}
 section{break-inside:avoid;display:block;background:var(--sheet);border:1px solid color-mix(in srgb,var(--acc) 55%,transparent);border-radius:8px;margin:0 0 14px;box-shadow:0 0 18px -8px color-mix(in srgb,var(--acc) 60%,transparent);overflow:hidden}
-.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:7px 10px 6px;border-bottom:1px solid color-mix(in srgb,var(--acc) 55%,transparent);background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 14%,transparent),transparent 70%)}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 8px;padding:7px 10px 6px;border-bottom:1px solid color-mix(in srgb,var(--acc) 55%,transparent);background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 14%,transparent),transparent 70%)}
 .sec-head h2{font-family:var(--display);font-weight:700;font-size:16px;line-height:1.1;text-transform:uppercase;letter-spacing:.05em;margin:0;color:var(--acc);text-shadow:0 0 8px color-mix(in srgb,var(--acc) 55%,transparent)}
 .sec-head small{font-size:11px;color:var(--muted);text-align:right}
-.note{font-size:11.5px;color:var(--muted);padding:6px 10px;margin:0;border-top:1px solid var(--rule)}
+.note{font-size:12.5px;color:var(--muted);padding:6px 10px;margin:0;border-top:1px solid var(--rule)}
 .note b{color:var(--ink)}
 
 /* tables */
@@ -99,24 +105,26 @@ section{break-inside:avoid;display:block;background:var(--sheet);border:1px soli
 .t thead th{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--zebra);border-bottom:1px solid var(--rule)}
 .t tbody tr+tr>*{border-top:1px solid var(--rule)}
 .t tbody th{font-weight:600;width:30%;min-width:6.5rem}
-.t .k{font-family:var(--mono);font-size:11px;color:var(--acc);white-space:nowrap;width:1%}
+.t .k{font-family:var(--mono);font-size:12px;color:var(--acc);white-space:nowrap;width:1%}
 .t .n,.t.num td:not(:first-child){font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .t.wrap .n{white-space:normal}
-.t .sub{color:var(--muted);font-size:11.5px}
-.ut{display:inline-block;font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.06em;color:var(--orange);border:1px solid var(--orange);border-radius:3px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:3px;text-shadow:0 0 6px rgba(255,154,60,.6)}
-.why{display:inline-block;font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.06em;color:var(--violet);border:1px solid var(--violet);border-radius:3px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:3px}
-.pn{display:inline-block;font-family:var(--mono);font-size:12px;background:var(--line-soft);border:1px solid color-mix(in srgb,var(--cyan) 40%,transparent);border-radius:4px;padding:1px 6px;margin:1px 0;cursor:copy;white-space:nowrap;color:var(--ink)}
+.t .sub{color:var(--muted);font-size:12.5px}
+.t td a,.note a{text-decoration:underline;text-underline-offset:2px;text-decoration-color:color-mix(in srgb,var(--line) 55%,transparent)}
+.ut{display:inline-block;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.06em;color:var(--orange);border:1px solid var(--orange);border-radius:3px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:3px;text-shadow:0 0 6px rgba(255,154,60,.6)}
+.why{display:inline-block;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.06em;color:var(--violet);border:1px solid var(--violet);border-radius:3px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:3px}
+.pn{display:inline-block;font-family:var(--mono);font-size:12px;background:var(--line-soft);border:1px solid color-mix(in srgb,var(--cyan) 75%,transparent);border-radius:4px;padding:1px 6px;margin:1px 0;cursor:pointer;white-space:nowrap;color:var(--ink)}
+.pn{text-decoration:none}
 .pn.copied{background:var(--ok);color:#07060f;border-color:var(--ok)}
 
 /* calculators */
 .calc{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;padding:10px;border-bottom:1px solid var(--rule)}
-.calc label{display:flex;flex-direction:column;gap:3px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);flex:1 1 110px;min-width:0}
+.calc label{display:flex;flex-direction:column;gap:3px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);flex:1 1 110px;min-width:0}
 .calc input,.calc select,.up input,.up select{font-family:var(--mono);font-size:13px;padding:5px 8px;min-height:34px;border:1px solid var(--edge);background:var(--paper);color:var(--ink);border-radius:5px;width:100%;text-transform:none;letter-spacing:0;min-width:0}
 .calc input:focus,.calc select:focus,.up input:focus,.up select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 1px var(--acc),0 0 10px color-mix(in srgb,var(--acc) 40%,transparent)}
 .ans{flex:2 1 180px;font-family:var(--display);font-weight:700;font-size:20px;line-height:1.15;color:var(--acc);min-width:0;text-shadow:0 0 10px color-mix(in srgb,var(--acc) 50%,transparent)}
 .ans small{display:block;font-family:var(--body);font-weight:400;font-size:11px;color:var(--muted);text-shadow:none}
 .seg{display:flex;flex-wrap:wrap;gap:4px;padding:10px 10px 0}
-.seg button{font:inherit;font-size:12px;padding:4px 10px;min-height:30px;border:1px solid var(--rule);background:var(--paper);color:var(--muted);border-radius:999px;cursor:pointer}
+.seg button{font:inherit;font-size:12px;padding:4px 10px;min-height:30px;border:1px solid var(--edge);background:var(--paper);color:var(--muted);border-radius:999px;cursor:pointer}
 .seg button[aria-pressed="true"]{border-color:var(--acc);color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,transparent);font-weight:600;box-shadow:0 0 10px -2px color-mix(in srgb,var(--acc) 60%,transparent)}
 .calc label i{font-style:normal;text-transform:none;letter-spacing:0}
 .inch{display:flex;gap:4px}
@@ -140,7 +148,7 @@ section{break-inside:avoid;display:block;background:var(--sheet);border:1px soli
 .ro-key{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:center;padding:2px 8px 8px;font-size:11px;color:#cbd5e1}
 .ro-key .sw{border-color:#334155}
 .ro-out td.big{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.2;white-space:nowrap;font-variant-numeric:tabular-nums}
-.ro-out td.big small{display:block;font-family:var(--mono);font-weight:500;font-size:10.5px;color:var(--muted)}
+.ro-out td.big small{display:block;font-family:var(--mono);font-weight:500;font-size:12px;color:var(--muted)}
 .ro-out tr.hit td.big{color:var(--acc);font-size:23px;text-shadow:0 0 10px color-mix(in srgb,var(--acc) 50%,transparent)}
 .ro-out tr.hit th{font-size:13px}
 .ro-out td.sub{font-size:11px}
@@ -159,15 +167,14 @@ section[data-sec="local"] td:first-child{min-width:6.8rem;width:28%}
 .frac .q b{color:var(--acc)}
 
 /* checklists (trim-out) */
-.chk{list-style:none;margin:0;padding:4px 0}
+.chk{list-style:none;margin:0;padding:4px 0;counter-reset:c}
 .chk li{display:grid;grid-template-columns:28px 1fr;gap:4px;padding:6px 10px;border-top:1px solid var(--rule)}
 .chk li:first-child{border-top:0}
 .chk li::before{content:counter(c);counter-increment:c;font-family:var(--mono);font-size:11px;color:var(--acc);border:1px solid var(--acc);border-radius:50%;width:20px;height:20px;display:grid;place-items:center;box-shadow:0 0 8px -2px var(--acc)}
-.chk{counter-reset:c}
 
 /* my files */
 .up{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;padding:10px;border-bottom:1px solid var(--rule)}
-.up label{display:flex;flex-direction:column;gap:3px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
+.up label{display:flex;flex-direction:column;gap:3px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
 .up input,.up select{font-family:var(--body)}
 .up .full{grid-column:1 / -1}
 .up .act{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -195,7 +202,7 @@ section[data-sec="local"] td:first-child{min-width:6.8rem;width:28%}
 .fc-btns button{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.05em;text-transform:uppercase;min-height:40px;border-radius:999px;cursor:pointer;border:1px solid var(--edge);background:var(--sheet);color:var(--ink)}
 .fc-btns .fc-got{background:var(--ok);border-color:var(--ok);color:#07060f;box-shadow:0 0 12px -3px var(--ok)}
 .fc-btns .fc-miss{color:var(--flag);border-color:var(--flag)}
-.fc-btns button:disabled{opacity:.35;cursor:default;box-shadow:none}
+.fc-btns button:disabled{opacity:.55;cursor:default;box-shadow:none}
 .fc-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
 .fc-foot select{font:inherit;font-size:12px;padding:4px 6px;border:1px solid var(--edge);border-radius:5px;background:var(--paper);color:var(--ink)}
 footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid var(--rule);padding-top:10px;margin-top:6px}
@@ -203,31 +210,45 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
 
 /* phones and tablets: 16px inputs stop iOS from zooming on tap; bigger targets for thumbs */
 @media (pointer:coarse){
-  #q,.calc input,.calc select,.up input,.up select{font-size:16px;min-height:42px}
-  .tabs button{min-height:40px}
-  .subtabs button{min-height:38px}
-  .seg button,.mode button{min-height:40px}
-  .ro-view button{min-height:40px;padding-inline:16px}
+  #q,.calc input,.calc select,.up input,.up select{font-size:16px;min-height:44px}
+  .tabs button,.subtabs button,.seg button,.mode button,.ro-view button,.btn,.del{min-height:44px}
+  .ro-view button{padding-inline:16px}
   .inch select{flex-basis:5.2rem;width:5.2rem}
-  .pn{padding:6px 9px;margin:2px 0}
+  .pn{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;margin:2px 0}
+  .t td a,.t th a{display:inline-block;padding:13px 0;min-height:44px}
   .step input{font-size:16px;width:48px}
-  .step button{width:42px;min-height:42px}
-  .fc-foot select{font-size:16px;min-height:40px}
+  .step button{width:44px;min-height:44px}
+  .fc-foot select{font-size:16px;min-height:44px}
   .fc-btns button{min-height:48px}
-  .linkish{padding:10px 4px}
+  .linkish{padding:12px 8px;min-height:44px}
+  .banner summary{min-height:44px}
 }
+@media (max-width:420px){.t th,.t td{padding:5px 7px}.tabs button{padding-inline:10px}}
+/* phones: multi-column tables become stacked cards so you can read one row at a time */
+@media (max-width:480px){
+  .t.cards thead{display:none}
+  .t.cards tr{display:block;padding:4px 0}
+  .t.cards td{display:block;padding:3px 10px}
+  .t.cards td[data-label]::before{content:attr(data-label);display:block;font-family:var(--display);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .t.cards tbody tr+tr>*{border-top:0}
+  .t.cards tbody tr+tr{border-top:1px solid var(--rule)}
+}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* sun / high-contrast: drop the glow blur */
+@media (prefers-contrast:more){*{text-shadow:none!important}section{box-shadow:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <noscript><div style="padding:12px;margin:12px;border:2px solid #ff3ea5;background:#2b0a20;color:#ece9ff;font:15px/1.4 system-ui,sans-serif"><b>Calculators and tabs are off.</b> This viewer isn't running scripts. Open the book in Safari or Chrome.</div></noscript>
 
+<div id="sr-status" role="status" class="sr-only"></div>
 <div class="wrap">
   <header class="tb">
     <h1>Jobsite Plumbing Book</h1>
-    <span class="meta">Utah residential · 2021 IRC · 2024 IPC · 2024 IFGC</span>
+    <span class="meta">Utah · 2021 IRC · 2024 IPC/IFGC</span>
   </header>
-  <div class="banner"><b>Which code?</b> Houses: <b>2021 IRC</b> plumbing chapters + Utah amendments. Other buildings: <b>2024 IPC</b>. Gas: <b>2024 IFGC</b>. Tables here are IPC, usually the safe side. <span class="ut">UT</span> = Utah amendment; ask your inspector when in doubt.</div>
+  <details class="banner"><summary><b>Which code?</b> Houses: 2021 IRC + Utah</summary><p>Houses: <b>2021 IRC</b> plumbing chapters + Utah amendments. Other buildings: <b>2024 IPC</b>. Gas: <b>IRC ch. 24</b> on houses, <b>2024 IFGC</b> on other buildings. Tables here are IPC, usually the safe side. <span class="ut">UT</span> = Utah amendment; ask your inspector when in doubt.</p></details>
 
   <div class="tools">
     <input id="q" type="search" placeholder="Search: hole, TJI, vent, Moen, 811…" aria-label="Search the book">
@@ -235,11 +256,11 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <button type="button" data-group="all" aria-pressed="true">All</button>
       <button type="button" data-group="rough" aria-pressed="false">Rough-in</button>
       <button type="button" data-group="trim" aria-pressed="false">Trim</button>
-      <button type="button" data-group="math" aria-pressed="false">Field math</button>
+      <button type="button" data-group="math" aria-pressed="false">Math</button>
       <button type="button" data-group="utah" aria-pressed="false">Utah</button>
-      <button type="button" data-group="calls" aria-pressed="false">Calls &amp; safety</button>
+      <button type="button" data-group="calls" aria-pressed="false">Calls</button>
       <button type="button" data-group="learn" aria-pressed="false">Learn</button>
-      <button type="button" data-group="mine" aria-pressed="false">My files</button>
+      <button type="button" data-group="mine" aria-pressed="false">Files</button>
     </div>
     <div class="subtabs" role="group" aria-label="Pages in this section" hidden></div>
   </div>
@@ -255,7 +276,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><th>Always</th><td>Read the brand and series printed on the web and use <b>that</b> chart. Plan-marked hole locations win.</td></tr>
         <tr><th>Doesn't fit?</th><td>Stop and call your lead. Supplier or manufacturer tech support can engineer a fix.</td></tr>
       </tbody></table></div>
-    <div class="x"><table class="t">
+    <div class="x"><table class="t cards">
       <thead><tr><th>Joist</th><th>1½" holes</th><th>Bigger holes</th><th>Hole spacing</th></tr></thead>
       <tbody>
         <tr><td><b>BCI</b><div class="sub">Boise</div></td><td>Anywhere in web, 3" from other holes. Bearing zone (6") knockouts only.</td><td>Distance "D" from support, per depth table (guide p. 7)</td><td>2× largest hole</td></tr>
@@ -289,13 +310,13 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <tbody>
         <tr><td><b>Herriman</b></td><td><span class="pn">801-446-5327</span><div class="sub">Call one working day ahead, before 4 pm. Subrough: 10 ft water or 5 psi, 15 min. Gas 5 psi, 15 min. Shower pan water test. Separate secondary-water connection inspection. Meter is on the Public Works final.</div></td></tr>
         <tr><td><b>Lehi</b></td><td><span class="pn">385-201-1035</span><div class="sub">Phone only: no voicemail, email or online booking. 24 hr notice. Lists a 30" minimum frost line. Not-ready re-inspections get a fee.</div></td></tr>
-        <tr><td><b>Saratoga Springs</b></td><td><a href="mailto:buildinginspectionrequest@saratogasprings-ut.gov">Email request ↗</a><div class="sub">One business day ahead: by 5 pm Mon–Thu, 4 pm Fri. No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test set).</div></td></tr>
+        <tr><td><b>Saratoga Springs</b></td><td><a href="mailto:buildinginspectionrequest@saratogasprings-ut.gov">Email request ↗</a> or <span class="pn">801-766-6507</span> x120<div class="sub">One business day ahead: by 5 pm Mon–Thu, 4 pm Fri. No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test set).</div></td></tr>
         <tr><td><b>Eagle Mountain</b></td><td><a href="mailto:buildinginspections@eaglemountain.gov">Email request ↗</a><div class="sub">Include the permit number. No confirmation email back = you're not on the schedule. First come, first served.</div></td></tr>
         <tr><td><b>West Jordan</b></td><td><span class="pn">801-569-5050</span><div class="sub">Building dept: inspection requirements and status. Permit Center M–F 8–5.</div></td></tr>
         <tr><td><b>South Jordan</b></td><td><a href="https://cityview.southjordanutah.gov/cityviewportal" target="_blank" rel="noopener">CityView portal ↗</a><div class="sub">Permits and inspections online.</div></td></tr>
         <tr><td><b>Park City</b></td><td><span class="pn">435-615-5101</span><div class="sub">Book in the City Inspect app by 3 pm for next day. AM 8–12, PM 12–4. Plans + permit on paper on site. Deep snow: confirm vent height.</div></td></tr>
-        <tr><td><b>Unincorporated SL County</b></td><td><a href="https://msd.utah.gov/205/Building-Permits-Inspections" target="_blank" rel="noopener">MSD permits &amp; inspections ↗</a><div class="sub">Greater Salt Lake Municipal Services District (Kearns, Magna, Copperton, etc.).</div></td></tr>
-        <tr><td><b>Salt Lake City</b></td><td><span class="sub">See <b>Tests &amp; calls → Who to call</b>.</span></td></tr>
+        <tr><td><b>Unincorporated SL County</b></td><td><a href="https://msd.utah.gov/205/Building-Permits-Inspections" target="_blank" rel="noopener">MSD permits &amp; inspections ↗</a><div><span class="pn">385-910-5830</span> <a href="mailto:inspections@msd.utah.gov">Email ↗</a></div><div class="sub">Greater Salt Lake Municipal Services District (Kearns, Magna, Copperton, etc.). Inspection hotline or email before 3 pm for next business day.</div></td></tr>
+        <tr><td><b>Salt Lake City</b></td><td><span class="sub">See <b>Calls → Who to call</b>.</span></td></tr>
       </tbody></table></div>
     <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct 2026; your super's schedule and the city site win.</p>
   </section>
@@ -354,14 +375,14 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><td><span class="ut">UT</span>DWV plastic</td><td>Air, only if water can't be used or would freeze</td><td class="n">≤6 psi</td><td class="n">≤15 min</td></tr>
         <tr><td>DWV</td><td>Vacuum</td><td class="n">−10" Hg</td><td class="n">15 min</td></tr>
         <tr><td>Water</td><td>Water</td><td class="n">≥ working</td><td>Until inspected</td></tr>
-        <tr><td><span class="ut">UT</span>Water plastic</td><td>Air</td><td class="n">50–80 psi</td><td class="n">≤15 min</td></tr>
+        <tr><td><span class="ut">UT</span>Water plastic<div class="sub">Utah IPC 312.5. On a house, get the inspector's OK first.</div></td><td>Air</td><td class="n">50–80 psi</td><td class="n">≤15 min</td></tr>
         <tr><td>Gas</td><td>Air / N₂ / CO₂, never O₂</td><td class="n">1.5× working<br>≥3 psi</td><td class="n">10 min</td></tr>
       </tbody></table></div>
     <p class="note">Many Utah cities want gas at <b>5 psi for 15 min</b>. <span class="ut">UT</span> plastic air tests are capped: watch the gauge, stand clear, bleed down slowly. A joint can blow.</p>
   </section>
 
-  <section data-sec="tests">
-    <div class="sec-head"><h2>Who to call</h2><small>Tap a number to copy</small></div>
+  <section data-sec="support" data-kw="who to call blue stakes 811 inspections enbridge dopl">
+    <div class="sec-head"><h2>Who to call</h2><small>Tap to call · hold to copy</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th><a href="https://www.bluestakes.org/" target="_blank" rel="noopener">Blue Stakes ↗</a></th><td><span class="pn">811</span> <span class="pn">801-208-2100</span><div class="sub">48 business hours before digging (clock starts 8 am the next business day, so plan on 3 business days), max 14 days ahead. Ticket good 21 days. Marks only to the meter, so private lines may not be marked.</div></td></tr>
@@ -370,64 +391,6 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><th><a href="https://commerce.utah.gov/dopl/plumbing/" target="_blank" rel="noopener">DOPL ↗</a></th><td><span class="pn">801-530-6628</span><div class="sub">Licenses, renewals, exam approval.</div></td></tr>
       </tbody></table></div>
     <p class="note">Frost depth: SLC designs to <b>30"</b>. Water-line cover is set by the water provider (North Salt Lake: 42").</p>
-  </section>
-
-  <section data-sec="math">
-    <div class="sec-head"><h2>Unit converter</h2><small>Type a number</small></div>
-    <div class="seg" id="c-kind" role="group" aria-label="What to convert">
-      <button type="button" data-kind="volume" aria-pressed="true">Volume</button>
-      <button type="button" data-kind="pressure" aria-pressed="false">Pressure</button>
-      <button type="button" data-kind="length" aria-pressed="false">Length</button>
-      <button type="button" data-kind="flow" aria-pressed="false">Flow</button>
-      <button type="button" data-kind="temp" aria-pressed="false">Temp</button>
-    </div>
-    <div class="calc">
-      <label for="c-val">Amount<input id="c-val" type="number" inputmode="decimal" value="1" step="any"></label>
-      <label for="c-from">From<select id="c-from"></select></label>
-    </div>
-    <div class="x"><table class="t num"><tbody id="c-out" aria-live="polite"></tbody></table></div>
-  </section>
-
-  <section data-sec="math">
-    <div class="sec-head"><h2>Pressure vs. height</h2><small>1 ft = 0.433 psi · 1 psi = 2.31 ft</small></div>
-    <div class="calc">
-      <label for="h-ft">Height (ft)<input id="h-ft" type="number" inputmode="decimal" value="20" step="any"></label>
-      <div class="ans" id="h-ans"></div>
-    </div>
-    <svg id="psi-chart" viewBox="0 0 400 190" role="img" aria-label="Line chart: static water pressure lost rises 0.433 psi per foot of height, from 0 psi at 0 feet to 43.3 psi at 100 feet."></svg>
-    <p class="note">About 4.3 psi lost per floor (10 ft), before friction.</p>
-  </section>
-
-  <section data-sec="math">
-    <div class="sec-head"><h2>Water in the pipe</h2><small>From actual ID</small></div>
-    <div class="calc">
-      <label for="p-size">Pipe<select id="p-size"></select></label>
-      <label for="p-len">Length (ft)<input id="p-len" type="number" inputmode="decimal" value="50" step="any"></label>
-      <div class="ans" id="p-ans"></div>
-    </div>
-    <div class="x"><table class="t num" id="pipe-tbl">
-      <thead><tr><th>Pipe</th><th>ID"</th><th>Gal/ft</th><th>Gal/100'</th><th>Lb/100'</th></tr></thead><tbody></tbody>
-    </table></div>
-    <p class="note">Copper L, PEX CTS SDR-9, PVC Sch 40. Hot-water wait: gallons in line ÷ gpm = minutes.</p>
-  </section>
-
-  <section data-sec="math">
-    <div class="sec-head"><h2>Drain fall</h2><small>Run × slope</small></div>
-    <div class="calc">
-      <label for="s-run">Run (ft)<input id="s-run" type="number" inputmode="decimal" value="30" step="any"></label>
-      <label for="s-pitch">Slope<select id="s-pitch">
-        <option value="0.0625">¹⁄₁₆" / ft</option><option value="0.125">⅛" / ft</option>
-        <option value="0.25" selected>¼" / ft</option><option value="0.5">½" / ft</option></select></label>
-      <div class="ans" id="s-ans"></div>
-    </div>
-    <div class="x"><table class="t num">
-      <thead><tr><th>Slope</th><th>%</th><th>10 ft</th><th>50 ft</th></tr></thead>
-      <tbody>
-        <tr><td>¹⁄₁₆" / ft</td><td>0.52</td><td>⅝"</td><td>3⅛"</td></tr>
-        <tr><td>⅛" / ft</td><td>1.04</td><td>1¼"</td><td>6¼"</td></tr>
-        <tr><td>¼" / ft</td><td>2.08</td><td>2½"</td><td>12½"</td></tr>
-        <tr><td>½" / ft</td><td>4.17</td><td>5"</td><td>25"</td></tr>
-      </tbody></table></div>
   </section>
 
   <section data-sec="math" data-kw="offset rolling roll rise travel run setback take-off cut length 45 fitting">
@@ -445,7 +408,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     </div>
     <div class="x"><table class="t ro-out">
       <tbody>
-        <tr class="hit"><th><span class="sw cut"></span>Cut length</th><td id="ro-cut" class="big">—</td><td class="sub">The blue pipe. Travel minus both take-offs.</td></tr>
+        <tr class="hit" aria-live="polite" aria-atomic="true"><th><span class="sw cut"></span>Cut length</th><td id="ro-cut" class="big">—</td><td class="sub">The blue pipe. Travel minus both take-offs.</td></tr>
         <tr><th>Travel</th><td id="ro-travel" class="big">—</td><td class="sub">Fitting center to fitting center.</td></tr>
         <tr><th><span class="sw run"></span>Run (setback)</th><td id="ro-run" class="big">—</td><td class="sub">How far along the pipe the 2nd fitting sits.</td></tr>
         <tr id="ro-true-row"><th><span class="sw tru"></span>True offset</th><td id="ro-true" class="big">—</td><td class="sub">Straight-line shift: √(rise² + roll²).</td></tr>
@@ -480,6 +443,64 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   </section>
 
   <section data-sec="math">
+    <div class="sec-head"><h2>Unit converter</h2><small>Type a number</small></div>
+    <div class="seg" id="c-kind" role="group" aria-label="What to convert">
+      <button type="button" data-kind="volume" aria-pressed="true">Volume</button>
+      <button type="button" data-kind="pressure" aria-pressed="false">Pressure</button>
+      <button type="button" data-kind="length" aria-pressed="false">Length</button>
+      <button type="button" data-kind="flow" aria-pressed="false">Flow</button>
+      <button type="button" data-kind="temp" aria-pressed="false">Temp</button>
+    </div>
+    <div class="calc">
+      <label for="c-val">Amount<input id="c-val" type="number" inputmode="decimal" value="1" step="any"></label>
+      <label for="c-from">From<select id="c-from"></select></label>
+    </div>
+    <div class="x"><table class="t num"><tbody id="c-out" aria-live="polite"></tbody></table></div>
+  </section>
+
+  <section data-sec="math">
+    <div class="sec-head"><h2>Pressure vs. height</h2><small>1 ft = 0.433 psi · 1 psi = 2.31 ft</small></div>
+    <div class="calc">
+      <label for="h-ft">Height (ft)<input id="h-ft" type="number" inputmode="decimal" value="20" step="any"></label>
+      <div class="ans" id="h-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <svg id="psi-chart" viewBox="0 0 400 190" role="img" aria-label="Line chart: static water pressure lost rises 0.433 psi per foot of height, from 0 psi at 0 feet to 43.3 psi at 100 feet."></svg>
+    <p class="note">About 4.3 psi lost per floor (10 ft), before friction.</p>
+  </section>
+
+  <section data-sec="math">
+    <div class="sec-head"><h2>Water in the pipe</h2><small>From actual ID</small></div>
+    <div class="calc">
+      <label for="p-size">Pipe<select id="p-size"></select></label>
+      <label for="p-len">Length (ft)<input id="p-len" type="number" inputmode="decimal" value="50" step="any"></label>
+      <div class="ans" id="p-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <div class="x"><table class="t num" id="pipe-tbl">
+      <thead><tr><th>Pipe</th><th>ID"</th><th>Gal/ft</th><th>Gal/100'</th><th>Lb/100'</th></tr></thead><tbody></tbody>
+    </table></div>
+    <p class="note">Copper L, PEX CTS SDR-9, PVC Sch 40. Hot-water wait: gallons in line ÷ gpm = minutes.</p>
+  </section>
+
+  <section data-sec="math">
+    <div class="sec-head"><h2>Drain fall</h2><small>Run × slope</small></div>
+    <div class="calc">
+      <label for="s-run">Run (ft)<input id="s-run" type="number" inputmode="decimal" value="30" step="any"></label>
+      <label for="s-pitch">Slope<select id="s-pitch">
+        <option value="0.0625">¹⁄₁₆" / ft</option><option value="0.125">⅛" / ft</option>
+        <option value="0.25" selected>¼" / ft</option><option value="0.5">½" / ft</option></select></label>
+      <div class="ans" id="s-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <div class="x"><table class="t num">
+      <thead><tr><th>Slope</th><th>%</th><th>10 ft</th><th>50 ft</th></tr></thead>
+      <tbody>
+        <tr><td>¹⁄₁₆" / ft</td><td>0.52</td><td>⅝"</td><td>3⅛"</td></tr>
+        <tr><td>⅛" / ft</td><td>1.04</td><td>1¼"</td><td>6¼"</td></tr>
+        <tr><td>¼" / ft</td><td>2.08</td><td>2½"</td><td>12½"</td></tr>
+        <tr><td>½" / ft</td><td>4.17</td><td>5"</td><td>25"</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="math">
     <div class="sec-head"><h2>Quick numbers</h2><small>Memorize</small></div>
     <div class="x"><table class="t">
       <tbody>
@@ -506,7 +527,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <tbody id="dfu-rows"></tbody></table></div>
     <div class="x"><table class="t ro-out">
       <tbody>
-        <tr class="hit"><th>Total</th><td id="dfu-total" class="big">0 DFU</td><td class="sub" id="dfu-wc">Add fixtures above.</td></tr>
+        <tr class="hit" aria-live="polite" aria-atomic="true"><th>Total</th><td id="dfu-total" class="big">0 DFU</td><td class="sub" id="dfu-wc">Add fixtures above.</td></tr>
         <tr><th>Horizontal branch</th><td id="dfu-branch" class="big">—</td><td class="sub">Smallest size for this load (Table 710.1(2)).</td></tr>
         <tr><th>Building drain @ ¼"/ft</th><td id="dfu-bd4" class="big">—</td><td class="sub">Table 710.1(1).</td></tr>
         <tr><th>Building drain @ ⅛"/ft</th><td id="dfu-bd8" class="big">—</td><td class="sub">3" and up only at ⅛".</td></tr>
@@ -521,7 +542,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <tbody>
         <tr><td>Lavatory</td><td class="n">1</td><td class="n">1¼"</td></tr>
         <tr><td>Bathtub (with or without shower head)</td><td class="n">2</td><td class="n">1½"</td></tr>
-        <tr><td>Shower (≤5.7 gpm total)</td><td class="n">2</td><td class="n">1½"</td></tr>
+        <tr><td>Shower (≤5.7 gpm total)</td><td class="n">2</td><td class="n">1½" IPC<br><b>2" IRC</b></td></tr>
         <tr><td>Shower (5.7–12.3 gpm)</td><td class="n">3</td><td class="n">2"</td></tr>
         <tr><td>Kitchen sink (with disposer, dishwasher or both)</td><td class="n">2</td><td class="n">1½"</td></tr>
         <tr><td>Dishwasher on its own drain</td><td class="n">2</td><td class="n">1½"</td></tr>
@@ -533,7 +554,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><td><b>Bathroom group</b>, 1.6 gpf toilet</td><td class="n">5</td><td>—</td></tr>
         <tr><td>Bathroom group, over 1.6 gpf</td><td class="n">6</td><td>—</td></tr>
       </tbody></table></div>
-    <p class="note"><b>Bathroom group</b> = toilet + lav + tub or shower on the same floor level. Add extra fixtures (second lav, bidet) separately. The IRC also has half-bath, kitchen and laundry groups. Unlisted fixtures go by trap size: 1¼" = 1, 1½" = 2, 2" = 3, 3" = 5, 4" = 6.</p>
+    <p class="note"><b>Bathroom group</b> = toilet + lav + tub or shower on the same floor level. Add extra fixtures (second lav, bidet) separately. The IRC also has half-bath, kitchen and laundry groups. <b>Houses: IRC Table P3201.7 wants a 2" shower trap.</b> Unlisted fixtures go by trap size: 1¼" = 1, 1½" = 2, 2" = 3, 3" = 5, 4" = 6.</p>
   </section>
 
   <section data-sec="sizing">
@@ -566,18 +587,18 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   </section>
 
   <section data-sec="sizing" data-kw="vent sizing roof terminal frost">
-    <div class="sec-head"><h2>Vents</h2><small>IPC ch. 9 + Utah</small></div>
+    <div class="sec-head"><h2>Vents</h2><small>IRC P31 · IPC ch. 9 · Utah</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Vent size</th><td>At least ½ the drain it serves, never under 1¼". Over 40 ft developed length: go up one size.</td></tr>
         <tr><th>Trap to vent</th><td>1¼" 5 ft · 1½" 6 ft · 2" 8 ft · 3" 12 ft · 4" 16 ft (Drains &amp; traps, Code rules tab).</td></tr>
-        <tr><th><span class="ut">UT</span>Through roof</th><td>At least <b>12"</b> above the roof (Utah), and at least 6" above expected snow depth (IRC P3103.1.1). Deep-snow areas like Park City: confirm the height locally.</td></tr>
-        <tr><th><span class="ut">UT</span>Through wall</th><td>Ends at least 12" out from the wall with the elbow pointing down (Utah IPC 903.7).</td></tr>
-        <tr><th>Near openings</th><td>Not directly under a door, openable window or air intake. Within 10 ft of one, end at least 2 ft above its top.</td></tr>
+        <tr><th>Through roof</th><td><b>Houses (IRC P3103.1.1):</b> at least 6" above the roof or 6" above expected snow, whichever is greater. <span class="ut">UT</span> Other buildings (Utah IPC 903.1.1): <b>12"</b>. Running 12" meets both. Deep-snow areas like Park City: confirm locally.</td></tr>
+        <tr><th><span class="ut">UT</span>Through wall</th><td>Ends at least 12" out from the wall with the elbow pointing down (Utah IRC P3101.4 / IPC 903.7).</td></tr>
+        <tr><th>Near openings</th><td>Not directly under a door, openable window or air intake. Within 10 ft of one, end at least 2 ft above its top (IRC P3103.5; IPC 903.5 says 3 ft).</td></tr>
         <tr><th>Wall vents</th><td>Also ≥10 ft from the lot line, ≥10 ft above grade, and never under a soffit-vented overhang.</td></tr>
-        <tr><th>Frost closure</th><td>Where the winter design temp is 0°F or colder: vent through the roof at least <b>3"</b>, increased at least 1 ft inside the heated space or below the roof. Ask your inspector what your area requires.</td></tr>
+        <tr><th>Frost closure</th><td>Where the winter design temp is 0°F or colder: vent through the roof at least <b>3"</b>, increased at least 1 ft inside the heated space or below the roof. Ask your inspector what your area requires. <span class="why">WHY</span> Warm, wet vent air frosts at a cold vent top and can seal a small pipe.</td></tr>
         <tr><th>Roof used by people</th><td>At least 7 ft above a roof used for recreation or gatherings.</td></tr>
-        <tr><th><span class="ut">UT</span>Low dry vents</th><td>Horizontal dry vents below the flood rim are allowed for floor drains, floor sinks and tubs, with a wall cleanout (Utah IPC 905.4).</td></tr>
+        <tr><th><span class="ut">UT</span>Low dry vents</th><td>Houses (Utah IRC P3104.4): floor drains and floor sinks only, below grade, with a wall cleanout in the vertical vent. Utah IPC 905.4 also allows tubs.</td></tr>
       </tbody></table></div>
   </section>
 
@@ -629,8 +650,8 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><th>Hot water limit</th><td>Shower valves ASSE 1016, limit stop ≤120°F. Tub fillers ASSE 1070, ≤120°F.</td></tr>
         <tr><th><span class="ut">UT</span>Hose bibbs</th><td>Frost-proof, self-draining, non-removable backflow device.</td></tr>
         <tr><th><span class="ut">UT</span>Backflow</th><td>Assemblies tested at install and yearly by a certified tester.</td></tr>
-        <tr><th>Nail plates</th><td>Plumbing pipe &lt;<b>1¼"</b> from the framing edge: 16 ga plate, extending 2" past sole and top plates (IPC 305).</td></tr>
-        <tr><th>Gas shield plates</th><td>Gas pipe &lt;<b>1½"</b> from the edge: 16 ga plate, extending <b>4"</b> past sole and top plates and to each side of the member (IFGC 404.7).</td></tr>
+        <tr><th>Nail plates</th><td>Plumbing pipe &lt;<b>1¼"</b> from the framing edge: 16 ga plate, extending 2" past sole and top plates (IPC 305). <span class="why">WHY</span> Drywall screws and trim nails reach about that deep.</td></tr>
+        <tr><th>Gas shield plates</th><td>Gas pipe &lt;<b>1½"</b> from the edge: steel plate at least <b>¹⁄₁₆"</b> thick (heavier than 16 ga), extending <b>4"</b> past sole and top plates and to each side of the member (IRC G2415.7 / IFGC 404.7).</td></tr>
       </tbody></table></div>
   </section>
 
@@ -767,13 +788,13 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   </section>
 
   <section data-sec="gas">
-    <div class="sec-head"><h2>Gas piping</h2><small>2024 IFGC</small></div>
+    <div class="sec-head"><h2>Gas piping</h2><small>Houses: IRC ch. 24 · else IFGC</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Test</th><td>1.5× working, ≥3 psi, air/N₂/CO₂ (never O₂). Check city gauge and time.</td></tr>
         <tr><th>Shutoff</th><td>Each appliance: same room, within 6 ft, upstream of connector.</td></tr>
         <tr><th>Drip leg</th><td>Tee + capped nipple (3" typical) after the shutoff, as close to the inlet as practical. Furnace, boiler, water heater. Not range, dryer, grill.</td></tr>
-        <tr><th>CSST bond</th><td>6 AWG Cu min, ≤75 ft. Listed bonding clamp on rigid pipe or a brass CSST fitting, downstream of the meter. Never on the CSST tubing, jacketed or stripped. Follow the CSST maker's instructions.</td></tr>
+        <tr><th>CSST bond</th><td>6 AWG Cu min, ≤75 ft. Listed bonding clamp on rigid pipe or a brass CSST fitting, downstream of the meter. Never on the CSST tubing, jacketed or stripped. Follow the CSST maker's instructions. <span class="why">WHY</span> A nearby lightning strike can arc through the thin wall; the bond gives the current an easier path.</td></tr>
         <tr><th>Sizing</th><td>Longest-length method: size every section by the run to the farthest appliance (IFGC 402.4).</td></tr>
       </tbody></table></div>
   </section>
@@ -782,13 +803,13 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     <div class="sec-head"><h2>Water heaters</h2><small>IPC 504 + Utah</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>T&amp;P line</th><td>Full valve-outlet size, one line per valve. No valves, tees, traps or threaded end. Drains by gravity with no sags. Ends in plain view through an air gap, ≤6" above the floor or receptor; never piped straight to a drain. Pipe rated for the temperature and pressure. <span class="ut">UT</span> ≤180° total bends (confirm in current text).</td></tr>
-        <tr><th>Drain pan</th><td>1½" deep, ¾" drain to an indirect receptor or outdoors 6"–24" above grade. <span class="ut">UT</span> 2026 change: pan is for emergency discharge and may drain to a trapped, vented, primed waste line. Confirm with your inspector.</td></tr>
+        <tr><th>T&amp;P line</th><td>Full valve-outlet size, one line per valve. No valves, tees, traps or threaded end. Drains by gravity with no sags. Ends in plain view through an air gap, ≤6" above the floor or receptor; never piped straight to a drain. Pipe rated for the temperature and pressure. <span class="ut">UT</span> ≤180° total bends (Utah IRC P2804.6.1 #15).</td></tr>
+        <tr><th>Drain pan</th><td>1½" deep, ¾" drain to an indirect receptor or outdoors 6"–24" above grade. <span class="ut">UT</span> If the code official permits, the pan may drain to a waste stack or branch: its own trap and vent (no vent connection) plus a trap primer, ASSE 1072 device or deep-seal trap. Heater discharge only (Utah IRC P2801.6.2–.3).</td></tr>
         <tr><th><span class="ut">UT</span>Seismic straps</th><td>Upper and lower third of tank; lower strap ≥4" above controls.</td></tr>
         <tr><th>Expansion tank</th><td>Required on a closed system.</td></tr>
         <tr><th>Combustion air</th><td>Indoor: 50 ft³ of room per 1,000 BTU/h. To borrow from another room: two openings, each 1 in² per 1,000 BTU/h (100 in² min), one within 12" of the ceiling and one within 12" of the floor.</td></tr>
       </tbody></table></div>
-    <p class="note">Utah heater amendments from 15A-3-305 (2019); HB 65 (2026) changed some rules.</p>
+    <p class="note">Utah heater amendments: 15A-3-205 (houses, IRC) and 15A-3-305 (IPC), in place since 2019.</p>
   </section>
 
   <section data-sec="gas" data-kw="altitude derate btu cfh elevation gas load">
@@ -802,11 +823,11 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     </div>
     <div class="x"><table class="t ro-out">
       <tbody>
-        <tr class="hit"><th>Gas flow</th><td id="g-cfh" class="big">—</td><td class="sub">Use the nameplate input to size the pipe.</td></tr>
+        <tr class="hit" aria-live="polite" aria-atomic="true"><th>Gas flow</th><td id="g-cfh" class="big">—</td><td class="sub">Use the nameplate input to size the pipe.</td></tr>
         <tr><th>Altitude derate</th><td id="g-der" class="big">—</td><td class="sub">4% per 1,000 ft of elevation, applied above 2,000 ft.</td></tr>
         <tr><th>Derated input</th><td id="g-out" class="big">—</td><td class="sub">Only if the appliance isn't already set up for altitude.</td></tr>
       </tbody></table></div>
-    <p class="note"><b>The manufacturer's altitude instructions win.</b> Many appliances are listed for high altitude or use an orifice or setting change. Add up every appliance's CFH to size the gas line.</p>
+    <p class="note"><span class="why">WHY</span> Thin air holds less oxygen per ft³, so full gas input can't burn clean (soot, carbon monoxide). <b>The manufacturer's altitude instructions win.</b> Many appliances are listed for high altitude or use an orifice or setting change. Add up every appliance's CFH to size the gas line.</p>
   </section>
 
   <section data-sec="gas" data-kw="recovery tankless gpm gph first hour sizing water heater">
@@ -823,7 +844,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     </div>
     <div class="x"><table class="t ro-out">
       <tbody>
-        <tr class="hit"><th id="wh-lbl">Recovery</th><td id="wh-ans" class="big">—</td><td class="sub" id="wh-f">gph = BTU/h × eff ÷ (8.34 × rise)</td></tr>
+        <tr class="hit" aria-live="polite" aria-atomic="true"><th id="wh-lbl">Recovery</th><td id="wh-ans" class="big">—</td><td class="sub" id="wh-f">gph = BTU/h × eff ÷ (8.34 × rise)</td></tr>
         <tr><th>Temp rise</th><td id="wh-rise" class="big">—</td><td class="sub">Set point − incoming.</td></tr>
       </tbody></table></div>
     <p class="note">Plan on <b>40°F</b> incoming water in a Utah winter (Rheem's northern-state guidance). Tank sizing goes by <b>first-hour rating</b> (gallons it can deliver in the busiest hour, on the label), not just tank size. Tankless: add up the gpm of fixtures that run at the same time.</p>
@@ -836,6 +857,20 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><th>Hardness</th><td>Salt Lake City treatment plants about <b>8–12 grains/gal</b>; some wells over 30. Jordan Valley sources average 10–12. Anything over 7 counts as hard.</td></tr>
         <tr><th>What it means</th><td>Scale in tanks and tankless heat exchangers, ticking and rumbling heaters. Flush tanks yearly; descale tankless per the maker. If a softener goes in, check the anode more often.</td></tr>
       </tbody></table></div>
+  </section>
+
+  <section data-sec="trim" data-kw="trim out shower tub valve install steps flush limit stop 120 hot cold reversed escutcheon spout shower rise">
+    <div class="sec-head"><h2>Trim out a shower / tub valve</h2><small>Do it in this order</small></div>
+    <ol class="chk">
+      <li><span><b>Flush the lines first.</b> Run water through the valve with the test cap or flush plug off, before the cartridge goes in. Rough-in debris is the #1 cartridge killer.</span></li>
+      <li><span><b>Check wall depth.</b> Pull the plaster guard and confirm the finished wall is inside the valve's depth range. Too deep needs the maker's extension kit; too shallow and the handle won't seat.</span></li>
+      <li><span><b>Cartridge in, hot on the left.</b> Follow the trim's sheet for orientation and the retaining clip or bonnet nut.</span></li>
+      <li><span><b>Set the limit stop.</b> Run full hot, put a thermometer in the stream, set the stop so it tops out at <b>120°F or less</b> (ASSE 1016 / 1070). <span class="why">WHY</span> The stop limits how far the handle turns, not the temperature. In January the cold line runs about 40°F and cools the mix; in July it's warmer, so the same stop runs hotter. Set a few degrees under 120°F, and recheck if you set it in winter.</span></li>
+      <li><span><b>Hot and cold backwards?</b> Fix it at the cartridge, not the handle. Moen 1222: rotate the stem 180°. Others: follow the maker's reversal steps. <span class="why">WHY</span> Flipping just the handle leaves the limit stop on the wrong side, so it no longer caps the hot.</span></li>
+      <li><span><b>Tub spout.</b> Match the stub-out to the spout (slip-on vs ½" IPS threaded, length per its sheet). Delta: spout 8"–18" below the valve or you get <b>shower rise</b> (water creeps out the head). Most makers want metal, not PEX, to a diverter spout.</span></li>
+      <li><span><b>Escutcheon.</b> Gasket or caulk per the sheet. Many makers say leave the bottom unsealed so any leak shows instead of rotting the wall.</span></li>
+      <li><span><b>Test.</b> Every function, every diverter position, look behind the escutcheon for drips, then a flush-test: someone flushes a toilet while you feel the temperature.</span></li>
+    </ol>
   </section>
 
   <section data-sec="trim" data-kw="trim valve match identify which brand moen delta kohler pfister grohe american standard rough body">
@@ -858,27 +893,13 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><td><b>Moen M-CORE</b><div class="sub">U-series rough, M-PACT system</div></td><td>M-CORE <b>2-series</b> (temp only) or <b>3-series</b> (volume + temp). Upgrade 2 → 3 without opening the wall: new handle, escutcheon, cartridge.</td><td class="n">1212 (2-ser)<br>1213 (3-ser)<div class="sub">with trim</div></td></tr>
         <tr><td><b>Moen Posi-Temp</b><div class="sub">since 1985</div></td><td>Posi-Temp trim only. Rotate handle = temperature; no volume control.</td><td class="n">1222<div class="sub">in valve</div></td></tr>
         <tr><td><b>Moen Moentrol</b><div class="sub">since 1970s</div></td><td>Moentrol trim only. Push/pull = volume, rotate = temp.</td><td class="n">1225<div class="sub">in valve</div></td></tr>
-        <tr><td><b>Delta MultiChoice Universal</b><div class="sub">R10000 series</div></td><td><b>13/14</b> series (pressure balance), <b>17</b> series (separate volume + temp), <b>17T</b> (thermostatic). Each trim comes with its cartridge. With stops: R10000-UNWS. Thin-wall/fiberglass: UNWSBXT.</td><td class="n">RP46074<br>RP46463<br>RP47201<div class="sub">with trim</div></td></tr>
+        <tr><td><b>Delta MultiChoice Universal</b><div class="sub">R10000 series</div></td><td><b>13/14</b> series (pressure balance), <b>17</b> series (separate volume + temp), <b>17T</b> (thermostatic). Each trim comes with its cartridge. With stops: R10000-UNWS. Thin-wall/fiberglass: UNWSBXT.</td><td class="n">RP46074 (13/14)<br>RP46463 (17)<br>RP47201 (17T)<div class="sub">with trim</div></td></tr>
         <tr><td><b>Kohler Rite-Temp</b><div class="sub">K-8304 valve + cartridge kit</div></td><td>Kohler Rite-Temp trims. ½" universal NPT/sweat, stops built in. Adjustable high-limit stop.</td><td class="sub">In the valve kit</td></tr>
         <tr><td><b>Pfister 0X8</b><div class="sub">0X8-310A</div></td><td>Pfister trims made for the 0X8 valve (trim sold separately).</td><td class="sub">Pressure balance, in valve</td></tr>
         <tr><td><b>American Standard Flash</b><div class="sub">RU101 rough</div></td><td>American Standard trims for the Flash valve. One cartridge = ceramic mixing disc + balancing spool.</td><td class="sub">In valve</td></tr>
         <tr><td><b>GROHE GrohFlex</b><div class="sub">Universal rough-in box 35026000</div></td><td>GrohFlex pressure-balance or thermostatic kits. The control module ships with the trim. Stops and a flushing plug built in.</td><td class="sub">With trim</td></tr>
       </tbody></table></div>
-    <p class="note">Part numbers checked on maker and supplier pages, Oct 2026. Models change; the box and the maker's site win. Phone numbers: <b>Calls &amp; safety → Support lines</b>.</p>
-  </section>
-
-  <section data-sec="trim" data-kw="trim out shower tub valve install steps flush limit stop 120 hot cold reversed escutcheon spout shower rise">
-    <div class="sec-head"><h2>Trim out a shower / tub valve</h2><small>Do it in this order</small></div>
-    <ol class="chk">
-      <li><span><b>Flush the lines first.</b> Run water through the valve with the test cap or flush plug off, before the cartridge goes in. Rough-in debris is the #1 cartridge killer.</span></li>
-      <li><span><b>Check wall depth.</b> Pull the plaster guard and confirm the finished wall is inside the valve's depth range. Too deep needs the maker's extension kit; too shallow and the handle won't seat.</span></li>
-      <li><span><b>Cartridge in, hot on the left.</b> Follow the trim's sheet for orientation and the retaining clip or bonnet nut.</span></li>
-      <li><span><b>Set the limit stop.</b> Run full hot, put a thermometer in the stream, set the stop so it tops out at <b>120°F or less</b> (ASSE 1016 / 1070). <span class="why">WHY</span> Utah winters change incoming water temp, so the heater set point matters too.</span></li>
-      <li><span><b>Hot and cold backwards?</b> Fix it at the cartridge, not the handle. Moen 1222: rotate the stem 180°. Others: follow the maker's reversal steps.</span></li>
-      <li><span><b>Tub spout.</b> Match the stub-out to the spout (slip-on vs ½" IPS threaded, length per its sheet). Delta: spout 8"–18" below the valve or you get <b>shower rise</b> (water creeps out the head). Most makers want metal, not PEX, to a diverter spout.</span></li>
-      <li><span><b>Escutcheon.</b> Gasket or caulk per the sheet. Many makers say leave the bottom unsealed so any leak shows instead of rotting the wall.</span></li>
-      <li><span><b>Test.</b> Every function, every diverter position, look behind the escutcheon for drips, then a flush-test: someone flushes a toilet while you feel the temperature.</span></li>
-    </ol>
+    <p class="note">Part numbers checked on maker and supplier pages, Oct 2026. Models change; the box and the maker's site win. Phone numbers: <b>Calls → Phone numbers</b>.</p>
   </section>
 
   <section data-sec="trim" data-kw="finish trim toilet lav faucet kitchen disposer dishwasher knockout angle stop supply wax ring closet bolts high loop air gap">
@@ -888,7 +909,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><th>Angle stops</th><td>½" inlet (sweat, CPEX, compression) to <b>⅜" OD compression</b> out. Toilet supplies end in a ⅞" ballcock nut.</td></tr>
         <tr><th>Toilet</th><td>Measure rough first (12" typical). Flange on top of the finished floor. Snug closet bolts side to side, a little at a time; over-torque cracks china. Ask the builder whether they want the base caulked.</td></tr>
         <tr><th>Disposer + dishwasher</th><td><b>Knock out the dishwasher plug</b> inside the disposer inlet before hooking up, or the dishwasher won't drain. Fish the plug out.</td></tr>
-        <tr><th>Dishwasher drain</th><td>High loop to the underside of the counter or an air gap, whichever your code and inspector require.</td></tr>
+        <tr><th>Dishwasher drain</th><td>High loop to the underside of the counter or an air gap, whichever your code and inspector require. <span class="why">WHY</span> It keeps dirty sink water from siphoning back into the dishwasher.</td></tr>
         <tr><th>Lav / sink traps</th><td>Slip joints stay accessible. Trap no bigger than the drain it empties into.</td></tr>
         <tr><th>Before you leave</th><td>Aerators off and flushed, then back on. Check every stop and supply for weeps after 10 minutes. Leave the install sheets for the owner (SLC wants them at final).</td></tr>
       </tbody></table></div>
@@ -905,7 +926,8 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <tbody>
         <tr><th>The trap</th><td>Holds 2"–4" of water that blocks sewer gas from the house.</td></tr>
         <tr><th>The problem</th><td>Water falling down a drain pulls air behind it like a plunger. With no air path, that suction <b>siphons the trap dry</b>. Air shoved ahead of a big slug can also <b>blow the seal out</b>.</td></tr>
-        <tr><th>The fix</th><td>A vent lets air in and out right near the trap so pressure stays even. That's why trap-to-vent distance is limited: too far and the pipe can run full and siphon before air arrives.</td></tr>
+        <tr><th>The fix</th><td>A vent lets air in and out right near the trap so pressure stays even.</td></tr>
+        <tr><th><span class="why">WHY</span>Distance limit</th><td>At ¼"/ft the max is pipe size × 4 ft (1½" → 6 ft, 2" → 8 ft, 3" → 12 ft). Farther than that, the arm falls more than one pipe diameter, so the vent opening ends up below the trap weir. The arm becomes an S-trap and siphons itself dry.</td></tr>
         <tr><th>Gurgle test</th><td>A drain that gurgles or a trap that keeps losing water usually means a vent problem.</td></tr>
       </tbody></table></div>
   </section>
@@ -917,7 +939,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><th>Goal</th><td>Water must move fast enough to carry solids, about <b>2 ft/s</b> (often called scouring speed).</td></tr>
         <tr><th>Big pipe</th><td>Flows faster at the same slope: more water, less rubbing on the walls for its size. So 3" and up reach scouring speed at ⅛"/ft.</td></tr>
         <tr><th>Small pipe</th><td>More friction for the water it holds, so it needs the extra push of ¼"/ft.</td></tr>
-        <tr><th>Too steep?</th><td>Code only sets minimums. Very steep runs can let water outrun solids, so most plumbers stay near the minimum.</td></tr>
+        <tr><th>Too steep?</th><td>Code sets no maximum. You'll hear "water outruns solids"; the bigger real-world limit is your fall budget: every extra ⅛"/ft costs depth over a long run.</td></tr>
       </tbody></table></div>
   </section>
 
@@ -963,6 +985,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><th>The catch</th><td>A PRV, check valve or backflow device blocks that path. One maker's example: 80 psi at 74°F climbs to about 310 psi at 90°F with nowhere to go.</td></tr>
         <tr><th>Symptoms</th><td>T&amp;P dripping after heating, banging, bulged or leaking tank, running toilets.</td></tr>
         <tr><th>Fix</th><td>An expansion tank sized for the system, with its air charge set to the house pressure.</td></tr>
+        <tr><th><span class="why">WHY</span>The aha</th><td>Water barely compresses, so a cup of expansion has nowhere to go and pressure spikes. The tank's air cushion squeezes instead. Set the air charge with the water off, or the bladder starts out already full.</td></tr>
       </tbody></table></div>
   </section>
 
@@ -1013,8 +1036,9 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <tbody>
         <tr><th>Code idea</th><td>Water and drain pipe can't be put where it will freeze unless it's protected (IPC 305.4).</td></tr>
         <tr><th>Outside walls</th><td>Keep supply lines out of exterior walls, unheated attics and garages when you can. If you can't, the pipe goes on the <b>warm side</b> of the insulation.</td></tr>
+        <tr><th><span class="why">WHY</span>Why pipes split</th><td>Ice takes about 9% more room. The split usually happens between the ice plug and a closed valve, where trapped water has nowhere to go.</td></tr>
         <tr><th>Water service</th><td>Below frost depth: SLC designs to 30". Your water provider sets the cover (some ask 42").</td></tr>
-        <tr><th>Hose bibbs</th><td>Frost-free, pitched so it drains outside. A hose left on in winter traps water and can split it inside the wall.</td></tr>
+        <tr><th>Hose bibbs</th><td>Frost-free: the valve seat sits inside the warm wall and the barrel is pitched to drain outside. A hose left on holds water in the barrel and can split it inside the wall.</td></tr>
         <tr><th>Vents</th><td>Frost closure: in very cold areas the roof vent goes up in size (see Vents).</td></tr>
         <tr><th>Winter tests</th><td>Water tests can freeze. Drain them right after inspection, or use Utah's air or vacuum test options.</td></tr>
       </tbody></table></div>
@@ -1034,7 +1058,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   </section>
 
   <section data-sec="support" data-kw="gas smell odor rotten egg leak 911 injury poison fumes power line">
-    <div class="sec-head"><h2>Emergency &amp; safety</h2><small>Tap a number to copy</small></div>
+    <div class="sec-head"><h2>Emergency &amp; safety</h2><small>Tap to call · hold to copy</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Emergency</th><td><span class="pn">911</span><div class="sub">Fire, injury, or a gas leak you can smell.</div></td></tr>
@@ -1053,7 +1077,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     <div class="x"><table class="t">
       <thead><tr><th>Brand</th><th>Phone</th><th>Hours · notes</th></tr></thead>
       <tbody>
-        <tr><td><b>Moen</b></td><td><span class="pn">1-800-289-6636</span><div class="sub">Pro: <span class="pn">1-877-663-6776</span></div></td><td class="sub">1-800-BUY-MOEN. Check moen.com for hours.</td></tr>
+        <tr><td><b>Moen</b></td><td><span class="pn">1-800-289-6636</span></td><td class="sub">1-800-BUY-MOEN. M–F 6a–5p</td></tr>
         <tr><td><b>Delta</b></td><td><span class="pn">1-800-345-3358</span></td><td class="sub">M–F 6a–4p · Sat 7a–4p</td></tr>
         <tr><td><b>Kohler</b> / Sterling</td><td><span class="pn">1-800-456-4537</span></td><td class="sub">M–F 7a–4p</td></tr>
         <tr><td><b>American Standard</b></td><td><span class="pn">1-855-815-0004</span><div class="sub">Trade: <span class="pn">1-800-442-1902</span></div></td><td class="sub">M–F 7a–4p (trade 6a–5p). Call or text.</td></tr>
@@ -1076,16 +1100,16 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><td><b>Rheem</b></td><td><span class="pn">1-800-432-8373</span></td><td class="sub">M–F 6a–6p</td></tr>
         <tr><td><b>A. O. Smith</b> / State</td><td><span class="pn">1-877-552-0010</span></td><td class="sub">M–F 6a–8p · Sat–Sun 7a–4p</td></tr>
         <tr><td><b>Navien</b></td><td><span class="pn">1-800-519-8794</span></td><td class="sub">Option 2 = contractor support. M–F 6a–6p · weekends 6a–2p</td></tr>
-        <tr><td><b>Rinnai</b></td><td><span class="pn">1-800-621-9419</span><div class="sub">Pro on-job: <span class="pn">1-844-319-1230</span></div></td><td class="sub">M–F 6a–6p</td></tr>
+        <tr><td><b>Rinnai</b></td><td><span class="pn">1-800-621-9419</span><div class="sub">Pro on-job: <span class="pn">1-844-319-1230</span></div></td><td class="sub">Top is customer care; pro line is the tech line. M–F 6a–6p</td></tr>
         <tr><td><b>Noritz</b></td><td><span class="pn">1-866-766-7489</span></td><td class="sub">Press 1 for tech</td></tr>
-        <tr><td><b>InSinkErator</b></td><td><span class="pn">1-800-558-5700</span></td><td class="sub">M–F 7a–6p</td></tr>
+        <tr><td><b>InSinkErator</b></td><td><span class="pn">1-800-558-5700</span></td><td class="sub">M–F 7a–6p · Sat–Sun 8a–5p</td></tr>
       </tbody></table></div>
   </section>
 
   <section data-sec="support" data-kw="pex press fitting push fitting backflow prv valve joist framing hole">
     <div class="sec-head"><h2>Pipe, fittings, valves, framing</h2><small>Tech support</small></div>
     <div class="x"><table class="t">
-      <thead><tr><th>Company</th><th>Phone</th><th>Notes</th></tr></thead>
+      <thead><tr><th>Company</th><th>Phone</th><th>Notes · hours MT</th></tr></thead>
       <tbody>
         <tr><td><b>Uponor</b> PEX</td><td><span class="pn">1-888-594-7726</span></td><td class="sub">Tech and customer service</td></tr>
         <tr><td><b>Viega</b></td><td><span class="pn">1-866-838-8714</span></td><td class="sub">Tech support (ProPress, PEX)</td></tr>
@@ -1097,7 +1121,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><td><b>Charlotte Pipe</b></td><td><span class="pn">1-800-438-6091</span></td><td class="sub">Main line, ask for tech</td></tr>
         <tr><td><b>NIBCO</b></td><td><span class="pn">1-888-446-4226</span></td><td class="sub">Technical services</td></tr>
         <tr><td><b>Weyerhaeuser</b> TJI</td><td><span class="pn">1-888-453-8358</span></td><td class="sub">Trus Joist tech support (hole questions)</td></tr>
-        <tr><td><b>Boise Cascade</b> BCI</td><td><span class="pn">1-800-232-0788</span></td><td class="sub">Or open a ticket at engsupport.bc.com</td></tr>
+        <tr><td><b>Boise Cascade</b> BCI</td><td><a href="https://engsupport.bc.com/hc/en-us" target="_blank" rel="noopener">Support portal ↗</a></td><td class="sub">Boise handles EWP questions by ticket</td></tr>
         <tr><td><b>LP SolidStart</b></td><td><span class="pn">1-888-707-2285</span><div class="sub">LP: <span class="pn">1-888-820-0325</span></div></td><td class="sub">I-joists bought on or after 8/1/2022: Pacific Woodtech (top number). Older stock and rim board: LP.</td></tr>
       </tbody></table></div>
     <p class="note"><b>Before you call:</b> photo the label or rating plate (model + serial), know the install date, and have the address. Hours are Mountain Time and can change; numbers checked Oct 2026.</p>
@@ -1204,7 +1228,7 @@ const LIB = {
     ["MTP-7050","Boise fire design & install","Fire-rated floors with BCI","https://cdn.mediavalet.com/usva/boisecascade/KdXGgwINOUuCin6X1-N1KQ/eKmyU1SRvEqBCPchReNFLw/Large/MTP-7050%20US%20Fire%20Design%20%26%20Install%20guide.pdf"],
     ["LP inst.","LP SolidStart installation","I-joist, LVL, LSL details","https://lpcorp.com/resources/product-literature/installation-instructions/ewp-installation-instructions"],
     ["ESR-1153","ICC-ES report: TJI","What inspectors reference","https://www.icc-es.org/wp-content/uploads/report-directory/ESR-1153.pdf"],
-    ["ESR-1305","ICC-ES report: LP I-joists","Includes web hole rules","https://lpcorp.com/resources/product-literature/code-reports-certificates/esr-1305"]
+    ["ESR-1305","ICC-ES report: LP I-joists","2021 issue; LP I-joists are now Pacific Woodtech, so confirm the current report at icc-es.org","https://lpcorp.com/resources/product-literature/code-reports-certificates/esr-1305"]
   ],
   code: [
     ["IPC 2024","International Plumbing Code","Utah's current code","https://codes.iccsafe.org/content/IPC2024P1"],
@@ -1216,13 +1240,12 @@ const LIB = {
   trim: [
     ["Moen","M-CORE vs Posi-Temp vs Moentrol","Which cartridge, which trim","https://solutions.moen.com/Article_Library/A_Comparison_of_M-Core%2C_PosiTemp_and_Moentrol_Valves%3F"],
     ["Moen","M-CORE 2 → 3 series upgrade","Same valve, new trim + 1213","https://solutions.moen.com/Article_Library/Can_I_Replace_an_M-Core_2_Series_with_a_3_Series%3F"],
-    ["Moen","M-CORE trim series","What 2, 3, 4 series do","https://www.moen.com/mcore"],
+    ["Moen","M-CORE 2 vs 3 series","Moen support article","https://solutions.moen.com/Article_Library/What_is_the_Difference_Between_a_M-Core_Valve_2_and_3_Series"],
     ["Delta","R10000 install sheet (M&I)","MultiChoice Universal rough","https://media.deltafaucet.com/MandI/50353%20Rev%20O.pdf"],
     ["Delta","R10000 spec sheet","Dimensions, depth range","https://media.deltafaucet.com/SpecSheet/DSP-B-R10000%20Rev%20L.pdf"],
     ["Delta","Find parts by model","Identify a faucet or valve","https://www.deltafaucet.com/service-parts/find-parts-and-identify-product"],
-    ["Delta","Install help + videos","Delta Help Center","https://support.deltafaucet.com/s/topic/0TO4Q000000ogmYWAQ/installation"],
     ["Kohler","Kohler support","Search a model for install guides","https://www.kohler.com/en/support"],
-    ["Kohler","K-8304 Rite-Temp install sheet","Distributor copy","https://s3.amazonaws.com/thegranitegroup/thegranitegroup/content/9961_InstallationSheet_K8304K.pdf"],
+    ["Kohler","K-8304-K Rite-Temp spec sheet","Official Kohler PDF","https://techcomm.kohler.com/techcomm/pdf/K-8304-K_spec_US-CA_Kohler_en.pdf"],
     ["Pfister","Pfister support","Install guides, parts, warranty","https://www.pfisterfaucets.com/support"],
     ["GROHE","GrohFlex universal rough-in","35026000 product page","https://www.grohe.us/products/universal-rough-in-box"],
     ["GROHE","35026000 install guide","PDF","https://lixil.cdn.celum.cloud/26479_35026000-installation-instructions_0_original.pdf"]
@@ -1235,7 +1258,7 @@ const LIB = {
   ]
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const linkRow = ([doc,t,n,u]) => `<tr data-search="${esc((doc+" "+t+" "+n).toLowerCase())}"><td class="k">${esc(doc)}</td><td><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)} ↗</a> <span class="sub">· ${esc(n)}</span></td></tr>`;
+const linkRow = ([doc,t,n,u]) => `<tr data-search="${esc((doc+" "+t+" "+n).toLowerCase())}"><th scope="row" class="k">${esc(doc)}</th><td><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)} ↗</a> <span class="sub">· ${esc(n)}</span></td></tr>`;
 for (const k of Object.keys(LIB)) document.getElementById("list-"+k).innerHTML = LIB[k].map(linkRow).join("");
 
 const GLOSS = [
@@ -1289,19 +1312,42 @@ const GLOSS = [
   ["Secondary water","Untreated irrigation water in its own pipes (PI). Never connected to drinking water."],
   ["Shower rise","Water coming out the shower head while the tub spout runs, often from a spout too far from the valve or PEX to a diverter spout."],
   ["Thermostatic valve","Shower valve that senses water temperature and mixes to hold it."],
-  ["Trim","Finish phase (\"finish\"), or the visible handle, plate and spout that go on a rough valve."]
+  ["Trim","Finish phase (\"finish\"), or the visible handle, plate and spout that go on a rough valve."],
+  ["Siphon","Flowing water pulling water along after it; how a trap gets sucked dry."],
+  ["Back-siphonage / back-pressure","Backflow caused by suction in the supply / by higher pressure downstream."],
+  ["Air gap","Open vertical space between an outlet and the flood rim. Water can't jump back up it."],
+  ["Flood level rim","Top edge of a fixture, where water would spill over."],
+  ["Head","Height of a water column; 1 ft = 0.433 psi."],
+  ["Drip leg","Sediment trap: capped tee and nipple before a gas appliance that catches dirt and scale."],
+  ["CSST","Corrugated stainless steel tubing: flexible, yellow-jacketed gas pipe."],
+  ["BTU/h · CFH","Heat input per hour · cubic feet of gas per hour."],
+  ["Derate","Turn an appliance's input down, usually for altitude."],
+  ["Diverter","Valve that sends water to the tub spout or the shower head."],
+  ["Hammer arrestor","Sealed air or piston cushion that soaks up water-hammer spikes."],
+  ["Upstream / downstream","Toward the water or gas source / toward the fixture or appliance."]
 ];
 GLOSS.sort((a,b) => a[0].localeCompare(b[0], undefined, {sensitivity:"base"}));
 document.getElementById("gloss").innerHTML = GLOSS.map(([t,d]) =>
   `<tr data-search="${esc((t+" "+d).toLowerCase())}"><th>${esc(t)}</th><td>${esc(d)}</td></tr>`).join("");
 
-/* tap to copy numbers */
-document.querySelectorAll(".pn").forEach(n => { n.tabIndex = 0; n.setAttribute("role","button"); n.setAttribute("aria-label","Copy " + n.textContent);
-  n.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); n.click(); } }); });
-document.addEventListener("click", async e => {
-  const n = e.target.closest(".pn"); if (!n) return;
-  try { await navigator.clipboard.writeText(n.textContent.trim()); n.classList.add("copied"); setTimeout(() => n.classList.remove("copied"), 1200); }
+/* phone numbers: tap to call on a phone, click to copy on a computer, press and hold to copy on a phone */
+const canCall = matchMedia("(pointer:coarse)").matches;
+const say = t => { const s = document.getElementById("sr-status"); s.textContent = ""; setTimeout(() => s.textContent = t, 30); };
+async function copyNum(n){
+  try { await navigator.clipboard.writeText(n.textContent.trim()); n.classList.add("copied"); setTimeout(() => n.classList.remove("copied"), 1200); say("Copied " + n.textContent.trim()); }
   catch(err){ const r = document.createRange(); r.selectNodeContents(n); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+}
+document.querySelectorAll(".pn").forEach(n => {
+  const digits = n.textContent.replace(/[^0-9]/g, "");
+  n.tabIndex = 0; n.setAttribute("role", canCall ? "link" : "button");
+  n.setAttribute("aria-label", (canCall ? "Call " : "Copy ") + n.textContent.trim());
+  n.dataset.tel = digits;
+  n.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); n.click(); } });
+  let hold = 0, held = false;
+  n.addEventListener("touchstart", () => { held = false; hold = setTimeout(() => { held = true; copyNum(n); }, 550); }, {passive:true});
+  ["touchend","touchmove","touchcancel"].forEach(ev => n.addEventListener(ev, () => clearTimeout(hold), {passive:true}));
+  n.addEventListener("contextmenu", e => { if (canCall) e.preventDefault(); });
+  n.addEventListener("click", () => { if (held){ held = false; return; } if (canCall) location.href = "tel:" + digits; else copyNum(n); });
 });
 
 /* navigation: group row (Rough-in, Trim…) + a sub-tab row for groups with more than one page. Search covers the whole book. */
@@ -1309,13 +1355,13 @@ const GROUPS = {
   rough: [["holes","Joist holes"],["field","Code rules"],["sizing","Sizing"],["materials","Materials"],["gas","Gas & heaters"]],
   trim:  [["trim","Trim & valves"]],
   math:  [["math","Field math"]],
-  utah:  [["local","Local"],["tests","Tests & calls"]],
-  calls: [["support","Support lines"],["safety","Safety"]],
+  utah:  [["local","Local"],["tests","Tests"]],
+  calls: [["support","Phone numbers"],["safety","Safety"]],
   learn: [["how","How it works"],["study","Flashcards"],["words","Glossary"],["career","License"],["code","Code links"]],
   mine:  [["mine","My files"]]
 };
 const groupOf = sec => Object.keys(GROUPS).find(g => GROUPS[g].some(([s]) => s === sec));
-let nav = {group:"all", sub:"all"};
+let nav = {group:"rough", sub:"all"};  /* first visit lands on Rough-in, not the 37,000px All view */
 try {
   const s = JSON.parse(localStorage.getItem("jpb-nav") || "null");
   if (s && (s.group === "all" || GROUPS[s.group])) nav = {group:s.group, sub: GROUPS[s.group] && GROUPS[s.group].some(([k]) => k === s.sub) ? s.sub : "all"};
@@ -1328,7 +1374,7 @@ function drawSubs(){
   subRow.dataset.group = nav.group;
   if (!list || list.length < 2){ subRow.hidden = true; subRow.innerHTML = ""; return; }
   subRow.hidden = false;
-  subRow.innerHTML = [["all","All " + document.querySelector(`.tabs [data-group="${nav.group}"]`).textContent], ...list]
+  subRow.innerHTML = [["all","All"], ...list]
     .map(([k,t]) => `<button type="button" data-sub="${k}" aria-pressed="${k === nav.sub}">${esc(t)}</button>`).join("");
 }
 const q = document.getElementById("q"), noHits = document.querySelector(".no-hits");
@@ -1355,7 +1401,7 @@ function apply(){
   document.querySelector(".tools").classList.toggle("searching", !!term);
   if (typeof roCalc === "function" && !document.getElementById("ro-3d").closest("section").hidden) roCalc();
   for (const on of document.querySelectorAll('.tabs [aria-pressed="true"], .subtabs [aria-pressed="true"]'))
-    if (on.scrollIntoView) on.scrollIntoView({inline:"nearest", block:"nearest"});
+    if (on.scrollIntoView && innerWidth < 760) on.scrollIntoView({inline:"nearest", block:"nearest"});
 }
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
   const g = b.dataset.group;
@@ -1370,6 +1416,28 @@ subRow.addEventListener("click", e => {
   saveNav(); apply(); window.scrollTo({top:0});
 });
 drawSubs();
+
+/* stacked-card tables on phones: label each cell with its column header */
+document.querySelectorAll("table.cards").forEach(t => {
+  const heads = [...t.querySelectorAll("thead th")].map(th => th.textContent.trim());
+  t.querySelectorAll("tbody tr").forEach(tr => [...tr.children].forEach((td, i) => { if (i > 0 && heads[i]) td.dataset.label = heads[i]; }));
+});
+
+/* header tucks away while scrolling down a long page, comes back on any scroll up (more screen for tables) */
+(() => {
+  const tools = document.querySelector(".tools"); let lastY = scrollY, ticking = false;
+  addEventListener("scroll", () => {
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(() => {
+      const y = scrollY, down = y > lastY + 4, up = y < lastY - 4;
+      const busy = tools.contains(document.activeElement) || document.querySelector(".ro-stage.big");
+      if (down && y > 300 && !busy) tools.classList.add("tuck");
+      else if (up || y < 300) tools.classList.remove("tuck");
+      if (down || up) lastY = y; ticking = false;
+    });
+  }, {passive:true});
+  tools.addEventListener("focusin", () => tools.classList.remove("tuck"));
+})();
 let qRaf = 0;
 q.addEventListener("input", () => { cancelAnimationFrame(qRaf); qRaf = requestAnimationFrame(apply); });
 
@@ -1379,7 +1447,7 @@ const val = id => parseFloat(document.getElementById(id).value);
 
 const UNITS = {
   volume:[["gal","gallons",1],["L","liters",0.264172],["in3","cubic inches",1/231],["ft3","cubic feet",7.48052],["qt","quarts",0.25],["mL","milliliters",0.000264172],["m3","cubic meters",264.172]],
-  pressure:[["psi","psi",1],["ftH2O","feet of water",0.433],["inH2O","inches of water",0.0361],["kPa","kilopascals",0.145038],["bar","bar",14.5038],["inHg","inches of mercury",0.491154]],
+  pressure:[["psi","psi",1],["ftH2O","feet of water",0.433527],["inH2O","inches of water",0.433527/12],["kPa","kilopascals",0.145038],["bar","bar",14.5038],["inHg","inches of mercury",0.491154]],
   length:[["in","inches",1],["ft","feet",12],["yd","yards",36],["mm","millimeters",1/25.4],["cm","centimeters",1/2.54],["m","meters",39.3701]],
   flow:[["gpm","gallons/min",1],["gph","gallons/hour",1/60],["Lpm","liters/min",0.264172],["cfm","cubic ft/min",7.48052],["Ls","liters/sec",15.8503]]
 };
@@ -1473,7 +1541,7 @@ document.querySelectorAll(".f16").forEach(s => {
 function readIn(id){
   const raw = $(id).value.trim(), w = parseFloat(raw), f = +$(id+"-f").value / 16;
   if (raw === "" && f === 0) return null;
-  if (raw !== "" && !isFinite(w)) return NaN;
+  if (raw !== "" && (!isFinite(w) || w < 0)) return NaN;
   return (raw === "" ? 0 : w) + f;
 }
 const both = x => `${toFrac16(x)}<small>${x.toFixed(3)} in</small>`;
@@ -1615,8 +1683,12 @@ function drawEmpty(msg){
 $("ro-big").addEventListener("click", () => {
   const st = document.querySelector(".ro-stage"), on = !st.classList.contains("big");
   st.classList.toggle("big", on); document.body.style.overflow = on ? "hidden" : "";
+  if (on){ st.setAttribute("role","dialog"); st.setAttribute("aria-modal","true"); st.setAttribute("aria-label","Offset diagram, enlarged"); }
+  else ["role","aria-modal","aria-label"].forEach(a => st.removeAttribute(a));
+  /* keep keyboard focus inside the enlarged view */
+  for (let n = st; n && n !== document.body; n = n.parentElement) for (const sib of n.parentElement.children) if (sib !== n) sib.inert = on;
   $("ro-big").setAttribute("aria-pressed", String(on)); $("ro-big").textContent = on ? "Close ✕" : "Enlarge ⤢";
-  roCalc();
+  $("ro-big").focus(); roCalc();
 });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && document.querySelector(".ro-stage.big")) $("ro-big").click(); });
 function setMode(m){
@@ -1641,13 +1713,17 @@ function roCalc(){
     out.forEach(id => $(id).textContent = "—");
     $("ro-cut").innerHTML = `<span class="warn">Use positive numbers.</span>`; drawEmpty("Enter positive measurements"); return;
   }
+  if ([r,l,t].some(v => v > 10000)){
+    out.forEach(id => $(id).textContent = "—");
+    $("ro-cut").innerHTML = `<span class="warn">Over 10,000": check your numbers.</span>`; drawEmpty("Numbers too large"); return;
+  }
   if (r === 0 && l === 0){ out.forEach(id => $(id).textContent = "—"); drawEmpty(roMode === "rolling" ? "Enter a rise and/or roll" : "Enter the offset"); return; }
   const rad = deg * Math.PI / 180, tru = Math.hypot(r, l), travel = tru / Math.sin(rad), run = tru / Math.tan(rad), cut = travel - 2*t;
   $("ro-true").innerHTML = both(tru);
   $("ro-travel").innerHTML = both(travel);
   $("ro-run").innerHTML = both(run);
   const ok = cut >= 1/32;
-  $("ro-cut").innerHTML = ok ? both(cut) + (t === 0 ? `<small class="warn">Take-off is 0, so this is center to center. Enter your fitting's take-off before you cut.</small>` : "") : `<span class="warn">Too short to cut: the take-offs use up the travel. Try shallower fittings (22½° or 11¼°) or check your numbers.</span>`;
+  $("ro-cut").innerHTML = ok ? both(cut) + (t === 0 ? `<small class="warn">Take-off is 0, so this is center to center. Enter your fitting's take-off before you cut.</small>` : "") : (t === 0 ? `<span class="warn">Offset too small to cut a piece. Check your numbers.</span>` : `<span class="warn">Too short to cut: the take-offs use up the travel. Try shallower fittings (22½° or 11¼°) or check your numbers.</span>`);
   drawViews(r, l, run, deg, ok, cut, t, travel, tru);
 }
 document.querySelectorAll("#ro-mode button").forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
@@ -1662,7 +1738,7 @@ document.getElementById("frac").innerHTML = fg;
 /* ---------- DFU counter ---------- */
 /* [name, DFU, toilet?, min trap inches] */
 const FIX = [
-  ["Bathroom group (1.6 gpf toilet + lav + tub/shower)",5,"wc",3],["Toilet 1.6 gpf (not in a group)",3,"wc",3],["Lavatory",1,"",1.25],["Bathtub",2,"",1.5],["Shower (≤5.7 gpm)",2,"",1.5],
+  ["Bathroom group (1.6 gpf toilet + lav + tub/shower)",5,"wc",3],["Toilet 1.6 gpf (not in a group)",3,"wc",3],["Lavatory",1,"",1.25],["Bathtub",2,"",1.5],["Shower (≤5.7 gpm)",2,"",2],
   ["Kitchen sink",2,"",1.5],["Dishwasher, own drain",2,"",1.5],["Clothes washer",2,"",2],["Laundry tray",2,"",1.5],["Floor drain",2,"",2],["Bar sink (IRC lists 1)",2,"",1.5]
 ];
 const BRANCH = [[1.5,3],[2,6],[2.5,12],[3,20],[4,160]];
@@ -1722,7 +1798,7 @@ gasCalc();
 /* ---------- water heater output ---------- */
 let whMode = "tank";
 function whCalc(){
-  let effIn = val("wh-eff"); if (effIn > 0 && effIn <= 1) effIn *= 100;  /* 0.8 typed = 80% */
+  let effIn = val("wh-eff"); if (effIn > 0 && effIn < 1) effIn *= 100;  /* 0.8 typed = 80% */
   const btu = val("wh-btu"), eff = effIn/100, rise = val("wh-set") - val("wh-in");
   const tank = whMode === "tank";
   $("wh-lbl").textContent = tank ? "Recovery" : "Max flow";
@@ -1761,10 +1837,10 @@ const CARDS = [
   ["Sizing","Max DFU on a 3\" horizontal branch?","20"],
   ["Sizing","Smallest building drain that can carry a toilet?","3\""],
   ["Sizing","Minimum vent size?","½ the drain diameter, never under 1¼\""],
-  ["Sizing","Utah: how high above the roof must a vent end?","12\", and above expected snow depth"],
+  ["Sizing","Roof vent height on a house?","6\" above the roof or expected snow, whichever is greater (IRC). Utah IPC: 12\". Run 12\" to meet both"],
   ["Tests","DWV water test?","10 ft of head for 15 min (IPC and 2021 IRC)"],
   ["Tests","Gas test (IFGC)?","1.5× working pressure, at least 3 psi, never oxygen"],
-  ["Tests","Utah: max air pressure on plastic DWV?","6 psi, 15 min max"],
+  ["Tests","Utah: air test on plastic DWV?","Only if water can't be used or would freeze: ≤6 psi, ≤15 min, stand clear, bleed slowly"],
   ["Supply","Static pressure that requires a PRV?","Over 80 psi"],
   ["Supply","When do you need an expansion tank?","When a PRV, check or backflow device closes the system"],
   ["Supply","Hot water limit at a shower valve?","120°F max (ASSE 1016 limit stop)"],
@@ -1793,7 +1869,7 @@ const CARDS = [
   ["Materials","Max lead in solder and flux?","0.2%"],
   ["Materials","CPVC ½–1\" cure before test above 60°F?","1 hour"],
   ["Materials","Max bored hole in a 2×4 bearing stud?","40% of 3½\" = 1.4\""],
-  ["Safety","Trench depth that needs shoring, shielding or sloping?","5 ft"],
+  ["Safety","Trench depth that needs shoring, shielding or sloping?","5 ft or more, and shallower if the competent person sees cave-in risk"],
   ["Safety","Trench ladder rule?","4 ft deep or more: ladder within 25 ft"],
   ["Safety","Residential fall protection height?","6 ft"],
   ["Safety","Report a serious injury to UOSH within?","8 hours"],
@@ -1809,13 +1885,31 @@ const CARDS = [
   ["Trim","Delta 13/14 series cartridge?","RP46074"],
   ["Trim","Delta MultiChoice universal rough valve?","R10000 (13/14, 17 or 17T trim)"],
   ["Trim","Delta tub spout distance below the valve?","8\"–18\" (beyond 18\": shower rise)"],
-  ["Trim","Max hot at a shower after setting the limit stop?","120°F"],
   ["Trim","Pressure balance vs thermostatic?","PB equalizes pressures; thermostatic senses temperature"],
   ["Trim","Disposer + new dishwasher: what first?","Knock out the dishwasher plug in the disposer"],
   ["Trim","Angle stop outlet size for a faucet?","⅜\" OD compression"],
   ["Utah","Utah house code since 7/1/2026?","2021 IRC + Utah amendments (not the 2024 IRC)"],
   ["Utah","Can secondary water connect to culinary with a valve?","Never: that's a cross-connection"],
-  ["Utah","Gas derate at Herriman (~5,000 ft)?","About 20%"]
+  ["Utah","Gas derate at Herriman (~5,000 ft)?","About 20% (5 × 4%), only if the appliance isn't already set up for altitude"],
+  ["How","Why is trap-to-vent distance limited?","Past it, the arm falls more than one pipe diameter, the vent opening drops below the weir, and the trap siphons (size × 4 ft at ¼\"/ft)"],
+  ["How","Why recheck a limit stop set in winter?","Warmer summer cold water makes the same stop run hotter"],
+  ["How","Why derate gas at altitude?","Less oxygen per ft³: full input burns dirty (soot, CO)"],
+  ["How","Why does a closed system need an expansion tank?","Water barely compresses; the tank's air cushion takes the expansion"],
+  ["How","Why are cold-climate roof vents upsized?","Frost from warm, wet vent air can seal a small pipe"],
+  ["How","Why pitch a frost-free hose bibb?","The seat is inside the warm wall; the outside barrel must drain"],
+  ["Safety","Trench under 5 ft: always OK unprotected?","No. Protect it if the competent person sees cave-in risk"],
+  ["Safety","You smell gas on the job. Do what?","Everyone out, no switches or flames, call from outside: Enbridge 1-800-767-1689 or 911"],
+  ["Holes","Can you notch or drill an I-joist flange?","Never. Web holes only, per the brand's chart"],
+  ["Holes","Max bored hole in a sawn floor joist?","⅓ of the depth, 2\" from the edges"],
+  ["Holes","Open-web truss in the way?","Never cut a chord or web without an engineer; run through the openings"],
+  ["Holes","Where do I-joist hole rules come from?","The brand and series printed on the web, and that maker's chart"],
+  ["License","Residential → journeyman upgrade?","2,000 hr non-residential + 4th-year class (144 hr)"],
+  ["License","License renewal?","Every 2 yr by Nov 30 of even years; 12 CE hr, 8 core"],
+  ["Utah","Color that marks non-potable (secondary) pipe?","Purple (follow your city's standard)"],
+  ["Utah","Through-wall vent in Utah ends how?","≥12\" out from the wall, elbow pointing down"],
+  ["Utah","Incoming water temp for sizing a Utah winter heater?","40°F"],
+  ["Sizing","Shower trap size on a house (IRC)?","2\" (IPC table allows 1½\")"],
+  ["Gas","Gas shield plate thickness?","Steel at least ¹⁄₁₆\" (heavier than 16 ga)"]
 ];
 const topics = ["All", ...new Set(CARDS.map(c => c[0]))];
 $("fc-filter").innerHTML = topics.map(t => `<option>${t}</option>`).join("");
@@ -1909,7 +2003,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device */
-var BUILD = "neon-2026-10-11";
+var BUILD = "neon-2026-10-11b";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status"; note.style.cssText = "margin-top:4px;font-weight:600";
