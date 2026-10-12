@@ -79,19 +79,19 @@ b{font-weight:600}
 .subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 24px 3px 2px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
 .subtabs::-webkit-scrollbar{display:none}
 @media (min-width:760px){.subtabs{flex-wrap:wrap;-webkit-mask-image:none;mask-image:none;padding-right:2px}}
-.tabs button{flex:0 0 auto;font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;min-height:34px;border:1px solid color-mix(in srgb,var(--acc) 75%,transparent);background:var(--sheet);color:var(--acc);border-radius:999px;cursor:pointer;transition:box-shadow .15s,background .15s}
+.tabs button{flex:0 0 auto;font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;min-height:34px;border:1px solid var(--acc);border:1px solid color-mix(in srgb,var(--acc) 75%,transparent);background:var(--sheet);color:var(--acc);border-radius:999px;cursor:pointer;transition:box-shadow .15s,background .15s}
 .tabs button:hover{box-shadow:var(--glow)}
 .tabs button[aria-pressed="true"]{background:var(--acc);color:#07060f;border-color:var(--acc);box-shadow:0 0 16px color-mix(in srgb,var(--acc) 60%,transparent)}
 .subtabs button{flex:0 0 auto;font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;padding:4px 12px;min-height:32px;border:1px solid var(--edge);border-radius:999px;background:var(--sheet);color:var(--ink);cursor:pointer}
-.subtabs button[aria-pressed="true"]{color:var(--acc);border-color:var(--acc);background:color-mix(in srgb,var(--acc) 14%,var(--sheet));box-shadow:0 0 10px -2px color-mix(in srgb,var(--acc) 70%,transparent)}
+.subtabs button[aria-pressed="true"]{color:var(--acc);border-color:var(--acc);background:var(--sheet);background:color-mix(in srgb,var(--acc) 14%,var(--sheet));box-shadow:0 0 10px -2px color-mix(in srgb,var(--acc) 70%,transparent)}
 .tools.searching .tabs button[aria-pressed="true"]{background:var(--sheet);color:var(--acc);box-shadow:none}
 .tools.searching .subtabs{display:none}
 .no-hits{padding:14px;color:var(--muted);text-align:center;font-size:12px}
 
 /* flowing columns of sections */
 .book{columns:2 480px;column-gap:16px}
-section{break-inside:avoid;display:block;background:var(--sheet);border:1px solid color-mix(in srgb,var(--acc) 55%,transparent);border-radius:8px;margin:0 0 14px;box-shadow:0 0 18px -8px color-mix(in srgb,var(--acc) 60%,transparent);overflow:hidden}
-.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 8px;padding:7px 10px 6px;border-bottom:1px solid color-mix(in srgb,var(--acc) 55%,transparent);background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 14%,transparent),transparent 70%)}
+section{break-inside:avoid;display:block;background:var(--sheet);border:1px solid var(--acc);border:1px solid color-mix(in srgb,var(--acc) 55%,transparent);border-radius:8px;margin:0 0 14px;box-shadow:0 0 18px -8px color-mix(in srgb,var(--acc) 60%,transparent);overflow:hidden}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 8px;padding:7px 10px 6px;border-bottom:1px solid var(--acc);border-bottom:1px solid color-mix(in srgb,var(--acc) 55%,transparent);background:linear-gradient(90deg,transparent,transparent 70%);background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 14%,transparent),transparent 70%)}
 .sec-head h2{font-family:var(--display);font-weight:700;font-size:16px;line-height:1.1;text-transform:uppercase;letter-spacing:.05em;margin:0;color:var(--acc);text-shadow:0 0 8px color-mix(in srgb,var(--acc) 55%,transparent)}
 .sec-head small{font-size:11px;color:var(--muted);text-align:right}
 .note{font-size:12.5px;color:var(--muted);padding:6px 10px;margin:0;border-top:1px solid var(--rule)}
@@ -110,12 +110,12 @@ section{break-inside:avoid;display:block;background:var(--sheet);border:1px soli
 .t .sub{color:var(--muted);font-size:12.5px}
 .t td a,.note a{text-decoration:underline;text-underline-offset:2px;text-decoration-color:color-mix(in srgb,var(--line) 55%,transparent)}
 .keys{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-bottom:1px solid var(--rule)}
-.keys button{appearance:none;flex:1 0 auto;min-width:44px;min-height:36px;padding:4px 10px;font-family:var(--mono);font-size:14px;color:var(--acc);background:var(--zebra);border:1px solid color-mix(in srgb,var(--acc) 70%,transparent);border-radius:6px;cursor:pointer}
-.keys button:active{background:color-mix(in srgb,var(--acc) 18%,var(--zebra))}
-.keys button[data-k="clear"],.keys button[data-k="back"]{color:var(--flag);border-color:color-mix(in srgb,var(--flag) 70%,transparent)}
+.keys button{appearance:none;flex:1 0 auto;min-width:44px;min-height:36px;padding:4px 10px;font-family:var(--mono);font-size:14px;color:var(--acc);background:var(--zebra);border:1px solid var(--acc);border:1px solid color-mix(in srgb,var(--acc) 70%,transparent);border-radius:6px;cursor:pointer}
+.keys button:active{background:var(--zebra);background:color-mix(in srgb,var(--acc) 18%,var(--zebra))}
+.keys button[data-k="clear"],.keys button[data-k="back"]{color:var(--flag);border-color:var(--flag);border-color:color-mix(in srgb,var(--flag) 70%,transparent)}
 .ut{display:inline-block;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.06em;color:var(--orange);border:1px solid var(--orange);border-radius:3px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:3px;text-shadow:0 0 6px rgba(255,112,64,.6)}
 .why{display:inline-block;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.06em;color:var(--violet);border:1px solid var(--violet);border-radius:3px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:3px}
-.pn{display:inline-block;font-family:var(--mono);font-size:12px;background:var(--line-soft);border:1px solid color-mix(in srgb,var(--cyan) 75%,transparent);border-radius:4px;padding:1px 6px;margin:1px 0;cursor:pointer;white-space:nowrap;color:var(--ink)}
+.pn{display:inline-block;font-family:var(--mono);font-size:12px;background:var(--line-soft);border:1px solid var(--cyan);border:1px solid color-mix(in srgb,var(--cyan) 75%,transparent);border-radius:4px;padding:1px 6px;margin:1px 0;cursor:pointer;white-space:nowrap;color:var(--ink)}
 .pn{text-decoration:none}
 .pn.copied{background:var(--ok);color:#07060f;border-color:var(--ok)}
 
@@ -128,7 +128,7 @@ section{break-inside:avoid;display:block;background:var(--sheet);border:1px soli
 .ans small{display:block;font-family:var(--body);font-weight:400;font-size:11px;color:var(--muted);text-shadow:none}
 .seg{display:flex;flex-wrap:wrap;gap:4px;padding:10px 10px 0}
 .seg button{font:inherit;font-size:12px;padding:4px 10px;min-height:30px;border:1px solid var(--edge);background:var(--paper);color:var(--muted);border-radius:999px;cursor:pointer}
-.seg button[aria-pressed="true"]{border-color:var(--acc);color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,transparent);font-weight:600;box-shadow:0 0 10px -2px color-mix(in srgb,var(--acc) 60%,transparent)}
+.seg button[aria-pressed="true"]{border-color:var(--acc);color:var(--acc);background:transparent;background:color-mix(in srgb,var(--acc) 12%,transparent);font-weight:600;box-shadow:0 0 10px -2px color-mix(in srgb,var(--acc) 60%,transparent)}
 .calc label i{font-style:normal;text-transform:none;letter-spacing:0}
 .inch{display:flex;gap:4px}
 .inch input{flex:1 1 auto;min-width:0}
@@ -166,7 +166,7 @@ section[data-sec="local"] td:first-child{min-width:6.8rem;width:28%}
 .frac div:nth-child(-n+4){border-top:0}
 @media (max-width:420px){.frac{grid-template-columns:repeat(2,minmax(0,1fr))}.frac div:nth-child(n){border-left:1px solid var(--rule);border-top:1px solid var(--rule)}.frac div:nth-child(2n+1){border-left:0}.frac div:nth-child(-n+2){border-top:0}}
 .frac span{font-family:var(--mono);font-size:11px;color:var(--muted)}
-.frac .q{background:color-mix(in srgb,var(--acc) 10%,transparent)}
+.frac .q{background:transparent;background:color-mix(in srgb,var(--acc) 10%,transparent)}
 .frac .q b{color:var(--acc)}
 
 /* checklists (trim-out) */
@@ -197,7 +197,7 @@ section[data-sec="local"] td:first-child{min-width:6.8rem;width:28%}
 .linkish{font:inherit;font-size:inherit;background:none;border:0;padding:0;color:var(--line);text-decoration:underline;cursor:pointer}
 .fc{padding:12px;display:flex;flex-direction:column;gap:10px}
 .fc-meta{display:flex;justify-content:space-between;font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.fc-card{display:flex;flex-direction:column;justify-content:center;gap:10px;min-height:160px;padding:16px;border:1px solid var(--acc);border-radius:10px;background:radial-gradient(120% 100% at 50% 0%,color-mix(in srgb,var(--acc) 14%,transparent),var(--zebra));color:var(--ink);font:inherit;text-align:center;cursor:pointer;box-shadow:0 0 18px -6px var(--acc)}
+.fc-card{display:flex;flex-direction:column;justify-content:center;gap:10px;min-height:160px;padding:16px;border:1px solid var(--acc);border-radius:10px;background:radial-gradient(120% 100% at 50% 0%,transparent,var(--zebra));background:radial-gradient(120% 100% at 50% 0%,color-mix(in srgb,var(--acc) 14%,transparent),var(--zebra));color:var(--ink);font:inherit;text-align:center;cursor:pointer;box-shadow:0 0 18px -6px var(--acc)}
 .fc-q{font-size:16px;font-weight:600;line-height:1.35}
 .fc-a{font-family:var(--display);font-weight:700;font-size:22px;line-height:1.2;color:var(--acc);text-shadow:0 0 10px color-mix(in srgb,var(--acc) 60%,transparent)}
 .fc-hint{font-size:11px;color:var(--muted)}
@@ -251,7 +251,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     <h1>PlumChum's Guide to the Plumbiverse</h1>
     <span class="meta">Utah · 2021 IRC · 2021 &amp; 2024 IPC</span>
   </header>
-  <details class="banner"><summary><b>Which code?</b> Houses: 2021 IRC + Utah</summary><p>Houses: <b>2021 IRC</b> plumbing chapters + Utah amendments. Other buildings: <b>2024 IPC</b> (permits from before 7/1/2026: usually <b>2021 IPC</b>). Gas: <b>IRC ch. 24</b> on houses, <b>2024 IFGC</b> on other buildings. Tables here are IPC, usually the safe side. <span class="ut">UT</span> = Utah amendment; ask your inspector when in doubt.</p></details>
+  <details class="banner"><summary><b>Which code applies?</b></summary><p>Houses: <b>2021 IRC</b> plumbing chapters + Utah amendments. Other buildings: <b>2024 IPC</b> (permits from before 7/1/2026: usually <b>2021 IPC</b>). Gas: <b>IRC ch. 24</b> on houses, <b>2024 IFGC</b> on other buildings. Tables here are mostly IPC. Where the IRC differs on a house it's noted, and the IRC wins. <span class="ut">UT</span> = Utah amendment; ask your inspector when in doubt.</p></details>
 
   <div class="tools">
     <input id="q" type="search" placeholder="Search: hole, TJI, vent, Moen, 811…" aria-label="Search the book">
@@ -319,7 +319,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><td><b>South Jordan</b></td><td><a href="https://cityview.southjordanutah.gov/cityviewportal" target="_blank" rel="noopener">CityView portal ↗</a><div class="sub">Permits and inspections online.</div></td></tr>
         <tr><td><b>Park City</b></td><td><span class="pn">435-615-5101</span><div class="sub">Book in the City Inspect app by 3 pm for next day. AM 8–12, PM 12–4. Plans + permit on paper on site. Deep snow: confirm vent height.</div></td></tr>
         <tr><td><b>Unincorporated SL County</b></td><td><a href="https://msd.utah.gov/205/Building-Permits-Inspections" target="_blank" rel="noopener">MSD permits &amp; inspections ↗</a><div><span class="pn">385-910-5830</span> <a href="mailto:inspections@msd.utah.gov">Email ↗</a></div><div class="sub">Greater Salt Lake Municipal Services District (Kearns, Magna, Copperton, etc.). Inspection hotline or email before 3 pm for next business day.</div></td></tr>
-        <tr><td><b>Salt Lake City</b></td><td><span class="sub">See <b>Calls → Who to call</b>.</span></td></tr>
+        <tr><td><b>Salt Lake City</b></td><td><span class="sub">See <b>Calls → Phone numbers → Who to call</b>.</span></td></tr>
       </tbody></table></div>
     <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct 2026; your super's schedule and the city site win.</p>
   </section>
@@ -330,7 +330,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <tbody>
         <tr><th>What it is</th><td>Pressurized irrigation: untreated canal or reservoir water for lawns, in its own pipes. Most new subdivisions here have it. Separate box and meter near the front property line.</td></tr>
         <tr><th>The hard rule</th><td><b>Never</b> connect secondary to culinary (drinking) water, not even with a valve (Utah Code 19-4-112). That's a cross-connection.</td></tr>
-        <tr><th>Pressure</th><td>Can run 40–125 psi depending on lot elevation (Springville's numbers). Over what the sprinklers need: pressure reducing on the irrigation side.</td></tr>
+        <tr><th>Pressure</th><td>Can run 40–125 psi depending on lot elevation (Springville's numbers). If it's more than the sprinklers need, add a pressure reducer on the irrigation side.</td></tr>
         <tr><th>Marking</th><td>Non-potable piping gets identified so nobody taps it for drinking; purple is the usual color. Follow your city's standard.</td></tr>
         <tr><th>Inspection</th><td>Some cities inspect the sprinkler-to-secondary-box connection separately (Herriman lists it).</td></tr>
         <tr><th><span class="why">WHY</span>Why care?</th><td>Canal water can carry bacteria and fertilizer. One wrong hookup and a whole neighborhood's drinking water can get it.</td></tr>
@@ -340,7 +340,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   <section data-sec="local" data-kw="elevation altitude derate gas city herriman lehi heber tooele logan cedar st george">
     <div class="sec-head"><h2>Elevation &amp; gas derate</h2><small>4% per 1,000 ft, above 2,000 ft</small></div>
     <div class="x"><table class="t num"><thead><tr><th>Place</th><th>≈ Elevation</th><th>Derate</th><th>100k BTU/h →</th></tr></thead><tbody id="elev-rows"></tbody></table></div>
-    <p class="note">Rule of thumb only. Most appliances sold here are set up or listed for altitude; <b>the maker's altitude instructions win</b>. Calculator: <b>Rough-in → Gas</b>.</p>
+    <p class="note">Rule of thumb only. Most appliances sold here are set up or listed for altitude; <b>the maker's altitude instructions win</b>. Calculator: <b>Rough-in → Gas &amp; heaters → Gas load &amp; altitude</b>.</p>
   </section>
 
   <section data-sec="local" data-kw="code adoption 2024 ipc 2021 irc july 2026 utah amendments 15a">
@@ -401,7 +401,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><td>DWV</td><td>Vacuum</td><td class="n">−10" Hg</td><td class="n">15 min</td></tr>
         <tr><td>Water</td><td>Water</td><td class="n">≥ working</td><td>Until inspected</td></tr>
         <tr><td><span class="ut">UT</span>Water plastic<div class="sub">Utah IPC 312.5. On a house, get the inspector's OK first.</div></td><td>Air</td><td class="n">50–80 psi</td><td class="n">≤15 min</td></tr>
-        <tr><td>Gas</td><td>Air / N₂ / CO₂, never O₂</td><td class="n">1.5× working<br>≥3 psi</td><td class="n">10 min</td></tr>
+        <tr><td>Gas</td><td>Air, nitrogen or CO₂, never oxygen</td><td class="n">1.5× working<br>≥3 psi</td><td class="n">10 min</td></tr>
       </tbody></table></div>
     <p class="note">Many Utah cities want gas at <b>5 psi for 15 min</b>. <span class="ut">UT</span> plastic air tests are capped: watch the gauge, stand clear, bleed down slowly. A joint can blow.</p>
   </section>
@@ -452,7 +452,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><td class="n">1</td><td><span class="sw rise"></span><b id="ro-step1">Rise:</b> <span id="ro-step1-txt">measure how far the pipe moves up or down, centerline to centerline.</span></td></tr>
         <tr class="ro-roll-step"><td class="n">2</td><td><span class="sw roll"></span><b>Roll:</b> measure how far it also moves sideways, centerline to centerline.</td></tr>
         <tr><td class="n">3</td><td><span class="sw fit"></span><b>Fittings + take-off:</b> pick the pair (two 45s is usual). Take-off = fitting center to where the pipe bottoms out. Measure your actual fitting; it varies by brand and size.</td></tr>
-        <tr><td class="n">4</td><td><span class="sw run"></span><b>Place fitting 2</b> the <b>run</b> farther along the pipe than fitting 1, center to center.</td></tr>
+        <tr><td class="n">4</td><td><span class="sw run"></span><b>Set fitting 2</b> one <b>run</b> farther along the pipe than fitting 1, center to center.</td></tr>
         <tr><td class="n">5</td><td><span class="sw cut"></span><b>Cut the blue piece</b> to cut length. <span class="ro-roll-step">Turn both fittings the same amount so it points straight at the other pipe.</span> Dry-fit, then glue or solder.</td></tr>
       </tbody></table></div>
     <div class="x"><table class="t num">
@@ -480,7 +480,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     <div class="x"><table class="t ro-out"><tbody>
       <tr class="hit" aria-live="polite" aria-atomic="true"><th>Answer</th><td id="fi-out" class="big">—</td><td class="sub" id="fi-sub"></td></tr>
     </tbody></table></div>
-    <p class="note" id="fi-help">Type like a tape reads: <b>10' 4 3/8"</b>, <b>7 1/2</b> (plain numbers are inches), <b>3'</b>. Multiply or divide by a plain number: <b>2 x 5"</b>, <b>12' ÷ 3</b>. Use it to subtract take-offs from a center-to-center.</p>
+    <p class="note" id="fi-help">Type like a tape reads: <b>10' 4 3/8"</b>, <b>7 1/2</b> (plain numbers are inches), <b>3'</b>. Multiply or divide by a plain number: <b>2 x 5"</b>, <b>12' ÷ 3</b>. Use it to subtract take-offs from a center-to-center measurement.</p>
   </section>
 
   <section data-sec="math" data-kw="grade slope fall laser elevation check quarter eighth inch per foot percent">
@@ -490,7 +490,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <label for="g2-fall">Fall (in)<input id="g2-fall" type="number" inputmode="decimal" min="0" step="any" value="4"></label>
       <div class="ans" id="g2-ans" role="status" aria-atomic="true"></div>
     </div>
-    <p class="note">Fall = difference in your laser or rod readings between the two ends (convert decimal feet with <b>Job tables → Inches to decimal feet</b>). Code minimums: ¼"/ft for 2½" and smaller, ⅛"/ft for 3"–6".</p>
+    <p class="note">Fall = difference in your laser or rod readings between the two ends (convert decimal feet with <b>Math → Job tables → Inches to decimal feet</b>). Code minimums: ¼"/ft for 2½" and smaller, ⅛"/ft for 3"–6".</p>
   </section>
 
   <section data-sec="conv" data-kw="unit converter convert">
@@ -619,10 +619,10 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><td>¼"</td><td>18</td><td>⅜"</td></tr>
         <tr><td>⅜"</td><td>18</td><td>⅜"</td></tr>
         <tr><td>½"</td><td>14</td><td>½"</td></tr>
-        <tr><td>¾"</td><td>14</td><td>9/16"</td></tr>
-        <tr><td>1"</td><td>11½</td><td>11/16"</td></tr>
-        <tr><td>1¼"</td><td>11½</td><td>11/16"</td></tr>
-        <tr><td>1½"</td><td>11½</td><td>11/16"</td></tr>
+        <tr><td>¾"</td><td>14</td><td>⁹⁄₁₆"</td></tr>
+        <tr><td>1"</td><td>11½</td><td>¹¹⁄₁₆"</td></tr>
+        <tr><td>1¼"</td><td>11½</td><td>¹¹⁄₁₆"</td></tr>
+        <tr><td>1½"</td><td>11½</td><td>¹¹⁄₁₆"</td></tr>
         <tr><td>2"</td><td>11½</td><td>¾"</td></tr>
       </tbody></table></div>
     <p class="note">Nipple or cut length = center-to-center − both fitting take-offs + both makeups. Makeup varies with the fitting and how tight you go; measure your own.</p>
@@ -704,7 +704,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   </section>
 
   <section data-sec="sizing">
-    <div class="sec-head"><h2>Branches &amp; stacks</h2><small>Max DFU · Table 710.1(2)</small></div>
+    <div class="sec-head"><h2>Branches &amp; stacks</h2><small>Max DFU · IPC Table 710.1(2)</small></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Pipe</th><th>Branch</th><th>Stack, ≤3 intervals</th><th>Stack, &gt;3: total / each</th></tr></thead>
       <tbody>
@@ -718,7 +718,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   </section>
 
   <section data-sec="sizing">
-    <div class="sec-head"><h2>Building drain &amp; sewer</h2><small>Max DFU · Table 710.1(1)</small></div>
+    <div class="sec-head"><h2>Building drain &amp; sewer</h2><small>Max DFU · IPC Table 710.1(1)</small></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Pipe</th><th>⅛"/ft</th><th>¼"/ft</th><th>½"/ft</th></tr></thead>
       <tbody>
@@ -737,19 +737,19 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Vent size</th><td>At least ½ the drain it serves, never under 1¼". Over 40 ft developed length: go up one size.</td></tr>
-        <tr><th>Trap to vent</th><td>1¼" 5 ft · 1½" 6 ft · 2" 8 ft · 3" 12 ft · 4" 16 ft (Drains &amp; traps, Code rules tab).</td></tr>
+        <tr><th>Trap to vent</th><td>1¼" 5 ft · 1½" 6 ft · 2" 8 ft · 3" 12 ft · 4" 16 ft (Rough-in → Code rules → Drains &amp; traps).</td></tr>
         <tr><th>Through roof</th><td><b>Houses (IRC P3103.1.1):</b> at least 6" above the roof or 6" above expected snow, whichever is greater. <span class="ut">UT</span> Other buildings (Utah IPC 903.1.1): <b>12"</b>. Running 12" meets both. Deep-snow areas like Park City: confirm locally.</td></tr>
         <tr><th><span class="ut">UT</span>Through wall</th><td>Ends at least 12" out from the wall with the elbow pointing down (Utah IRC P3101.4 / IPC 903.7).</td></tr>
         <tr><th>Near openings</th><td>Not directly under a door, openable window or air intake. Within 10 ft of one, end at least 2 ft above its top (IRC P3103.5; IPC 903.5 says 3 ft).</td></tr>
         <tr><th>Wall vents</th><td>Also ≥10 ft from the lot line, ≥10 ft above grade, and never under a soffit-vented overhang.</td></tr>
-        <tr><th>Frost closure</th><td>Where the winter design temp is 0°F or colder: vent through the roof at least <b>3"</b>, increased at least 1 ft inside the heated space or below the roof. Ask your inspector what your area requires. <span class="why">WHY</span> Warm, wet vent air frosts at a cold vent top and can seal a small pipe.</td></tr>
+        <tr><th>Frost closure</th><td>Where the winter design temp is 0°F or colder: the roof vent must be at least <b>3"</b> across, and the size increase starts at least 1 ft inside the heated space or below the roof. Ask your inspector what your area requires. <span class="why">WHY</span> Warm, wet vent air frosts at a cold vent top and can seal a small pipe.</td></tr>
         <tr><th>Roof used by people</th><td>At least 7 ft above a roof used for recreation or gatherings.</td></tr>
         <tr><th><span class="ut">UT</span>Low dry vents</th><td>Houses (Utah IRC P3104.4): floor drains and floor sinks only, below grade, with a wall cleanout in the vertical vent. Utah IPC 905.4 also allows tubs.</td></tr>
       </tbody></table></div>
   </section>
 
   <section data-sec="sizing" data-kw="supply line size fixture">
-    <div class="sec-head"><h2>Fixture supply size</h2><small>Minimum · Table 604.5</small></div>
+    <div class="sec-head"><h2>Fixture supply size</h2><small>Minimum · IPC Table 604.5</small></div>
     <div class="x"><table class="t">
       <thead><tr><th>Fixture</th><th>Min supply</th></tr></thead>
       <tbody>
@@ -765,7 +765,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   <section data-sec="field">
     <div class="sec-head"><h2>Drains &amp; traps</h2><small>IPC ch. 7–10</small></div>
     <div class="x"><table class="t">
-      <thead><tr><th>Pipe / trap</th><th>Min slope</th><th>Max trap-to-vent</th></tr></thead>
+      <thead><tr><th>Pipe / trap</th><th>Min slope</th><th>Max trap-to-vent (at ¼"/ft)</th></tr></thead>
       <tbody>
         <tr><td class="n">1¼"</td><td class="n">¼" / ft</td><td class="n">5 ft</td></tr>
         <tr><td class="n">1½"</td><td class="n">¼" / ft</td><td class="n">6 ft</td></tr>
@@ -820,7 +820,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   <section data-sec="field">
     <div class="sec-head"><h2>Fixture flow limits</h2><small>New construction</small></div>
     <div class="x"><table class="t">
-      <thead><tr><th>Fixture</th><th>Utah</th><th>Fed.</th><th>WaterSense</th></tr></thead>
+      <thead><tr><th>Fixture</th><th>Utah</th><th>Federal</th><th>WaterSense</th></tr></thead>
       <tbody>
         <tr><td>Showerhead</td><td class="n"><b>2.0 gpm</b></td><td class="n">2.5</td><td class="n">2.0</td></tr>
         <tr><td>Lav faucet</td><td class="n"><b>1.5 gpm</b></td><td class="n">2.2</td><td class="n">1.5</td></tr>
@@ -838,7 +838,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><td>Bearing stud</td><td>25%</td><td>40% (60% if doubled), ⅝" from edge</td></tr>
         <tr><td>Non-bearing stud</td><td>40%</td><td>60%, ⅝" from edge</td></tr>
       </tbody></table></div>
-    <p class="note">Solid lumber only. Engineered wood: see Joist holes.</p>
+    <p class="note">Solid lumber only. Engineered wood: see <b>Rough-in → Joist holes</b>.</p>
   </section>
 
   <section data-sec="field">
@@ -847,7 +847,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <tbody>
         <tr><th>Toilet flange</th><td>12" from finished wall to center · supply ≈ 8¼" high</td></tr>
         <tr><th>Lav drain</th><td>16"–20" AFF</td></tr>
-        <tr><th>Tub valve</th><td>20"–22" AFF · spout ≈ 4" above rim</td></tr>
+        <tr><th>Tub valve</th><td>Set it from the spout up: check the valve sheet for spout distance (Delta: 8"–18" below the valve) · spout ≈ 4" above rim</td></tr>
         <tr><th>Shower valve</th><td>≈ 48" AFF</td></tr>
         <tr><th>Tub/shower valve</th><td>≈ 28" above the <b>tub</b> floor (not the room floor)</td></tr>
       </tbody></table></div>
@@ -892,7 +892,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><td>2×4 (3½")</td><td class="n">1.4"</td><td class="n">2.1"</td></tr>
         <tr><td>2×6 (5½")</td><td class="n">2.2"</td><td class="n">3.3"</td></tr>
       </tbody></table></div>
-    <p class="note">Hole sizes are trade practice (OD + ⅛"–¼" for clearance and expansion), not code. Notice a 2" drain never fits a 2×4 and a 3" never fits a 2×6. A 2" drain fits a 2×6 only when the wall is non-bearing or the studs are doubled (60%). That's why wet walls get planned early.</p>
+    <p class="note">Hole sizes are trade practice (OD + about ¼"–⅜" for clearance and expansion), not code. Notice a 2" drain never fits a 2×4 and a 3" never fits a 2×6. A 2" drain fits a 2×6 only when the wall is non-bearing or the studs are doubled (60%). That's why wet walls get planned early.</p>
   </section>
 
   <section data-sec="materials" data-kw="pex uponor viega zurn sharkbite bend radius uv">
@@ -912,7 +912,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   </section>
 
   <section data-sec="materials" data-kw="cpvc flowguard cure time solvent">
-    <div class="sec-head"><h2>CPVC cure before test</h2><small>FlowGuard Gold · up to 150 psi</small></div>
+    <div class="sec-head"><h2>CPVC cure before test</h2><small>FlowGuard Gold · tests up to 150 psi</small></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Air temp</th><th>½"–1"</th><th>1¼"–2"</th></tr></thead>
       <tbody>
@@ -937,7 +937,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     <div class="sec-head"><h2>Gas piping</h2><small>Houses: IRC ch. 24 · else IFGC</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Test</th><td>1.5× working, ≥3 psi, air/N₂/CO₂ (never O₂). Check city gauge and time.</td></tr>
+        <tr><th>Test</th><td>1.5× working, ≥3 psi, air, nitrogen or CO₂ (never oxygen). Check city gauge and time.</td></tr>
         <tr><th>Shutoff</th><td>Each appliance: same room, within 6 ft, upstream of connector.</td></tr>
         <tr><th>Drip leg</th><td>Tee + capped nipple (3" typical) after the shutoff, as close to the inlet as practical. Furnace, boiler, water heater. Not range, dryer, grill.</td></tr>
         <tr><th>CSST bond</th><td>6 AWG Cu min, ≤75 ft. Listed bonding clamp on rigid pipe or a brass CSST fitting, downstream of the meter. Never on the CSST tubing, jacketed or stripped. Follow the CSST maker's instructions. <span class="why">WHY</span> A nearby lightning strike can arc through the thin wall; the bond gives the current an easier path.</td></tr>
@@ -946,7 +946,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   </section>
 
   <section data-sec="gas">
-    <div class="sec-head"><h2>Water heaters</h2><small>IPC 504 + Utah</small></div>
+    <div class="sec-head"><h2>Water heaters</h2><small>IRC P28 · IPC 504 · Utah</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>T&amp;P line</th><td>Full valve-outlet size, one line per valve. No valves, tees, traps or threaded end. Drains by gravity with no sags. Ends in plain view through an air gap, ≤6" above the floor or receptor; never piped straight to a drain. Pipe rated for the temperature and pressure. <span class="ut">UT</span> ≤180° total bends (Utah IRC P2804.6.1 #15).</td></tr>
@@ -965,7 +965,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       <label for="g-elev">Elevation (ft)<select id="g-elev">
 </select></label>
       <label for="g-hv">Gas<select id="g-hv">
-        <option value="1000" selected>Natural, 1,000 BTU/ft³ (sizing tables)</option><option value="1049">Natural, 1,049 (Utah delivered avg)</option><option value="2500">Propane, 2,500 BTU/ft³</option></select></label>
+        <option value="1000" selected>Natural, 1,000 BTU/ft³ (sizing tables)</option><option value="1049">Natural, 1,049 BTU/ft³ (Utah delivered avg)</option><option value="2500">Propane, 2,500 BTU/ft³</option></select></label>
     </div>
     <div class="x"><table class="t ro-out">
       <tbody>
@@ -1049,10 +1049,10 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   </section>
 
   <section data-sec="trim" data-kw="finish trim toilet lav faucet kitchen disposer dishwasher knockout angle stop supply wax ring closet bolts high loop air gap">
-    <div class="sec-head"><h2>Finish: the rest of the house</h2><small>Common trim-day catches</small></div>
+    <div class="sec-head"><h2>Trim-out (finish): rest of the house</h2><small>Common trim-day catches</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Angle stops</th><td>½" inlet (sweat, CPEX, compression) to <b>⅜" OD compression</b> out. Toilet supplies end in a ⅞" ballcock nut.</td></tr>
+        <tr><th>Angle stops</th><td>½" inlet (sweat, PEX, compression) to <b>⅜" OD compression</b> out. Toilet supplies end in a ⅞" ballcock nut.</td></tr>
         <tr><th>Toilet</th><td>Measure rough first (12" typical). Flange on top of the finished floor. Snug closet bolts side to side, a little at a time; over-torque cracks china. Ask the builder whether they want the base caulked.</td></tr>
         <tr><th>Disposer + dishwasher</th><td><b>Knock out the dishwasher plug</b> inside the disposer inlet before hooking up, or the dishwasher won't drain. Fish the plug out.</td></tr>
         <tr><th>Dishwasher drain</th><td>High loop to the underside of the counter or an air gap, whichever your code and inspector require. <span class="why">WHY</span> It keeps dirty sink water from siphoning back into the dishwasher.</td></tr>
@@ -1346,7 +1346,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><th>1 · Apprentice license</th><td>Apply to DOPL; employer names your supervisor ($116 on the 2022 form).</td></tr>
         <tr><th>Supervision</th><td>Immediate supervision, max 3 apprentices per supervisor. 4th year: up to 8 hr unsupervised per 24.</td></tr>
         <tr><th>2 · School + hours</th><td>≥72 classroom hr per semester at 75%+. Max 3,000 OJT hr per 12 months.</td></tr>
-        <tr><th>MTECH</th><td>4 yr, 8 semesters, 576 hr. Test-out after 4A at 6,000 hr fits the <b>residential</b> path. Confirm which license you're testing for.</td></tr>
+        <tr><th>MTECH</th><td>4 yr, 8 semesters, 576 hr. Test-out after semester 4A (6,000 hr) fits the <b>residential</b> path. Confirm which license you're testing for.</td></tr>
         <tr><th>3 · Exams</th><td>Written (remote OK) + Utah Plumber Practical in person. Pass, then apply.</td></tr>
         <tr><th>4 · Renew</th><td>Every 2 yr, Nov 30 of even years. 12 CE hr, 8 core.</td></tr>
         <tr><th>Upgrade</th><td>Residential → journeyman: 2,000 hr non-residential + 4th-year class (144 hr).</td></tr>
@@ -1363,6 +1363,19 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
 </div>
 
 <script>
+/* CONTENTS
+   1 Helpers · 2 Link library + glossary · 3 Phone numbers (call / copy) · 4 Navigation + search
+   5 Header tuck · 6 Converters, pressure chart, water in pipe, drain fall · 7 Offset calculator + drawings
+   8 Feet-inch calc, grade, velocity, expansion, tank · 9 DFU counter · 10 Gas · 11 Water heater
+   12 Flashcards · 13 My files (online only) · offline script at the very end */
+
+/* ---------- 1 helpers ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const val = id => parseFloat($(id).value);
+const nf = (x, d=3) => isFinite(x) ? (x !== 0 && Math.abs(x) < 0.01 ? (+x.toPrecision(4)).toString() : Math.abs(x) >= 1000 ? x.toLocaleString(undefined,{maximumFractionDigits:1}) : (+x.toFixed(d)).toString()) : "—";
+
+/* ---------- 2 link library + glossary ---------- */
 const LIB = {
   holes: [
     ["MTP-W7000","BCI West Specifier Guide","Hole location and sizing, p. 7","https://cdn.mediavalet.com/usva/boisecascade/_DgIlMz1RkGNT741XBfSEA/L72LS7z6e0yzaPGtlDC7Fw/Original/MTP-W7000%20West%20Specifier%20Guide.pdf"],
@@ -1404,7 +1417,6 @@ const LIB = {
     ["State","Apprenticeship Utah","Registered programs, grants","https://apprenticeship.utah.gov/"]
   ]
 };
-const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const linkRow = ([doc,t,n,u]) => `<tr data-search="${esc((doc+" "+t+" "+n).toLowerCase())}"><th scope="row" class="k">${esc(doc)}</th><td><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)} ↗</a> <span class="sub">· ${esc(n)}</span></td></tr>`;
 for (const k of Object.keys(LIB)) document.getElementById("list-"+k).innerHTML = LIB[k].map(linkRow).join("");
 
@@ -1436,7 +1448,7 @@ const GLOSS = [
   ["Trap arm","Pipe from trap outlet to vent. IPC: fixture drain."],
   ["Vent stack","Vertical pipe that carries only air for the drain system."],
   ["Wet vent","Pipe that drains and also vents other fixtures."],
-  ["WFU","Water supply fixture unit: demand number to size supply pipe."],
+  ["WSFU","Water supply fixture unit (also written WFU): demand number to size supply pipe."],
   ["Wye","45° branch fitting."],
   ["AFF","Above finished floor."],
   ["ASSE","Standards group whose numbers are printed on valves and backflow devices (e.g. ASSE 1016)."],
@@ -1471,6 +1483,15 @@ const GLOSS = [
   ["Derate","Turn an appliance's input down, usually for altitude."],
   ["Diverter","Valve that sends water to the tub spout or the shower head."],
   ["Hammer arrestor","Sealed air or piston cushion that soaks up water-hammer spikes."],
+  ["IRC","International Residential Code: the code for one- and two-family houses."],
+  ["IPC","International Plumbing Code: what MTECH teaches; used for other buildings."],
+  ["IFGC","International Fuel Gas Code (houses use IRC chapter 24 instead)."],
+  ["NPT / IPS","Tapered pipe thread / iron pipe size."],
+  ["EWP","Engineered wood products: I-joists, LVL, LSL."],
+  ["SDS","Safety data sheet: the maker's hazard sheet for a chemical."],
+  ["Sch 40","Schedule 40: the standard wall thickness for PVC and steel pipe."],
+  ["gpm · gph · gpf","Gallons per minute · per hour · per flush."],
+  ["DOPL","Utah Division of Professional Licensing: issues plumbing licenses."],
   ["Upstream / downstream","Toward the water or gas source / toward the fixture or appliance."]
 ];
 GLOSS.sort((a,b) => a[0].localeCompare(b[0], undefined, {sensitivity:"base"}));
@@ -1524,45 +1545,59 @@ function drawSubs(){
   subRow.innerHTML = [["all","All"], ...list]
     .map(([k,t]) => `<button type="button" data-sub="${k}" aria-pressed="${k === nav.sub}">${esc(t)}</button>`).join("");
 }
-const q = document.getElementById("q"), noHits = document.querySelector(".no-hits");
+const q = $("q"), noHits = document.querySelector(".no-hits");
+/* search index: each section's text, read once (on the first search) instead of on every keystroke.
+   Set IDX = null whenever page content changes (My files) so it gets rebuilt. */
+let IDX = null, roReady = false, roWasShown = false;
+const buildIdx = () => IDX = [...document.querySelectorAll("section[data-sec]")].map(sec => ({
+  sec, grp: groupOf(sec.dataset.sec),
+  head: sec.querySelector(".sec-head").textContent.toLowerCase() + " " + (sec.dataset.kw || ""),
+  all: sec.textContent.toLowerCase(),
+  rows: [...sec.querySelectorAll("tbody tr")].filter(r => !r.closest("#c-out, .ro-out, #dfu-rows, #ro-steps"))
+    .map(r => [r, r.dataset.search || r.textContent.toLowerCase()])
+}));
 function apply(){
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.group === nav.group)));
   subRow.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.sub === nav.sub)));
   const term = q.value.trim().toLowerCase();
+  if (!IDX) buildIdx();
   let shown = 0;
-  document.querySelectorAll("section[data-sec]").forEach(sec => {
-    const s = sec.dataset.sec;
-    const inTab = term ? true : nav.group === "all" || (groupOf(s) === nav.group && (nav.sub === "all" || nav.sub === s));
-    const items = [...sec.querySelectorAll("tbody tr")].filter(r => !r.closest("#c-out, .ro-out, #dfu-rows, #ro-steps"));
-    if (!term){ items.forEach(r => r.hidden = false); sec.hidden = !inTab; if (inTab) shown++; return; }
-    const headHit = sec.querySelector(".sec-head").textContent.toLowerCase().includes(term) || (sec.dataset.kw || "").includes(term);
+  for (const {sec, grp, head, all, rows} of IDX){
+    const inTab = term ? true : nav.group === "all" || (grp === nav.group && (nav.sub === "all" || nav.sub === sec.dataset.sec));
+    if (!term){ rows.forEach(([r]) => r.hidden = false); sec.hidden = !inTab; if (inTab) shown++; continue; }
+    const headHit = head.includes(term);
     let any = false;
-    items.forEach(r => { const m = headHit || (r.dataset.search || r.textContent.toLowerCase()).includes(term); r.hidden = !m; any = any || m; });
-    if (!any) any = sec.textContent.toLowerCase().includes(term);
-    if (any && !items.some(r => !r.hidden)) items.forEach(r => r.hidden = false);
+    rows.forEach(([r, txt]) => { const m = headHit || txt.includes(term); r.hidden = !m; any = any || m; });
+    if (!any) any = all.includes(term);
+    if (any && !rows.some(([r]) => !r.hidden)) rows.forEach(([r]) => r.hidden = false);
     sec.hidden = !(inTab && any);
     if (!sec.hidden) shown++;
-  });
+  }
   noHits.hidden = shown > 0;
   noHits.textContent = term ? `Nothing in the book matches "${q.value.trim()}". Try a shorter word.` : "";
   document.querySelector(".tools").classList.toggle("searching", !!term);
-  if (typeof roCalc === "function" && !document.getElementById("ro-3d").closest("section").hidden) roCalc();
-  for (const on of document.querySelectorAll('.tabs [aria-pressed="true"], .subtabs [aria-pressed="true"]'))
-    if (on.scrollIntoView && innerWidth < 760) on.scrollIntoView({inline:"nearest", block:"nearest"});
+  /* the offset drawings measure their labels, so redraw only when the section comes into view */
+  const roShown = !$("ro-3d").closest("section").hidden;
+  if (roReady && roShown && !roWasShown) roCalc();
+  roWasShown = roShown;
+  /* phones: slide the sub-tab row so the active one is visible (never scrolls the page) */
+  const on = subRow.querySelector('[aria-pressed="true"]');
+  if (on && innerWidth < 760) subRow.scrollLeft = on.offsetLeft - (subRow.clientWidth - on.offsetWidth) / 2;
 }
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
   const g = b.dataset.group;
   nav = {group:g, sub: nav.group === g ? nav.sub : "all"};
-  if (q.value){ q.value = ""; }
+  q.value = "";
   saveNav(); drawSubs(); apply();
   window.scrollTo({top:0});
 }));
 subRow.addEventListener("click", e => {
   const b = e.target.closest("button[data-sub]"); if (!b) return;
-  nav.sub = b.dataset.sub; if (q.value){ q.value = ""; }
+  nav.sub = b.dataset.sub; q.value = "";
   saveNav(); apply(); window.scrollTo({top:0});
 });
 drawSubs();
+apply();  /* run early so tabs work even if a calculator below hits an error */
 
 /* stacked-card tables on phones: label each cell with its column header */
 document.querySelectorAll("table.cards").forEach(t => {
@@ -1586,11 +1621,15 @@ document.querySelectorAll("table.cards").forEach(t => {
   tools.addEventListener("focusin", () => tools.classList.remove("tuck"));
 })();
 let qRaf = 0;
-q.addEventListener("input", () => { cancelAnimationFrame(qRaf); qRaf = requestAnimationFrame(apply); });
+let wasSearching = false;
+q.addEventListener("input", () => {
+  const now = !!q.value.trim();
+  if (now && !wasSearching) scrollTo({top:0});  /* starting a search: show results from the top */
+  wasSearching = now;
+  cancelAnimationFrame(qRaf); qRaf = requestAnimationFrame(apply);
+});
 
 /* ---------- field math ---------- */
-const nf = (x, d=3) => isFinite(x) ? (x !== 0 && Math.abs(x) < 0.01 ? (+x.toPrecision(4)).toString() : Math.abs(x) >= 1000 ? x.toLocaleString(undefined,{maximumFractionDigits:1}) : (+x.toFixed(d)).toString()) : "—";
-const val = id => parseFloat(document.getElementById(id).value);
 
 const UNITS = {
   volume:[["gal","gallons",1],["L","liters",0.264172],["in3","cubic inches",1/231],["ft3","cubic feet",7.48052],["qt","quarts",0.25],["mL","milliliters",0.000264172],["m3","cubic meters",264.172]],
@@ -1629,10 +1668,10 @@ fillFrom(); convert();
 function drawChart(mark){
   const svg = document.getElementById("psi-chart"), W=400, H=190, L=34, R=12, T=12, B=30;
   const x = f => L + f/100*(W-L-R), y = p => H-B - p/45*(H-T-B);
-  const lbl = 'font-size="11" fill="var(--muted)" font-family="IBM Plex Mono,monospace"';
+  const axisAttr = 'font-size="11" fill="var(--muted)" font-family="IBM Plex Mono,monospace"';
   let s = "";
-  for (let p=0; p<=40; p+=10) s += `<line x1="${L}" x2="${W-R}" y1="${y(p)}" y2="${y(p)}" stroke="var(--rule)"/><text x="${L-6}" y="${y(p)+4}" text-anchor="end" ${lbl}>${p}</text>`;
-  for (let f=0; f<=100; f+=20) s += `<text x="${x(f)}" y="${H-B+14}" text-anchor="middle" ${lbl}>${f}</text>`;
+  for (let p=0; p<=40; p+=10) s += `<line x1="${L}" x2="${W-R}" y1="${y(p)}" y2="${y(p)}" stroke="var(--rule)"/><text x="${L-6}" y="${y(p)+4}" text-anchor="end" ${axisAttr}>${p}</text>`;
+  for (let f=0; f<=100; f+=20) s += `<text x="${x(f)}" y="${H-B+14}" text-anchor="middle" ${axisAttr}>${f}</text>`;
   s += `<text x="${(L+W-R)/2}" y="${H-3}" text-anchor="middle" font-size="11" fill="var(--muted)">feet above gauge → psi lost</text>`;
   s += `<path d="M${x(0)},${y(0)} L${x(100)},${y(43.3)} L${x(100)},${y(0)} Z" fill="var(--line-soft)"/>`;
   s += `<line x1="${x(0)}" y1="${y(0)}" x2="${x(100)}" y2="${y(43.3)}" stroke="var(--line)" stroke-width="2"/>`;
@@ -1682,7 +1721,6 @@ function slopeCalc(){
 document.getElementById("s-run").addEventListener("input", slopeCalc); document.getElementById("s-pitch").addEventListener("change", slopeCalc); slopeCalc();
 
 /* ---------- offset calculator (simple + rolling) with 3D view ---------- */
-const $ = id => document.getElementById(id);
 document.querySelectorAll(".f16").forEach(s => {
   s.innerHTML = `<option value="0">+0</option>` + Array.from({length:15}, (_,i) => {
     let n = i+1, d = 16; while (n%2===0){ n/=2; d/=2; } return `<option value="${i+1}">+${n}/${d}</option>`; }).join("");
@@ -1701,8 +1739,8 @@ try { const m = localStorage.getItem("jpb-ro-mode"); if (m === "simple" || m ===
 /* Fixed dark-panel palette: the 3D view always draws on a dark field. */
 const C = {pipe:"#94a3b8", fit:"#ef4444", cut:"#3b82f6", rise:"#facc15", roll:"#22c55e", run:"#e2e8f0", tru:"#c084fc", grid:"#251f47", text:"#e2e8f0", dim:"#a29bd0", bg:"#07060f"};
 
-/* Oblique 3D: X runs along the pipe (right), Y is roll (back, up-right), Z is rise (up). */
-/* ---------- to-scale drawings: isometric 3D + two flat true-length views ---------- */
+/* ---------- offset drawings: 3D cavalier oblique + two flat true-length views ----------
+   3D axes: X runs along the pipe (right), Y is roll (back, up-right), Z is rise (up). */
 const NICE = [.25,.5,1,2,3,4,6,12,18,24,36,48,60,96,120,240,480,1200,2400];
 const barLabel = len => len >= 12 && len % 12 === 0 ? (len/12) + " ft" : toFrac16(len);
 function fit(pts, box){ /* uniform scale: same inches-per-pixel in every direction */
@@ -1752,9 +1790,9 @@ function elbow(c, alongPipe, alongTravel, legPipe, legTravel){
   const a = along(c, alongPipe, legPipe), b = along(c, alongTravel, legTravel);
   return `<path d="M${F(a[0])} ${F(a[1])} L${F(c[0])} ${F(c[1])} L${F(b[0])} ${F(b[1])}" fill="none" stroke="${C.fit}" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>`;
 }
-function drawViews(r, l, run, deg, cutOk, cut, to, travel, tru){
+function drawViews(r, l, run, cutOk, cut, to, travel, tru){
   const angTxt = $("ro-ang").options[$("ro-ang").selectedIndex].text;
-  /* ===== isometric 3D: equal scale on pipe, roll and rise axes ===== */
+  /* ===== 3D view (cavalier oblique, true scale on all three axes) ===== */
   {
     const svg = $("ro-3d"), W = 440, H = 250;
     /* cavalier oblique: pipe across, rise up, roll back at 35°, all three at full length (true scale) */
@@ -1786,13 +1824,13 @@ function drawViews(r, l, run, deg, cutOk, cut, to, travel, tru){
   }
   /* ===== flat views: exact true lengths ===== */
   {
-    const svg = $("ro-flat"), W = 440, H = 220, gap = 10, pw = (W - gap)/2, B = 0, Bx = pw + gap;
+    const svg = $("ro-flat"), W = 440, H = 220, gap = 10, pw = (W - gap)/2, Bx = pw + gap;
     let o = `<rect width="${W}" height="${H}" fill="${C.bg}"/><line x1="${F(pw+gap/2)}" y1="8" x2="${F(pw+gap/2)}" y2="${H-8}" stroke="${C.grid}"/>`;
     /* end view: looking down the pipe. Roll across, rise up, true offset is the diagonal */
     o += title(8, 16, "END VIEW · TRUE LENGTH");
     {
       const lp = Math.max(l, 0), rp = Math.max(r, 0);
-      const { k, S } = fit([[0,0],[lp,0],[lp,-rp],[0,-rp*0]], {x:B+30, y:34, w:pw-80, h:H-74});
+      const { k, S } = fit([[0,0],[lp,0],[lp,-rp]], {x:30, y:34, w:pw-80, h:H-74});
       const O = S([0,0]), Rr = S([lp,0]), T = S([lp,-rp]);
       if (l > 0) o += ln(O, Rr, C.roll, 2.4);
       if (r > 0) o += ln(Rr, T, C.rise, 2.4);
@@ -1874,12 +1912,13 @@ function roCalc(){
   $("ro-run").innerHTML = both(run);
   const ok = cut >= 1/32;
   $("ro-cut").innerHTML = ok ? both(cut) + (t === 0 ? `<small class="warn">Take-off is 0, so this is center to center. Enter your fitting's take-off before you cut.</small>` : "") : (t === 0 ? `<span class="warn">Offset too small to cut a piece. Check your numbers.</span>` : `<span class="warn">Too short to cut: the take-offs use up the travel. Try shallower fittings (22½° or 11¼°) or check your numbers.</span>`);
-  drawViews(r, l, run, deg, ok, cut, t, travel, tru);
+  drawViews(r, l, run, ok, cut, t, travel, tru);
 }
 document.querySelectorAll("#ro-mode button").forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
 ["ro-rise","ro-roll","ro-to"].forEach(id => { $(id).addEventListener("input", roCalc); $(id+"-f").addEventListener("change", roCalc); });
 $("ro-ang").addEventListener("change", roCalc);
 setMode(roMode);
+roReady = true;
 
 let fg = "";
 for (let i=1;i<=16;i++) fg += `<div class="${i%4===0?"q":""}"><b>${i===16?'1"':toFrac16(i/16)}</b><span>${(i/16).toFixed(4)}</span></div>`;
@@ -1902,11 +1941,11 @@ function fmtFtIn(x){
   return (neg && t16 ? "−" : "") + (ft ? ft + "' " : "") + ins;
 }
 function fiCalc(){
-  const raw = $("fi-expr").value.replace(/[″”]/g,'"').replace(/[′’]/g,"'").replace(/(\d)\s*ft\b/gi,"$1'").replace(/(\d)\s*in\b/gi,'$1"').replace(/[−–]/g,"-").replace(/\*/g,"x");
+  const raw = $("fi-expr").value.replace(/[″”]/g,'"').replace(/[′’]/g,"'").replace(/(\d)\s*ft\b/gi,"$1'").replace(/(\d)\s*in\b/gi,'$1"').replace(/[−–]/g,"-").replace(/\*/g,"x").replace(/(\d)\s*-\s*(\d+\/\d+)/g, "$1 $2");  /* 4-3/8 means 4 3/8 */
   const out = $("fi-out"), sub = $("fi-sub");
   if (!raw.trim()){ out.textContent = "—"; sub.textContent = ""; return; }
   const parts = raw.split(/\s*([+\-x×÷])\s*/i).map(p => p.trim());
-  if (parts[0] === "") parts.shift();
+  if (parts[0] === "") parts[0] = "0";  /* leading minus: treat as 0 - x */
   if (parts.length > 1 && parts[parts.length-1] === "") parts.pop();
   const fail = msg => { out.innerHTML = `<span class="warn">${msg}</span>`; sub.textContent = ""; };
   if (parts.length % 2 === 0) return fail("Finish the last measurement.");
@@ -1983,7 +2022,7 @@ let tvShape = "round";
 function tvCalc(){
   const a = val("tv-a"), b = val("tv-b"), h = val("tv-h"), el = $("tv-ans");
   const ok = a > 0 && h >= 0 && (tvShape === "round" || b > 0);
-  if (!ok){ el.innerHTML = `<span class="warn">Enter sizes over 0.</span>`; return; }
+  if (!ok){ el.innerHTML = `<span class="warn">Enter a diameter (or length and width) over 0.</span>`; return; }
   const in3 = tvShape === "round" ? Math.PI/4 * a*a * h : a*b*h, gal = in3/231;
   el.innerHTML = `${nf(gal,1)} gal<small>${nf(gal*3.78541,1)} L · ${Math.round(gal*8.34).toLocaleString()} lb of water</small>`;
 }
@@ -2003,8 +2042,8 @@ $("dec-ft").innerHTML = Array.from({length:6}, (_,i) => `<tr><td>${i+1}"</td><td
 /* ---------- DFU counter ---------- */
 /* [name, DFU, toilet?, min trap inches] */
 const FIX = [
-  ["Bathroom group (1.6 gpf toilet + lav + tub/shower)",5,"wc",3],["Toilet 1.6 gpf (not in a group)",3,"wc",3],["Lavatory",1,"",1.25],["Bathtub",2,"",1.5],["Shower (≤5.7 gpm)",2,"",2],
-  ["Kitchen sink",2,"",1.5],["Dishwasher, own drain",2,"",1.5],["Clothes washer",2,"",2],["Laundry tray",2,"",1.5],["Floor drain",2,"",2],["Bar sink (IRC lists 1)",2,"",1.5]
+  ["Bathroom group (1.6 gpf toilet + lav + tub/shower)",5,"wc",3],["Toilet 1.6 gpf (not in a group)",3,"wc",3],["Lavatory",1,"",1.25],["Bathtub",2,"",1.5],["Shower (≤5.7 gpm, 2\" trap per IRC)",2,"",2],
+  ["Kitchen sink",2,"",1.5],["Dishwasher, own drain",2,"",1.5],["Clothes washer",2,"",2],["Laundry tray",2,"",1.5],["Floor drain",2,"",2],["Bar sink (IPC 2, IRC 1)",2,"",1.5]
 ];
 const BRANCH = [[1.5,3],[2,6],[2.5,12],[3,20],[4,160]];
 const BD4 = [[2,21],[2.5,24],[3,42],[4,216],[5,480],[6,840]], BD8 = [[3,36],[4,180],[5,390],[6,700]];
@@ -2056,7 +2095,7 @@ function gasCalc(){
   $("g-der").innerHTML = pct ? `${pct.toFixed(1)}%` : "None";
   $("g-out").innerHTML = `${fmtInt(btu*(1-pct/100))} BTU/h`;
 }
-["g-btu"].forEach(id => $(id).addEventListener("input", gasCalc));
+$("g-btu").addEventListener("input", gasCalc);
 ["g-elev","g-hv"].forEach(id => $(id).addEventListener("change", gasCalc));
 gasCalc();
 
@@ -2111,7 +2150,7 @@ const CARDS = [
   ["Supply","Hot water limit at a shower valve?","120°F max (ASSE 1016 limit stop)"],
   ["Supply","Utah max flow: showerhead / lav faucet?","2.0 gpm / 1.5 gpm"],
   ["Supply","Plumbing nail plate trigger?","Pipe less than 1¼\" from the framing edge; 16 ga plate"],
-  ["Supply","Gas shield plates extend how far?","4\" past sole/top plates and each side of the member"],
+  ["Gas","Gas shield plates extend how far?","4\" past sole/top plates and each side of the member"],
   ["Supports","PEX ≤1\" horizontal support spacing?","32\""],
   ["Supports","Copper ≤1¼\" horizontal support spacing?","6 ft"],
   ["Supports","ABS / PVC horizontal support spacing?","4 ft"],
@@ -2133,7 +2172,7 @@ const CARDS = [
   ["Materials","Uponor PEX-a minimum bend radius?","6× OD"],
   ["Materials","Max lead in solder and flux?","0.2%"],
   ["Materials","CPVC ½–1\" cure before test above 60°F?","1 hour"],
-  ["Materials","Max bored hole in a 2×4 bearing stud?","40% of 3½\" = 1.4\""],
+  ["Holes","Max bored hole in a 2×4 bearing stud?","40% of 3½\" = 1.4\""],
   ["Safety","Trench depth that needs shoring, shielding or sloping?","5 ft or more, and shallower if the competent person sees cave-in risk"],
   ["Safety","Trench ladder rule?","4 ft deep or more: ladder within 25 ft"],
   ["Safety","Residential fall protection height?","6 ft"],
@@ -2142,27 +2181,26 @@ const CARDS = [
   ["License","Journeyman requirements?","576 classroom hr + 8,000 apprentice hr"],
   ["License","Residential journeyman requirements?","432 classroom hr + 6,000 apprentice hr"],
   ["License","How many apprentices per supervisor?","Up to 3"],
-  ["How","Why does a dripping RPZ drip?","A check is leaking; the relief valve dumps water instead of letting it flow back"],
-  ["How","Why does a vent protect a trap?","Lets air in so falling water can't siphon the seal"],
+  ["How it works","Why does a dripping RPZ drip?","A check is leaking; the relief valve dumps water instead of letting it flow back"],
+  ["How it works","Why does a vent protect a trap?","Lets air in so falling water can't siphon the seal"],
   ["Trim","Moen Posi-Temp cartridge?","1222 (it lives in the valve)"],
   ["Trim","Moen M-CORE 3-series cartridge?","1213 (comes with the trim)"],
   ["Trim","Can a Posi-Temp trim go on an M-CORE valve?","No. Trim must match the valve family"],
   ["Trim","Delta 13/14 series cartridge?","RP46074"],
   ["Trim","Delta MultiChoice universal rough valve?","R10000 (13/14, 17 or 17T trim)"],
   ["Trim","Delta tub spout distance below the valve?","8\"–18\" (beyond 18\": shower rise)"],
-  ["Trim","Pressure balance vs thermostatic?","PB equalizes pressures; thermostatic senses temperature"],
+  ["Trim","Pressure balance vs thermostatic?","Pressure balance equalizes pressures; thermostatic senses temperature"],
   ["Trim","Disposer + new dishwasher: what first?","Knock out the dishwasher plug in the disposer"],
   ["Trim","Angle stop outlet size for a faucet?","⅜\" OD compression"],
   ["Utah","Utah house code since 7/1/2026?","2021 IRC + Utah amendments (not the 2024 IRC)"],
   ["Utah","Can secondary water connect to culinary with a valve?","Never: that's a cross-connection"],
   ["Utah","Gas derate at Herriman (~5,000 ft)?","About 20% (5 × 4%), only if the appliance isn't already set up for altitude"],
-  ["How","Why is trap-to-vent distance limited?","Past it, the arm falls more than one pipe diameter, the vent opening drops below the weir, and the trap siphons (size × 4 ft at ¼\"/ft)"],
-  ["How","Why recheck a limit stop set in winter?","Warmer summer cold water makes the same stop run hotter"],
-  ["How","Why derate gas at altitude?","Less oxygen per ft³: full input burns dirty (soot, CO)"],
-  ["How","Why does a closed system need an expansion tank?","Water barely compresses; the tank's air cushion takes the expansion"],
-  ["How","Why are cold-climate roof vents upsized?","Frost from warm, wet vent air can seal a small pipe"],
-  ["How","Why pitch a frost-free hose bibb?","The seat is inside the warm wall; the outside barrel must drain"],
-  ["Safety","Trench under 5 ft: always OK unprotected?","No. Protect it if the competent person sees cave-in risk"],
+  ["How it works","Why is trap-to-vent distance limited?","Past it, the arm falls more than one pipe diameter, the vent opening drops below the weir, and the trap siphons (size × 4 ft at ¼\"/ft)"],
+  ["How it works","Why recheck a limit stop set in winter?","Warmer summer cold water makes the same stop run hotter"],
+  ["How it works","Why derate gas at altitude?","Less oxygen per ft³: full input burns dirty (soot, CO)"],
+  ["How it works","Why does a closed system need an expansion tank?","Water barely compresses; the tank's air cushion takes the expansion"],
+  ["How it works","Why are cold-climate roof vents upsized?","Frost from warm, wet vent air can seal a small pipe"],
+  ["How it works","Why pitch a frost-free hose bibb?","The seat is inside the warm wall; the outside barrel must drain"],
   ["Safety","You smell gas on the job. Do what?","Everyone out, no switches or flames, call from outside: Enbridge 1-800-767-1689 or 911"],
   ["Holes","Can you notch or drill an I-joist flange?","Never. Web holes only, per the brand's chart"],
   ["Holes","Max bored hole in a sawn floor joist?","⅓ of the depth, 2\" from the edges"],
@@ -2216,9 +2254,10 @@ $("fc-filter").addEventListener("change", fcDeal);
 $("fc-reset").addEventListener("click", fcDeal);
 fcDeal();
 
+IDX = null;  /* every table is rendered now: rebuild the search index on next use */
 apply();
 
-/* ---------- my files ---------- */
+/* ---------- 13 my files (online only) ---------- */
 const mineList = document.getElementById("list-mine");
 const statusEl = document.getElementById("f-status");
 const setStatus = (msg, k) => { statusEl.textContent = msg; statusEl.className = "status" + (k ? " " + k : ""); };
@@ -2232,7 +2271,7 @@ function renderMine(docs, canDelete){
       <td><a href="/_blob/${esc(v.asset)}" target="_blank" rel="noopener">${esc(v.name)} ↗</a> <span class="sub">· ${v.type === "application/pdf" ? "PDF" : "Photo"} · ${esc(fmtSize(v.size||0))} · ${esc(new Date(v.added).toLocaleDateString())}</span></td>
       <td>${canDelete ? `<button type="button" class="del" data-id="${esc(d.id)}" data-asset="${esc(v.asset)}">Remove</button>` : ""}</td></tr>`;
   }).join("");
-  apply();
+  IDX = null; apply();
 }
 (async () => {
   const use = n => (window.claude && claude.use) ? claude.use(n).catch(() => null) : Promise.resolve(null);
@@ -2276,13 +2315,13 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device */
-var BUILD = "plumbiverse-2026-10-11";
+var BUILD = "plumbiverse-2026-10-11c";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status"; note.style.cssText = "margin-top:4px;font-weight:600";
   if (foot) foot.appendChild(note);
   if (!("serviceWorker" in navigator)) { note.textContent = "This browser can't save the book for offline use."; return; }
-  navigator.serviceWorker.register("sw.js").then(function(){ return navigator.serviceWorker.ready; })
+  navigator.serviceWorker.register("sw.js?v=" + encodeURIComponent(BUILD)).then(function(){ return navigator.serviceWorker.ready; })
     .then(function(){ note.textContent = "✓ Saved on this device: works with no signal. Build " + BUILD; })
     .catch(function(){ note.textContent = "Couldn't save for offline. Open it once with signal."; });
   /* a new version took over in the background: offer a one-tap reload instead of silently showing stale pages */
