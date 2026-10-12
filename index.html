@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#16212b">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#07060f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,88 +12,112 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>Jobsite Plumbing Book</title>
-</head>
-<body>
-<noscript><div style="padding:12px;margin:12px;border:2px solid #b54708;background:#fbeadb;color:#16212b;font:15px/1.4 system-ui,sans-serif"><b>Calculators and tabs are off.</b> This viewer isn't running scripts. Open the book in Safari or Chrome.</div></noscript>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Monoton&family=Chakra+Petch:wght@600;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-/* Layout: a dense spec-sheet binder. Every section is a boxed table; sections flow in newspaper columns on wide screens, one column on phones. */
+/* Look: retro neon on a dark grid. Each group of tabs glows its own color (--acc), so you can tell where you are at a glance.
+   Layout: a dense spec-sheet binder. Every section is a boxed table; sections flow in newspaper columns on wide screens, one column on phones. */
 :root{
-  --paper:#eef1f4; --sheet:#ffffff; --ink:#16212b; --muted:#56636f; --rule:#d9dfe5; --edge:#8793a0;
-  --zebra:#f6f8fa; --line:#1d4e89; --line-soft:#e6eef7; --flag:#b54708; --flag-soft:#fbeadb; --ok:#2f7a4b;
-  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --paper:#07060f; --sheet:#0e0b1d; --ink:#ece9ff; --muted:#a29bd0; --rule:#251f47; --edge:#4b3f8a;
+  --zebra:#130f29; --line:#22e5ff; --line-soft:#0b2632; --flag:#ff3ea5; --flag-soft:#2b0a20; --ok:#39ff88; --warn:#ffe14d;
+  --cyan:#22e5ff; --pink:#ff3ea5; --green:#39ff88; --yellow:#ffe14d; --orange:#ff9a3c; --violet:#b77bff;
+  --acc:var(--cyan);
+  --glow:0 0 0 1px color-mix(in srgb,var(--acc) 70%,transparent),0 0 14px color-mix(in srgb,var(--acc) 28%,transparent);
+  --neon:"Monoton","Chakra Petch",Impact,sans-serif;
+  --display:"Chakra Petch","Arial Narrow",Arial,sans-serif;
   --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#0d1318; --sheet:#151d26; --ink:#e6ecf2; --muted:#9aa8b5; --rule:#26323e; --edge:#5f6e7d;
-  --zebra:#18212b; --line:#7fb0ea; --line-soft:#1b2a3a; --flag:#ff8a3d; --flag-soft:#35210f; --ok:#6cc48f; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --paper:#0d1318; --sheet:#151d26; --ink:#e6ecf2; --muted:#9aa8b5; --rule:#26323e; --edge:#5f6e7d;
-  --zebra:#18212b; --line:#7fb0ea; --line-soft:#1b2a3a; --flag:#ff8a3d; --flag-soft:#35210f; --ok:#6cc48f; color-scheme:dark}
+/* group colors */
+[data-group="rough"],section[data-sec="holes"],section[data-sec="field"],section[data-sec="sizing"],section[data-sec="materials"],section[data-sec="gas"]{--acc:var(--cyan)}
+[data-group="trim"],section[data-sec="trim"]{--acc:var(--pink)}
+[data-group="math"],section[data-sec="math"]{--acc:var(--green)}
+[data-group="utah"],section[data-sec="local"],section[data-sec="tests"]{--acc:var(--orange)}
+[data-group="calls"],section[data-sec="support"],section[data-sec="safety"]{--acc:var(--yellow)}
+[data-group="learn"],section[data-sec="how"],section[data-sec="study"],section[data-sec="words"],section[data-sec="code"],section[data-sec="career"]{--acc:var(--violet)}
+[data-group="mine"],section[data-sec="mine"]{--acc:var(--ink)}
+[data-group="all"]{--acc:var(--ink)}
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:13px;line-height:1.4;padding-inline:12px;padding-block:12px 32px}
+html{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:var(--body);font-size:13px;line-height:1.45;padding-inline:max(12px,env(safe-area-inset-left));padding-block:12px 32px;min-height:100vh;
+  background:
+    radial-gradient(120% 60% at 50% -10%,rgba(255,62,165,.16),transparent 60%),
+    radial-gradient(90% 50% at 50% 0%,rgba(34,229,255,.08),transparent 70%),
+    linear-gradient(rgba(183,123,255,.06) 1px,transparent 1px) 0 0/100% 32px,
+    linear-gradient(90deg,rgba(183,123,255,.06) 1px,transparent 1px) 0 0/32px 100%,
+    var(--paper);
+  background-attachment:fixed}
 .wrap{max-width:1180px;margin:0 auto}
 a{color:var(--line);text-decoration:none}
-a:hover{text-decoration:underline}
-:focus-visible{outline:2px solid var(--flag);outline-offset:1px}
+a:hover{text-decoration:underline;text-shadow:0 0 8px var(--line)}
+:focus-visible{outline:2px solid var(--warn);outline-offset:2px}
 b{font-weight:600}
+::selection{background:var(--pink);color:#000}
 
 /* header */
-.tb{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;border-bottom:2px solid var(--ink);padding-bottom:6px}
-.tb h1{font-family:var(--display);font-weight:700;font-size:22px;line-height:1;margin:0;text-transform:uppercase;letter-spacing:.01em}
-.tb .meta{font-family:var(--mono);font-size:11px;color:var(--muted)}
-.banner{font-size:12px;color:var(--ink);background:var(--flag-soft);border-left:3px solid var(--flag);padding:5px 8px;margin-top:8px}
+.tb{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;padding:6px 0 10px;border-bottom:2px solid var(--pink);box-shadow:0 8px 18px -12px var(--pink)}
+.tb h1{font-family:var(--neon);font-weight:400;font-size:clamp(22px,6.4vw,34px);line-height:1.05;margin:0;letter-spacing:.02em;color:#fff;
+  text-shadow:0 0 2px #fff,0 0 8px var(--pink),0 0 18px var(--pink),0 0 32px rgba(255,62,165,.6)}
+.tb .meta{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:.04em;text-shadow:0 0 6px rgba(34,229,255,.5)}
+.banner{font-size:12px;color:var(--ink);background:var(--flag-soft);border:1px solid var(--pink);border-radius:6px;padding:6px 10px;margin-top:10px;box-shadow:0 0 12px -4px var(--pink)}
 
-/* sticky tools */
-.tools{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;background:var(--paper);padding-block:8px;display:flex;flex-direction:column;gap:6px}
-#q{width:100%;font:inherit;font-size:14px;padding:7px 10px;min-height:36px;border:1px solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:3px}
-#q:focus{border-color:var(--line);outline:none}
-.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-right:24px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
-.tabs::-webkit-scrollbar{display:none}
-@media (min-width:760px){.tabs{flex-wrap:wrap;-webkit-mask-image:none;mask-image:none;padding-right:0}}
-.tabs button{flex:0 0 auto;font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:5px 10px;min-height:32px;border:1px solid var(--rule);background:var(--sheet);color:var(--muted);border-radius:3px;cursor:pointer}
-.tabs button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--sheet)}
-.no-hits{padding:12px;color:var(--muted);text-align:center;font-size:12px}
+/* sticky tools: search, group row, sub-tab row */
+.tools{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;background:linear-gradient(var(--paper) 85%,rgba(7,6,15,.0));padding-block:10px 12px;display:flex;flex-direction:column;gap:7px}
+#q{width:100%;font:inherit;font-size:14px;padding:8px 12px;min-height:38px;border:1px solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:6px}
+#q::placeholder{color:var(--muted)}
+#q:focus{border-color:var(--cyan);outline:none;box-shadow:0 0 0 1px var(--cyan),0 0 14px rgba(34,229,255,.35)}
+.tabs,.subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 24px 3px 2px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.tabs::-webkit-scrollbar,.subtabs::-webkit-scrollbar{display:none}
+@media (min-width:760px){.tabs,.subtabs{flex-wrap:wrap;-webkit-mask-image:none;mask-image:none;padding-right:2px}}
+.tabs button{flex:0 0 auto;font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;min-height:34px;border:1px solid color-mix(in srgb,var(--acc) 45%,transparent);background:var(--sheet);color:var(--acc);border-radius:999px;cursor:pointer;transition:box-shadow .15s,background .15s}
+.tabs button:hover{box-shadow:var(--glow)}
+.tabs button[aria-pressed="true"]{background:var(--acc);color:#07060f;border-color:var(--acc);box-shadow:0 0 16px color-mix(in srgb,var(--acc) 60%,transparent)}
+.subtabs{gap:4px}
+.subtabs button{flex:0 0 auto;font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;min-height:30px;border:0;border-bottom:2px solid transparent;background:none;color:var(--muted);cursor:pointer}
+.subtabs button[aria-pressed="true"]{color:var(--acc);border-bottom-color:var(--acc);text-shadow:0 0 8px color-mix(in srgb,var(--acc) 70%,transparent)}
+.tools.searching .tabs button[aria-pressed="true"]{background:var(--sheet);color:var(--acc);box-shadow:none}
+.tools.searching .subtabs{display:none}
+.no-hits{padding:14px;color:var(--muted);text-align:center;font-size:12px}
 
 /* flowing columns of sections */
-.book{columns:2 480px;column-gap:14px}
-section{break-inside:avoid;display:block;background:var(--sheet);border:1px solid var(--rule);margin:0 0 12px}
-.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:5px 8px 4px;border-bottom:2px solid var(--ink)}
-.sec-head h2{font-family:var(--display);font-weight:700;font-size:15px;line-height:1.1;text-transform:uppercase;letter-spacing:.03em;margin:0}
+.book{columns:2 480px;column-gap:16px}
+section{break-inside:avoid;display:block;background:var(--sheet);border:1px solid color-mix(in srgb,var(--acc) 55%,transparent);border-radius:8px;margin:0 0 14px;box-shadow:0 0 18px -8px color-mix(in srgb,var(--acc) 60%,transparent);overflow:hidden}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:7px 10px 6px;border-bottom:1px solid color-mix(in srgb,var(--acc) 55%,transparent);background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 14%,transparent),transparent 70%)}
+.sec-head h2{font-family:var(--display);font-weight:700;font-size:16px;line-height:1.1;text-transform:uppercase;letter-spacing:.05em;margin:0;color:var(--acc);text-shadow:0 0 8px color-mix(in srgb,var(--acc) 55%,transparent)}
 .sec-head small{font-size:11px;color:var(--muted);text-align:right}
-.note{font-size:11.5px;color:var(--muted);padding:5px 8px;margin:0;border-top:1px solid var(--rule)}
+.note{font-size:11.5px;color:var(--muted);padding:6px 10px;margin:0;border-top:1px solid var(--rule)}
 .note b{color:var(--ink)}
 
 /* tables */
 .x{overflow-x:auto}
 .t{width:100%;border-collapse:collapse;font-size:12.5px}
-.t th,.t td{padding:4px 8px;text-align:left;vertical-align:top}
-.t thead th{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--zebra);border-bottom:1px solid var(--rule)}
+.t th,.t td{padding:5px 10px;text-align:left;vertical-align:top}
+.t thead th{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--zebra);border-bottom:1px solid var(--rule)}
 .t tbody tr+tr>*{border-top:1px solid var(--rule)}
 .t tbody th{font-weight:600;width:30%;min-width:6.5rem}
-.t .k{font-family:var(--mono);font-size:11px;color:var(--line);white-space:nowrap;width:1%}
+.t .k{font-family:var(--mono);font-size:11px;color:var(--acc);white-space:nowrap;width:1%}
 .t .n,.t.num td:not(:first-child){font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .t.wrap .n{white-space:normal}
 .t .sub{color:var(--muted);font-size:11.5px}
-.ut{display:inline-block;font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.06em;color:var(--flag);border:1px solid var(--flag);border-radius:2px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:2px}
-.pn{display:inline-block;font-family:var(--mono);font-size:12px;background:var(--line-soft);border:1px solid var(--rule);border-radius:3px;padding:1px 6px;margin:1px 0;cursor:copy;white-space:nowrap;color:var(--ink)}
-.pn.copied{background:var(--ok);color:var(--sheet)}
+.ut{display:inline-block;font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.06em;color:var(--orange);border:1px solid var(--orange);border-radius:3px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:3px;text-shadow:0 0 6px rgba(255,154,60,.6)}
+.why{display:inline-block;font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.06em;color:var(--violet);border:1px solid var(--violet);border-radius:3px;padding:0 3px;line-height:1.35;vertical-align:1px;margin-right:3px}
+.pn{display:inline-block;font-family:var(--mono);font-size:12px;background:var(--line-soft);border:1px solid color-mix(in srgb,var(--cyan) 40%,transparent);border-radius:4px;padding:1px 6px;margin:1px 0;cursor:copy;white-space:nowrap;color:var(--ink)}
+.pn.copied{background:var(--ok);color:#07060f;border-color:var(--ok)}
 
 /* calculators */
-.calc{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;padding:8px;border-bottom:1px solid var(--rule)}
-.calc label{display:flex;flex-direction:column;gap:2px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);flex:1 1 110px;min-width:0}
-.calc input,.calc select{font-family:var(--mono);font-size:13px;padding:5px 8px;min-height:34px;border:1px solid var(--edge);background:var(--paper);color:var(--ink);border-radius:3px;width:100%;text-transform:none;letter-spacing:0}
-.ans{flex:2 1 180px;font-family:var(--display);font-weight:700;font-size:18px;line-height:1.15;color:var(--line);min-width:0}
-.ans small{display:block;font-family:var(--body);font-weight:400;font-size:11px;color:var(--muted)}
-.seg{display:flex;flex-wrap:wrap;gap:3px;padding:8px 8px 0}
-.seg button{font:inherit;font-size:12px;padding:4px 10px;min-height:30px;border:1px solid var(--rule);background:var(--paper);color:var(--muted);border-radius:3px;cursor:pointer}
-.seg button[aria-pressed="true"]{border-color:var(--line);color:var(--line);background:var(--line-soft);font-weight:600}
+.calc{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;padding:10px;border-bottom:1px solid var(--rule)}
+.calc label{display:flex;flex-direction:column;gap:3px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);flex:1 1 110px;min-width:0}
+.calc input,.calc select,.up input,.up select{font-family:var(--mono);font-size:13px;padding:5px 8px;min-height:34px;border:1px solid var(--edge);background:var(--paper);color:var(--ink);border-radius:5px;width:100%;text-transform:none;letter-spacing:0;min-width:0}
+.calc input:focus,.calc select:focus,.up input:focus,.up select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 1px var(--acc),0 0 10px color-mix(in srgb,var(--acc) 40%,transparent)}
+.ans{flex:2 1 180px;font-family:var(--display);font-weight:700;font-size:20px;line-height:1.15;color:var(--acc);min-width:0;text-shadow:0 0 10px color-mix(in srgb,var(--acc) 50%,transparent)}
+.ans small{display:block;font-family:var(--body);font-weight:400;font-size:11px;color:var(--muted);text-shadow:none}
+.seg{display:flex;flex-wrap:wrap;gap:4px;padding:10px 10px 0}
+.seg button{font:inherit;font-size:12px;padding:4px 10px;min-height:30px;border:1px solid var(--rule);background:var(--paper);color:var(--muted);border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{border-color:var(--acc);color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,transparent);font-weight:600;box-shadow:0 0 10px -2px color-mix(in srgb,var(--acc) 60%,transparent)}
 .calc label i{font-style:normal;text-transform:none;letter-spacing:0}
 .inch{display:flex;gap:4px}
 .inch input{flex:1 1 auto;min-width:0}
@@ -101,88 +125,102 @@ section{break-inside:avoid;display:block;background:var(--sheet);border:1px soli
 .ro label{flex:1 1 140px}
 .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:0;border:1px solid rgba(127,127,127,.5)}
 .sw.rise{background:#facc15}.sw.roll{background:#22c55e}.sw.fit{background:#ef4444}.sw.cut{background:#3b82f6}.sw.run{background:repeating-linear-gradient(90deg,#64748b 0 3px,#e2e8f0 3px 6px)}.sw.tru{background:#c084fc}
-.mode{display:flex;gap:0;padding:8px 8px 0}
-.mode button{flex:1 1 0;font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.04em;text-transform:uppercase;padding:6px 10px;min-height:34px;border:1px solid var(--edge);background:var(--paper);color:var(--muted);cursor:pointer}
-.mode button:first-child{border-radius:3px 0 0 3px}.mode button:last-child{border-radius:0 3px 3px 0;border-left:0}
-.mode button[aria-pressed="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
-.ro-stage{background:#0b1220;color:#cbd5e1;border-block:1px solid #1e293b}
+.mode{display:flex;gap:0;padding:10px 10px 0}
+.mode button{flex:1 1 0;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.05em;text-transform:uppercase;padding:6px 10px;min-height:34px;border:1px solid var(--edge);background:var(--paper);color:var(--muted);cursor:pointer}
+.mode button:first-child{border-radius:6px 0 0 6px}.mode button:last-child{border-radius:0 6px 6px 0;border-left:0}
+.mode button[aria-pressed="true"]{background:var(--acc);color:#07060f;border-color:var(--acc);box-shadow:0 0 14px -2px color-mix(in srgb,var(--acc) 70%,transparent)}
+.ro-stage{background:#07060f;color:#cbd5e1;border-block:1px solid var(--rule)}
 #ro-3d,#ro-flat{width:100%;max-width:560px;height:auto;display:block;margin:0 auto}
-#ro-flat{border-top:1px solid #1e293b}
+#ro-flat{border-top:1px solid var(--rule)}
 .ro-view{display:flex;justify-content:center;gap:6px;padding:4px 8px}
-.ro-view button{font:inherit;font-size:12px;padding:4px 12px;min-height:32px;border:1px solid #334155;background:#111a2b;color:#cbd5e1;border-radius:3px;cursor:pointer}
-.ro-view button[aria-pressed="true"]{background:#e2e8f0;color:#0b1220;border-color:#e2e8f0;font-weight:600}
+.ro-view button{font:inherit;font-size:12px;padding:4px 12px;min-height:32px;border:1px solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:999px;cursor:pointer}
+.ro-view button[aria-pressed="true"]{background:var(--acc);color:#07060f;border-color:var(--acc);font-weight:600}
 .ro-stage.big{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;justify-content:center;padding:env(safe-area-inset-top,0px) 8px env(safe-area-inset-bottom,0px);overflow:auto}
 .ro-stage.big #ro-3d,.ro-stage.big #ro-flat{max-width:none;width:100%;max-height:44vh}
-@media (pointer:coarse){.ro-view button{min-height:40px;padding-inline:16px}}
 .ro-key{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:center;padding:2px 8px 8px;font-size:11px;color:#cbd5e1}
 .ro-key .sw{border-color:#334155}
 .ro-out td.big{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.2;white-space:nowrap;font-variant-numeric:tabular-nums}
 .ro-out td.big small{display:block;font-family:var(--mono);font-weight:500;font-size:10.5px;color:var(--muted)}
-.ro-out tr.hit td.big{color:var(--line);font-size:22px}
+.ro-out tr.hit td.big{color:var(--acc);font-size:23px;text-shadow:0 0 10px color-mix(in srgb,var(--acc) 50%,transparent)}
 .ro-out tr.hit th{font-size:13px}
 .ro-out td.sub{font-size:11px}
 .ro-out td.big small.warn{color:var(--flag);display:block;font-family:var(--body);font-size:11px;font-weight:600;white-space:normal;max-width:16rem;margin-top:2px}
 .ro-out .warn{color:var(--flag);font-family:var(--body);font-size:12px;font-weight:600;white-space:normal}
+#psi-chart{width:100%;height:auto;display:block;padding:4px 4px 0}
+section[data-sec="support"] td.sub,section[data-sec="local"] td:last-child{overflow-wrap:anywhere}
+section[data-sec="local"] td:first-child{min-width:6.8rem;width:28%}
+.frac{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.frac div{display:flex;justify-content:space-between;gap:4px;padding:4px 8px;border-top:1px solid var(--rule);border-left:1px solid var(--rule);font-size:12px;font-variant-numeric:tabular-nums;min-width:0}
+.frac div:nth-child(4n+1){border-left:0}
+.frac div:nth-child(-n+4){border-top:0}
+@media (max-width:420px){.frac{grid-template-columns:repeat(2,minmax(0,1fr))}.frac div:nth-child(n){border-left:1px solid var(--rule);border-top:1px solid var(--rule)}.frac div:nth-child(2n+1){border-left:0}.frac div:nth-child(-n+2){border-top:0}}
+.frac span{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.frac .q{background:color-mix(in srgb,var(--acc) 10%,transparent)}
+.frac .q b{color:var(--acc)}
+
+/* checklists (trim-out) */
+.chk{list-style:none;margin:0;padding:4px 0}
+.chk li{display:grid;grid-template-columns:28px 1fr;gap:4px;padding:6px 10px;border-top:1px solid var(--rule)}
+.chk li:first-child{border-top:0}
+.chk li::before{content:counter(c);counter-increment:c;font-family:var(--mono);font-size:11px;color:var(--acc);border:1px solid var(--acc);border-radius:50%;width:20px;height:20px;display:grid;place-items:center;box-shadow:0 0 8px -2px var(--acc)}
+.chk{counter-reset:c}
+
+/* my files */
+.up{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;padding:10px;border-bottom:1px solid var(--rule)}
+.up label{display:flex;flex-direction:column;gap:3px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
+.up input,.up select{font-family:var(--body)}
+.up .full{grid-column:1 / -1}
+.up .act{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;background:var(--pink);color:#07060f;border:0;border-radius:999px;padding:6px 16px;min-height:34px;cursor:pointer;box-shadow:0 0 14px -2px var(--pink)}
+.btn:disabled{opacity:.5;cursor:default}
+.status{font-size:12px;color:var(--muted)}
+.status.err{color:var(--flag)} .status.good{color:var(--ok)}
+.del{font:inherit;font-size:11px;background:none;border:1px solid var(--edge);color:var(--muted);border-radius:999px;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.del.confirm{border-color:var(--flag);color:var(--flag)}
+@media (max-width:480px){.up{grid-template-columns:1fr}}
+
+.step{display:inline-flex;align-items:stretch;border:1px solid var(--edge);border-radius:6px;overflow:hidden}
+.step button{font:inherit;font-weight:700;font-size:15px;width:30px;min-height:30px;border:0;background:var(--zebra);color:var(--acc);cursor:pointer}
+.step input{width:40px;text-align:center;font-family:var(--mono);font-size:13px;border:0;border-inline:1px solid var(--rule);background:var(--sheet);color:var(--ink);-moz-appearance:textfield}
+.step input::-webkit-outer-spin-button,.step input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.t.dfu td:first-child{white-space:normal}
+.linkish{font:inherit;font-size:inherit;background:none;border:0;padding:0;color:var(--line);text-decoration:underline;cursor:pointer}
+.fc{padding:12px;display:flex;flex-direction:column;gap:10px}
+.fc-meta{display:flex;justify-content:space-between;font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fc-card{display:flex;flex-direction:column;justify-content:center;gap:10px;min-height:160px;padding:16px;border:1px solid var(--acc);border-radius:10px;background:radial-gradient(120% 100% at 50% 0%,color-mix(in srgb,var(--acc) 14%,transparent),var(--zebra));color:var(--ink);font:inherit;text-align:center;cursor:pointer;box-shadow:0 0 18px -6px var(--acc)}
+.fc-q{font-size:16px;font-weight:600;line-height:1.35}
+.fc-a{font-family:var(--display);font-weight:700;font-size:22px;line-height:1.2;color:var(--acc);text-shadow:0 0 10px color-mix(in srgb,var(--acc) 60%,transparent)}
+.fc-hint{font-size:11px;color:var(--muted)}
+.fc-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fc-btns button{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.05em;text-transform:uppercase;min-height:40px;border-radius:999px;cursor:pointer;border:1px solid var(--edge);background:var(--sheet);color:var(--ink)}
+.fc-btns .fc-got{background:var(--ok);border-color:var(--ok);color:#07060f;box-shadow:0 0 12px -3px var(--ok)}
+.fc-btns .fc-miss{color:var(--flag);border-color:var(--flag)}
+.fc-btns button:disabled{opacity:.35;cursor:default;box-shadow:none}
+.fc-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.fc-foot select{font:inherit;font-size:12px;padding:4px 6px;border:1px solid var(--edge);border-radius:5px;background:var(--paper);color:var(--ink)}
+footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid var(--rule);padding-top:10px;margin-top:6px}
+#offline-status button{font:inherit;color:#07060f;background:var(--ok);border:0;border-radius:999px;padding:3px 10px;margin-left:6px;cursor:pointer}
+
 /* phones and tablets: 16px inputs stop iOS from zooming on tap; bigger targets for thumbs */
 @media (pointer:coarse){
   #q,.calc input,.calc select,.up input,.up select{font-size:16px;min-height:42px}
-  .tabs button{min-height:38px}
+  .tabs button{min-height:40px}
+  .subtabs button{min-height:38px}
   .seg button,.mode button{min-height:40px}
+  .ro-view button{min-height:40px;padding-inline:16px}
   .inch select{flex-basis:5.2rem;width:5.2rem}
   .pn{padding:6px 9px;margin:2px 0}
-  .tabs button{min-height:40px}
   .step input{font-size:16px;width:48px}
   .step button{width:42px;min-height:42px}
   .fc-foot select{font-size:16px;min-height:40px}
   .fc-btns button{min-height:48px}
   .linkish{padding:10px 4px}
 }
-#psi-chart{width:100%;height:auto;display:block;padding:4px 4px 0}
-section[data-sec="support"] td.sub{overflow-wrap:anywhere}
-.frac{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
-.frac div{display:flex;justify-content:space-between;gap:4px;padding:3px 6px;border-top:1px solid var(--rule);border-left:1px solid var(--rule);font-size:12px;font-variant-numeric:tabular-nums;min-width:0}
-.frac div:nth-child(4n+1){border-left:0}
-.frac div:nth-child(-n+4){border-top:0}
-@media (max-width:420px){.frac{grid-template-columns:repeat(2,minmax(0,1fr))}.frac div:nth-child(n){border-left:1px solid var(--rule);border-top:1px solid var(--rule)}.frac div:nth-child(2n+1){border-left:0}.frac div:nth-child(-n+2){border-top:0}}
-.frac span{font-family:var(--mono);font-size:11px;color:var(--muted)}
-.frac .q{background:var(--line-soft)}
-
-/* my files */
-.up{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;padding:8px;border-bottom:1px solid var(--rule)}
-.up label{display:flex;flex-direction:column;gap:2px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);min-width:0}
-.up input,.up select{font:inherit;font-size:13px;padding:5px 8px;min-height:34px;border:1px solid var(--edge);background:var(--paper);color:var(--ink);border-radius:3px;width:100%;text-transform:none;letter-spacing:0;min-width:0}
-.up .full{grid-column:1 / -1}
-.up .act{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.btn{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.05em;text-transform:uppercase;background:var(--flag);color:var(--sheet);border:0;border-radius:3px;padding:6px 14px;min-height:34px;cursor:pointer}
-.btn:disabled{opacity:.5;cursor:default}
-.status{font-size:12px;color:var(--muted)}
-.status.err{color:var(--flag)} .status.good{color:var(--ok)}
-.del{font:inherit;font-size:11px;background:none;border:1px solid var(--edge);color:var(--muted);border-radius:3px;padding:3px 8px;cursor:pointer;white-space:nowrap}
-.del.confirm{border-color:var(--flag);color:var(--flag)}
-@media (max-width:480px){.up{grid-template-columns:1fr}}
-
-.step{display:inline-flex;align-items:stretch;border:1px solid var(--edge);border-radius:3px;overflow:hidden}
-.step button{font:inherit;font-weight:700;font-size:15px;width:30px;min-height:30px;border:0;background:var(--zebra);color:var(--ink);cursor:pointer}
-.step input{width:40px;text-align:center;font-family:var(--mono);font-size:13px;border:0;border-inline:1px solid var(--rule);background:var(--sheet);color:var(--ink);-moz-appearance:textfield}
-.step input::-webkit-outer-spin-button,.step input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.t.dfu td:first-child{white-space:normal}
-.linkish{font:inherit;font-size:inherit;background:none;border:0;padding:0;color:var(--line);text-decoration:underline;cursor:pointer}
-.fc{padding:10px;display:flex;flex-direction:column;gap:8px}
-.fc-meta{display:flex;justify-content:space-between;font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
-.fc-card{display:flex;flex-direction:column;justify-content:center;gap:10px;min-height:150px;padding:16px;border:1px solid var(--edge);border-radius:4px;background:var(--zebra);color:var(--ink);font:inherit;text-align:center;cursor:pointer}
-.fc-q{font-size:16px;font-weight:600;line-height:1.35}
-.fc-a{font-family:var(--display);font-weight:700;font-size:21px;line-height:1.2;color:var(--line)}
-.fc-hint{font-size:11px;color:var(--muted)}
-.fc-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.fc-btns button{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;min-height:40px;border-radius:3px;cursor:pointer;border:1px solid var(--edge);background:var(--sheet);color:var(--ink)}
-.fc-btns .fc-got{background:var(--ok);border-color:var(--ok);color:var(--sheet)}
-.fc-btns .fc-miss{color:var(--flag);border-color:var(--flag)}
-.fc-btns button:disabled{opacity:.35;cursor:default}
-.fc-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
-.fc-foot select{font:inherit;font-size:12px;padding:4px 6px;border:1px solid var(--edge);border-radius:3px;background:var(--paper);color:var(--ink)}
-footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid var(--rule);padding-top:8px;margin-top:4px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+</head>
+<body>
+<noscript><div style="padding:12px;margin:12px;border:2px solid #ff3ea5;background:#2b0a20;color:#ece9ff;font:15px/1.4 system-ui,sans-serif"><b>Calculators and tabs are off.</b> This viewer isn't running scripts. Open the book in Safari or Chrome.</div></noscript>
 
 <div class="wrap">
   <header class="tb">
@@ -192,25 +230,18 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   <div class="banner"><b>Which code?</b> Houses: <b>2021 IRC</b> plumbing chapters + Utah amendments. Other buildings: <b>2024 IPC</b>. Gas: <b>2024 IFGC</b>. Tables here are IPC, usually the safe side. <span class="ut">UT</span> = Utah amendment; ask your inspector when in doubt.</div>
 
   <div class="tools">
-    <input id="q" type="search" placeholder="Search: hole, TJI, vent, 811…" aria-label="Search the book">
-    <div class="tabs" role="group" aria-label="Sections">
-      <button type="button" data-tab="all" aria-pressed="true">All</button>
-      <button type="button" data-tab="holes" aria-pressed="false">Joist holes</button>
-      <button type="button" data-tab="tests" aria-pressed="false">Tests &amp; calls</button>
-      <button type="button" data-tab="math" aria-pressed="false">Field math</button>
-      <button type="button" data-tab="sizing" aria-pressed="false">Sizing</button>
-      <button type="button" data-tab="field" aria-pressed="false">Code rules</button>
-      <button type="button" data-tab="materials" aria-pressed="false">Materials</button>
-      <button type="button" data-tab="gas" aria-pressed="false">Gas &amp; heaters</button>
-      <button type="button" data-tab="how" aria-pressed="false">Info</button>
-      <button type="button" data-tab="support" aria-pressed="false">Support lines</button>
-      <button type="button" data-tab="safety" aria-pressed="false">Safety</button>
-      <button type="button" data-tab="study" aria-pressed="false">Study</button>
-      <button type="button" data-tab="mine" aria-pressed="false">My files</button>
-      <button type="button" data-tab="code" aria-pressed="false">Code links</button>
-      <button type="button" data-tab="career" aria-pressed="false">License</button>
-      <button type="button" data-tab="words" aria-pressed="false">Glossary</button>
+    <input id="q" type="search" placeholder="Search: hole, TJI, vent, Moen, 811…" aria-label="Search the book">
+    <div class="tabs" role="group" aria-label="Book sections">
+      <button type="button" data-group="all" aria-pressed="true">All</button>
+      <button type="button" data-group="rough" aria-pressed="false">Rough-in</button>
+      <button type="button" data-group="trim" aria-pressed="false">Trim</button>
+      <button type="button" data-group="math" aria-pressed="false">Field math</button>
+      <button type="button" data-group="utah" aria-pressed="false">Utah</button>
+      <button type="button" data-group="calls" aria-pressed="false">Calls &amp; safety</button>
+      <button type="button" data-group="learn" aria-pressed="false">Learn</button>
+      <button type="button" data-group="mine" aria-pressed="false">My files</button>
     </div>
+    <div class="subtabs" role="group" aria-label="Pages in this section" hidden></div>
   </div>
   <div class="no-hits" hidden></div>
 
@@ -249,6 +280,55 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
   <section data-sec="holes">
     <div class="sec-head"><h2>Hole charts &amp; guides</h2><small>Official PDFs</small></div>
     <div class="x"><table class="t"><tbody id="list-holes"></tbody></table></div>
+  </section>
+
+  <section data-sec="local" data-kw="city inspection schedule herriman lehi saratoga springs eagle mountain west jordan south jordan park city salt lake county msd">
+    <div class="sec-head"><h2>City inspections</h2><small>How each city books them</small></div>
+    <div class="x"><table class="t">
+      <thead><tr><th>City</th><th>How to book · what's different</th></tr></thead>
+      <tbody>
+        <tr><td><b>Herriman</b></td><td><span class="pn">801-446-5327</span><div class="sub">Call one working day ahead, before 4 pm. Subrough: 10 ft water or 5 psi, 15 min. Gas 5 psi, 15 min. Shower pan water test. Separate secondary-water connection inspection. Meter is on the Public Works final.</div></td></tr>
+        <tr><td><b>Lehi</b></td><td><span class="pn">385-201-1035</span><div class="sub">Phone only: no voicemail, email or online booking. 24 hr notice. Lists a 30" minimum frost line. Not-ready re-inspections get a fee.</div></td></tr>
+        <tr><td><b>Saratoga Springs</b></td><td><a href="mailto:buildinginspectionrequest@saratogasprings-ut.gov">Email request ↗</a><div class="sub">One business day ahead: by 5 pm Mon–Thu, 4 pm Fri. No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test set).</div></td></tr>
+        <tr><td><b>Eagle Mountain</b></td><td><a href="mailto:buildinginspections@eaglemountain.gov">Email request ↗</a><div class="sub">Include the permit number. No confirmation email back = you're not on the schedule. First come, first served.</div></td></tr>
+        <tr><td><b>West Jordan</b></td><td><span class="pn">801-569-5050</span><div class="sub">Building dept: inspection requirements and status. Permit Center M–F 8–5.</div></td></tr>
+        <tr><td><b>South Jordan</b></td><td><a href="https://cityview.southjordanutah.gov/cityviewportal" target="_blank" rel="noopener">CityView portal ↗</a><div class="sub">Permits and inspections online.</div></td></tr>
+        <tr><td><b>Park City</b></td><td><span class="pn">435-615-5101</span><div class="sub">Book in the City Inspect app by 3 pm for next day. AM 8–12, PM 12–4. Plans + permit on paper on site. Deep snow: confirm vent height.</div></td></tr>
+        <tr><td><b>Unincorporated SL County</b></td><td><a href="https://msd.utah.gov/205/Building-Permits-Inspections" target="_blank" rel="noopener">MSD permits &amp; inspections ↗</a><div class="sub">Greater Salt Lake Municipal Services District (Kearns, Magna, Copperton, etc.).</div></td></tr>
+        <tr><td><b>Salt Lake City</b></td><td><span class="sub">See <b>Tests &amp; calls → Who to call</b>.</span></td></tr>
+      </tbody></table></div>
+    <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct 2026; your super's schedule and the city site win.</p>
+  </section>
+
+  <section data-sec="local" data-kw="secondary water pressurized irrigation pi purple non-potable cross connection culinary sprinkler">
+    <div class="sec-head"><h2>Secondary water (PI)</h2><small>Very Utah</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>What it is</th><td>Pressurized irrigation: untreated canal or reservoir water for lawns, in its own pipes. Most new subdivisions here have it. Separate box and meter near the front property line.</td></tr>
+        <tr><th>The hard rule</th><td><b>Never</b> connect secondary to culinary (drinking) water, not even with a valve (Utah Code 19-4-112). That's a cross-connection.</td></tr>
+        <tr><th>Pressure</th><td>Can run 40–125 psi depending on lot elevation (Springville's numbers). Over what the sprinklers need: pressure reducing on the irrigation side.</td></tr>
+        <tr><th>Marking</th><td>Non-potable piping gets identified so nobody taps it for drinking; purple is the usual color. Follow your city's standard.</td></tr>
+        <tr><th>Inspection</th><td>Some cities inspect the sprinkler-to-secondary-box connection separately (Herriman lists it).</td></tr>
+        <tr><th><span class="why">WHY</span>Why care?</th><td>Canal water can carry bacteria and fertilizer. One wrong hookup and a whole neighborhood's drinking water can get it.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="local" data-kw="elevation altitude derate gas city herriman lehi heber tooele logan cedar st george">
+    <div class="sec-head"><h2>Elevation &amp; gas derate</h2><small>4% per 1,000 ft, above 2,000 ft</small></div>
+    <div class="x"><table class="t num"><thead><tr><th>Place</th><th>≈ Elevation</th><th>Derate</th><th>100k BTU/h →</th></tr></thead><tbody id="elev-rows"></tbody></table></div>
+    <p class="note">Rule of thumb only. Most appliances sold here are set up or listed for altitude; <b>the maker's altitude instructions win</b>. Calculator: <b>Rough-in → Gas</b>.</p>
+  </section>
+
+  <section data-sec="local" data-kw="code adoption 2024 ipc 2021 irc july 2026 utah amendments 15a">
+    <div class="sec-head"><h2>Utah's code, right now</h2><small>Effective 7/1/2026</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Houses</th><td><b>2021 IRC</b> still. Utah did <b>not</b> move to the 2024 IRC.</td></tr>
+        <tr><th>Everything else</th><td><b>2024</b> IBC, IPC, IMC, IFGC, IECC. 2023 NEC. No grace period.</td></tr>
+        <tr><th>Utah changes</th><td>Amendments live in Utah Code Title 15A, chapter 3 (marked <span class="ut">UT</span> in this book).</td></tr>
+        <tr><th>School vs. job</th><td>MTECH teaches from the IPC. On a house the inspector enforces IRC plumbing chapters + Utah amendments. Most numbers match; when they don't, the IRC wins on a house.</td></tr>
+      </tbody></table></div>
+    <p class="note">Links: <b>Learn → Code links</b>.</p>
   </section>
 
   <section data-sec="tests">
@@ -350,7 +430,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
       </tbody></table></div>
   </section>
 
-  <section data-sec="math" data-search="offset rolling roll rise travel run setback take-off cut length 45 fitting">
+  <section data-sec="math" data-kw="offset rolling roll rise travel run setback take-off cut length 45 fitting">
     <div class="sec-head"><h2>Offset calculator</h2><small>Inches · answers to nearest ¹⁄₁₆"</small></div>
     <div class="mode" id="ro-mode" role="group" aria-label="Offset type">
       <button type="button" data-mode="simple" aria-pressed="false">Simple offset</button>
@@ -716,8 +796,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     <div class="calc">
       <label for="g-btu">Nameplate BTU/h<input id="g-btu" type="number" inputmode="numeric" min="0" step="any" value="40000"></label>
       <label for="g-elev">Elevation (ft)<select id="g-elev">
-        <option value="0">Under 2,000 ft</option><option value="2860">St. George ≈2,860</option><option value="4226" selected>SLC ≈4,230</option>
-        <option value="4300">Ogden ≈4,300</option><option value="4551">Provo ≈4,550</option><option value="6936">Park City ≈6,940</option></select></label>
+</select></label>
       <label for="g-hv">Gas<select id="g-hv">
         <option value="1000" selected>Natural, 1,000 BTU/ft³ (sizing tables)</option><option value="1049">Natural, 1,049 (Utah delivered avg)</option><option value="2500">Propane, 2,500 BTU/ft³</option></select></label>
     </div>
@@ -757,6 +836,67 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><th>Hardness</th><td>Salt Lake City treatment plants about <b>8–12 grains/gal</b>; some wells over 30. Jordan Valley sources average 10–12. Anything over 7 counts as hard.</td></tr>
         <tr><th>What it means</th><td>Scale in tanks and tankless heat exchangers, ticking and rumbling heaters. Flush tanks yearly; descale tankless per the maker. If a softener goes in, check the anode more often.</td></tr>
       </tbody></table></div>
+  </section>
+
+  <section data-sec="trim" data-kw="trim valve match identify which brand moen delta kohler pfister grohe american standard rough body">
+    <div class="sec-head"><h2>Match trim to the valve</h2><small>Read the valve first</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The rule</th><td>Trim has to match the <b>brand and the valve family</b> already in the wall. A Moen trim won't go on a Delta valve, and even inside one brand most families don't cross (Moen Posi-Temp trim won't fit an M-CORE valve).</td></tr>
+        <tr><th>ID the valve</th><td>Brand and model cast or printed on the body, the plaster guard or the test cap. The box or spec sheet at the house. The builder's fixture selection sheet. Pull a cartridge and read its stamp.</td></tr>
+        <tr><th>Where's the cartridge?</th><td>Some families ship it <b>in the valve</b> (Moen Posi-Temp, Kohler Rite-Temp). Others ship it <b>with the trim</b> (Moen M-CORE, Delta MultiChoice), so a "universal" valve becomes a pressure-balance or thermostatic shower depending on the trim you buy.</td></tr>
+        <tr><th><span class="why">WHY</span>Pressure balance</th><td>A spool slides to keep hot and cold <b>pressures</b> equal. Someone flushes, cold pressure drops, the spool cuts hot too, so nobody gets scalded. One handle = temperature (and sometimes volume). ASSE 1016.</td></tr>
+        <tr><th><span class="why">WHY</span>Thermostatic</th><td>A wax or bimetal element senses the <b>actual water temperature</b> and mixes to hold it. Usually lets you set volume separately. Costs more, holds temperature tighter.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="trim" data-kw="cartridge 1222 1212 1213 1225 rp46074 rp46463 rp47201 posi-temp posi temp m-core mcore moentrol multichoice r10000 rite-temp 8304 0x8 flash ru101 grohflex 35026000 universal">
+    <div class="sec-head"><h2>Shower valve families</h2><small>Valve · trim · cartridge</small></div>
+    <div class="x"><table class="t">
+      <thead><tr><th>Valve in the wall</th><th>Trim that fits</th><th>Cartridge</th></tr></thead>
+      <tbody>
+        <tr><td><b>Moen M-CORE</b><div class="sub">U-series rough, M-PACT system</div></td><td>M-CORE <b>2-series</b> (temp only) or <b>3-series</b> (volume + temp). Upgrade 2 → 3 without opening the wall: new handle, escutcheon, cartridge.</td><td class="n">1212 (2-ser)<br>1213 (3-ser)<div class="sub">with trim</div></td></tr>
+        <tr><td><b>Moen Posi-Temp</b><div class="sub">since 1985</div></td><td>Posi-Temp trim only. Rotate handle = temperature; no volume control.</td><td class="n">1222<div class="sub">in valve</div></td></tr>
+        <tr><td><b>Moen Moentrol</b><div class="sub">since 1970s</div></td><td>Moentrol trim only. Push/pull = volume, rotate = temp.</td><td class="n">1225<div class="sub">in valve</div></td></tr>
+        <tr><td><b>Delta MultiChoice Universal</b><div class="sub">R10000 series</div></td><td><b>13/14</b> series (pressure balance), <b>17</b> series (separate volume + temp), <b>17T</b> (thermostatic). Each trim comes with its cartridge. With stops: R10000-UNWS. Thin-wall/fiberglass: UNWSBXT.</td><td class="n">RP46074<br>RP46463<br>RP47201<div class="sub">with trim</div></td></tr>
+        <tr><td><b>Kohler Rite-Temp</b><div class="sub">K-8304 valve + cartridge kit</div></td><td>Kohler Rite-Temp trims. ½" universal NPT/sweat, stops built in. Adjustable high-limit stop.</td><td class="sub">In the valve kit</td></tr>
+        <tr><td><b>Pfister 0X8</b><div class="sub">0X8-310A</div></td><td>Pfister trims made for the 0X8 valve (trim sold separately).</td><td class="sub">Pressure balance, in valve</td></tr>
+        <tr><td><b>American Standard Flash</b><div class="sub">RU101 rough</div></td><td>American Standard trims for the Flash valve. One cartridge = ceramic mixing disc + balancing spool.</td><td class="sub">In valve</td></tr>
+        <tr><td><b>GROHE GrohFlex</b><div class="sub">Universal rough-in box 35026000</div></td><td>GrohFlex pressure-balance or thermostatic kits. The control module ships with the trim. Stops and a flushing plug built in.</td><td class="sub">With trim</td></tr>
+      </tbody></table></div>
+    <p class="note">Part numbers checked on maker and supplier pages, Oct 2026. Models change; the box and the maker's site win. Phone numbers: <b>Calls &amp; safety → Support lines</b>.</p>
+  </section>
+
+  <section data-sec="trim" data-kw="trim out shower tub valve install steps flush limit stop 120 hot cold reversed escutcheon spout shower rise">
+    <div class="sec-head"><h2>Trim out a shower / tub valve</h2><small>Do it in this order</small></div>
+    <ol class="chk">
+      <li><span><b>Flush the lines first.</b> Run water through the valve with the test cap or flush plug off, before the cartridge goes in. Rough-in debris is the #1 cartridge killer.</span></li>
+      <li><span><b>Check wall depth.</b> Pull the plaster guard and confirm the finished wall is inside the valve's depth range. Too deep needs the maker's extension kit; too shallow and the handle won't seat.</span></li>
+      <li><span><b>Cartridge in, hot on the left.</b> Follow the trim's sheet for orientation and the retaining clip or bonnet nut.</span></li>
+      <li><span><b>Set the limit stop.</b> Run full hot, put a thermometer in the stream, set the stop so it tops out at <b>120°F or less</b> (ASSE 1016 / 1070). <span class="why">WHY</span> Utah winters change incoming water temp, so the heater set point matters too.</span></li>
+      <li><span><b>Hot and cold backwards?</b> Fix it at the cartridge, not the handle. Moen 1222: rotate the stem 180°. Others: follow the maker's reversal steps.</span></li>
+      <li><span><b>Tub spout.</b> Match the stub-out to the spout (slip-on vs ½" IPS threaded, length per its sheet). Delta: spout 8"–18" below the valve or you get <b>shower rise</b> (water creeps out the head). Most makers want metal, not PEX, to a diverter spout.</span></li>
+      <li><span><b>Escutcheon.</b> Gasket or caulk per the sheet. Many makers say leave the bottom unsealed so any leak shows instead of rotting the wall.</span></li>
+      <li><span><b>Test.</b> Every function, every diverter position, look behind the escutcheon for drips, then a flush-test: someone flushes a toilet while you feel the temperature.</span></li>
+    </ol>
+  </section>
+
+  <section data-sec="trim" data-kw="finish trim toilet lav faucet kitchen disposer dishwasher knockout angle stop supply wax ring closet bolts high loop air gap">
+    <div class="sec-head"><h2>Finish: the rest of the house</h2><small>Common trim-day catches</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Angle stops</th><td>½" inlet (sweat, CPEX, compression) to <b>⅜" OD compression</b> out. Toilet supplies end in a ⅞" ballcock nut.</td></tr>
+        <tr><th>Toilet</th><td>Measure rough first (12" typical). Flange on top of the finished floor. Snug closet bolts side to side, a little at a time; over-torque cracks china. Ask the builder whether they want the base caulked.</td></tr>
+        <tr><th>Disposer + dishwasher</th><td><b>Knock out the dishwasher plug</b> inside the disposer inlet before hooking up, or the dishwasher won't drain. Fish the plug out.</td></tr>
+        <tr><th>Dishwasher drain</th><td>High loop to the underside of the counter or an air gap, whichever your code and inspector require.</td></tr>
+        <tr><th>Lav / sink traps</th><td>Slip joints stay accessible. Trap no bigger than the drain it empties into.</td></tr>
+        <tr><th>Before you leave</th><td>Aerators off and flushed, then back on. Check every stop and supply for weeps after 10 minutes. Leave the install sheets for the owner (SLC wants them at final).</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="trim" data-kw="install instructions guide pdf parts find model moen delta kohler pfister grohe">
+    <div class="sec-head"><h2>Install guides &amp; part finders</h2><small>Official links</small></div>
+    <div class="x"><table class="t"><tbody id="list-trim"></tbody></table></div>
   </section>
 
   <section data-sec="how" data-kw="why vent trap siphon">
@@ -1048,7 +1188,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
     <div class="sec-head"><h2>Glossary</h2><small>Words on site</small></div>
     <div class="x"><table class="t"><tbody id="gloss"></tbody></table></div>
   </section>
-  <footer>A study and field aid, not the code. The adopted code, approved plans, manufacturer instructions and your inspector always win. Code text belongs to the ICC and the State of Utah; guides belong to Boise Cascade, Weyerhaeuser and LP. Facts checked October 2026.</footer>
+  <footer>A study and field aid, not the code. The adopted code, approved plans, manufacturer instructions and your inspector always win. Code text belongs to the ICC and the State of Utah; guides belong to Boise Cascade, Weyerhaeuser and LP. Facts checked October 2026. Trim part numbers come from Moen, Delta, Kohler, Pfister, American Standard and GROHE pages; city inspection details from each city's site.</footer>
   </div>
 </div>
 
@@ -1072,6 +1212,20 @@ const LIB = {
     ["15A-2-103","Utah adopted editions","Effective 7/1/2026","https://le.utah.gov/xcode/Title15A/Chapter2/C15A-2-S103_2026050620260701.pdf"],
     ["IRC 2021","International Residential Code","Framing, boring and notching","https://codes.iccsafe.org/content/IRC2021P2"],
     ["ICC","ICC Digital Codes","Search any edition","https://codes.iccsafe.org/"]
+  ],
+  trim: [
+    ["Moen","M-CORE vs Posi-Temp vs Moentrol","Which cartridge, which trim","https://solutions.moen.com/Article_Library/A_Comparison_of_M-Core%2C_PosiTemp_and_Moentrol_Valves%3F"],
+    ["Moen","M-CORE 2 → 3 series upgrade","Same valve, new trim + 1213","https://solutions.moen.com/Article_Library/Can_I_Replace_an_M-Core_2_Series_with_a_3_Series%3F"],
+    ["Moen","M-CORE trim series","What 2, 3, 4 series do","https://www.moen.com/mcore"],
+    ["Delta","R10000 install sheet (M&I)","MultiChoice Universal rough","https://media.deltafaucet.com/MandI/50353%20Rev%20O.pdf"],
+    ["Delta","R10000 spec sheet","Dimensions, depth range","https://media.deltafaucet.com/SpecSheet/DSP-B-R10000%20Rev%20L.pdf"],
+    ["Delta","Find parts by model","Identify a faucet or valve","https://www.deltafaucet.com/service-parts/find-parts-and-identify-product"],
+    ["Delta","Install help + videos","Delta Help Center","https://support.deltafaucet.com/s/topic/0TO4Q000000ogmYWAQ/installation"],
+    ["Kohler","Kohler support","Search a model for install guides","https://www.kohler.com/en/support"],
+    ["Kohler","K-8304 Rite-Temp install sheet","Distributor copy","https://s3.amazonaws.com/thegranitegroup/thegranitegroup/content/9961_InstallationSheet_K8304K.pdf"],
+    ["Pfister","Pfister support","Install guides, parts, warranty","https://www.pfisterfaucets.com/support"],
+    ["GROHE","GrohFlex universal rough-in","35026000 product page","https://www.grohe.us/products/universal-rough-in-box"],
+    ["GROHE","35026000 install guide","PDF","https://lixil.cdn.celum.cloud/26479_35026000-installation-instructions_0_original.pdf"]
   ],
   career: [
     ["DOPL","DOPL plumbing licensing","Apply, renew, FAQ","https://commerce.utah.gov/dopl/plumbing/"],
@@ -1125,7 +1279,17 @@ const GLOSS = [
   ["LVL / LSL","Laminated veneer lumber / laminated strand lumber: engineered beams and rims."],
   ["o.c.","On center: measured center to center."],
   ["OJT","On-the-job training hours."],
-  ["Take-off","Fitting center to where the pipe bottoms out. Subtract it to get cut length."]
+  ["Take-off","Fitting center to where the pipe bottoms out. Subtract it to get cut length."],
+  ["Angle stop","Shutoff valve under a fixture: ½\" in, ⅜\" OD compression out."],
+  ["Cartridge","Replaceable insides of a faucet or shower valve that mix and shut off the water."],
+  ["Escutcheon","Trim plate that covers the hole around a valve or pipe."],
+  ["Limit stop","Adjustable stop that caps how far a shower handle turns toward hot (≤120°F)."],
+  ["Plaster guard","Plastic cover on a rough valve that protects it and shows the finished-wall depth."],
+  ["Pressure balance","Shower valve that keeps hot/cold pressures equal so a flush doesn't scald."],
+  ["Secondary water","Untreated irrigation water in its own pipes (PI). Never connected to drinking water."],
+  ["Shower rise","Water coming out the shower head while the tub spout runs, often from a spout too far from the valve or PEX to a diverter spout."],
+  ["Thermostatic valve","Shower valve that senses water temperature and mixes to hold it."],
+  ["Trim","Finish phase (\"finish\"), or the visible handle, plate and spout that go on a rough valve."]
 ];
 GLOSS.sort((a,b) => a[0].localeCompare(b[0], undefined, {sensitivity:"base"}));
 document.getElementById("gloss").innerHTML = GLOSS.map(([t,d]) =>
@@ -1140,18 +1304,43 @@ document.addEventListener("click", async e => {
   catch(err){ const r = document.createRange(); r.selectNodeContents(n); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
 });
 
-/* tabs + search */
-const TABS = [...document.querySelectorAll(".tabs button")].map(b => b.dataset.tab);
-let tab = "all";
-try { const saved = localStorage.getItem("jpb-tab"); if (TABS.includes(saved)) tab = saved; } catch(e){}
+/* navigation: group row (Rough-in, Trim…) + a sub-tab row for groups with more than one page. Search covers the whole book. */
+const GROUPS = {
+  rough: [["holes","Joist holes"],["field","Code rules"],["sizing","Sizing"],["materials","Materials"],["gas","Gas & heaters"]],
+  trim:  [["trim","Trim & valves"]],
+  math:  [["math","Field math"]],
+  utah:  [["local","Local"],["tests","Tests & calls"]],
+  calls: [["support","Support lines"],["safety","Safety"]],
+  learn: [["how","How it works"],["study","Flashcards"],["words","Glossary"],["career","License"],["code","Code links"]],
+  mine:  [["mine","My files"]]
+};
+const groupOf = sec => Object.keys(GROUPS).find(g => GROUPS[g].some(([s]) => s === sec));
+let nav = {group:"all", sub:"all"};
+try {
+  const s = JSON.parse(localStorage.getItem("jpb-nav") || "null");
+  if (s && (s.group === "all" || GROUPS[s.group])) nav = {group:s.group, sub: GROUPS[s.group] && GROUPS[s.group].some(([k]) => k === s.sub) ? s.sub : "all"};
+  else { const old = localStorage.getItem("jpb-tab"); const g = old && groupOf(old); if (g) nav = {group:g, sub: GROUPS[g].length > 1 ? old : "all"}; }
+} catch(e){}
+const saveNav = () => { try { localStorage.setItem("jpb-nav", JSON.stringify(nav)); } catch(e){} };
+const subRow = document.querySelector(".subtabs");
+function drawSubs(){
+  const list = GROUPS[nav.group];
+  subRow.dataset.group = nav.group;
+  if (!list || list.length < 2){ subRow.hidden = true; subRow.innerHTML = ""; return; }
+  subRow.hidden = false;
+  subRow.innerHTML = [["all","All " + document.querySelector(`.tabs [data-group="${nav.group}"]`).textContent], ...list]
+    .map(([k,t]) => `<button type="button" data-sub="${k}" aria-pressed="${k === nav.sub}">${esc(t)}</button>`).join("");
+}
 const q = document.getElementById("q"), noHits = document.querySelector(".no-hits");
 function apply(){
-  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.tab === tab)));
+  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.group === nav.group)));
+  subRow.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.sub === nav.sub)));
   const term = q.value.trim().toLowerCase();
   let shown = 0;
   document.querySelectorAll("section[data-sec]").forEach(sec => {
-    const inTab = tab === "all" || sec.dataset.sec === tab;
-    const items = [...sec.querySelectorAll("tbody tr")].filter(r => !r.closest("#c-out, .ro-out, #dfu-rows"));
+    const s = sec.dataset.sec;
+    const inTab = term ? true : nav.group === "all" || (groupOf(s) === nav.group && (nav.sub === "all" || nav.sub === s));
+    const items = [...sec.querySelectorAll("tbody tr")].filter(r => !r.closest("#c-out, .ro-out, #dfu-rows, #ro-steps"));
     if (!term){ items.forEach(r => r.hidden = false); sec.hidden = !inTab; if (inTab) shown++; return; }
     const headHit = sec.querySelector(".sec-head").textContent.toLowerCase().includes(term) || (sec.dataset.kw || "").includes(term);
     let any = false;
@@ -1162,15 +1351,25 @@ function apply(){
     if (!sec.hidden) shown++;
   });
   noHits.hidden = shown > 0;
-  noHits.textContent = term ? `Nothing matches "${q.value.trim()}"${tab !== "all" ? " in this tab. Try All." : "."}` : "";
+  noHits.textContent = term ? `Nothing in the book matches "${q.value.trim()}". Try a shorter word.` : "";
+  document.querySelector(".tools").classList.toggle("searching", !!term);
   if (typeof roCalc === "function" && !document.getElementById("ro-3d").closest("section").hidden) roCalc();
-  const on = document.querySelector('.tabs [aria-pressed="true"]');
-  if (on && on.scrollIntoView) on.scrollIntoView({inline:"nearest", block:"nearest"});
+  for (const on of document.querySelectorAll('.tabs [aria-pressed="true"], .subtabs [aria-pressed="true"]'))
+    if (on.scrollIntoView) on.scrollIntoView({inline:"nearest", block:"nearest"});
 }
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
-  tab = b.dataset.tab; try { localStorage.setItem("jpb-tab", tab); } catch(e){}
-  apply();
+  const g = b.dataset.group;
+  nav = {group:g, sub: nav.group === g ? nav.sub : "all"};
+  if (q.value){ q.value = ""; }
+  saveNav(); drawSubs(); apply();
+  window.scrollTo({top:0});
 }));
+subRow.addEventListener("click", e => {
+  const b = e.target.closest("button[data-sub]"); if (!b) return;
+  nav.sub = b.dataset.sub; if (q.value){ q.value = ""; }
+  saveNav(); apply(); window.scrollTo({top:0});
+});
+drawSubs();
 let qRaf = 0;
 q.addEventListener("input", () => { cancelAnimationFrame(qRaf); qRaf = requestAnimationFrame(apply); });
 
@@ -1282,7 +1481,7 @@ let roMode = "rolling";
 try { const m = localStorage.getItem("jpb-ro-mode"); if (m === "simple" || m === "rolling") roMode = m; } catch(e){}
 
 /* Fixed dark-panel palette: the 3D view always draws on a dark field. */
-const C = {pipe:"#94a3b8", fit:"#ef4444", cut:"#3b82f6", rise:"#facc15", roll:"#22c55e", run:"#e2e8f0", tru:"#c084fc", grid:"#1e293b", text:"#e2e8f0", dim:"#94a3b8", bg:"#0b1220"};
+const C = {pipe:"#94a3b8", fit:"#ef4444", cut:"#3b82f6", rise:"#facc15", roll:"#22c55e", run:"#e2e8f0", tru:"#c084fc", grid:"#251f47", text:"#e2e8f0", dim:"#a29bd0", bg:"#07060f"};
 
 /* Oblique 3D: X runs along the pipe (right), Y is roll (back, up-right), Z is rise (up). */
 /* ---------- to-scale drawings: isometric 3D + two flat true-length views ---------- */
@@ -1503,10 +1702,15 @@ dfuCalc();
 
 /* ---------- gas load & altitude ---------- */
 const fmtInt = x => Math.round(x).toLocaleString();
+/* approximate town-center elevations (ft); one list feeds the calculator and the Utah table */
+const ELEV = [["St. George",2860],["Salt Lake City",4230],["Ogden",4300],["Logan",4535],["Provo",4550],["Lehi",4560],["Saratoga Springs",4520],["West Jordan",4500],["South Jordan",4440],["Eagle Mountain",4900],["Herriman",5000],["Tooele",5050],["Heber City",5600],["Cedar City",5850],["Park City",6940]];
+const derate = ft => ft > 2000 ? 4 * ft / 1000 : 0;
+$("g-elev").innerHTML = `<option value="0">Under 2,000 ft</option>` + ELEV.slice().sort((a,b) => a[1]-b[1]).map(([n,ft]) => `<option value="${ft}"${n === "Salt Lake City" ? " selected" : ""}>${n} ≈${ft.toLocaleString()}</option>`).join("");
+$("elev-rows").innerHTML = ELEV.slice().sort((a,b) => a[1]-b[1]).map(([n,ft]) => `<tr><td>${n}</td><td>${ft.toLocaleString()} ft</td><td>${derate(ft).toFixed(1)}%</td><td>${fmtInt(100000*(1-derate(ft)/100))}</td></tr>`).join("");
 function gasCalc(){
   const btu = val("g-btu"), elev = +$("g-elev").value, hv = +$("g-hv").value;
   if (!(isFinite(btu) && btu > 0)){ ["g-cfh","g-der","g-out"].forEach(id => $(id).textContent = "—"); return; }
-  const pct = elev > 2000 ? 4 * elev / 1000 : 0;
+  const pct = derate(elev);
   $("g-cfh").innerHTML = `${(btu/hv).toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:2})} CFH<small>${fmtInt(btu)} ÷ ${fmtInt(hv)}</small>`;
   $("g-der").innerHTML = pct ? `${pct.toFixed(1)}%` : "None";
   $("g-out").innerHTML = `${fmtInt(btu*(1-pct/100))} BTU/h`;
@@ -1598,7 +1802,20 @@ const CARDS = [
   ["License","Residential journeyman requirements?","432 classroom hr + 6,000 apprentice hr"],
   ["License","How many apprentices per supervisor?","Up to 3"],
   ["How","Why does a dripping RPZ drip?","A check is leaking; the relief valve dumps water instead of letting it flow back"],
-  ["How","Why does a vent protect a trap?","Lets air in so falling water can't siphon the seal"]
+  ["How","Why does a vent protect a trap?","Lets air in so falling water can't siphon the seal"],
+  ["Trim","Moen Posi-Temp cartridge?","1222 (it lives in the valve)"],
+  ["Trim","Moen M-CORE 3-series cartridge?","1213 (comes with the trim)"],
+  ["Trim","Can a Posi-Temp trim go on an M-CORE valve?","No. Trim must match the valve family"],
+  ["Trim","Delta 13/14 series cartridge?","RP46074"],
+  ["Trim","Delta MultiChoice universal rough valve?","R10000 (13/14, 17 or 17T trim)"],
+  ["Trim","Delta tub spout distance below the valve?","8\"–18\" (beyond 18\": shower rise)"],
+  ["Trim","Max hot at a shower after setting the limit stop?","120°F"],
+  ["Trim","Pressure balance vs thermostatic?","PB equalizes pressures; thermostatic senses temperature"],
+  ["Trim","Disposer + new dishwasher: what first?","Knock out the dishwasher plug in the disposer"],
+  ["Trim","Angle stop outlet size for a faucet?","⅜\" OD compression"],
+  ["Utah","Utah house code since 7/1/2026?","2021 IRC + Utah amendments (not the 2024 IRC)"],
+  ["Utah","Can secondary water connect to culinary with a valve?","Never: that's a cross-connection"],
+  ["Utah","Gas derate at Herriman (~5,000 ft)?","About 20%"]
 ];
 const topics = ["All", ...new Set(CARDS.map(c => c[0]))];
 $("fc-filter").innerHTML = topics.map(t => `<option>${t}</option>`).join("");
@@ -1692,16 +1909,23 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device */
+var BUILD = "neon-2026-10-11";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status"; note.style.cssText = "margin-top:4px;font-weight:600";
   if (foot) foot.appendChild(note);
   if (!("serviceWorker" in navigator)) { note.textContent = "This browser can't save the book for offline use."; return; }
   navigator.serviceWorker.register("sw.js").then(function(){ return navigator.serviceWorker.ready; })
-    .then(function(){ note.textContent = "✓ Saved on this device: works with no signal. Build fa3f7a0e23"; })
+    .then(function(){ note.textContent = "✓ Saved on this device: works with no signal. Build " + BUILD; })
     .catch(function(){ note.textContent = "Couldn't save for offline. Open it once with signal."; });
-  var reloaded = false;
-  navigator.serviceWorker.addEventListener("controllerchange", function(){ if (!reloaded && navigator.serviceWorker.controller) { reloaded = true; } });
+  /* a new version took over in the background: offer a one-tap reload instead of silently showing stale pages */
+  var hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange", function(){
+    if (!hadController) { hadController = true; return; }
+    note.textContent = "New version of the book downloaded.";
+    var b = document.createElement("button"); b.type = "button"; b.textContent = "Reload";
+    b.addEventListener("click", function(){ location.reload(); }); note.appendChild(b);
+  });
 })();
 </script>
 </body>
