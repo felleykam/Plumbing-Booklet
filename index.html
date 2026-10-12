@@ -156,6 +156,16 @@ section{break-inside:avoid;display:block;background:var(--sheet);border:1px soli
 .ro-out tr.hit th{font-size:13px}
 .ro-out td.sub{font-size:11px}
 .ro-out td.big small.warn{color:var(--flag);display:block;font-family:var(--body);font-size:11px;font-weight:600;white-space:normal;max-width:16rem;margin-top:2px}
+.ro-fit{border-top:1px solid var(--rule)}
+/* phones: answer rows read label + number, with the explanation underneath instead of a skinny third column */
+@media (max-width:480px){
+  .ro-out tr{display:grid;grid-template-columns:minmax(6.5rem,38%) 1fr;align-items:baseline}
+  .ro-out tr[hidden]{display:none}
+  .ro-out td.sub{grid-column:1 / -1;padding-top:0}
+}
+#ro-fit-rows tr.mine td{background:var(--zebra)}
+#ro-fit-rows .ok{color:var(--ok)}
+#ro-fit-rows .warn{color:var(--flag);font-weight:600}
 .ro-out .warn{color:var(--flag);font-family:var(--body);font-size:12px;font-weight:600;white-space:normal}
 #psi-chart{width:100%;height:auto;display:block;padding:4px 4px 0}
 section[data-sec="support"] td.sub,section[data-sec="local"] td:last-child{overflow-wrap:anywhere}
@@ -437,7 +447,15 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr><th>Travel</th><td id="ro-travel" class="big">—</td><td class="sub">Fitting center to fitting center.</td></tr>
         <tr><th><span class="sw run"></span>Run (setback)</th><td id="ro-run" class="big">—</td><td class="sub">How far along the pipe the 2nd fitting sits.</td></tr>
         <tr id="ro-true-row"><th><span class="sw tru"></span>True offset</th><td id="ro-true" class="big">—</td><td class="sub">Straight-line shift: √(rise² + roll²).</td></tr>
+        <tr id="ro-turn-row"><th>Turn fittings</th><td id="ro-turn" class="big">—</td><td class="sub">Roll both fittings this far off plumb, toward the roll side, so the cut piece aims at the new pipe.</td></tr>
       </tbody></table></div>
+    <div class="ro-fit">
+      <div class="calc">
+        <label for="ro-space"><span>Space I have <i>(along the pipe, between your two points)</i></span><span class="inch"><input id="ro-space" type="number" inputmode="decimal" min="0" step="any" placeholder="optional"><select id="ro-space-f" class="f16" aria-label="Space, extra sixteenths"></select></span></label>
+      </div>
+      <div class="x"><table class="t num"><thead><tr><th>Fittings</th><th>Run needed</th><th>Cut</th><th id="ro-fit-h">Fits?</th></tr></thead><tbody id="ro-fit-rows" aria-live="polite"></tbody></table></div>
+      <p class="note" id="ro-fit-note"><span class="why">WHY</span> Run is set by the offset and the fitting angle, so you can't pick it. Measure the space between your two points instead: whatever's left after the run is straight pipe, before or after the offset, wherever it's easiest.</p>
+    </div>
     <div class="ro-stage">
       <svg id="ro-3d" viewBox="0 0 440 250" role="img" aria-label="3D isometric view drawn to scale: the existing pipe, a red fitting, the blue cut piece rising at the fitting angle to a second red fitting, and the new pipe continuing. A yellow line shows the rise, a green line the roll, a purple dashed line the true offset and a white dashed line the run."></svg>
       <svg id="ro-flat" viewBox="0 0 440 220" role="img" aria-label="Two flat views drawn to true length with scale bars. End view: roll across and rise up, with the true offset as the diagonal between the two pipes. Travel plane: the run across and the true offset up, with the blue cut piece and red fittings at the real fitting angle."></svg>
@@ -453,7 +471,7 @@ footer{column-span:all;color:var(--muted);font-size:11px;border-top:1px solid va
         <tr class="ro-roll-step"><td class="n">2</td><td><span class="sw roll"></span><b>Roll:</b> measure how far it also moves sideways, centerline to centerline.</td></tr>
         <tr><td class="n">3</td><td><span class="sw fit"></span><b>Fittings + take-off:</b> pick the pair (two 45s is usual). Take-off = fitting center to where the pipe bottoms out. Measure your actual fitting; it varies by brand and size.</td></tr>
         <tr><td class="n">4</td><td><span class="sw run"></span><b>Set fitting 2</b> one <b>run</b> farther along the pipe than fitting 1, center to center.</td></tr>
-        <tr><td class="n">5</td><td><span class="sw cut"></span><b>Cut the blue piece</b> to cut length. <span class="ro-roll-step">Turn both fittings the same amount so it points straight at the other pipe.</span> Dry-fit, then glue or solder.</td></tr>
+        <tr><td class="n">5</td><td><span class="sw cut"></span><b>Cut the blue piece</b> to cut length. <span class="ro-roll-step">Roll both fittings the same amount, the <b>Turn fittings</b> angle off plumb, so it points straight at the other pipe.</span> Dry-fit, then glue or solder.</td></tr>
       </tbody></table></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Fittings</th><th>Travel ×</th><th>Run ×</th></tr></thead>
@@ -1553,7 +1571,7 @@ const buildIdx = () => IDX = [...document.querySelectorAll("section[data-sec]")]
   sec, grp: groupOf(sec.dataset.sec),
   head: sec.querySelector(".sec-head").textContent.toLowerCase() + " " + (sec.dataset.kw || ""),
   all: sec.textContent.toLowerCase(),
-  rows: [...sec.querySelectorAll("tbody tr")].filter(r => !r.closest("#c-out, .ro-out, #dfu-rows, #ro-steps"))
+  rows: [...sec.querySelectorAll("tbody tr")].filter(r => !r.closest("#c-out, .ro-out, #dfu-rows, #ro-steps, #ro-fit-rows"))
     .map(r => [r, r.dataset.search || r.textContent.toLowerCase()])
 }));
 function apply(){
@@ -1883,7 +1901,7 @@ function setMode(m){
   roMode = m; try { localStorage.setItem("jpb-ro-mode", m); } catch(e){}
   document.querySelectorAll("#ro-mode button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === m)));
   const rolling = m === "rolling";
-  $("ro-roll-wrap").hidden = !rolling; $("ro-true-row").hidden = !rolling;
+  $("ro-roll-wrap").hidden = !rolling; $("ro-true-row").hidden = !rolling; $("ro-turn-row").hidden = !rolling;
   $("ro-key-roll").hidden = !rolling; $("ro-key-tru").hidden = !rolling;
   document.querySelectorAll(".ro-roll-step").forEach(el => el.hidden = !rolling);
   $("ro-rise-lbl").textContent = rolling ? "Rise (up / down)" : "Offset (how far it shifts)";
@@ -1895,27 +1913,50 @@ function setMode(m){
 function roCalc(){
   const rise = readIn("ro-rise"), roll = roMode === "rolling" ? readIn("ro-roll") : 0, to = readIn("ro-to");
   const deg = parseFloat($("ro-ang").value);
-  const out = ["ro-true","ro-travel","ro-run","ro-cut"];
+  const out = ["ro-true","ro-travel","ro-run","ro-cut","ro-turn"];
   const r = rise ?? 0, l = roll ?? 0, t = to ?? 0;
   if ([r,l,t].some(v => !isFinite(v) || v < 0)){
     out.forEach(id => $(id).textContent = "—");
-    $("ro-cut").innerHTML = `<span class="warn">Use positive numbers.</span>`; drawEmpty("Enter positive measurements"); return;
+    $("ro-cut").innerHTML = `<span class="warn">Use positive numbers.</span>`; drawEmpty("Enter positive measurements"); roFit(null); return;
   }
   if ([r,l,t].some(v => v > 10000)){
     out.forEach(id => $(id).textContent = "—");
-    $("ro-cut").innerHTML = `<span class="warn">Over 10,000": check your numbers.</span>`; drawEmpty("Numbers too large"); return;
+    $("ro-cut").innerHTML = `<span class="warn">Over 10,000": check your numbers.</span>`; drawEmpty("Numbers too large"); roFit(null); return;
   }
-  if (r === 0 && l === 0){ out.forEach(id => $(id).textContent = "—"); drawEmpty(roMode === "rolling" ? "Enter a rise and/or roll" : "Enter the offset"); return; }
+  if (r === 0 && l === 0){ out.forEach(id => $(id).textContent = "—"); drawEmpty(roMode === "rolling" ? "Enter a rise and/or roll" : "Enter the offset"); roFit(null); return; }
   const rad = deg * Math.PI / 180, tru = Math.hypot(r, l), travel = tru / Math.sin(rad), run = tru / Math.tan(rad), cut = travel - 2*t;
   $("ro-true").innerHTML = both(tru);
   $("ro-travel").innerHTML = both(travel);
   $("ro-run").innerHTML = both(run);
   const ok = cut >= 1/32;
   $("ro-cut").innerHTML = ok ? both(cut) + (t === 0 ? `<small class="warn">Take-off is 0, so this is center to center. Enter your fitting's take-off before you cut.</small>` : "") : (t === 0 ? `<span class="warn">Offset too small to cut a piece. Check your numbers.</span>` : `<span class="warn">Too short to cut: the take-offs use up the travel. Try shallower fittings (22½° or 11¼°) or check your numbers.</span>`);
+  /* rolling offset: the offset plane leans off plumb by atan(roll / rise); that's how far to roll the fittings */
+  const turn = Math.atan2(l, r) * 180 / Math.PI;
+  $("ro-turn").innerHTML = `${turn.toFixed(1)}°<small>${l === 0 ? "none: straight up or down" : r === 0 ? "fittings lie flat (all roll, no rise)" : "off plumb, toward the roll"}</small>`;
   drawViews(r, l, run, ok, cut, t, travel, tru);
+  roFit(tru, t, deg);
+}
+/* "Space I have": every standard fitting angle against the distance you measured between your two points */
+const RO_ANGLES = [[60,"60°"],[45,"45°"],[22.5,"22½°"],[11.25,"11¼°"]];
+function roFit(tru, t, cur){
+  const rows = $("ro-fit-rows");
+  if (tru == null){ rows.innerHTML = `<tr><td colspan="4" class="sub">Enter the offset above first.</td></tr>`; return; }
+  const space = readIn("ro-space"), has = space !== null && isFinite(space) && space >= 0;
+  $("ro-fit-h").textContent = has ? "Straight pipe left" : "Fits?";
+  if (space !== null && !(isFinite(space) && space >= 0)){ rows.innerHTML = `<tr><td colspan="4"><span class="warn">Space must be a positive number.</span></td></tr>`; return; }
+  rows.innerHTML = RO_ANGLES.map(([a, name]) => {
+    const rad = a * Math.PI / 180, run = tru / Math.tan(rad), cut = tru / Math.sin(rad) - 2*t;
+    const mine = a === cur ? " ★" : "", cutTxt = cut >= 1/32 ? toFrac16(cut) : "too short";
+    let fit;
+    if (!has) fit = `<span class="sub">enter space</span>`;
+    else if (cut < 1/32) fit = `<span class="warn">✗ cut too short</span>`;
+    else if (run <= space + 1e-9) fit = `<b class="ok">✓ ${toFrac16(space - run)}</b>`;
+    else fit = `<span class="warn">✗ ${toFrac16(run - space)} short</span>`;
+    return `<tr${mine ? ' class="mine"' : ""}><td>${name}${mine}</td><td>${toFrac16(run)}</td><td>${cutTxt}</td><td>${fit}</td></tr>`;
+  }).join("");
 }
 document.querySelectorAll("#ro-mode button").forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
-["ro-rise","ro-roll","ro-to"].forEach(id => { $(id).addEventListener("input", roCalc); $(id+"-f").addEventListener("change", roCalc); });
+["ro-rise","ro-roll","ro-to","ro-space"].forEach(id => { $(id).addEventListener("input", roCalc); $(id+"-f").addEventListener("change", roCalc); });
 $("ro-ang").addEventListener("change", roCalc);
 setMode(roMode);
 roReady = true;
@@ -2220,7 +2261,9 @@ const CARDS = [
   ["Math","Velocity formula from gpm?","ft/s = gpm × 0.4085 ÷ ID²"],
   ["Math","1\" in decimal feet?","0.08 ft (6\" = 0.50 ft)"],
   ["Math","Gallons from cubic inches?","÷ 231"],
-  ["Math","PEX expansion rule (Uponor)?","1.1\" per 100 ft per 10°F"]
+  ["Math","PEX expansion rule (Uponor)?","1.1\" per 100 ft per 10°F"],
+  ["Math","Rolling offset: how far do you roll the fittings?","atan(roll ÷ rise) off plumb, toward the roll"],
+  ["Math","Why can't you just pick the run on an offset?","The offset and fitting angle fix it (run = offset ÷ tan angle); extra space is straight pipe"]
 ];
 const topics = ["All", ...new Set(CARDS.map(c => c[0]))];
 $("fc-filter").innerHTML = topics.map(t => `<option>${t}</option>`).join("");
@@ -2315,7 +2358,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device */
-var BUILD = "plumbiverse-2026-10-11c";
+var BUILD = "plumbiverse-2026-10-12";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status"; note.style.cssText = "margin-top:4px;font-weight:600";
