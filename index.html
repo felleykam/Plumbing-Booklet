@@ -28,7 +28,7 @@ try{var t=JSON.parse(localStorage.getItem("jpb-theme"));if(t==="light"||t==="dar
   --bar:#141414; --bar-ink:#FFD400; --hi:#FFE873;
   --danger:#B42318; --danger-soft:#FDECEA; --ok:#0E7A3D;
   /* group color tags */
-  --g-calc:#1F4FD8; --g-rough:#0E7A3D; --g-trim:#A3127A; --g-inspect:#C44100; --g-calls:#C8102E; --g-learn:#5B35B0; --g-mine:#141414;
+  --g-calc:#1F4FD8; --g-rough:#0E7A3D; --g-trim:#A3127A; --g-inspect:#C44100; --g-calls:#C8102E; --g-learn:#5B35B0; --g-parts:#0B7C86; --g-mine:#141414;
   /* offset drawings */
   --d-bg:#FFFFFF; --d-grid:#E6E2D7; --d-pipe:#8D8A82; --d-fit:#D14900; --d-cut:#1F4FD8; --d-cut-lbl:#1F4FD8; --d-rise:#A87C00; --d-roll:#0E7A3D; --d-run:#141414; --d-tru:#7A3FD0; --d-text:#141414; --d-dim:#5E5B53;
   --acc:var(--ink);
@@ -44,18 +44,18 @@ try{var t=JSON.parse(localStorage.getItem("jpb-theme"));if(t==="light"||t==="dar
   --paper:#0F0F0E; --sheet:#1A1A18; --ink:#F3F1EA; --muted:#B8B4A8; --rule:#34322D; --edge:#5A5750; --zebra:#20201D;
   --bar:#FFD400; --bar-ink:#111111; --hi:#3A3200;
   --danger:#FF7A6B; --danger-soft:#3A1512; --ok:#4ADE80;
-  --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-mine:#F3F1EA;
+  --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-parts:#4FD1DB; --g-mine:#F3F1EA;
   --d-bg:#141413; --d-grid:#2C2B27; --d-pipe:#8D8A82; --d-fit:#FF8A3D; --d-cut:#6EA8FF; --d-cut-lbl:#9CC3FF; --d-rise:#FFD400; --d-roll:#4ADE80; --d-run:#ECEAE2; --d-tru:#C3A6FF; --d-text:#ECEAE2; --d-dim:#A9A598;
   color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#0F0F0E; --sheet:#1A1A18; --ink:#F3F1EA; --muted:#B8B4A8; --rule:#34322D; --edge:#5A5750; --zebra:#20201D;
   --bar:#FFD400; --bar-ink:#111111; --hi:#3A3200;
   --danger:#FF7A6B; --danger-soft:#3A1512; --ok:#4ADE80;
-  --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-mine:#F3F1EA;
+  --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-parts:#4FD1DB; --g-mine:#F3F1EA;
   --d-bg:#141413; --d-grid:#2C2B27; --d-pipe:#8D8A82; --d-fit:#FF8A3D; --d-cut:#6EA8FF; --d-cut-lbl:#9CC3FF; --d-rise:#FFD400; --d-roll:#4ADE80; --d-run:#ECEAE2; --d-tru:#C3A6FF; --d-text:#ECEAE2; --d-dim:#A9A598;
   color-scheme:dark}
 [data-g="calc"]{--acc:var(--g-calc)} [data-g="rough"]{--acc:var(--g-rough)} [data-g="trim"]{--acc:var(--g-trim)}
-[data-g="inspect"]{--acc:var(--g-inspect)} [data-g="calls"]{--acc:var(--g-calls)} [data-g="learn"]{--acc:var(--g-learn)} [data-g="mine"]{--acc:var(--g-mine)}
+[data-g="inspect"]{--acc:var(--g-inspect)} [data-g="calls"]{--acc:var(--g-calls)} [data-g="learn"]{--acc:var(--g-learn)} [data-g="parts"]{--acc:var(--g-parts)} [data-g="mine"]{--acc:var(--g-mine)}
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -93,8 +93,8 @@ nav.tabs button[aria-pressed="true"]{background:var(--hv);color:var(--k);border-
 nav.tabs button[aria-pressed="true"]::before{background:var(--k)}
 @media (max-width:759px){
   body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-  nav.tabs{position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(6,1fr);gap:0;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--k);border-top:4px solid var(--hv)}
-  nav.tabs button{flex-direction:column;justify-content:center;gap:3px;min-height:62px;padding:6px 0 7px;border:0;border-radius:0;background:transparent;color:#CFCBC0;font-size:12.5px;letter-spacing:.04em;box-shadow:none}
+  nav.tabs{position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--k);border-top:4px solid var(--hv)}
+  nav.tabs button{flex-direction:column;justify-content:center;gap:3px;min-height:62px;padding:6px 0 7px;border:0;border-radius:0;background:transparent;color:#CFCBC0;font-size:12px;letter-spacing:.02em;box-shadow:none;min-width:0}
   nav.tabs button::before{position:absolute;top:0;left:22%;right:22%;width:auto;height:4px;border-radius:0 0 3px 3px;background:var(--acc)}
   nav.tabs button svg{width:24px;height:24px}
   nav.tabs button[aria-pressed="true"]{background:var(--hv);color:var(--k);box-shadow:none}
@@ -111,7 +111,7 @@ nav.tabs button[aria-pressed="true"]::before{background:var(--k)}
 .subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:1px 24px 4px 1px;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
 .subtabs::-webkit-scrollbar{display:none}
 @media (min-width:1000px){.subtabs{flex-wrap:wrap;-webkit-mask-image:none;mask-image:none;padding-right:1px}}
-@media (min-width:760px) and (max-width:999px){nav.tabs{display:grid;grid-template-columns:repeat(6,1fr)}nav.tabs button{justify-content:center;padding-inline:6px;font-size:15px}}
+@media (min-width:760px) and (max-width:1099px){nav.tabs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}nav.tabs button{flex-direction:column;justify-content:center;gap:2px;padding:6px 4px;min-height:58px;font-size:14px;min-width:0}nav.tabs button::before{position:absolute;top:5px;left:6px}}
 .subtabs button{flex:0 0 auto;appearance:none;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;padding:4px 13px;min-height:40px;border:2px solid var(--rule);border-radius:var(--r);background:var(--sheet);color:var(--ink);cursor:pointer}
 .subtabs button[aria-pressed="true"]{border-color:var(--acc);background:var(--acc);color:var(--sheet)}
 body.searching .subtabs{display:none}
@@ -238,6 +238,12 @@ input,select{font:inherit}
 .step input::-webkit-outer-spin-button,.step input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .t.dfu td:first-child{white-space:normal}
 details.more{border-top:1px solid var(--rule)}
+#gloss tr.off{display:none}
+body.searching #gloss tr.off{display:table-row}
+#gloss-cat{padding-bottom:12px;border-bottom:1px solid var(--rule)}
+#gloss-cat button{min-height:40px;font-size:14px;padding:2px 11px}
+@media (max-width:759px){#gloss-cat{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-right:24px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}#gloss-cat::-webkit-scrollbar{display:none}#gloss-cat button{flex:0 0 auto}}
+.t.gloss th .sub{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
 details.more summary{cursor:pointer;padding:10px 12px;min-height:44px;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase}
 
 /* take-offs editor */
@@ -313,6 +319,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
       <button type="button" data-group="calc" data-g="calc" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/></svg>Calc</button>
       <button type="button" data-group="rough" data-g="rough" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h6l6-10h6"/><circle cx="9" cy="18" r="2"/><circle cx="15" cy="8" r="2"/></svg>Rough</button>
       <button type="button" data-group="trim" data-g="trim" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h11a4 4 0 0 1 4 4v2"/><path d="M8 9V5h3"/><path d="M19 18v1M16 20v1M22 20v1"/></svg>Trim</button>
+      <button type="button" data-group="parts" data-g="parts" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.6"/></svg>Parts</button>
       <button type="button" data-group="inspect" data-g="inspect" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM8.5 13l2.5 2.5 4.5-5"/></svg>Inspect</button>
       <button type="button" data-group="calls" data-g="calls" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Calls</button>
       <button type="button" data-group="learn" data-g="learn" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg>Learn</button>
@@ -1080,9 +1087,137 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
         <tr><th>Before you leave</th><td>Aerators off and flushed, then back on. Check every stop and supply for weeps after 10 minutes. Leave the install sheets for the owner (SLC wants them at final).</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="trim" data-kw="install instructions guide pdf parts find model moen delta kohler pfister grohe">
+
+  <!-- ================= PARTS ================= -->
+  <section data-sec="idhow" data-kw="identify find part model number what is this how to id unknown faucet cartridge replacement match supply house counter">
+    <div class="sec-head"><h2>How to ID any part</h2><small>Do it in this order</small></div>
+    <ol class="chk">
+      <li><span><b>Photo it before you touch it.</b> Logo, front, back, underside, any label, and the part next to a tape measure. Once it's apart, the photos are your only record of how it went together.</span></li>
+      <li><span><b>Find the brand.</b> Logo on the handle, cap, escutcheon, spout or body. <span class="badge why">WHY</span> Brand narrows everything: a Moen cartridge will never fit a Delta valve, even if they look alike.</span></li>
+      <li><span><b>Find a number.</b> See <b>Where the number lives</b> below. Numbers like "A112.18.1" or "ASSE 1016" are <b>standards</b>, not model numbers.</span></li>
+      <li><span><b>Pull the worn part and read its stamp.</b> Cartridges, stems and flappers are usually stamped. A stamp can be a <b>component number</b> rather than the order number; the maker's tech line can translate it.</span></li>
+      <li><span><b>Measure what you can't read.</b> Length, OD, spline count on the stem, thread size (see <b>Threads &amp; sizes</b>). Write it on the photo.</span></li>
+      <li><span><b>Search the maker's part finder</b> by model, or call their tech line with the photos, model and serial (<b>Calls → Tech lines</b>).</span></li>
+      <li><span><b>Take the old part to the counter.</b> Matching side by side beats any description. Ask for their cartridge or stem identifier book.</span></li>
+    </ol>
+    <p class="note">New construction shortcut: the builder's <b>fixture selection sheet</b> lists every model in the house. Get it once per subdivision and save it in My files.</p>
+  </section>
+
+  <section data-sec="idhow" data-kw="where model number serial number located toilet tank faucet spout shower valve water heater rating plate disposer label prv backflow hose bibb stamp">
+    <div class="sec-head"><h2>Where the number lives</h2><small>Look here first</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Kitchen faucet</th><td>Back of the spout or base; a tag on a supply hose under the sink; the install sheet or box. The cartridge stamp once it's out.</td></tr>
+        <tr><th>Lav faucet</th><td>Front curve under the spout or back of the base; tag under the sink. Moen: removable handle caps may have a number underneath.</td></tr>
+        <tr><th>Shower / tub valve</th><td>Pull the handle and escutcheon: brand and model on the valve body or plaster guard. Then the cartridge stamp. Handle shape and how it moves (rotate, push-pull, two handles) narrows the family: <b>Trim → Shower valve families</b>.</td></tr>
+        <tr><th>Toilet</th><td>Inside the tank on the back wall: model number and a date stamp. The bowl often has its own number underneath or inside the rim. Tank and bowl numbers differ.</td></tr>
+        <tr><th>Water heater</th><td>Rating plate on the jacket: model, serial, gallons, input BTU/h or element watts, gas type (NAT / LP). Serial gives the age: see <b>Labels &amp; age</b>.</td></tr>
+        <tr><th>Tankless</th><td>Rating plate on the side of the cabinet or inside the front cover.</td></tr>
+        <tr><th>Disposer</th><td>Label on the bottom of the unit (look from below with a light).</td></tr>
+        <tr><th>PRV, backflow, valves</th><td>Cast or stamped on the body; larger assemblies carry a metal tag with model, size and serial.</td></tr>
+        <tr><th>Hose bibb</th><td>Brand on the handle or body. Frost-free length matters: measure from the wall flange to the end of the tube.</td></tr>
+        <tr><th>Pipe &amp; fittings</th><td>Print line along the pipe, and the standard molded on PEX fittings: <b>Rough → Materials → Pipe markings</b>.</td></tr>
+        <tr><th>Gas appliance</th><td>Rating plate inside the burner door or near the gas valve: input, gas type, altitude setup.</td></tr>
+      </tbody></table></div>
+    <p class="note">Kohler serial numbers are usually 9 characters, often starting with "S", with no dashes.</p>
+  </section>
+
+  <section data-sec="labels" data-kw="water heater age how old serial number date code decode rheem ruud richmond bradford white ao smith a.o. smith state american tankless rating plate">
+    <div class="sec-head"><h2>Water heater age</h2><small>Read the serial number</small></div>
+    <div class="x"><table class="t cards">
+      <thead><tr><th>Brand</th><th>How to read it</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><b>Rheem · Ruud · Richmond</b></td><td>First 4 digits = <b>month, then year</b> (MMYY).</td><td class="n">0519… = May 2019</td></tr>
+        <tr><td><b>A.O. Smith · State · American</b><div class="sub">newer units</div></td><td>First 4 digits = <b>year, then week</b> (YYWW).</td><td class="n">1910… = 2019, week 10</td></tr>
+        <tr><td><b>Bradford White</b></td><td>1st letter = <b>year</b> on a 20-year cycle (A = 2004 or 2024). 2nd letter = <b>month</b>, A = Jan to M = Dec (no I). Year letters skip I, O, Q, R, U, V.</td><td class="n">SC… = Mar 2018</td></tr>
+        <tr><td><b>Tankless &amp; others</b></td><td>Many plates print the manufacture date. If not, call the maker with the serial.</td><td class="n">—</td></tr>
+      </tbody></table></div>
+    <details class="more"><summary>Bradford White year letters</summary>
+      <div class="x"><table class="t num"><tbody>
+        <tr><td>A 2004 / 2024</td><td>B 2005 / 2025</td><td>C 2006 / 2026</td></tr>
+        <tr><td>D 2007</td><td>E 2008</td><td>F 2009</td></tr>
+        <tr><td>G 2010</td><td>H 2011</td><td>J 2012</td></tr>
+        <tr><td>K 2013</td><td>L 2014</td><td>M 2015</td></tr>
+        <tr><td>N 2016</td><td>P 2017</td><td>S 2018</td></tr>
+        <tr><td>T 2019</td><td>W 2020</td><td>X 2021</td></tr>
+        <tr><td>Y 2022</td><td>Z 2023</td><td></td></tr>
+      </tbody></table></div>
+    </details>
+    <p class="note">Older units used other codes (older A.O. Smith: a month letter plus 2-digit year). <span class="badge why">WHY</span> Age decides repair vs. replace and whether the warranty still applies. Chart for more brands: <b>Part finders</b> below.</p>
+  </section>
+
+  <section data-sec="labels" data-kw="rating plate data plate nameplate read gallons btu watts nat lp psi working pressure first hour recovery uef">
+    <div class="sec-head"><h2>Reading a rating plate</h2><small>Water heaters &amp; gas appliances</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Input</th><td>BTU/h (gas) or watts per element (electric). Gas input is what you size the gas line with.</td></tr>
+        <tr><th>Gas type</th><td>NAT (natural) or LP (propane). They use different orifices and pressures: never swap without the maker's conversion kit.</td></tr>
+        <tr><th>Capacity</th><td>Nominal gallons. Real usable hot water is less.</td></tr>
+        <tr><th>First-hour rating</th><td>Gallons of hot water it can deliver in a busy hour. The number to size by.</td></tr>
+        <tr><th>UEF</th><td>Uniform energy factor: efficiency rating. Higher is better.</td></tr>
+        <tr><th>Max pressure</th><td>Working pressure rating (often 150 psi). The T&amp;P must match the plate.</td></tr>
+        <tr><th>Altitude</th><td>Some plates or labels show a high-altitude setup or derate.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="threads" data-kw="thread size connection supply line compression 3/8 1/2 ips npt nps ght garden hose 3/4 aerator 55/64 15/16 ballcock 7/8 shower arm tub spout ice maker 1/4 dishwasher washer">
+    <div class="sec-head"><h2>Connection sizes</h2><small>What screws onto what</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Angle stop</th><td>½" inlet (sweat, PEX, comp) × <b>⅜" OD compression</b> outlet for faucets and toilets.</td></tr>
+        <tr><th>Faucet supply</th><td>Most new faucets: ⅜" compression. Older faucets: ½" IPS. Some kitchen faucets have braided lines built in.</td></tr>
+        <tr><th>Toilet fill valve</th><td><b>⅞" ballcock</b> thread on the tank. Supply line: ⅜" comp × ⅞" ballcock nut.</td></tr>
+        <tr><th>Shower arm &amp; head</th><td>½" NPT.</td></tr>
+        <tr><th>Tub spout</th><td>½" IPS threaded or slip-on over ½" copper (set screw). The valve sheet says which and how long the stub-out is.</td></tr>
+        <tr><th>Washer box &amp; hose bibb</th><td><b>¾" garden hose thread (GHT)</b>. Seals with a hose washer, not pipe dope.</td></tr>
+        <tr><th>Ice maker</th><td>Usually ¼" OD compression at the fridge (check the fridge's sheet).</td></tr>
+        <tr><th>Dishwasher</th><td>⅜" compression supply line to a 90° elbow on the machine's inlet valve (usually ⅜" MIP × ⅜" comp).</td></tr>
+        <tr><th>Aerator</th><td>Standard: male 15/16"-27 or female 55/64"-27. Smaller "junior" and "tom thumb" sizes exist: match with an aerator gauge or the old one.</td></tr>
+        <tr><th>Water heater</th><td>Usually ¾" NPT water connections; ½" NPT gas inlet on most residential tanks.</td></tr>
+        <tr><th>Traps</th><td>Tubular slip-joint: lav 1¼", kitchen and laundry 1½".</td></tr>
+        <tr><th>Toilet flush valve</th><td>2" or 3" drain opening: measure it before buying a flapper.</td></tr>
+      </tbody></table></div>
+    <p class="note"><span class="badge why">WHY</span> "⅜" compression" means ⅜" <b>outside diameter</b>, which is ¼" nominal copper. Compression sizes are OD; pipe sizes are nominal. Specs and plans win over this list.</p>
+  </section>
+
+  <section data-sec="threads" data-kw="thread types npt nps npsm ght uns tapered straight seal dope tape ptfe teflon washer which seals where pitch gauge measure thread">
+    <div class="sec-head"><h2>Thread types</h2><small>Which seals where</small></div>
+    <div class="x"><table class="t">
+      <thead><tr><th>Thread</th><th>Shape</th><th>Seals by</th></tr></thead>
+      <tbody>
+        <tr><td><b>NPT</b><div class="sub">pipe thread, MIP / FIP</div></td><td>Tapered</td><td>The threads wedging tight. Use dope or PTFE tape.</td></tr>
+        <tr><td><b>NPSM / IPS</b><div class="sub">faucet supplies, shanks</div></td><td>Straight</td><td>A washer, cone or O-ring. Tape doesn't make it seal.</td></tr>
+        <tr><td><b>GHT</b><div class="sub">garden hose, washers</div></td><td>Straight, 11½ TPI</td><td>A hose washer. Won't mate with NPT even though both are ¾".</td></tr>
+        <tr><td><b>Compression</b></td><td>Straight nut</td><td>The ferrule (sleeve) crushing on the tube. No dope on the threads.</td></tr>
+        <tr><td><b>Flare</b><div class="sub">gas connectors</div></td><td>Straight nut</td><td>The flared cone face. No dope on a flare face.</td></tr>
+      </tbody></table></div>
+    <p class="note">ID a thread: measure the male OD and count threads per inch (a pitch gauge, or a tape against 1"). Male ½" NPT ≈ 0.84" OD, ¾" ≈ 1.05", 1" ≈ 1.315", the same as steel pipe OD.</p>
+  </section>
+
+  <section data-sec="threads" data-kw="measure to identify size tube pipe nominal od cartridge length splines toilet rough in flapper calipers">
+    <div class="sec-head"><h2>Measure to identify</h2><small>When there's no number</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Copper / PEX size</th><td>Measure the OD and subtract ⅛": 0.875" OD = ¾" nominal.</td></tr>
+        <tr><th>Steel / PVC / ABS</th><td>Match the OD to <b>Calc → Tables → Pipe sizes</b>: 1.900" = 1½", 2.375" = 2".</td></tr>
+        <tr><th>Cartridge or stem</th><td>Overall length, stem length, spline count on the broach, and any ears or tabs. Lay it on a tape and photo it.</td></tr>
+        <tr><th>Toilet rough-in</th><td>Finished wall (not baseboard) to the center of the closet bolts: 10", 12" or 14".</td></tr>
+        <tr><th>Flapper</th><td>Measure the flush valve opening: about 2" or about 3".</td></tr>
+        <tr><th>Basket strainer</th><td>Standard kitchen sink opening is 3½".</td></tr>
+        <tr><th>Frost-free bibb</th><td>Wall flange to the end of the tube inside (common 4"–14").</td></tr>
+      </tbody></table></div>
+    <p class="note">Calipers make this fast and exact. Tape measure: read across the widest point and round to the nearest ⅛".</p>
+  </section>
+
+  <section data-sec="finders" data-kw="install instructions guide pdf parts find model moen delta kohler pfister grohe">
     <div class="sec-head"><h2>Install guides &amp; part finders</h2><small>Official links</small></div>
     <div class="x"><table class="t"><tbody id="list-trim"></tbody></table></div>
+  </section>
+
+  <section data-sec="finders" data-kw="part finder links websites lookup identify model support help supply house ferguson winsupply fluidmaster korky water heater age chart internachi">
+    <div class="sec-head"><h2>ID help &amp; parts sources</h2><small>Official pages · supply houses</small></div>
+    <div class="x"><table class="t"><tbody id="list-parts"></tbody></table></div>
+    <p class="note">Calling instead? Maker tech lines are in <b>Calls → Tech lines</b>. Have photos, model, serial and install date ready.</p>
   </section>
 
   <!-- ================= INSPECT ================= -->
@@ -1433,9 +1568,11 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
       <div class="fc-foot"><span>Score <b id="fc-score">0 / 0</b></span><select id="fc-filter" aria-label="Topic"></select><button type="button" class="linkish" id="fc-reset">Reshuffle</button></div>
     </div>
   </section>
-  <section data-sec="words">
-    <div class="sec-head"><h2>Glossary</h2><small>Words on site</small></div>
-    <div class="x"><table class="t"><tbody id="gloss"></tbody></table></div>
+  <section data-sec="words" data-kw="glossary dictionary terms words definition meaning what does mean vocabulary">
+    <div class="sec-head"><h2>Glossary</h2><small id="gloss-n">Words on site</small></div>
+    <div class="seg" id="gloss-cat" role="group" aria-label="Glossary topic"></div>
+    <div class="x"><table class="t gloss"><tbody id="gloss"></tbody></table></div>
+    <p class="note">Tap a topic to narrow the list, or type any word in the search bar. Missing a word? It's a good one to ask your journeyman, then add.</p>
   </section>
   <section data-sec="career">
     <div class="sec-head"><h2>Path to a license</h2><small>Utah DOPL · R156-55c</small></div>
@@ -1533,6 +1670,22 @@ const LIB = {
     ["GROHE","GrohFlex universal rough-in","35026000 product page","https://www.grohe.us/products/universal-rough-in-box"],
     ["GROHE","35026000 install guide","PDF","https://lixil.cdn.celum.cloud/26479_35026000-installation-instructions_0_original.pdf"]
   ],
+  parts: [
+    ["Moen","Find your faucet's model number","Where Moen hides numbers on sink faucets","https://solutions.moen.com/Article_Library/Sink_Faucets"],
+    ["Moen","Bathroom faucet cartridges","Moen's cartridge guide","https://solutions.moen.com/Article_Library/Faucet_Cartridges:_Bathroom"],
+    ["Moen","1255 vs 150257 vs 160657","Telling look-alike cartridges apart","https://solutions.moen.com/Article_Library/How_to_Tell_the_Difference_Between_a_1255,_150257_and_160657_Cartridge"],
+    ["Kohler","Find a model or serial number","Kohler Assist, by product type","https://assist.kohler.com/en/other-products/Finding-a-KOHLER-or-STERLING-Product-Model-Number-or-Serial-Number"],
+    ["Kohler","I don't know my sink model","Kohler Assist walk-through","https://assist.kohler.com/en/sinks/I-dont-know-my-Sink-Model"],
+    ["Am. Std.","American Standard","Support, parts and install sheets","https://www.americanstandard-us.com/"],
+    ["InterNACHI","Water heater dating chart","Serial date codes for many brands","https://www.nachi.org/water-heater-dating-chart.htm"],
+    ["A.O. Smith","hotwater.com","A.O. Smith manuals, parts, warranty","https://www.hotwater.com/"],
+    ["Rheem","rheem.com","Rheem manuals and support","https://www.rheem.com/"],
+    ["Bradford W.","bradfordwhite.com","Literature and parts","https://www.bradfordwhite.com/"],
+    ["Fluidmaster","fluidmaster.com","Fill valves, flappers, flush valves","https://www.fluidmaster.com/"],
+    ["Korky","korky.com","Toilet repair parts finder","https://www.korky.com/"],
+    ["Ferguson","ferguson.com","Search by maker part number, check branch stock","https://www.ferguson.com/"],
+    ["Winsupply","winsupplyinc.com","Find a local Winsupply","https://www.winsupplyinc.com/"]
+  ],
   career: [
     ["DOPL","DOPL plumbing licensing","Apply, renew, FAQ","https://commerce.utah.gov/dopl/plumbing/"],
     ["MTECH","MTECH plumbing apprenticeship","Program, cost, schedule","https://www.mtec.edu/programs/plumbing-apprenticeship/"],
@@ -1543,87 +1696,320 @@ const LIB = {
 const linkRow = ([doc,t,n,u]) => `<tr data-search="${esc((doc+" "+t+" "+n).toLowerCase())}"><th scope="row" class="k">${esc(doc)}</th><td><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)} ↗</a> <span class="sub">· ${esc(n)}</span></td></tr>`;
 for (const k of Object.keys(LIB)){ const el = $("list-"+k); if (el) el.innerHTML = LIB[k].map(linkRow).join(""); }
 
+/* glossary: [term, topic, definition]. Topics: dwv, supply, gas, fit (pipe & fittings), fix (fixtures & trim), heat (water heaters), frame (framing & site), tools (tools & methods), code (code & paperwork) */
+const GLOSS_CATS = [["all","All"],["dwv","DWV"],["supply","Water"],["gas","Gas"],["fit","Pipe & fittings"],["fix","Fixtures & trim"],["heat","Heaters"],["frame","Framing & site"],["tools","Tools & methods"],["code","Code & paperwork"]];
 const GLOSS = [
-  ["AAV","Air admittance valve: one-way valve that lets air into the drain and closes against sewer gas."],
-  ["Backflow","Water flowing backward into the drinking supply."],
-  ["Bathroom group","Toilet + lav + tub or shower on one floor (a bidet and emergency floor drain are included), counted as one DFU load."],
-  ["Cleanout","Removable plug for snaking a drain."],
-  ["Closet flange","Fitting the toilet bolts to."],
-  ["Combo","Wye + ⅛ bend in one piece. Vertical → horizontal or horizontal → horizontal."],
-  ["Cross-connection","Any link between drinking water and a non-drinking source."],
-  ["Crown weir","Highest point of the inside bottom of the trap outlet, where water spills over. Trap seal and trap-arm length are measured from here. Also called trap weir."],
-  ["Developed length","Length along the pipe centerline, fittings included."],
-  ["DFU","Drainage fixture unit: a fixture's drain load, used to size drains."],
-  ["Ejector","Pump in a sealed pit that lifts sewage from below the sewer up into a gravity drain."],
-  ["Firestop","Listed sealant or system that restores a fire rating at a penetration."],
-  ["FVIR","Flammable vapor ignition resistant: a water heater design that can sit on a garage floor without the 18\" lift."],
-  ["Hub / spigot","Hub = socket end. Spigot = plain end that goes into it."],
-  ["Invert","Inside bottom of a pipe; flow-line elevations are taken here."],
-  ["Long sweep","Large-radius quarter bend."],
-  ["Nail plate","Steel shield over a pipe in framing."],
-  ["P-trap","U-bend plus arm holding a water seal against sewer gas."],
-  ["PRV","Pressure reducing valve. Required over 80 psi."],
-  ["Rough-in","All piping installed before walls close."],
-  ["RPZ","Reduced pressure zone assembly: two checks + relief valve, for high hazard."],
-  ["San tee","Sanitary tee: curved inlet, horizontal → vertical only."],
-  ["Sediment trap","Code name for a drip leg."],
-  ["Shield plate","16 ga steel plate protecting gas pipe that runs close to the framing edge."],
-  ["Sleeve","Larger pipe around a penetration through concrete or a wall."],
-  ["Stack vent","Part of a drain stack above the highest fixture connection."],
-  ["Stub-out","Capped pipe left out of the wall or floor for a fixture."],
-  ["T&P","Temperature and pressure relief valve on a water heater."],
-  ["Top-out","Above-ground rough-in of DWV and supply."],
-  ["Trap arm","Pipe from trap outlet to vent. IPC: fixture drain."],
-  ["Vent stack","Vertical pipe that carries only air for the drain system."],
-  ["Wet vent","Pipe that drains and also vents other fixtures."],
-  ["WSFU","Water supply fixture unit (also written WFU): demand number to size supply pipe."],
-  ["Wye","45° branch fitting."],
-  ["AFF","Above finished floor."],
-  ["ASSE","Standards group whose numbers are printed on valves and backflow devices (e.g. ASSE 1016)."],
-  ["CE","Continuing education: class hours needed to renew a license."],
-  ["Competent person","OSHA term: someone trained to spot trench hazards with authority to stop work."],
-  ["CTS / SDR-9","Copper tube size (same outside size as copper) / wall thickness ratio used for PEX."],
-  ["DWV","Drain, waste and vent piping."],
-  ["4-way","Rough inspection covering framing, plumbing, electrical and mechanical together."],
-  ["Indirect receptor","Open drain (floor sink, standpipe) that takes a discharge through an air gap."],
-  ["LVL / LSL","Laminated veneer lumber / laminated strand lumber: engineered beams and rims."],
-  ["o.c.","On center: measured center to center."],
-  ["OJT","On-the-job training hours."],
-  ["Take-off","Fitting center to where the pipe bottoms out. Subtract it to get cut length."],
-  ["Angle stop","Shutoff valve under a fixture: ½\" in, ⅜\" OD compression out."],
-  ["Cartridge","Replaceable insides of a faucet or shower valve that mix and shut off the water."],
-  ["Escutcheon","Trim plate that covers the hole around a valve or pipe."],
-  ["Limit stop","Adjustable stop that caps how far a shower handle turns toward hot (≤120°F)."],
-  ["Plaster guard","Plastic cover on a rough valve that protects it and shows the finished-wall depth."],
-  ["Pressure balance","Shower valve that keeps hot/cold pressures equal so a flush doesn't scald."],
-  ["Secondary water","Untreated irrigation water in its own pipes (PI). Never connected to drinking water."],
-  ["Shower rise","Water coming out the shower head while the tub spout runs, often from a spout too far from the valve or PEX to a diverter spout."],
-  ["Thermostatic valve","Shower valve that senses water temperature and mixes to hold it."],
-  ["Trim","Finish phase (\"finish\"), or the visible handle, plate and spout that go on a rough valve."],
-  ["Siphon","Flowing water pulling water along after it; how a trap gets sucked dry."],
-  ["Back-siphonage / back-pressure","Backflow caused by suction in the supply / by higher pressure downstream."],
-  ["Air gap","Open vertical space between an outlet and the flood rim. Water can't jump back up it."],
-  ["Flood level rim","Top edge of a fixture, where water would spill over."],
-  ["Head","Height of a water column; 1 ft = 0.433 psi."],
-  ["Drip leg","Sediment trap: capped tee and nipple before a gas appliance that catches dirt and scale."],
-  ["CSST","Corrugated stainless steel tubing: flexible, yellow-jacketed gas pipe."],
-  ["BTU/h · CFH","Heat input per hour · cubic feet of gas per hour."],
-  ["Derate","Turn an appliance's input down, usually for altitude."],
-  ["Diverter","Valve that sends water to the tub spout or the shower head."],
-  ["Hammer arrestor","Sealed air or piston cushion that soaks up water-hammer spikes."],
-  ["IRC","International Residential Code: the code for one- and two-family houses."],
-  ["IPC","International Plumbing Code: what MTECH teaches; used for other buildings."],
-  ["IFGC","International Fuel Gas Code (houses use IRC chapter 24 instead)."],
-  ["NPT / IPS","Tapered pipe thread / iron pipe size."],
-  ["EWP","Engineered wood products: I-joists, LVL, LSL."],
-  ["SDS","Safety data sheet: the maker's hazard sheet for a chemical."],
-  ["Sch 40","Schedule 40: the standard wall thickness for PVC and steel pipe."],
-  ["gpm · gph · gpf","Gallons per minute · per hour · per flush."],
-  ["DOPL","Utah Division of Professional Licensing: issues plumbing licenses."],
-  ["Upstream / downstream","Toward the water or gas source / toward the fixture or appliance."]
+  /* ---- DWV ---- */
+  ["AAV","dwv","Air admittance valve: one-way valve that lets air into the drain and closes against sewer gas. ASSE 1051."],
+  ["Air break","dwv","Open connection where a waste pipe ends inside a receptor below its rim. Less protection than an air gap."],
+  ["Backwater valve","dwv","Check valve on the sewer that stops a city sewer backup from flooding low fixtures."],
+  ["Bathroom group","dwv","Toilet + lav + tub or shower on one floor (a bidet and emergency floor drain are included), counted as one DFU load."],
+  ["Branch","dwv","Any drain pipe that isn't a stack, riser or the building drain."],
+  ["Branch interval","dwv","A story-height section of stack (at least 8 ft) where horizontal branches tie in."],
+  ["Building drain","dwv","Lowest horizontal drain inside the building. Becomes the building sewer 30\" outside the wall."],
+  ["Building sewer","dwv","Pipe from the end of the building drain to the city sewer or septic tank."],
+  ["Circuit vent","dwv","One vent serving a row of fixtures on a horizontal branch, tied in ahead of the last fixture."],
+  ["Cleanout","dwv","Removable plug for snaking a drain."],
+  ["Common vent","dwv","One vent serving two fixture drains that connect at the same level or within set limits."],
+  ["Crown weir","dwv","Highest point of the inside bottom of the trap outlet, where water spills over. Trap seal and trap-arm length are measured from here. Also called trap weir."],
+  ["Deep-seal trap","dwv","Trap with a seal deeper than 2\", used where evaporation could dry it out."],
+  ["Developed length","dwv","Length along the pipe centerline, fittings included."],
+  ["DFU","dwv","Drainage fixture unit: a fixture's drain load, used to size drains."],
+  ["Drum trap","dwv","Old round canister trap, mostly under tubs. Not allowed in new work."],
+  ["Dry vent","dwv","A vent that carries only air, no water."],
+  ["DWV","dwv","Drain, waste and vent piping."],
+  ["Ejector","dwv","Pump in a sealed pit that lifts sewage from below the sewer up into a gravity drain."],
+  ["Fall","dwv","How much a drain drops over its run. Slope × run."],
+  ["Fixture drain","dwv","IPC term for the trap arm: from the trap to where it joins another drain."],
+  ["Flood level rim","dwv","Top edge of a fixture, where water would spill over."],
+  ["Grade","dwv","Slope of a pipe, usually in inches per foot."],
+  ["House trap","dwv","Trap on the building drain near where it leaves the house. Old practice; not used in new work."],
+  ["Indirect waste","dwv","A drain that discharges through an air gap or air break into a receptor instead of tying in directly."],
+  ["Indirect receptor","dwv","Open drain (floor sink, standpipe) that takes a discharge through an air gap."],
+  ["Individual vent","dwv","A vent serving one fixture trap. Also called a back vent or re-vent."],
+  ["Invert","dwv","Inside bottom of a pipe; flow-line elevations are taken here."],
+  ["Island vent","dwv","Loop vent for an island sink: rises as high as it can under the counter, then drops and ties in below the fixture drain."],
+  ["Lateral","dwv","The building sewer, or the piece from the property line to the city main."],
+  ["P-trap","dwv","U-bend plus arm holding a water seal against sewer gas."],
+  ["Relief vent","dwv","Vent that lets air in or out of a stack or branch to balance pressure, often at offsets or between floors."],
+  ["S-trap","dwv","Trap whose outlet turns straight down. It siphons itself dry, so it's not allowed."],
+  ["Siphon","dwv","Flowing water pulling water along after it; how a trap gets sucked dry."],
+  ["Soil pipe","dwv","Drain that carries toilet waste. A waste pipe carries everything else."],
+  ["Stack","dwv","Vertical drain or vent pipe running through one or more floors."],
+  ["Stack vent","dwv","Part of a drain stack above the highest fixture connection."],
+  ["Storm drain","dwv","Piping for rainwater. Never ties into the sanitary sewer."],
+  ["Sump","dwv","Pit that collects clear water (foundation or walkout drains) for a pump to lift out."],
+  ["Trap arm","dwv","Pipe from trap outlet to vent. IPC: fixture drain."],
+  ["Trap primer","dwv","Device that adds water to a seldom-used trap so its seal doesn't dry out."],
+  ["Trap seal","dwv","Depth of water held in a trap: 2\" min, 4\" max."],
+  ["Vent stack","dwv","Vertical pipe that carries only air for the drain system."],
+  ["Vent terminal","dwv","Where a vent ends outdoors, usually through the roof (VTR)."],
+  ["Waste pipe","dwv","Drain carrying waste from fixtures other than toilets."],
+  ["Wet vent","dwv","Pipe that drains and also vents other fixtures."],
+  ["Yoke vent","dwv","Vent connecting a soil stack to a vent stack to balance pressure."],
+
+  /* ---- Water ---- */
+  ["Air gap","supply","Open vertical space between an outlet and the flood rim. Water can't jump back up it."],
+  ["AVB","supply","Atmospheric vacuum breaker: simple backflow device that opens to air when pressure drops. No valves downstream of it."],
+  ["Back-siphonage / back-pressure","supply","Backflow caused by suction in the supply / by higher pressure downstream."],
+  ["Backflow","supply","Water flowing backward into the drinking supply."],
+  ["Brine line","supply","Tube between a water softener and its salt tank."],
+  ["Bypass valve","supply","Valve set that routes water around a softener or filter for service."],
+  ["Cross-connection","supply","Any link between drinking water and a non-drinking source."],
+  ["Culinary water","supply","Utah term for drinking (potable) water, as opposed to secondary irrigation water."],
+  ["Curb stop","supply","Shutoff on the water service near the property line, under a curb box."],
+  ["DCVA","supply","Double check valve assembly: two checks plus test cocks and shutoffs, for lower hazards."],
+  ["Dual check","supply","Two spring-loaded checks in one body, not testable. Common at water meters."],
+  ["Dynamic pressure","supply","Pressure while water is flowing. Always lower than static pressure."],
+  ["Expansion tank","supply","Small tank with an air cushion that soaks up thermal expansion in a closed system."],
+  ["Hammer arrestor","supply","Sealed air or piston cushion that soaks up water-hammer spikes."],
+  ["HBVB","supply","Hose bibb vacuum breaker: screw-on or built-in backflow device for hose outlets."],
+  ["Head","supply","Height of a water column; 1 ft = 0.433 psi."],
+  ["Home run","supply","PEX line running uninterrupted from a manifold to one fixture."],
+  ["Hose bibb","supply","Outdoor faucet with a hose thread. Also called a sillcock; frost-free models have the seat inside the wall."],
+  ["Main shutoff","supply","Valve that shuts off water to the whole house, near where the service enters."],
+  ["Manifold","supply","Header with an outlet (and often a valve) for each fixture line."],
+  ["Non-potable","supply","Water not safe to drink: secondary irrigation, graywater, process water."],
+  ["Potable","supply","Safe to drink."],
+  ["PRV","supply","Pressure reducing valve. Required over 80 psi."],
+  ["PVB","supply","Pressure vacuum breaker: testable backflow assembly, common on irrigation. Set at least 12\" above the highest sprinkler head."],
+  ["Recirculation","supply","Pump or valve system that keeps hot water moving so it arrives at fixtures faster (HWR line)."],
+  ["Riser","supply","Water pipe that runs vertically to serve a floor or fixture."],
+  ["RPZ","supply","Reduced pressure zone assembly: two checks + relief valve, for high hazard."],
+  ["Secondary water","supply","Untreated irrigation water in its own pipes (PI). Never connected to drinking water."],
+  ["Static pressure","supply","Pressure with no water flowing. Code max for a house: 80 psi."],
+  ["Thermal expansion","supply","Water growing in volume as it heats. In a closed system it spikes pressure."],
+  ["TMV","supply","Thermostatic mixing valve: blends hot and cold to a set outlet temperature, often at the heater."],
+  ["Trunk and branch","supply","Layout with a large main line and tees off to each fixture."],
+  ["Velocity","supply","How fast water moves in a pipe, in ft/s. Too fast = noise and erosion."],
+  ["Water distribution pipe","supply","All the supply piping inside the building, after the water service."],
+  ["Water service","supply","Pipe from the meter or main to the building."],
+  ["WSFU","supply","Water supply fixture unit (also written WFU): demand number to size supply pipe."],
+
+  /* ---- Gas ---- */
+  ["2 psi system","gas","Gas system run at 2 psi with a regulator at each appliance or manifold. Smaller pipe; different sizing tables."],
+  ["Appliance connector","gas","Flexible connector from the shutoff to an appliance. 6 ft max, never concealed."],
+  ["B-vent","gas","Double-wall metal vent pipe for natural-draft gas appliances."],
+  ["Black iron","gas","Schedule 40 steel pipe used for gas, joined with threaded fittings."],
+  ["BTU/h · CFH","gas","Heat input per hour · cubic feet of gas per hour."],
+  ["Combustion air","gas","Air an appliance needs to burn. Natural-draft appliances take it from the room or from outdoor openings."],
+  ["Condensing","gas","90%+ efficient appliance that pulls so much heat it condenses water from the exhaust. Needs a condensate drain and plastic vent."],
+  ["CSST","gas","Corrugated stainless steel tubing: flexible, yellow-jacketed gas pipe."],
+  ["Derate","gas","Turn an appliance's input down, usually for altitude."],
+  ["Direct vent","gas","Sealed appliance that takes combustion air from outside and vents outside through its own pipes."],
+  ["Draft hood","gas","Open collar on top of a natural-draft heater that lets room air mix into the flue."],
+  ["Drip leg","gas","Sediment trap: capped tee and nipple before a gas appliance that catches dirt and scale."],
+  ["Flare fitting","gas","Fitting that seals on a flared cone face. Used on appliance connectors."],
+  ["Flue","gas","Passage that carries combustion products out of an appliance."],
+  ["Gas cock","gas","Quarter-turn plug valve used as a gas shutoff."],
+  ["Hot surface igniter","gas","Ceramic element that glows to light the burner. Replaces a standing pilot."],
+  ["In. w.c.","gas","Inches of water column: unit for low gas pressure. Typical house natural gas is about 7\" w.c."],
+  ["Longest-length method","gas","Gas sizing: every section uses the length to the farthest appliance, with its own load."],
+  ["LP","gas","Liquefied petroleum gas, propane. About 2,500 BTU/ft³ and heavier than air."],
+  ["Manometer","gas","Gauge that reads low gas pressure in inches of water column."],
+  ["Natural gas","gas","Methane supplied by the utility. About 1,000 BTU/ft³, lighter than air."],
+  ["Natural draft","gas","Appliance whose exhaust rises up the vent by its own heat (atmospheric)."],
+  ["Power vent","gas","Appliance with a fan that pushes exhaust out, usually through plastic pipe."],
+  ["Regulator","gas","Valve that drops gas pressure to what the appliance or system needs."],
+  ["Sediment trap","gas","Code name for a drip leg."],
+  ["Shield plate","gas","16 ga steel plate protecting gas pipe that runs close to the framing edge."],
+  ["Specific gravity","gas","Gas weight compared to air. Natural gas ≈ 0.60, which the sizing tables assume."],
+  ["Striker plate","gas","Heavier plate some CSST makers require where tubing passes through framing."],
+  ["Thermocouple","gas","Sensor in a standing pilot that keeps the gas valve open only while the pilot is lit."],
+  ["Vent connector","gas","Pipe from the appliance to the vent or chimney."],
+
+  /* ---- Pipe & fittings ---- */
+  ["1/16 bend","fit","22½° elbow."],
+  ["⅛ bend","fit","45° elbow."],
+  ["⅙ bend","fit","60° elbow."],
+  ["¼ bend","fit","90° elbow."],
+  ["ABS","fit","Black plastic DWV pipe, joined with ABS cement (no primer)."],
+  ["Bushing","fit","Fitting that screws or glues inside another to reduce size."],
+  ["Cap / plug","fit","Cap closes the outside of a pipe end; plug closes the inside of a fitting."],
+  ["Closet bend","fit","The 90° fitting under a toilet flange."],
+  ["Closet flange","fit","Fitting the toilet bolts to."],
+  ["Combo","fit","Wye + ⅛ bend in one piece. Vertical → horizontal or horizontal → horizontal."],
+  ["Compression fitting","fit","Fitting that seals by crushing a ferrule onto the tube with a nut."],
+  ["Coupling","fit","Joins two pipes of the same size in a straight line."],
+  ["CPVC","fit","Cream or tan plastic rated for hot and cold water, solvent welded."],
+  ["Crimp ring","fit","Copper ring compressed with a crimp tool to seal PEX on a barbed fitting (F1807)."],
+  ["CTS / SDR-9","fit","Copper tube size (same outside size as copper) / wall thickness ratio used for PEX."],
+  ["Dielectric union","fit","Union that separates two different metals (steel and copper) to stop galvanic corrosion."],
+  ["Double fixture fitting","fit","Fitting that lets two fixtures (often back to back) drain into one stack at the same level."],
+  ["Drop-ear elbow","fit","Elbow with mounting tabs, used at shower arms and stub-outs. Also called a wing elbow."],
+  ["Expansion (F1960)","fit","PEX-a joint: the tube end is stretched over the fitting with a ring and shrinks back to seal."],
+  ["Ferrule","fit","Brass or plastic sleeve that compresses onto tube in a compression fitting. Also called an olive."],
+  ["Flexible coupling","fit","Rubber coupling with clamps joining DWV pipe. Above ground it must be the shielded type (2024 IPC)."],
+  ["Hub / spigot","fit","Hub = socket end. Spigot = plain end that goes into it."],
+  ["Long sweep","fit","Large-radius quarter bend."],
+  ["MIP / FIP","fit","Male iron pipe (outside threads) / female iron pipe (inside threads)."],
+  ["Nipple","fit","Short pipe threaded on both ends."],
+  ["No-hub","fit","Cast iron pipe without hubs, joined with stainless band couplings."],
+  ["NPT / IPS","fit","Tapered pipe thread / iron pipe size."],
+  ["PEX","fit","Cross-linked polyethylene tube for water. PEX-a, -b and -c differ by how they're made and which fittings they take."],
+  ["Press fitting","fit","Fitting sealed by an O-ring that a press tool crimps onto copper or PEX (ProPress, Viega)."],
+  ["Push-to-connect","fit","Fitting that seals with an O-ring and grabs with stainless teeth (SharkBite). No tools."],
+  ["PVC","fit","White plastic pipe. DWV PVC uses purple primer plus cement."],
+  ["Reducer","fit","Fitting that changes from one pipe size to another."],
+  ["San tee","fit","Sanitary tee: curved inlet, horizontal → vertical only."],
+  ["Sch 40","fit","Schedule 40: the standard wall thickness for PVC and steel pipe."],
+  ["Short sweep","fit","Quarter bend with a tighter radius than a long sweep."],
+  ["Sleeve","fit","Larger pipe around a penetration through concrete or a wall."],
+  ["Street fitting","fit","Fitting with one spigot end so it goes straight into another fitting without a pipe."],
+  ["Sweat","fit","Soldered copper joint."],
+  ["Test tee","fit","Tee with a cleanout plug used to plug a stack for a test."],
+  ["Transition fitting","fit","Fitting made to join two different pipe materials, like ABS to PVC or copper to PEX."],
+  ["Type K / L / M","fit","Copper wall thickness, thickest to thinnest. Printed green, blue and red."],
+  ["Union","fit","Three-part fitting that lets a threaded connection come apart without turning the pipe."],
+  ["Wye","fit","45° branch fitting."],
+
+  /* ---- Fixtures & trim ---- */
+  ["Aerator","fix","Screen on the faucet outlet that mixes in air and sets the flow rate."],
+  ["Angle stop","fix","Shutoff valve under a fixture: ½\" in, ⅜\" OD compression out."],
+  ["Ballcock","fix","Old name for a toilet fill valve. The ⅞\" thread on its shank is the \"ballcock\" thread."],
+  ["Basket strainer","fix","Kitchen sink drain with a removable basket; fits a 3½\" opening."],
+  ["Cartridge","fix","Replaceable insides of a faucet or shower valve that mix and shut off the water."],
+  ["Centerset","fix","Lav faucet with handles and spout on one base, for 4\" hole spacing."],
+  ["Closet bolts","fix","Bolts that hold a toilet to the flange."],
+  ["Continuous waste","fix","Tubular drain kit joining two sink bowls into one trap."],
+  ["Diverter","fix","Valve that sends water to the tub spout or the shower head."],
+  ["Escutcheon","fix","Trim plate that covers the hole around a valve or pipe."],
+  ["Fill valve","fix","Valve in a toilet tank that refills it after a flush."],
+  ["Flapper","fix","Rubber seal over the toilet's flush valve opening (2\" or 3\")."],
+  ["Flush valve","fix","Opening and seat in the bottom of a toilet tank that the flapper closes."],
+  ["Integral stops","fix","Shutoffs built into a shower valve body for servicing the cartridge."],
+  ["Lav","fix","Lavatory: bathroom sink."],
+  ["Limit stop","fix","Adjustable stop that caps how far a shower handle turns toward hot (≤120°F)."],
+  ["Plaster guard","fix","Plastic cover on a rough valve that protects it and shows the finished-wall depth."],
+  ["Pop-up drain","fix","Lav drain with a stopper worked by a lift rod, or a push-down (click) stopper."],
+  ["Pressure balance","fix","Shower valve that keeps hot/cold pressures equal so a flush doesn't scald."],
+  ["Rough valve","fix","The valve body installed in the wall at rough-in. Trim goes on it at finish."],
+  ["Shower rise","fix","Water coming out the shower head while the tub spout runs, often from a spout too far from the valve or PEX to a diverter spout."],
+  ["Slip joint","fix","Tubular joint sealed by a slip nut and washer. Must stay accessible."],
+  ["Supply line","fix","Flexible (usually braided) line from the angle stop to a fixture."],
+  ["Tailpiece","fix","Straight tubular pipe from a sink drain down to the trap."],
+  ["Tank-to-bowl kit","fix","Gasket, bolts and washers that join a two-piece toilet."],
+  ["Thermostatic valve","fix","Shower valve that senses water temperature and mixes to hold it."],
+  ["Trim","fix","Finish phase (\"finish\"), or the visible handle, plate and spout that go on a rough valve."],
+  ["Waste and overflow","fix","Tub drain kit: the drain shoe, overflow pipe and stopper linkage."],
+  ["Wax ring","fix","Seal between a toilet and the closet flange (wax or foam/rubber)."],
+  ["Widespread","fix","Lav faucet with separate handles and spout, usually 8\" centers."],
+  ["Water closet","fix","Code name for a toilet (WC)."],
+
+  /* ---- Water heaters ---- */
+  ["Anode rod","heat","Magnesium or aluminum rod that corrodes so the steel tank doesn't."],
+  ["Dip tube","heat","Tube that carries cold water to the bottom of the tank."],
+  ["Drain pan","heat","Pan under a heater that catches leaks: 1½\" deep with a ¾\" drain."],
+  ["Element","heat","Electric heating rod in an electric heater; most tanks have two."],
+  ["First-hour rating","heat","Gallons of hot water a tank can deliver in a busy hour. Size tanks by this."],
+  ["FVIR","heat","Flammable vapor ignition resistant: a water heater design that can sit on a garage floor without the 18\" lift."],
+  ["HPWH","heat","Heat pump water heater: uses a compressor to pull heat from the air. Needs a condensate drain and room air."],
+  ["Neutralizer","heat","Cartridge of media that raises the pH of acidic condensate before it goes down the drain."],
+  ["Rating plate","heat","Label with model, serial, input, gas type and pressure rating. Also called a data plate."],
+  ["Recovery rate","heat","Gallons per hour a heater can heat at a given temperature rise."],
+  ["Scale","heat","Hard-water mineral buildup that insulates heat exchangers and makes tanks rumble."],
+  ["Seismic strap","heat","Steel strap anchoring a water heater to the wall against earthquakes."],
+  ["T&P","heat","Temperature and pressure relief valve on a water heater."],
+  ["Tankless","heat","Heater that fires only when water flows. Sized by gpm at a temperature rise."],
+  ["UEF","heat","Uniform energy factor: the efficiency rating on new water heaters."],
+
+  /* ---- Framing & site ---- */
+  ["AFF","frame","Above finished floor."],
+  ["Bearing wall","frame","Wall that carries load from above. Tighter hole limits (40%)."],
+  ["Blocking","frame","Short pieces of lumber between studs or joists for backing or bracing."],
+  ["Cantilever","frame","Part of a joist or beam that sticks out past its support."],
+  ["Chase","frame","Framed space that hides pipes, ducts or vents."],
+  ["EWP","frame","Engineered wood products: I-joists, LVL, LSL."],
+  ["Fireblocking","frame","Material that closes concealed spaces so fire can't travel through them."],
+  ["Firestop","frame","Listed sealant or system that restores a fire rating at a penetration."],
+  ["Footing","frame","Concrete base under a foundation wall."],
+  ["Furring","frame","Strips added to a wall to make it thicker, often to fit pipe."],
+  ["Header","frame","Beam over an opening that carries the load around it."],
+  ["I-joist","frame","Engineered joist with wood flanges and an OSB web (TJI, BCI, LPI). Holes in the web only."],
+  ["Joist","frame","Horizontal framing member that holds up a floor or ceiling."],
+  ["LVL / LSL","frame","Laminated veneer lumber / laminated strand lumber: engineered beams and rims."],
+  ["Nail plate","frame","Steel shield over a pipe in framing."],
+  ["Non-bearing wall","frame","Partition that carries no load from above. Holes up to 60%."],
+  ["o.c.","frame","On center: measured center to center."],
+  ["Penetration","frame","Any hole where a pipe passes through a wall, floor or ceiling."],
+  ["Rim joist","frame","Joist around the outside edge of a floor. Also called a band."],
+  ["Sill plate","frame","Bottom plate bolted to the foundation. Also called a mud sill."],
+  ["Slab","frame","Concrete floor poured on grade. Underground plumbing goes in first."],
+  ["Soffit","frame","Lowered section of ceiling, often hiding pipes or ducts."],
+  ["Sole plate","frame","Bottom plate of a wall."],
+  ["Stem wall","frame","Short foundation wall between the footing and the floor framing."],
+  ["Stud","frame","Vertical framing member in a wall."],
+  ["Subfloor","frame","Sheathing over the joists, under the finished floor."],
+  ["Top plate","frame","Doubled plate on top of a wall. Cut over 50%: strap it."],
+  ["Truss","frame","Engineered frame of chords and webs. Never cut any member."],
+  ["Web stiffener","frame","Block nailed to an I-joist web at bearings or loads. Never drill it."],
+  ["Wet wall","frame","Wall that holds drains, vents and supplies; often framed 2×6."],
+
+  /* ---- Tools & methods ---- */
+  ["Center to center","tools","Measurement from one pipe or fitting centerline to the next."],
+  ["Chamfer","tools","Bevel on the end of plastic pipe so it doesn't push cement off when it goes in."],
+  ["Deburr","tools","Remove the burr inside a cut pipe so it doesn't snag flow or cut O-rings."],
+  ["Dope","tools","Pipe thread sealant paste."],
+  ["Dry-fit","tools","Assemble without glue or solder to check lengths and angles first."],
+  ["Expander tool","tools","Tool that stretches PEX-a and its ring for F1960 fittings."],
+  ["Go/no-go gauge","tools","Gauge that checks a crimp or press is the right size."],
+  ["Grade rod","tools","Graduated rod read against a laser to check elevation and slope."],
+  ["Make-up","tools","How far a pipe thread or spigot goes into a fitting."],
+  ["Offset","tools","Change in a pipe's line using two fittings. Rolling offset: it moves up and sideways."],
+  ["PTFE tape","tools","Thread seal tape (Teflon). On NPT threads only, wrapped with the thread direction."],
+  ["Primer","tools","Solvent that softens PVC or CPVC before cementing. Purple primer lets the inspector see it."],
+  ["Rise / roll / run","tools","Offset measurements: vertical shift / sideways shift / distance along the pipe."],
+  ["Rough-in","tools","All piping installed before walls close."],
+  ["Shooting grade","tools","Using a laser and rod to set or check pipe slope."],
+  ["Solvent cement","tools","Glue that chemically welds plastic pipe to fittings. ABS, PVC and CPVC each have their own."],
+  ["Stub-out","tools","Capped pipe left out of the wall or floor for a fixture."],
+  ["Take-off","tools","Fitting center to where the pipe bottoms out. Subtract it to get cut length."],
+  ["Tinning flux","tools","Flux with powdered solder that helps coat the joint."],
+  ["Top-out","tools","Above-ground rough-in of DWV and supply."],
+  ["Travel","tools","Center-to-center length of the angled piece in an offset."],
+  ["True offset","tools","Straight-line distance between two offset pipe centerlines: √(rise² + roll²)."],
+
+  /* ---- Code & paperwork ---- */
+  ["4-way","code","Rough inspection covering framing, plumbing, electrical and mechanical together."],
+  ["AHJ","code","Authority having jurisdiction: the code official or department that enforces the code."],
+  ["Approved plans","code","The stamped plan set the permit was issued on. Must be on site."],
+  ["ASSE","code","Standards group whose numbers are printed on valves and backflow devices (e.g. ASSE 1016)."],
+  ["ASTM","code","Standards group for materials. Pipe and fitting standards (D2665, F1960) come from them."],
+  ["CE","code","Continuing education: class hours needed to renew a license."],
+  ["Competent person","code","OSHA term: someone trained to spot trench hazards with authority to stop work."],
+  ["Correction notice","code","Inspector's list of what failed. Fix it and call for a re-inspection."],
+  ["DOPL","code","Utah Division of Professional Licensing: issues plumbing licenses."],
+  ["IFGC","code","International Fuel Gas Code (houses use IRC chapter 24 instead)."],
+  ["IPC","code","International Plumbing Code: what MTECH teaches; used for other buildings."],
+  ["IRC","code","International Residential Code: the code for one- and two-family houses."],
+  ["Listed","code","Tested and certified by an approved agency to a standard, and marked that way."],
+  ["NSF/ANSI 61","code","Standard for products safe to touch drinking water. NSF 372 covers lead-free."],
+  ["OJT","code","On-the-job training hours."],
+  ["Permit card","code","Card posted on site where the inspector signs off each inspection."],
+  ["Punch list","code","List of small items to finish before final."],
+  ["SDS","code","Safety data sheet: the maker's hazard sheet for a chemical."],
+  ["Spec sheet","code","Maker's sheet with a product's dimensions, rough-in and connections. Also called a cut sheet."],
+  ["UOSH","code","Utah Occupational Safety and Health: Utah's own OSHA program."],
+  ["UPC","code","Uniform Plumbing Code: the other model code, used in some western states. Utah uses the IPC/IRC."],
+  ["Utah amendments","code","State changes to the model codes, in Utah Code Title 15A ch. 3. Tagged UT in this book."],
+
+  /* units & misc */
+  ["gpm · gph · gpf","supply","Gallons per minute · per hour · per flush."],
+  ["Upstream / downstream","supply","Toward the water or gas source / toward the fixture or appliance."],
+  ["Blue Stakes","code","Utah's 811 call-before-you-dig service. Marks utility lines before excavation."]
 ];
-GLOSS.sort((a,b) => a[0].localeCompare(b[0], undefined, {sensitivity:"base"}));
-$("gloss").innerHTML = GLOSS.map(([t,d]) => `<tr data-search="${esc((t+" "+d).toLowerCase())}"><th>${esc(t)}</th><td>${esc(d)}</td></tr>`).join("");
+GLOSS.sort((a,b) => a[0].localeCompare(b[0], undefined, {sensitivity:"base", numeric:true}));
+const GCAT = Object.fromEntries(GLOSS_CATS);
+$("gloss").innerHTML = GLOSS.map(([t,c,d]) => `<tr data-cat="${c}" data-search="${esc((t+" "+d+" "+GCAT[c]).toLowerCase())}"><th>${esc(t)}<div class="sub">${esc(GCAT[c])}</div></th><td>${esc(d)}</td></tr>`).join("");
+let glCat = store.get("jpb-gloss-cat", "all"); if (!GCAT[glCat]) glCat = "all";
+function glossFilter(){
+  let n = 0;
+  $("gloss").querySelectorAll("tr").forEach(r => { const on = glCat === "all" || r.dataset.cat === glCat; r.classList.toggle("off", !on); if (on) n++; });
+  $("gloss-cat").innerHTML = GLOSS_CATS.map(([k,t]) => `<button type="button" data-c="${k}" aria-pressed="${k === glCat}">${esc(t)}</button>`).join("");
+  $("gloss-n").textContent = `${n} ${glCat === "all" ? "words on site" : GCAT[glCat].toLowerCase() + " words"}`;
+}
+$("gloss-cat").addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (!b) return; glCat = b.dataset.c; store.set("jpb-gloss-cat", glCat); glossFilter(); });
+glossFilter();
 
 /* ---------- 3 phone numbers: tap to call on a phone, click to copy on a computer, press and hold to copy ---------- */
 const canCall = matchMedia("(pointer:coarse)").matches;
@@ -1649,12 +2035,13 @@ const GROUPS = {
   calc:    [["layout","Layout"],["water","Water & pipe"],["dfu","DFU"],["gascalc","Gas & heater"],["units","Units"],["tables","Tables"]],
   rough:   [["framing","Framing"],["under","Underground"],["dwv","Drains & vents"],["supply","Water supply"],["fixtures","Fixtures"],["gas","Gas & heaters"],["materials","Materials"]],
   trim:    [["trim","Trim & valves"]],
+  parts:   [["idhow","Find a part"],["labels","Labels & age"],["threads","Threads & sizes"],["finders","Part finders"]],
   inspect: [["phases","Phases & tests"],["cities","Cities"],["code","Which code"],["utah","Utah"]],
   calls:   [["emergency","Emergency"],["tech","Tech lines"],["safety","Safety"]],
   learn:   [["how","How it works"],["study","Flashcards"],["words","Glossary"],["career","License"]],
   mine:    [["mine","My files"]]
 };
-const GNAME = {calc:"Calc",rough:"Rough",trim:"Trim",inspect:"Inspect",calls:"Calls",learn:"Learn",mine:"Files"};
+const GNAME = {calc:"Calc",rough:"Rough",trim:"Trim",parts:"Parts",inspect:"Inspect",calls:"Calls",learn:"Learn",mine:"Files"};
 const groupOf = sec => Object.keys(GROUPS).find(g => GROUPS[g].some(([s]) => s === sec));
 const SECTIONS = [...document.querySelectorAll(".book > section[data-sec]")];
 const book = document.querySelector(".book");
@@ -2610,7 +2997,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "plumbiverse-2026-10-12-hivis3";
+var BUILD = "plumbiverse-2026-10-12-parts";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
