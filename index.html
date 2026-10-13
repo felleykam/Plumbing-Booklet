@@ -8,11 +8,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Plumbiverse">
+<meta name="apple-mobile-web-app-title" content="Field Guide">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
-<title>PlumChum's Guide to the Plumbiverse</title>
+<title>Plumbing Field Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -28,12 +28,12 @@ try{var t=JSON.parse(localStorage.getItem("jpb-theme"));if(t==="light"||t==="dar
   --bar:#141414; --bar-ink:#FFD400; --hi:#FFE873;
   --danger:#B42318; --danger-soft:#FDECEA; --ok:#0E7A3D;
   /* group color tags */
-  --g-calc:#1F4FD8; --g-rough:#0E7A3D; --g-trim:#A3127A; --g-inspect:#C44100; --g-calls:#C8102E; --g-learn:#5B35B0; --g-parts:#0B7C86; --g-mine:#141414;
+  --g-calc:#1F4FD8; --g-rough:#0E7A3D; --g-trim:#A3127A; --g-inspect:#C44100; --g-calls:#C8102E; --g-learn:#5B35B0; --g-parts:#0B7C86; --g-weather:#0369A1; --g-mine:#141414;
   /* offset drawings */
   --d-bg:#FFFFFF; --d-grid:#E6E2D7; --d-pipe:#8D8A82; --d-fit:#D14900; --d-cut:#1F4FD8; --d-cut-lbl:#1F4FD8; --d-rise:#A87C00; --d-roll:#0E7A3D; --d-run:#141414; --d-tru:#7A3FD0; --d-text:#141414; --d-dim:#5E5B53;
   --acc:var(--ink);
   --stripe:repeating-linear-gradient(-45deg,var(--hv) 0 9px,var(--k) 9px 18px);
-  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --display:"Barlow Condensed","Arial Narrow","Avenir Next Condensed","Roboto Condensed",sans-serif-condensed,system-ui,sans-serif;
   --stencil:"Saira Stencil One","Barlow Condensed",Impact,sans-serif;
   --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -44,18 +44,18 @@ try{var t=JSON.parse(localStorage.getItem("jpb-theme"));if(t==="light"||t==="dar
   --paper:#0F0F0E; --sheet:#1A1A18; --ink:#F3F1EA; --muted:#B8B4A8; --rule:#34322D; --edge:#5A5750; --zebra:#20201D;
   --bar:#FFD400; --bar-ink:#111111; --hi:#3A3200;
   --danger:#FF7A6B; --danger-soft:#3A1512; --ok:#4ADE80;
-  --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-parts:#4FD1DB; --g-mine:#F3F1EA;
+  --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-parts:#4FD1DB; --g-weather:#7DD3FC; --g-mine:#F3F1EA;
   --d-bg:#141413; --d-grid:#2C2B27; --d-pipe:#8D8A82; --d-fit:#FF8A3D; --d-cut:#6EA8FF; --d-cut-lbl:#9CC3FF; --d-rise:#FFD400; --d-roll:#4ADE80; --d-run:#ECEAE2; --d-tru:#C3A6FF; --d-text:#ECEAE2; --d-dim:#A9A598;
   color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#0F0F0E; --sheet:#1A1A18; --ink:#F3F1EA; --muted:#B8B4A8; --rule:#34322D; --edge:#5A5750; --zebra:#20201D;
   --bar:#FFD400; --bar-ink:#111111; --hi:#3A3200;
   --danger:#FF7A6B; --danger-soft:#3A1512; --ok:#4ADE80;
-  --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-parts:#4FD1DB; --g-mine:#F3F1EA;
+  --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-parts:#4FD1DB; --g-weather:#7DD3FC; --g-mine:#F3F1EA;
   --d-bg:#141413; --d-grid:#2C2B27; --d-pipe:#8D8A82; --d-fit:#FF8A3D; --d-cut:#6EA8FF; --d-cut-lbl:#9CC3FF; --d-rise:#FFD400; --d-roll:#4ADE80; --d-run:#ECEAE2; --d-tru:#C3A6FF; --d-text:#ECEAE2; --d-dim:#A9A598;
   color-scheme:dark}
 [data-g="calc"]{--acc:var(--g-calc)} [data-g="rough"]{--acc:var(--g-rough)} [data-g="trim"]{--acc:var(--g-trim)}
-[data-g="inspect"]{--acc:var(--g-inspect)} [data-g="calls"]{--acc:var(--g-calls)} [data-g="learn"]{--acc:var(--g-learn)} [data-g="parts"]{--acc:var(--g-parts)} [data-g="mine"]{--acc:var(--g-mine)}
+[data-g="inspect"]{--acc:var(--g-inspect)} [data-g="calls"]{--acc:var(--g-calls)} [data-g="learn"]{--acc:var(--g-learn)} [data-g="parts"]{--acc:var(--g-parts)} [data-g="weather"]{--acc:var(--g-weather)} [data-g="mine"]{--acc:var(--g-mine)}
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -75,6 +75,7 @@ b{font-weight:700}
 .tb img{width:34px;height:34px;border-radius:7px;flex:0 0 auto}
 .brand{display:flex;flex-direction:column;min-width:0;margin-right:auto;line-height:1}
 .brand h1{font-family:var(--stencil);font-weight:400;font-size:clamp(24px,6.4vw,32px);letter-spacing:.04em;margin:0;color:var(--hv)}
+.brand small.pre{font-size:13px;letter-spacing:.3em;color:var(--hv);margin:0 0 2px}
 .brand small{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D9D6CC;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hbtn{appearance:none;flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border:2px solid var(--hv);border-radius:var(--r);background:transparent;color:var(--hv);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
 .hbtn svg{width:18px;height:18px}
@@ -93,8 +94,8 @@ nav.tabs button[aria-pressed="true"]{background:var(--hv);color:var(--k);border-
 nav.tabs button[aria-pressed="true"]::before{background:var(--k)}
 @media (max-width:759px){
   body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-  nav.tabs{position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--k);border-top:4px solid var(--hv)}
-  nav.tabs button{flex-direction:column;justify-content:center;gap:3px;min-height:62px;padding:6px 0 7px;border:0;border-radius:0;background:transparent;color:#CFCBC0;font-size:12px;letter-spacing:.02em;box-shadow:none;min-width:0}
+  nav.tabs{position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:0;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--k);border-top:4px solid var(--hv)}
+  nav.tabs button{flex-direction:column;justify-content:center;gap:3px;min-height:62px;padding:6px 0 7px;border:0;border-radius:0;background:transparent;color:#CFCBC0;font-size:clamp(10.5px,2.95vw,12px);letter-spacing:0;box-shadow:none;min-width:0}
   nav.tabs button::before{position:absolute;top:0;left:22%;right:22%;width:auto;height:4px;border-radius:0 0 3px 3px;background:var(--acc)}
   nav.tabs button svg{width:24px;height:24px}
   nav.tabs button[aria-pressed="true"]{background:var(--hv);color:var(--k);box-shadow:none}
@@ -111,7 +112,7 @@ nav.tabs button[aria-pressed="true"]::before{background:var(--k)}
 .subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:1px 24px 4px 1px;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
 .subtabs::-webkit-scrollbar{display:none}
 @media (min-width:1000px){.subtabs{flex-wrap:wrap;-webkit-mask-image:none;mask-image:none;padding-right:1px}}
-@media (min-width:760px) and (max-width:1099px){nav.tabs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}nav.tabs button{flex-direction:column;justify-content:center;gap:2px;padding:6px 4px;min-height:58px;font-size:14px;min-width:0}nav.tabs button::before{position:absolute;top:5px;left:6px}}
+@media (min-width:760px) and (max-width:1099px){nav.tabs{display:grid;grid-template-columns:repeat(8,minmax(0,1fr))}nav.tabs button{flex-direction:column;justify-content:center;gap:2px;padding:6px 4px;min-height:58px;font-size:14px;min-width:0}nav.tabs button::before{position:absolute;top:5px;left:6px}}
 .subtabs button{flex:0 0 auto;appearance:none;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;padding:4px 13px;min-height:40px;border:2px solid var(--rule);border-radius:var(--r);background:var(--sheet);color:var(--ink);cursor:pointer}
 .subtabs button[aria-pressed="true"]{border-color:var(--acc);background:var(--acc);color:var(--sheet)}
 body.searching .subtabs{display:none}
@@ -238,6 +239,32 @@ input,select{font:inherit}
 .step input::-webkit-outer-spin-button,.step input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .t.dfu td:first-child{white-space:normal}
 details.more{border-top:1px solid var(--rule)}
+.flag.ok-flag{background:var(--zebra);border-left-color:var(--ok)}
+#wx-flags .flag:first-child{border-top:0}
+.flag.warn-flag{background:var(--zebra);border-left-color:#E8A200}
+/* ===== weather ===== */
+.wx-loc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px 0}
+.wx-place{flex:1 1 180px;min-width:0}.wx-place b{font-family:var(--display);font-size:22px;text-transform:uppercase;letter-spacing:.03em;line-height:1.1}
+.wx-place .sub{font-family:var(--mono);font-size:12.5px}
+.wx-searchrow{padding-top:6px}.wx-searchrow label{flex:1 1 100%}
+#wx-results{padding:0 12px 4px}#wx-results:empty{display:none}
+.wx-hero{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 14px;margin:8px 12px 10px;background:#141414;color:#F3F1EA;border-left:8px solid var(--hv);border-radius:var(--r)}
+.wx-hero a{color:var(--hv);font-weight:700}
+.wx-big{font-family:var(--mono);font-weight:700;font-size:58px;line-height:.9;letter-spacing:-.03em;color:var(--hv)}.wx-big span{font-size:22px;margin-left:2px;vertical-align:top}
+.wx-desc{flex:1 1 200px;min-width:0;font-size:15px;line-height:1.35}.wx-desc b{font-size:18px}.wx-desc .sub{color:#CFCBC0;font-size:13px;margin-top:3px}
+.wx-arrow{display:inline-block;font-weight:800;line-height:1}
+.wx-alert{margin:8px 12px 0;border:2px solid var(--danger);border-left-width:8px;border-radius:var(--r);background:var(--danger-soft)}
+.wx-alert summary{padding:8px 10px;cursor:pointer;font-size:15px}.wx-alert summary span{font-size:13px;color:var(--muted)}
+.wx-alert p{margin:0;padding:0 12px 8px;font-size:14px;white-space:pre-line}
+.wx-strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(56px,1fr);gap:4px;overflow-x:auto;padding:12px;scrollbar-width:thin}
+.wx-cell{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border:2px solid var(--rule);border-radius:var(--r);font-size:12.5px;background:var(--sheet)}
+.wx-cell b{font-family:var(--mono);font-size:12px}.wx-cell span{font-weight:700}.wx-cell i{font-style:normal;color:var(--muted);font-family:var(--mono)}
+.wx-cell.wet{background:color-mix(in srgb,var(--g-weather) 22%,var(--sheet));border-color:var(--g-weather)}
+.wx-cell.snow{background:color-mix(in srgb,var(--g-calc) 14%,var(--sheet));border-color:var(--g-calc);border-style:dashed}
+#wx-hours tr.frz td,#wx-days tr.frz td{background:color-mix(in srgb,var(--g-calc) 13%,transparent)}
+#wx-hours tr.frz td:first-child,#wx-days tr.frz td:first-child{box-shadow:inset 4px 0 0 var(--g-calc)}
+#wx-chart{display:block;width:100%;height:auto;max-height:260px;padding:6px 6px 0}
+#wx-gw th{white-space:nowrap}
 #gloss tr.off{display:none}
 body.searching #gloss tr.off{display:table-row}
 #gloss-cat{padding-bottom:12px;border-bottom:1px solid var(--rule)}
@@ -303,7 +330,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
 <header class="tb">
   <div class="tb-in">
     <img src="icon-192.png" alt="" width="34" height="34" onerror="this.remove()">
-    <div class="brand"><h1>PLUMBIVERSE</h1><small>PlumChum's Guide</small></div>
+    <div class="brand"><small class="pre">Plumbing</small><h1>FIELD GUIDE</h1><small>Utah residential</small></div>
     <button type="button" class="hbtn" id="files-btn" hidden aria-pressed="false" aria-label="My files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6l2 3h8v13H4z"/></svg><span>Files</span></button>
     <button type="button" class="hbtn" id="theme-btn" aria-label="Color mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><span id="theme-lbl">Auto</span></button>
   </div>
@@ -323,6 +350,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
       <button type="button" data-group="inspect" data-g="inspect" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM8.5 13l2.5 2.5 4.5-5"/></svg>Inspect</button>
       <button type="button" data-group="calls" data-g="calls" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Calls</button>
       <button type="button" data-group="learn" data-g="learn" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg>Learn</button>
+      <button type="button" data-group="weather" data-g="weather" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v1.5M5.6 5.6l1 1M3 12h1.5M18.4 5.6l-1 1"/><path d="M8.2 11.5a4 4 0 0 1 7.6-1.3"/><path d="M7.5 20h10a3.5 3.5 0 0 0 .4-7 5 5 0 0 0-9.6 1.2A3 3 0 0 0 7.5 20z"/></svg>Weather</button>
     </nav>
     <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
       <input id="q" type="search" placeholder="Search: trap arm, 2x6, TJI, Moen 1222, 811…" aria-label="Search the book" autocomplete="off"></div>
@@ -1220,7 +1248,75 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
     <p class="note">Calling instead? Maker tech lines are in <b>Calls → Tech lines</b>. Have photos, model, serial and install date ready.</p>
   </section>
 
+  <!-- ================= WEATHER ================= -->
+  <section data-sec="wxnow" data-kw="weather now current temperature wind location gps jobsite live measured station feels like humidity dew point pressure alerts warning">
+    <div class="sec-head"><h2>Right now</h2><small id="wx-clock">—</small></div>
+    <div class="wx-loc">
+      <div class="wx-place"><b id="wx-place">—</b><div class="sub" id="wx-placesub">Pick your jobsite</div></div>
+      <button type="button" class="btn" id="wx-gps"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/></svg>My location</button>
+    </div>
+    <div class="calc wx-searchrow">
+      <label for="wx-search">Or search a town<input id="wx-search" type="search" placeholder="Herriman, Eagle Mountain, Heber…" autocomplete="off" enterkeyhint="search"></label>
+    </div>
+    <div class="chips" id="wx-results"></div>
+    <div id="wx-alerts"></div>
+    <div class="wx-hero" id="wx-hero"><div class="sub">Loading the forecast…</div></div>
+    <div class="x"><table class="t out"><tbody id="wx-now"></tbody></table></div>
+    <p class="note" id="wx-status">Screen updates every 10 s. Data refreshes as fast as each source publishes: forecast every 10 min (15-min model steps), station readings about hourly, alerts every 5 min.</p>
+  </section>
+
+  <section data-sec="wxnow" data-kw="jobsite calls flags freeze water test glue cement cure wind ladder roof rain snow vent heat uv air quality inversion trench work today">
+    <div class="sec-head"><h2>Jobsite calls</h2><small>What the weather means for the work</small></div>
+    <div id="wx-flags"><p class="flag ok-flag">Waiting for the forecast…</p></div>
+  </section>
+
+  <section data-sec="wxnow" data-kw="air quality aqi pm2.5 pm10 ozone inversion smoke dust respirator">
+    <div class="sec-head"><h2>Air quality</h2><small id="wx-air-age">US AQI</small></div>
+    <div class="x"><table class="t out"><tbody id="wx-air"><tr><td class="sub">Loading…</td></tr></tbody></table></div>
+    <p class="note">Wasatch Front winter inversions trap PM2.5. Model estimate (about 45 km grid): for an official reading check the Utah DAQ site.</p>
+  </section>
+
+  <section data-sec="wxhour" data-kw="hourly next 24 hours chart temperature freeze line rain chance wind gust timeline">
+    <div class="sec-head"><h2>Next 24 hours</h2><small id="wx-freeze-sum">—</small></div>
+    <svg id="wx-chart" viewBox="0 0 400 210" role="img" aria-label="Line chart of the next 24 hours of temperature with a 32°F freezing line, and bars for chance of rain."></svg>
+    <div class="x"><table class="t num"><thead><tr><th>Time</th><th>Temp</th><th>Feels</th><th>Rain</th><th>Wind</th><th>Sky</th></tr></thead><tbody id="wx-hours"></tbody></table></div>
+  </section>
+
+  <section data-sec="wxhour" data-kw="next 2 hours 15 minute rain snow start stop timeline nowcast precipitation">
+    <div class="sec-head"><h2>Next 3 hours</h2><small>15-minute steps</small></div>
+    <div class="wx-strip" id="wx-strip"></div>
+    <p class="note" id="wx-strip-note">—</p>
+  </section>
+
+  <section data-sec="wxweek" data-kw="7 day week forecast daily high low rain snow wind nws national weather service text forecast tonight tomorrow">
+    <div class="sec-head"><h2>7-day forecast</h2><small>NOAA models</small></div>
+    <div class="x"><table class="t num"><thead><tr><th>Day</th><th>Low / High</th><th>Rain</th><th>Gusts</th><th>Sky</th></tr></thead><tbody id="wx-days"></tbody></table></div>
+  </section>
+
+  <section data-sec="wxweek" data-kw="nws national weather service official forecast text tonight tomorrow periods">
+    <div class="sec-head"><h2>Weather Service forecast</h2><small id="wx-nws-src">National Weather Service</small></div>
+    <div class="x"><table class="t"><tbody id="wx-nws"><tr><td class="sub">Loading…</td></tr></tbody></table></div>
+  </section>
+
+  <section data-sec="wxground" data-kw="ground soil temperature frost depth frozen ground digging trench soil moisture snow depth freezing level underground">
+    <div class="sec-head"><h2>Ground conditions</h2><small>Model soil readings</small></div>
+    <div class="x"><table class="t out"><tbody id="wx-soil"><tr><td class="sub">Loading…</td></tr></tbody></table></div>
+    <p class="note">Soil temperature is modeled for open ground, not under a slab or snow pile. <span class="badge why">WHY</span> Frost works down from the top: when the 2" reading stays below 32°F for days, digging gets hard and exposed underground work needs protection. Water service still goes 6" below the design frost line (≈36" at SLC).</p>
+  </section>
+
+  <section data-sec="wxground" data-kw="groundwater water table depth to water well usgs dewatering trench water high water table excavation">
+    <div class="sec-head"><h2>Groundwater</h2><small id="wx-gw-age">USGS monitoring wells</small></div>
+    <div class="x"><table class="t"><tbody id="wx-gw"><tr><td class="sub">Loading…</td></tr></tbody></table></div>
+    <p class="note"><b>Depth to water</b> = feet from the ground surface down to the water in the nearest USGS-monitored wells. It shows the area's water table, not your exact lot: irrigation, low spots and clay layers can put water much shallower in a trench. <span class="badge why">WHY</span> High groundwater means wet trenches, pumping, flotation risk for empty pits and soft bedding.</p>
+  </section>
+
+  <section data-sec="wxground" data-kw="sun sunrise sunset daylight left uv index sunlight pex exposure work light">
+    <div class="sec-head"><h2>Sun &amp; daylight</h2><small id="wx-sun-left">—</small></div>
+    <div class="x"><table class="t out"><tbody id="wx-sun"><tr><td class="sub">Loading…</td></tr></tbody></table></div>
+  </section>
+
   <!-- ================= INSPECT ================= -->
+
   <section data-sec="phases" data-kw="inspection phases order sequence how a house gets plumbed underground top out rough 4-way gas final trim finish">
     <div class="sec-head"><h2>Phases &amp; inspections</h2><small>Single-family · order varies by city</small></div>
     <div class="x"><table class="t">
@@ -1442,6 +1538,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
   </section>
 
   <!-- ================= LEARN ================= -->
+
   <section data-sec="how" data-kw="why vent trap siphon">
     <div class="sec-head"><h2>Why traps need vents</h2><small>The whole DWV idea</small></div>
     <div class="x"><table class="t">
@@ -1606,7 +1703,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
     </form>
     <div class="x"><table class="t"><tbody id="list-mine"><tr><td class="sub">Loading your files…</td></tr></tbody></table></div>
   </section>
-  <footer><b>PLUMBIVERSE</b> · PlumChum's Guide. A study and field aid, not the code: the adopted code, approved plans, manufacturer instructions and your inspector always win. Code text belongs to the ICC and the State of Utah; product guides belong to their makers. Facts checked October 2026.</footer>
+  <footer><b>PLUMBING FIELD GUIDE</b> · Utah residential. A study and field aid, not the code: the adopted code, approved plans, manufacturer instructions and your inspector always win. Code text belongs to the ICC and the State of Utah; product guides belong to their makers. Facts checked October 2026.</footer>
   </div>
 </div>
 
@@ -2039,9 +2136,10 @@ const GROUPS = {
   inspect: [["phases","Phases & tests"],["cities","Cities"],["code","Which code"],["utah","Utah"]],
   calls:   [["emergency","Emergency"],["tech","Tech lines"],["safety","Safety"]],
   learn:   [["how","How it works"],["study","Flashcards"],["words","Glossary"],["career","License"]],
+  weather: [["wxnow","Now"],["wxhour","Next 24 h"],["wxweek","7 days"],["wxground","Ground & water"]],
   mine:    [["mine","My files"]]
 };
-const GNAME = {calc:"Calc",rough:"Rough",trim:"Trim",parts:"Parts",inspect:"Inspect",calls:"Calls",learn:"Learn",mine:"Files"};
+const GNAME = {calc:"Calc",rough:"Rough",trim:"Trim",parts:"Parts",inspect:"Inspect",calls:"Calls",learn:"Learn",weather:"Weather",mine:"Files"};
 const groupOf = sec => Object.keys(GROUPS).find(g => GROUPS[g].some(([s]) => s === sec));
 const SECTIONS = [...document.querySelectorAll(".book > section[data-sec]")];
 const book = document.querySelector(".book");
@@ -2934,6 +3032,321 @@ fcTopics(); fcDeal();
 IDX = null;  /* every table is rendered now: rebuild the search index on next use */
 apply();
 
+/* ---------- 13b WEATHER: live jobsite weather (installed app; the claude.ai viewer blocks outside data) ----------
+   Sources: Open-Meteo (NOAA models incl. 15-min US data, soil, snow), api.weather.gov (measured station obs, alerts,
+   official text forecast), Open-Meteo air quality, USGS Water Data OGC API (depth to groundwater, parameter 72019).
+   The screen ticks every 10 s; each source is re-fetched only when it can have new data. */
+const WX = (() => {
+  const TOWNS = {"St. George":[37.096,-113.568],"Salt Lake City":[40.761,-111.891],"Ogden":[41.223,-111.974],"Logan":[41.737,-111.834],"Provo":[40.234,-111.659],
+    "Lehi":[40.392,-111.851],"Saratoga Springs":[40.349,-111.905],"West Jordan":[40.610,-111.939],"South Jordan":[40.562,-111.930],"Eagle Mountain":[40.314,-112.010],
+    "Herriman":[40.514,-112.033],"Tooele":[40.531,-112.298],"Heber City":[40.507,-111.413],"Cedar City":[37.677,-113.062],"Park City":[40.646,-111.498]};
+  const EVERY = {om: 10*60e3, obs: 10*60e3, alerts: 5*60e3, air: 30*60e3, nws: 30*60e3, gw: 3*3600e3, gps: 10*60e3};
+  let place = store.get("jpb-wx-place", {name:"Salt Lake City", sub:"Salt Lake County", lat:40.761, lon:-111.891, src:"town"});
+  const S = {om:null, obs:null, alerts:null, air:null, nws:null, gw:null, pt:null};   /* latest data per source */
+  const T = {}, busy = {}, err = {};                                                     /* fetched-at times, in-flight, last error */
+  /* last good data is saved, so a jobsite with no signal still shows the most recent forecast (with its age) */
+  const KEEP = ["om", "obs", "air", "nws", "gw"];
+  try { const c = store.get("jpb-wx-cache", null);
+    if (c && c.k === `${place.lat.toFixed(3)},${place.lon.toFixed(3)}`){ KEEP.forEach(n => { if (c.S[n] != null){ S[n] = c.S[n]; T[n] = c.T[n]; } }); T.k = c.k; } } catch(e){}
+  const save = () => { try { const o = {k: T.k, S: {}, T: {}}; KEEP.forEach(n => { o.S[n] = S[n]; o.T[n] = T[n]; }); store.set("jpb-wx-cache", o); } catch(e){} };
+  const shown = () => SECTIONS.some(s => s.dataset.g === "weather" && !s.hidden);
+  const key = () => `${place.lat.toFixed(3)},${place.lon.toFixed(3)}`;
+
+  /* ---- helpers ---- */
+  const D = t => new Date(typeof t === "number" ? t * 1000 : t);   /* Open-Meteo unix seconds: exact instants, any phone time zone */
+  const r0 = x => (x == null || !isFinite(x)) ? "—" : Math.round(x);
+  const fmtT = d => d.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
+  const short = d => fmtT(d).replace(/:00/, "").replace(/\s?([AP])M/i, (m, a) => a.toLowerCase());   /* 10:30p, 11p */
+  const fmtH = d => d.toLocaleTimeString([], {hour:"numeric"});
+  const ago = t => { if (!t) return "—"; const s = Math.round((Date.now() - t) / 1000); return s < 60 ? `${s} s ago` : s < 3600 ? `${Math.round(s/60)} min ago` : s < 86400 ? `${Math.round(s/3600)} hr ago` : `${Math.round(s/86400)} days ago`; };
+  const dur = ms => { const m = Math.max(0, Math.round(ms / 60000)); return m >= 60 ? `${Math.floor(m/60)} h ${m % 60} m` : `${m} min`; };
+  const compass = deg => deg == null || !isFinite(deg) ? "" : ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(((deg % 360) + 360) % 360 / 22.5) % 16];
+  const arrow = deg => deg == null || !isFinite(deg) ? "" : `<span class="wx-arrow" style="transform:rotate(${(deg + 180) % 360}deg)" aria-hidden="true">↑</span>`;
+  const miles = (a, b, c, d) => { const R = 3958.8, t = Math.PI/180, x = Math.sin((c-a)*t/2)**2 + Math.cos(a*t)*Math.cos(c*t)*Math.sin((d-b)*t/2)**2; return 2*R*Math.asin(Math.sqrt(x)); };
+  const toIn = (v, u) => v == null ? null : u === "m" ? v * 39.3701 : u === "cm" ? v / 2.54 : u === "mm" ? v / 25.4 : u === "ft" ? v * 12 : v;
+  const toFt = (v, u) => v == null ? null : u === "m" ? v * 3.28084 : u === "ft" ? v : u === "km" ? v * 3280.84 : v;
+  const cOf = q => q && q.value != null ? q.value : null;
+  const fOfC = c => c == null ? null : c * 9/5 + 32;
+  const mphOf = q => { const v = cOf(q); if (v == null) return null; return /km_h/.test(q.unitCode) ? v * 0.621371 : /m_s/.test(q.unitCode) ? v * 2.23694 : v; };
+  const WMO = c => ({0:"Clear",1:"Mostly clear",2:"Partly cloudy",3:"Overcast",45:"Fog",48:"Freezing fog",51:"Light drizzle",53:"Drizzle",55:"Heavy drizzle",56:"Freezing drizzle",57:"Freezing drizzle",
+    61:"Light rain",63:"Rain",65:"Heavy rain",66:"Freezing rain",67:"Freezing rain",71:"Light snow",73:"Snow",75:"Heavy snow",77:"Snow grains",80:"Rain showers",81:"Rain showers",82:"Heavy showers",
+    85:"Snow showers",86:"Heavy snow showers",95:"Thunderstorms",96:"T-storms, hail",99:"T-storms, hail"})[c] ?? "—";
+  async function get(url, opts){ const r = await fetch(url, Object.assign({cache:"no-store", headers:{Accept:"application/geo+json, application/json"}}, opts || {})); if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }
+  const blocked = () => !!window.claude;   /* the claude.ai viewer: outside data is blocked by design */
+
+  /* ---- fetchers (each only when due) ---- */
+  async function fOM(){
+    const q = `latitude=${place.lat}&longitude=${place.lon}&timezone=auto&timeformat=unixtime&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch` +
+      "&current=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,uv_index,is_day" +
+      "&minutely_15=precipitation,snowfall,temperature_2m&forecast_minutely_15=12" +
+      "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,snowfall,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,uv_index,relative_humidity_2m," +
+      "soil_temperature_0cm,soil_temperature_6cm,soil_temperature_18cm,soil_temperature_54cm,soil_moisture_9_to_27cm,soil_moisture_27_to_81cm,snow_depth,freezing_level_height,visibility&forecast_hours=48" +
+      "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,snowfall_sum,wind_gusts_10m_max,wind_direction_10m_dominant,sunrise,sunset,daylight_duration,uv_index_max&forecast_days=7";
+    S.om = await get("https://api.open-meteo.com/v1/forecast?" + q);
+  }
+  async function fPoint(){
+    if (S.pt && S.pt.key === key()) return S.pt;
+    const p = await get(`https://api.weather.gov/points/${place.lat.toFixed(4)},${place.lon.toFixed(4)}`);
+    const st = await get(p.properties.observationStations);
+    const stations = (st.features || []).slice(0, 4).map(f => ({id: f.properties.stationIdentifier, name: f.properties.name, lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0]}));
+    const rl = p.properties.relativeLocation && p.properties.relativeLocation.properties;
+    S.pt = {key: key(), forecast: p.properties.forecast, stations, city: rl ? `${rl.city}, ${rl.state}` : ""};
+    if (place.src === "gps" && S.pt.city){ place.name = S.pt.city; place.sub = "Near you"; store.set("jpb-wx-place", place); }
+    return S.pt;
+  }
+  async function fObs(){
+    const pt = await fPoint();
+    for (const s of pt.stations){
+      const o = await get(`https://api.weather.gov/stations/${s.id}/observations/latest`).catch(() => null);
+      const p = o && o.properties;
+      if (p && cOf(p.temperature) != null && Date.now() - Date.parse(p.timestamp) < 3 * 3600e3){ S.obs = {st: s, p}; return; }
+    }
+    S.obs = null;
+  }
+  async function fAlerts(){ const a = await get(`https://api.weather.gov/alerts/active?point=${place.lat.toFixed(4)},${place.lon.toFixed(4)}`); S.alerts = (a.features || []).map(f => f.properties); }
+  async function fNWS(){ const pt = await fPoint(); const f = await get(pt.forecast); S.nws = (f.properties.periods || []).slice(0, 8); }
+  async function fAir(){ S.air = await get(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${place.lat}&longitude=${place.lon}&timezone=auto&current=us_aqi,pm2_5,pm10,ozone&hourly=us_aqi&forecast_hours=24`); }
+  async function fGW(){
+    const d = 0.3, bbox = [place.lon - d, place.lat - d, place.lon + d, place.lat + d].map(v => v.toFixed(3)).join(",");
+    const base = "https://api.waterdata.usgs.gov/ogcapi/v0/collections/";
+    const pick = j => (j.features || []).map(f => {
+      const p = f.properties || {}, g = f.geometry && f.geometry.coordinates;
+      const v = parseFloat(p.value); if (!isFinite(v) || !g) return null;
+      return {id: p.monitoring_location_id || f.id, v, t: Date.parse(/^\d{4}-\d{2}-\d{2}$/.test(p.time || "") ? p.time + "T12:00" : p.time), lat: g[1], lon: g[0], dist: miles(place.lat, place.lon, g[1], g[0])};
+    }).filter(Boolean);
+    let rows = [];
+    try { rows = pick(await get(`${base}latest-continuous/items?f=json&bbox=${bbox}&parameter_code=72019&limit=50`)); } catch(e){}
+    const live = rows.length > 0;
+    try { rows = rows.concat(pick(await get(`${base}field-measurements/items?f=json&bbox=${bbox}&parameter_code=72019&time=P3Y&limit=500`))); } catch(e){ if (!rows.length) throw e; }
+    const best = {};   /* most recent reading per well */
+    rows.forEach(r => { if (!best[r.id] || r.t > best[r.id].t) best[r.id] = r; });
+    S.gw = {live, wells: Object.values(best).sort((a, b) => a.dist - b.dist).slice(0, 4)};
+  }
+  async function run(name, fn){
+    if (busy[name]) return; busy[name] = true;
+    try { await fn(); T[name] = Date.now(); err[name] = null; if (KEEP.includes(name)) save(); } catch(e){ err[name] = e.message || "failed"; T[name] = Date.now() - EVERY[name] + 60e3; }   /* retry in ~1 min */
+    finally { busy[name] = false; render(); }
+  }
+  function due(force){
+    if (blocked() || !navigator.onLine) return;
+    const k = key(); if (T.k !== k){ for (const n in T) delete T[n]; T.k = k; S.pt = null; }
+    const need = n => force || !T[n] || Date.now() - T[n] > EVERY[n];
+    if (need("om")) run("om", fOM);
+    if (need("obs")) run("obs", fObs);
+    if (need("alerts")) run("alerts", fAlerts);
+    if (need("nws")) run("nws", fNWS);
+    if (need("air")) run("air", fAir);
+    if (need("gw")) run("gw", fGW);
+  }
+
+  /* ---- jobsite calls: plain-language flags from the data ---- */
+  function hourly(){ const h = S.om && S.om.hourly; if (!h) return []; const now = Date.now() - 3600e3;
+    return h.time.map((t, i) => ({t: D(t), i})).filter(x => x.t.getTime() >= now).map(({t, i}) => ({t, temp: h.temperature_2m[i], feels: h.apparent_temperature[i], pop: h.precipitation_probability[i], pr: h.precipitation[i], sn: h.snowfall[i], code: h.weather_code[i], wind: h.wind_speed_10m[i], gust: h.wind_gusts_10m[i], dir: h.wind_direction_10m[i], uv: h.uv_index[i], i})); }
+  function freezeWindow(hs){
+    const n = hs.slice(0, 30), start = n.find(x => x.temp <= 32);
+    if (!start) return null;
+    const after = n.slice(n.indexOf(start)).find(x => x.temp > 32);
+    const low = Math.min(...n.map(x => x.temp));
+    return {start: start.t, end: after ? after.t : null, low, now: n[0] && n[0].temp <= 32};
+  }
+  function flags(){
+    const out = [], c = S.om && S.om.current, hs = hourly().slice(0, 24); if (!c) return out;
+    const fz = freezeWindow(hourly());
+    if (fz){
+      const when = fz.now ? "Freezing now" : `Freezing from ${fmtH(fz.start)}`;
+      const till = fz.end ? ` to ${fmtH(fz.end)}` : " for the next day+";
+      out.push(["danger", `${when}${till} (low ${r0(fz.low)}°F)`, `${fz.now ? "Water tests outside the heated space can freeze now." : `Drain water tests by about ${fmtH(new Date(fz.start.getTime() - 3600e3))} or switch to the vacuum test (2021 IRC).`} Cap and wrap exposed stub-outs; no water left in test caps or hose bibbs.${fz.low <= 20 ? " Hard freeze: heaters and lines in unheated garages and crawlspaces are at risk." : ""}`]);
+    }
+    const minT = Math.min(...hs.slice(0, 10).map(x => x.temp)), rh = c.relative_humidity_2m;
+    if (minT < 45 || rh >= 80) out.push(["warn", minT < 45 ? `Cold glue-ups (${r0(minT)}°F in the next 10 h)` : `Humid (${r0(rh)}% RH)`, "Solvent cement cures slower when it's cold or humid: give joints longer before testing (CPVC: Rough → Materials → CPVC cure). Keep primer and cement cans warm; below 40°F use cold-rated cement per the maker."]);
+    const maxG = Math.max(...hs.slice(0, 10).map(x => x.gust));
+    if (maxG >= 25) { const at = hs.find(x => x.gust === maxG); out.push(["warn", `Gusts to ${r0(maxG)} mph around ${fmtH(at.t)}`, "Tie off or lower ladders, keep roof work (vent terminals) to calmer hours, weight down tarps, pipe stacks and test caps."]); }
+    const wet = hs.slice(0, 12).find(x => x.pop >= 50 || x.pr >= 0.02);
+    if (wet) out.push(["warn", wet.sn > 0 ? `Snow likely from ${fmtH(wet.t)}` : `Rain likely from ${fmtH(wet.t)} (${r0(wet.pop)}%)`, "Cap open pipe ends and cover cement. Trenches get a competent-person check after rain before anyone goes in. Water in a trench softens bedding."]);
+    const hi = Math.max(...hs.slice(0, 12).map(x => x.feels));
+    if (hi >= 90) out.push(["warn", `Heat: feels like ${r0(hi)}°F`, "Water, shade, breaks. Cement and primer flash off fast: smaller batches, dry-fit first."]);
+    const uv = Math.max(...hs.slice(0, 12).map(x => x.uv || 0));
+    if (uv >= 8) out.push(["warn", `UV ${r0(uv)} (very high)`, "Sunscreen and eye protection. Keep stored PEX out of the sun (UV limits in Rough → Materials → PEX install)."]);
+    const snowIn = toIn(S.om.hourly.snow_depth[hourly()[0]?.i ?? 0], S.om.hourly_units.snow_depth);
+    if (snowIn != null && snowIn >= 4) out.push(["warn", `Snow on the ground: about ${r0(snowIn)}"`, "Vent terminals must clear the expected snow (IRC: 6\" above roof or snow; Utah IPC 12\"). Check roofs and low wall vents."]);
+    const soil = S.om.hourly.soil_temperature_6cm[hourly()[0]?.i ?? 0];
+    if (soil != null && soil <= 32) out.push(["warn", `Top of the ground is frozen (${r0(soil)}°F at 2")`, "Digging is harder; protect underground work and bedding from frost. Don't backfill with frozen chunks."]);
+    const aqi = S.air && S.air.current && S.air.current.us_aqi;
+    if (aqi >= 101) out.push(["warn", `Air quality ${r0(aqi)} (${aqiTxt(aqi).t})`, "Inversion or smoke: limit heavy work outside, take breaks indoors, an N95 helps with PM2.5."]);
+    (S.alerts || []).forEach(a => out.unshift(["danger", `${a.event}`, `${a.headline || ""}`]));
+    if (!out.length) out.push(["ok", "No weather problems for the work today.", "Good day for underground and roof work."]);
+    return out;
+  }
+  const aqiTxt = a => a <= 50 ? {t:"Good", c:"ok"} : a <= 100 ? {t:"Moderate", c:""} : a <= 150 ? {t:"Unhealthy for sensitive groups", c:"warn"} : a <= 200 ? {t:"Unhealthy", c:"warn"} : {t:"Very unhealthy", c:"warn"};
+
+  /* ---- render ---- */
+  const part = (name, fn) => { try { fn(); } catch(e){ console.warn("weather:", name, e); } };
+  function render(){
+    $("wx-place").textContent = place.name; $("wx-placesub").textContent = `${place.sub || ""}${place.sub ? " · " : ""}${place.lat.toFixed(3)}, ${place.lon.toFixed(3)}${S.om && isFinite(S.om.elevation) ? ` · ${Math.round(S.om.elevation * 3.28084).toLocaleString()} ft` : ""}`;
+    if (blocked()){
+      const nws = `https://forecast.weather.gov/MapClick.php?lat=${place.lat}&lon=${place.lon}`;
+      $("wx-hero").innerHTML = `<div><b>Live weather runs in the installed app</b> (the GitHub version on your phone). This claude.ai viewer blocks outside data on purpose.</div><a href="${nws}" target="_blank" rel="noopener">National Weather Service forecast for ${esc(place.name)} ↗</a>`;
+      ["wx-now","wx-air","wx-hours","wx-days","wx-nws","wx-soil","wx-gw","wx-sun"].forEach(id => $(id).innerHTML = `<tr><td class="sub">Open the installed app for live data.</td></tr>`);
+      $("wx-flags").innerHTML = `<p class="flag ok-flag">Open the installed app for live jobsite calls.</p>`; $("wx-chart").innerHTML = ""; $("wx-strip").innerHTML = "";
+      return;
+    }
+    const om = S.om, c = om && om.current, ob = S.obs && S.obs.p, d = om && om.daily;
+    /* each block draws on its own, so one odd reply from one source can't blank the rest */
+    part("alerts", () => {
+      $("wx-alerts").innerHTML = (S.alerts || []).map(a => `<details class="wx-alert"><summary><b>${esc(a.event)}</b> <span>until ${a.ends || a.expires ? fmtT(new Date(a.ends || a.expires)) + " " + new Date(a.ends || a.expires).toLocaleDateString([], {weekday:"short"}) : "further notice"}</span></summary><p>${esc(a.headline || "")}</p><p>${esc((a.description || "").slice(0, 900))}</p>${a.instruction ? `<p><b>${esc(a.instruction.slice(0, 500))}</b></p>` : ""}</details>`).join("");
+    });
+    part("hero", () => {
+      if (c){
+        const mT = ob ? fOfC(cOf(ob.temperature)) : null, stMi = ob ? miles(place.lat, place.lon, S.obs.st.lat, S.obs.st.lon) : 99, useObs = mT != null && stMi <= 12;   /* a far-off station (other valley, other elevation) is worse than the model */
+        const temp = useObs ? mT : c.temperature_2m;
+        $("wx-hero").innerHTML = `<div class="wx-big">${r0(temp)}°<span>F</span></div><div class="wx-desc"><b>${esc(useObs && ob.textDescription ? ob.textDescription : WMO(c.weather_code))}</b><div>Feels like ${r0(c.apparent_temperature)}° · ${arrow(c.wind_direction_10m)} ${compass(c.wind_direction_10m)} ${r0(c.wind_speed_10m)} mph, gusts ${r0(c.wind_gusts_10m)}</div><div class="sub">${useObs ? `Measured at ${esc(S.obs.st.name)} (${S.obs.st.id}), ${miles(place.lat, place.lon, S.obs.st.lat, S.obs.st.lon).toFixed(1)} mi away · <span data-ago="${Date.parse(ob.timestamp)}">${ago(Date.parse(ob.timestamp))}</span>` : "Model estimate for this spot"}</div></div>`;
+        const rows = [
+          ["Model temp here", `${r0(c.temperature_2m)}°F`, "NOAA model at your exact spot, 15-min data"],
+          ["Humidity · dew point", `${r0(c.relative_humidity_2m)}% · ${r0(c.dew_point_2m)}°F`, c.temperature_2m - c.dew_point_2m < 4 ? "Near the dew point: cold pipe and fittings sweat, fog likely" : `${r0(c.temperature_2m - c.dew_point_2m)}° above the dew point: surfaces stay dry`],
+          ["Pressure", `${(c.pressure_msl * 0.02953).toFixed(2)} inHg`, `${r0(c.pressure_msl)} hPa sea-level`],
+          ["Cloud · UV", `${r0(c.cloud_cover)}% · UV ${r0(c.uv_index)}`, c.is_day ? "Daytime" : "Night"],
+          ["Precip right now", `${(c.precipitation || 0).toFixed(2)}"`, "Last 15 min"]
+        ];
+        if (ob){ const g = mphOf(ob.windGust); rows.push(["Station reading", `${r0(fOfC(cOf(ob.temperature)))}°F`, `${esc(S.obs.st.id)}: wind ${r0(mphOf(ob.windSpeed))} mph${g ? `, gusts ${r0(g)}` : ""}, RH ${r0(cOf(ob.relativeHumidity))}%`]); }
+        $("wx-now").innerHTML = rows.map(([a, b, d]) => `<tr><th>${a}</th><td class="big">${b}</td><td class="sub">${d}</td></tr>`).join("");
+      }
+    });
+    part("flags", () => {
+      if (c) $("wx-flags").innerHTML = flags().map(([k, t, d]) => `<p class="flag ${k === "ok" ? "ok-flag" : k === "warn" ? "warn-flag" : ""}"><b>${esc(t)}.</b> ${esc(d)}</p>`).join("");
+    });
+    part("air", () => {
+      if (S.air && S.air.current){ const a = S.air.current, q = aqiTxt(a.us_aqi);
+        const peak = S.air.hourly ? Math.max(...S.air.hourly.us_aqi.filter(v => v != null)) : null;
+        $("wx-air").innerHTML = `<tr class="hit"><th>US AQI</th><td class="big">${r0(a.us_aqi)}<small>${q.t}</small></td><td class="sub">${peak != null ? `Peak next 24 h: ${r0(peak)}` : ""}</td></tr><tr><th>PM2.5</th><td class="big">${(a.pm2_5 ?? 0).toFixed(1)}<small>µg/m³</small></td><td class="sub">Inversion smog and smoke</td></tr><tr><th>PM10 · ozone</th><td class="big">${r0(a.pm10)} · ${r0(a.ozone)}<small>µg/m³</small></td><td class="sub">Dust from cutting and digging adds to this on site</td></tr>`;
+        $("wx-air-age").textContent = "US AQI · " + ago(T.air); }
+      else if (err.air) $("wx-air").innerHTML = `<tr><td class="sub">Air quality not available right now.</td></tr>`;
+    });
+    part("hourly chart + table", () => {
+      const hs = hourly().slice(0, 24);
+      if (hs.length){
+        drawWx(hs);
+        $("wx-hours").innerHTML = hs.filter((x, i) => i % 2 === 0).map(x => `<tr${x.temp <= 32 ? ' class="frz"' : ""}><td>${short(x.t)}</td><td>${r0(x.temp)}°</td><td>${r0(x.feels)}°</td><td>${r0(x.pop)}%</td><td>${arrow(x.dir)} ${r0(x.wind)}–${r0(x.gust)}</td><td class="sub">${WMO(x.code)}</td></tr>`).join("");
+        const fz = freezeWindow(hourly());
+        $("wx-freeze-sum").textContent = fz ? (fz.now ? "Freezing now" : `Freezes ${fmtH(fz.start)}`) + (fz.end ? ` → thaws ${fmtH(fz.end)}` : "") : "No freeze in 24 h";
+      }
+    });
+    part("15-min strip", () => {
+      const m = om && om.minutely_15;
+      if (m){
+        const now = Date.now() - 15*60e3, pts = m.time.map((t, i) => ({t: D(t), p: m.precipitation[i] || 0, s: m.snowfall[i] || 0, temp: m.temperature_2m[i]})).filter(x => x.t.getTime() >= now).slice(0, 12);
+        $("wx-strip").innerHTML = pts.map(x => `<div class="wx-cell${x.p > 0 ? " wet" : ""}${x.s > 0 ? " snow" : ""}" title="${fmtT(x.t)}"><b>${short(x.t)}</b><span>${x.p > 0 ? x.p.toFixed(2) + '"' : "dry"}</span><i>${r0(x.temp)}°</i></div>`).join("");
+        const first = pts.find(x => x.p > 0), wetNow = pts[0] && pts[0].p > 0, stop = wetNow ? pts.find(x => x.p === 0) : null;
+        $("wx-strip-note").textContent = wetNow ? (stop ? `${pts[0].s > 0 ? "Snow" : "Rain"} now, easing about ${fmtT(stop.t)}.` : "Wet for the next 3 hours.") : first ? `${first.s > 0 ? "Snow" : "Rain"} starting about ${fmtT(first.t)}.` : "Dry for the next 3 hours.";
+      }
+    });
+    part("7 days", () => {
+      if (d) $("wx-days").innerHTML = d.time.map((t, i) => `<tr${d.temperature_2m_min[i] <= 32 ? ' class="frz"' : ""}><td>${i === 0 ? "Today" : D(typeof t === "number" ? t + 43200 : t + "T12:00").toLocaleDateString([], {weekday:"short", month:"numeric", day:"numeric"})}</td><td>${r0(d.temperature_2m_min[i])}° / ${r0(d.temperature_2m_max[i])}°</td><td>${r0(d.precipitation_probability_max[i])}%${d.snowfall_sum[i] > 0 ? ` · ${d.snowfall_sum[i].toFixed(1)}" snow` : ""}</td><td>${r0(d.wind_gusts_10m_max[i])} mph</td><td class="sub">${WMO(d.weather_code[i])}</td></tr>`).join("");
+    });
+    part("NWS text", () => {
+      if (S.nws) { $("wx-nws").innerHTML = S.nws.map(p => `<tr><th>${esc(p.name)}<div class="sub">${p.temperature}°${p.temperatureUnit} · ${esc(p.windSpeed || "")} ${esc(p.windDirection || "")}</div></th><td>${esc(p.detailedForecast || p.shortForecast || "")}</td></tr>`).join(""); $("wx-nws-src").textContent = "National Weather Service · " + ago(T.nws); }
+      else if (err.nws) $("wx-nws").innerHTML = `<tr><td class="sub">Weather Service forecast not available right now (outside the US or the service is busy).</td></tr>`;
+    });
+    part("soil", () => {
+      if (om && om.hourly && hourly()[0]){
+        const i = hourly()[0].i, h = om.hourly, u = om.hourly_units;
+        const sm = v => v == null ? "—" : (v * 100).toFixed(0) + "%";
+        const frz = toFt(h.freezing_level_height[i], u.freezing_level_height), snow = toIn(h.snow_depth[i], u.snow_depth), vis = toFt(h.visibility[i], u.visibility);
+        $("wx-soil").innerHTML = [
+          ["Surface", `${r0(h.soil_temperature_0cm[i])}°F`, "Ground surface"],
+          ["2\" deep", `${r0(h.soil_temperature_6cm[i])}°F`, h.soil_temperature_6cm[i] <= 32 ? "Frozen" : "Not frozen"],
+          ["7\" deep", `${r0(h.soil_temperature_18cm[i])}°F`, h.soil_temperature_18cm[i] <= 32 ? "Frost reaching down" : "Above freezing"],
+          ["21\" deep", `${r0(h.soil_temperature_54cm[i])}°F`, "Near trench and service depth"],
+          ["Soil moisture", `${sm(h.soil_moisture_9_to_27cm[i])}`, `By volume, 4"–11" deep (deeper: ${sm(h.soil_moisture_27_to_81cm[i])}). Over ~35% is wet, sticky ground`],
+          ["Snow on ground", snow != null ? `${snow.toFixed(1)}"` : "—", "Vent terminals must clear snow"],
+          ["Freezing level", frz != null ? `${Math.round(frz).toLocaleString()} ft` : "—", "Height above sea level where air hits 32°F"],
+          ["Visibility", vis != null ? `${(vis / 5280).toFixed(1)} mi` : "—", "Fog and snow cut this"]
+        ].map(([a, b, c2]) => `<tr><th>${a}</th><td class="big">${b}</td><td class="sub">${c2}</td></tr>`).join("");
+      }
+    });
+    part("groundwater", () => {
+      if (S.gw){
+        $("wx-gw").innerHTML = S.gw.wells.length ? S.gw.wells.map(w => { const num = String(w.id).replace(/^USGS-/, "");
+          return `<tr><th>${w.v.toFixed(1)} ft<div class="sub">below ground</div></th><td>${w.dist.toFixed(1)} mi away · measured ${isFinite(w.t) ? new Date(w.t).toLocaleDateString() : "—"}<div class="sub"><a href="https://waterdata.usgs.gov/monitoring-location/USGS-${esc(num)}/" target="_blank" rel="noopener">Well ${esc(num)} ↗</a></div></td></tr>`; }).join("")
+          : `<tr><td class="sub">No USGS groundwater wells with recent readings within about 20 miles.</td></tr>`;
+        $("wx-gw-age").textContent = (S.gw.live ? "Live wells + field readings" : "USGS field readings") + " · " + ago(T.gw);
+      } else if (err.gw) $("wx-gw").innerHTML = `<tr><td class="sub">USGS groundwater data isn't reachable right now. <a href="https://waterdata.usgs.gov/" target="_blank" rel="noopener">USGS Water Data map ↗</a></td></tr>`;
+    });
+    part("sun", () => {
+      if (d){
+        const rise = D(d.sunrise[0]), set = D(d.sunset[0]), riseT = D(d.sunrise[1] || d.sunrise[0]);
+        $("wx-sun").innerHTML = `<tr><th>Sunrise</th><td class="big">${fmtT(rise)}</td><td class="sub">Tomorrow ${fmtT(riseT)}</td></tr><tr><th>Sunset</th><td class="big">${fmtT(set)}</td><td class="sub" data-sunset="${set.getTime()}"></td></tr><tr><th>Daylight</th><td class="big">${dur(d.daylight_duration[0] * 1000)}</td><td class="sub">UV max today ${r0(d.uv_index_max[0])}</td></tr>`;
+      }
+    });
+    if (!om && (err.om || !navigator.onLine)) $("wx-hero").innerHTML = `<div class="sub">${navigator.onLine ? "Couldn't reach the forecast service. It'll retry in a minute." : "No signal, and nothing saved for this spot yet. Open this tab once with signal and it keeps the last forecast."}</div>`;
+    tick();
+  }
+  function drawWx(hs){
+    const svg = $("wx-chart"), W = 400, H = 210, L = 30, R = 10, Tp = 14, B = 34;
+    const ink = cssv("--ink"), muted = cssv("--muted"), rule = cssv("--rule"), cold = cssv("--g-calc"), bar = cssv("--g-parts"), hot = cssv("--danger");
+    const temps = hs.map(x => x.temp), lo = Math.floor(Math.min(...temps, 32) / 5) * 5 - 5, hi = Math.ceil(Math.max(...temps, 32) / 5) * 5 + 5;
+    const x = i => L + i * (W - L - R) / (hs.length - 1), y = t => Tp + (hi - t) / (hi - lo) * (H - Tp - B);
+    let s = "";
+    for (let t = lo; t <= hi; t += 10) s += `<line x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}" stroke="${rule}"/><text x="${L-4}" y="${y(t)+4}" text-anchor="end" font-size="10.5" fill="${muted}" font-family="IBM Plex Mono,monospace">${t}°</text>`;
+    hs.forEach((h, i) => { const bh = (h.pop || 0) / 100 * 40; if (bh > 0) s += `<rect x="${x(i) - 4}" y="${H - B - bh}" width="8" height="${bh}" fill="${bar}" opacity=".35"/>`; });
+    s += `<line x1="${L}" x2="${W-R}" y1="${y(32)}" y2="${y(32)}" stroke="${hot}" stroke-dasharray="4 3" stroke-width="1.5"/><text x="${W-R}" y="${y(32)-4}" text-anchor="end" font-size="10.5" fill="${hot}" font-weight="700">32° freeze</text>`;
+    s += `<polyline fill="none" stroke="${ink}" stroke-width="2.5" points="${hs.map((h, i) => `${x(i).toFixed(1)},${y(h.temp).toFixed(1)}`).join(" ")}"/>`;
+    hs.forEach((h, i) => { if (h.temp <= 32) s += `<circle cx="${x(i)}" cy="${y(h.temp)}" r="3" fill="${cold}"/>`; });
+    hs.forEach((h, i) => { if (i % 3 === 0) s += `<text x="${x(i)}" y="${H - B + 14}" text-anchor="middle" font-size="10.5" fill="${muted}">${fmtH(h.t).replace(" ", "")}</text>`; });
+    s += `<text x="${L}" y="${H - 4}" font-size="10.5" fill="${muted}">Line: temp °F · bars: chance of rain or snow</text>`;
+    svg.innerHTML = s;
+  }
+  /* every 10 s: clock, ages, countdowns, and fetch whatever is due */
+  function tick(){
+    $("wx-clock").textContent = new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit", second:"2-digit"}) + (navigator.onLine ? "" : " · offline");
+    document.querySelectorAll("#wx-hero [data-ago]").forEach(e => e.textContent = ago(+e.dataset.ago));
+    const ss = document.querySelector("[data-sunset]");
+    if (ss){ const left = +ss.dataset.sunset - Date.now(); ss.textContent = left > 0 ? `${dur(left)} of light left` : "After sunset: work lights"; $("wx-sun-left").textContent = left > 0 ? `${dur(left)} of light left` : "After sunset"; }
+    const next = Math.max(0, (T.om || 0) + EVERY.om - Date.now());
+    $("wx-status").textContent = blocked() ? "Live data runs in the installed app." : !navigator.onLine ? `No signal: showing the forecast saved ${T.om ? ago(T.om) : "—"}. It refreshes when you're back online.` : `Forecast ${T.om ? "updated " + ago(T.om) : "loading"} · next check in ${dur(next)} · screen refreshes every 10 s${place.src === "gps" ? " · following your location" : ""}.`;
+  }
+  /* ---- location ---- */
+  function setPlace(p){ place = p; store.set("jpb-wx-place", place); for (const n in S) S[n] = null; for (const n in err) err[n] = null;
+    $("wx-hero").innerHTML = `<div class="sub">Loading the forecast for ${esc(place.name)}…</div>`; $("wx-alerts").innerHTML = ""; $("wx-chart").innerHTML = ""; $("wx-strip").innerHTML = "";
+    ["wx-now","wx-hours","wx-days"].forEach(id => $(id).innerHTML = ""); ["wx-air","wx-nws","wx-soil","wx-gw","wx-sun"].forEach(id => $(id).innerHTML = `<tr><td class="sub">Loading…</td></tr>`);
+    render(); due(true); }
+  function gps(silent){
+    if (!navigator.geolocation){ if (!silent) $("wx-placesub").textContent = "Location not available on this device"; return; }
+    if (!silent) $("wx-placesub").textContent = "Finding you…";
+    navigator.geolocation.getCurrentPosition(p => {
+      const lat = +p.coords.latitude.toFixed(4), lon = +p.coords.longitude.toFixed(4), moved = miles(lat, lon, place.lat, place.lon) > 0.3;
+      T.gps = Date.now();
+      if (place.src !== "gps" || moved) setPlace({name: "My location", sub: `±${Math.round(p.coords.accuracy)} m`, lat, lon, src: "gps"});
+    }, () => { if (!silent) $("wx-placesub").textContent = "Location blocked: search a town instead"; }, {enableHighAccuracy: true, timeout: 12000, maximumAge: 120000});
+  }
+  $("wx-gps").addEventListener("click", () => gps(false));
+  let sT = 0;
+  $("wx-search").addEventListener("input", () => {
+    clearTimeout(sT); const q = $("wx-search").value.trim(), box = $("wx-results");
+    const local = Object.keys(TOWNS).filter(n => n.toLowerCase().includes(q.toLowerCase()));
+    const draw = list => box.innerHTML = list.slice(0, 8).map((r, i) => `<button type="button" data-i="${i}">${esc(r.name)}<span class="sub"> ${esc(r.sub || "")}</span></button>`).join("");
+    let list = q ? local.map(n => ({name: n, sub: "UT", lat: TOWNS[n][0], lon: TOWNS[n][1]})) : [];
+    box._list = list; draw(list);
+    if (q.length < 3 || blocked()) return;
+    sT = setTimeout(async () => {
+      try { const j = await get(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=8&language=en&format=json&countryCode=US`);
+        const more = (j.results || []).map(r => ({name: r.name, sub: [r.admin2, r.admin1].filter(Boolean).join(", "), lat: r.latitude, lon: r.longitude}));
+        list = list.concat(more.filter(m => !list.some(l => l.name === m.name && Math.abs(l.lat - m.lat) < 0.05))); box._list = list; draw(list);
+      } catch(e){}
+    }, 350);
+  });
+  $("wx-results").addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (!b) return; const r = $("wx-results")._list[+b.dataset.i];
+    setPlace({name: r.name, sub: r.sub, lat: +(+r.lat).toFixed(4), lon: +(+r.lon).toFixed(4), src: "town"}); $("wx-search").value = ""; $("wx-results").innerHTML = ""; });
+  /* follow the phone if the user chose My location before and allowed it */
+  const followGps = () => { if (place.src === "gps" && (!T.gps || Date.now() - T.gps > EVERY.gps) && navigator.permissions) navigator.permissions.query({name: "geolocation"}).then(s => { if (s.state === "granted") gps(true); }).catch(() => {}); };
+  setInterval(() => { if (shown() && !document.hidden){ followGps(); due(false); tick(); } }, 10000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && shown()) due(false); });
+  addEventListener("online", () => { if (shown()) due(false); });
+  const mo = new MutationObserver(() => { if (shown()){ render(); followGps(); due(false); } });
+  SECTIONS.filter(s => s.dataset.g === "weather").forEach(s => mo.observe(s, {attributes: true, attributeFilter: ["hidden"]}));
+  if (shown()){ render(); due(false); }
+  return {render, due, state: () => ({place, S, T, err})};
+})();
+
 /* ---------- 14 my files (online book only) ---------- */
 const mineList = $("list-mine"), statusEl = $("f-status");
 const setStatus = (msg, k) => { statusEl.textContent = msg; statusEl.className = "status" + (k ? " " + k : ""); };
@@ -2997,7 +3410,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "plumbiverse-2026-10-12-parts";
+var BUILD = "fieldguide-2026-10-12-weather";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
