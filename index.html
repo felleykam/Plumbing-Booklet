@@ -833,7 +833,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
   </section>
 
   <section data-sec="supply" data-kw="prv pressure 80 psi expansion tank hammer arrestor nail plate hose bibb backflow vacuum breaker">
-    <div class="sec-head"><h2>Water supply</h2><small>IPC ch. 6</small></div>
+    <div class="sec-head"><h2>Water supply</h2><small>IRC P29 · IPC ch. 6</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Over 80 psi</th><td>PRV with strainer, set ≤80 psi (604.8).</td></tr>
@@ -2095,7 +2095,7 @@ $("frac").innerHTML = fg;
 $("dec-ft").innerHTML = Array.from({length:6}, (_,i) => `<tr><td>${i+1}"</td><td>${((i+1)/12).toFixed(2)}</td><td>${i+7}"</td><td>${((i+7)/12).toFixed(2)}</td></tr>`).join("");
 
 /* ---------- 8 feet-inch calculator: tape-style input, answers to the nearest 1/16" ---------- */
-const LEN_RE = /^(?:(\d+(?:\.\d+)?)\s*')?\s*(?:(\d+(?:\.\d+)?)(?:\s+(\d+)\s*\/\s*(\d+))?|(\d+)\s*\/\s*(\d+))?\s*"?$/;
+const LEN_RE = /^(?:(\d*\.?\d+)\s*')?\s*(?:(\d*\.?\d+)(?:\s+(\d+)\s*\/\s*(\d+))?|(\d+)\s*\/\s*(\d+))?\s*"?$/;
 function parseLen(tok){ /* inches; a plain number is inches */
   const s = String(tok).trim().replace(/[″”]/g,'"').replace(/[′’]/g,"'").replace(/(\d)-(\d+\/\d+)/g, "$1 $2"); if (!s) return NaN;
   const m = s.match(LEN_RE); if (!m || m[0].trim() === "" || !/\d/.test(s)) return NaN;
@@ -2495,7 +2495,7 @@ const CARDS = [
   ["Utah","Incoming water temp for sizing a Utah winter heater?","40°F"],
   ["How it works","Why does a dripping RPZ drip?","A check is leaking; the relief valve dumps water instead of letting it flow back"],
   ["How it works","Why does a vent protect a trap?","Lets air in so falling water can't siphon the seal"],
-  ["How it works","Why is trap-to-vent distance limited?","Past it, the arm falls more than one pipe diameter, the vent opening drops below the weir, and the trap siphons"],
+  ["How it works","Why is trap-to-vent distance limited?","On 1¼\"–2\" pipe at ¼\"/ft, past the limit the arm falls more than one pipe diameter, the vent opening drops below the weir, and the trap siphons"],
   ["How it works","Why recheck a limit stop set in winter?","Warmer summer cold water makes the same stop run hotter"],
   ["How it works","Why derate gas at altitude?","Less oxygen per ft³: full input burns dirty (soot, CO)"],
   ["How it works","Why does a closed system need an expansion tank?","Water barely compresses; the tank's air cushion takes the expansion"],
@@ -2610,7 +2610,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "plumbiverse-2026-10-12-hivis";
+var BUILD = "plumbiverse-2026-10-12-hivis3";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
