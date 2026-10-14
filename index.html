@@ -146,7 +146,6 @@ body.searching section[data-where] .sec-head::after{content:attr(data-where);fle
 .badge{display:inline-block;font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.06em;line-height:1.3;padding:0 5px;border-radius:3px;margin-right:4px;vertical-align:1px;border:1.5px solid currentColor}
 .badge.ut{color:var(--g-inspect)}
 .badge.why{background:var(--hv);color:var(--k);border-color:var(--k)}
-.badge.ed{color:var(--g-calc)}
 .pn{display:inline-flex;align-items:center;font-family:var(--mono);font-weight:600;font-size:14px;background:var(--hi);color:var(--ink);border:2px solid var(--edge);border-radius:var(--r);padding:2px 9px;margin:2px 0;cursor:pointer;white-space:nowrap;text-decoration:none}
 .pn.copied{background:var(--ok);color:var(--sheet)}
 .warn{color:var(--danger);font-family:var(--body);font-weight:700;font-size:14px;white-space:normal;line-height:1.3}
@@ -371,7 +370,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
       <label for="ro-rise"><span><span class="sw rise"></span><span id="ro-rise-lbl">Rise (up / down)</span></span><span class="inch"><input id="ro-rise" type="number" inputmode="decimal" min="0" step="any" value="8"><select id="ro-rise-f" class="f16" aria-label="Rise, extra sixteenths"></select></span></label>
       <label for="ro-roll" id="ro-roll-wrap"><span><span class="sw roll"></span>Roll (sideways)</span><span class="inch"><input id="ro-roll" type="number" inputmode="decimal" min="0" step="any" value="6"><select id="ro-roll-f" class="f16" aria-label="Roll, extra sixteenths"></select></span></label>
       <label for="ro-ang"><span><span class="sw fit"></span>Fittings</span><select id="ro-ang">
-        <option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="22.5">22½°</option><option value="11.25">11¼°</option></select></label>
+        <option value="90">90°</option><option value="72">72° (⅕ bend)</option><option value="60">60°</option><option value="45" selected>45°</option><option value="22.5">22½°</option><option value="11.25">11¼°</option></select></label>
       <label for="ro-to"><span><span class="sw fit"></span>Take-off (each)</span><span class="inch"><input id="ro-to" type="number" inputmode="decimal" min="0" step="any" value="0"><select id="ro-to-f" class="f16" aria-label="Take-off, extra sixteenths"></select></span></label>
     </div>
     <div class="chips" id="ro-tk-chips" aria-label="My saved take-offs"></div>
@@ -411,6 +410,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
       <thead><tr><th>Fittings</th><th>Travel ×</th><th>Run ×</th></tr></thead>
       <tbody>
         <tr><td>90°</td><td>1.000</td><td>0</td></tr>
+        <tr><td>72°</td><td>1.051</td><td>0.325</td></tr>
         <tr><td>60°</td><td>1.155</td><td>0.577</td></tr>
         <tr><td>45°</td><td>1.414</td><td>1.000</td></tr>
         <tr><td>22½°</td><td>2.613</td><td>2.414</td></tr>
@@ -483,12 +483,13 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
     <div class="calc">
       <label for="p-size">Pipe<select id="p-size"></select></label>
       <label for="p-len">Length (ft)<input id="p-len" type="number" inputmode="decimal" value="50" step="any"></label>
+      <label for="p-gpm">Faucet flow (gpm) <i>for hot-water wait</i><input id="p-gpm" type="number" inputmode="decimal" min="0" step="any" value="1.5"></label>
       <div class="ans" id="p-ans" role="status" aria-atomic="true"></div>
     </div>
     <div class="x"><table class="t num" id="pipe-tbl">
       <thead><tr><th>Pipe</th><th>ID"</th><th>Gal/ft</th><th>Gal/100'</th><th>Lb/100'</th></tr></thead><tbody></tbody>
     </table></div>
-    <p class="note">Copper L, PEX CTS SDR-9, PVC Sch 40. Hot-water wait: gallons in line ÷ gpm = minutes.</p>
+    <p class="note">Copper L, PEX CTS SDR-9, PVC Sch 40. <b>Hot-water wait</b> = gallons in the line ÷ gpm. Utah lavs are capped at 1.5 gpm, so a long ¾" run to a lav is a slow wait: that's what home-run ½" lines and on-demand recirc fix. <b>In your head:</b> PEX ½" ≈ 1 gal per 100 ft, ¾" ≈ 2, 1" ≈ 3.</p>
   </section>
   <section data-sec="water" data-kw="velocity flow speed ft/s gpm pipe noise erosion">
     <div class="sec-head"><h2>Flow velocity</h2><small>gpm → feet per second</small></div>
@@ -631,6 +632,32 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
         <tr><th>Circle area</th><td>0.7854 × D²</td></tr>
       </tbody></table></div>
   </section>
+  <section data-sec="units" data-kw="mental math tricks head shortcut rule of thumb estimate quick no calculator">
+    <div class="sec-head"><h2>Do it in your head</h2><small>Close enough to sanity-check</small></div>
+    <div class="x"><table class="t wrap">
+      <thead><tr><th>Need</th><th>Trick</th><th>Try it</th></tr></thead>
+      <tbody>
+        <tr><td><b>45° travel</b></td><td>Offset + 40%, plus a hair (× 1.414)</td><td class="n">12" → 12 + 4.8 ≈ 17"</td></tr>
+        <tr><td><b>22½° travel</b></td><td>Offset × 2½, plus a little (× 2.613)</td><td class="n">8" → 20 + 0.9 ≈ 21"</td></tr>
+        <tr><td><b>Cut length</b></td><td>Center-to-center minus a take-off at <b>each</b> end</td><td class="n">17" − 2 × 1" = 15"</td></tr>
+        <tr><td><b>Fall at ¼"/ft</b></td><td>Feet ÷ 4 = inches of fall (about 2%)</td><td class="n">40 ft → 10"</td></tr>
+        <tr><td><b>Fall at ⅛"/ft</b></td><td>Feet ÷ 8 = inches of fall (about 1%)</td><td class="n">40 ft → 5"</td></tr>
+        <tr><td><b>psi from height</b></td><td>About 0.43 psi per foot: a 10 ft floor or a 10 ft test column ≈ 4.3 psi</td><td class="n">30 ft → ≈13 psi</td></tr>
+        <tr><td><b>Height from psi</b></td><td>psi × 2, plus a third of psi (× 2.31)</td><td class="n">30 psi → 60 + 10 = 70 ft</td></tr>
+        <tr><td><b>Water in PEX</b></td><td>Per 100 ft: ½" ≈ 1 gal · ¾" ≈ 2 · 1" ≈ 3</td><td class="n">60 ft ¾" ≈ 1.2 gal</td></tr>
+        <tr><td><b>Hot-water wait</b></td><td>Gallons in the line ÷ gpm = minutes</td><td class="n">1.2 gal ÷ 1.5 gpm ≈ 48 s</td></tr>
+        <tr><td><b>Round tank</b></td><td>D² × H × 0.0034 = gallons (inches)</td><td class="n">18" × 24" → ≈26 gal</td></tr>
+        <tr><td><b>Ft³ to gallons</b></td><td>× 7½ · water is 8⅓ lb/gal, ≈62 lb/ft³</td><td class="n">4 ft³ → 30 gal, 250 lb</td></tr>
+        <tr><td><b>Heat water</b></td><td>8⅓ BTU per gallon per °F</td><td class="n">50 gal × 70°F ≈ 29,000 BTU</td></tr>
+        <tr><td><b>Tankless flow</b></td><td>BTU/h × efficiency ÷ (500 × rise) = gpm</td><td class="n">199k × .95 ÷ 35,000 ≈ 5.4</td></tr>
+        <tr><td><b>Gas flow</b></td><td>Natural gas: BTU/h ÷ 1,000 = CFH</td><td class="n">40k heater → 40 CFH</td></tr>
+        <tr><td><b>16ths to decimal</b></td><td>Sixteenths × 0.0625 · eighths × .125</td><td class="n">5/16 → .3125</td></tr>
+        <tr><td><b>Decimal feet</b></td><td>0.1 ft ≈ 1³⁄₁₆" · 0.01 ft ≈ ⅛"</td><td class="n">0.25 ft = 3"</td></tr>
+        <tr><td><b>PEX growth</b></td><td>≈1" per 100 ft per 10°F (copper: ≈1" per 100°F)</td><td class="n">50 ft, 60°F → ≈3"</td></tr>
+        <tr><td><b>Cold air test</b></td><td>At 80 psi the gauge drops ≈2 psi per 10°F the pipe cools</td><td class="n">60→30°F ≈ −5 psi</td></tr>
+      </tbody></table></div>
+    <p class="note"><span class="badge why">WHY</span> Run the trick before you trust a calculator: if the screen says 34" and your head says 17", a digit slipped. Exact answers live in the calculators.</p>
+  </section>
 
   <section data-sec="tables" data-kw="take-off takeoff take off fitting center to end dwv abs pvc copper 45 90 elbow quarter eighth bend measure my">
     <div class="sec-head"><h2>My take-offs</h2><small>Measure once · saved on this device</small></div>
@@ -744,7 +771,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
     <div class="sec-head"><h2>Underground</h2><small>Ground work before the pour</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Water service depth</th><td>At least <b>12" deep and 6" below the frost line</b> (IRC P2603.5 / IPC 305.4). SLC designs to a 30" frost line, so plan on <b>36"</b>. Many water providers want more (North Salt Lake: 42"); theirs wins.</td></tr>
+        <tr><th>Water service depth</th><td>At least <b>12" deep and 6" below the frost line</b> (IRC P2603.5 / IPC 305.4). SLC, Provo, Springville and Lehi all design to a 30" frost line, so plan on <b>36"</b>. Many water providers want more (North Salt Lake: 42"); theirs wins.</td></tr>
         <tr><th>Water service size</th><td>¾" minimum (IPC 603.1). Bigger for a long run or a big fixture load.</td></tr>
         <tr><th>Water + sewer</th><td>5 ft apart, or in the same trench with the water line on a solid shelf at least 12" above the top of the sewer (IPC 603.2).</td></tr>
         <tr><th>Through the foundation</th><td>Sleeve two pipe sizes bigger, or a relieving arch, so the wall can settle without crushing the pipe.</td></tr>
@@ -993,7 +1020,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
         <tr><th>Garage</th><td>Burner and ignition ≥ <b>18"</b> above the floor unless the heater is FVIR-listed (IRC G2408.2). Out of a car's path or behind a bollard (G2408.3).</td></tr>
         <tr><th>Location</th><td>Gas heater not in a bedroom, bathroom or a closet off them unless it's direct-vent or in a sealed closet (IRC G2406.2).</td></tr>
         <tr><th>Venting</th><td>Natural-draft connector slopes up ≥ ¼"/ft toward the vent. Power-vent and direct-vent: the maker's pipe, lengths and terminations.</td></tr>
-        <tr><th>Tankless</th><td>Isolation (service) valves, condensate neutralizer to a drain on condensing units, gas line sized for full input (often 199k BTU/h: run the <b>Gas line sizer</b>), metal pipe at the unit if the maker says so.</td></tr>
+        <tr><th>Tankless</th><td>Isolation (service) valves, condensate neutralizer to a drain on condensing units, gas line sized for full input (often 199k BTU/h: run the <b>Gas line sizer</b>), metal pipe at the unit if the maker says so. Set the <b>altitude</b> (Inspect → Utah → Altitude settings).</td></tr>
       </tbody></table></div>
     <p class="note">Utah heater amendments: 15A-3-205 (houses); HB 65 (2026) changed some heater rules, so confirm the current text. The heater's install manual is part of the code: leave it at the house.</p>
   </section>
@@ -1051,6 +1078,15 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
         <tr><td>Below 40°F</td><td>4 hr</td><td>8 hr</td></tr>
       </tbody></table></div>
     <p class="note">Timed from the last joint. Testing up to 400 psi: double the cure. Rated 100 psi at 180°F. Use ≥6" of metal at a gas water heater. Below 50°F no ratchet cutters (cracks). Hot lines need offsets for expansion (~4" per 100 ft per 100°F).</p>
+  </section>
+  <section data-sec="materials" data-kw="solvent cement glue hot weather cold weather summer winter sun heat abs pvc primer weldon ips oatey set cure">
+    <div class="sec-head"><h2>Cement in heat &amp; cold</h2><small>ABS · PVC · CPVC</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Hot (95°F+)</th><td>Pipe lying in sun runs <b>20–30°F hotter</b> than the air, and solvent flashes off before you push the joint. Shade the pipe and the cans. Cool the ends with a damp rag, then dry them. Make the critical joints in the morning. Use a heavier-bodied cement, keep both surfaces wet when you join, and work fast (Weldon/IPS hot-weather guide).</td></tr>
+        <tr><th>Cold</th><td>Cure time stretches a lot below 40°F (see the CPVC table; PVC and ABS makers publish their own charts). Keep cans in the cab. Never warm cement or pipe with a flame: the vapor is very flammable. Cold plastic cracks under ratchet cutters: use a wheel or saw.</td></tr>
+        <tr><th>Utah County</th><td>Design temps run 13°F to 95°F, so you'll hit both ends in one year. <b>Weather → Now → Jobsite calls</b> flags glue days.</td></tr>
+      </tbody></table></div>
   </section>
   <section data-sec="materials" data-kw="copper solder flux lead free">
     <div class="sec-head"><h2>Copper &amp; solder</h2><small>Safe Drinking Water Act</small></div>
@@ -1359,15 +1395,53 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
       </tbody></table></div>
     <p class="note">Many Utah cities want gas at <b>5 psi for 15 min</b>. <span class="badge ut">UT</span> plastic air tests are capped: watch the gauge, stand clear, bleed down slowly. A joint can blow.</p>
   </section>
-  <section data-sec="cities" data-kw="city inspection schedule herriman lehi saratoga springs eagle mountain west jordan south jordan park city salt lake county msd">
+  <section data-sec="phases" data-kw="air test temperature cold drop gauge falling leak overnight winter shell pressure correction gas test">
+    <div class="sec-head"><h2>Leak or just cold?</h2><small>Air-test gauge vs. temperature</small></div>
+    <div class="calc">
+      <label for="at-p">Test started at (psi)<input id="at-p" type="number" inputmode="decimal" min="0" step="any" value="80"></label>
+      <label for="at-t1">Pipe temp then (°F)<input id="at-t1" type="number" inputmode="decimal" step="any" value="60"></label>
+      <label for="at-t2">Pipe temp now (°F)<input id="at-t2" type="number" inputmode="decimal" step="any" value="30"></label>
+      <label for="at-now">Gauge reads now <i>(optional)</i><input id="at-now" type="number" inputmode="decimal" min="0" step="any" placeholder="psi"></label>
+      <label for="at-el">Elevation (ft)<input id="at-el" type="number" inputmode="numeric" min="0" step="any" value="4500"></label>
+    </div>
+    <div class="x"><table class="t out"><tbody>
+      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Cold alone would read</th><td id="at-exp" class="big">—</td><td class="sub" id="at-why">Same air, new temperature.</td></tr>
+      <tr><th>Verdict</th><td id="at-verdict" class="big">—</td><td class="sub">Enter what the gauge reads now.</td></tr>
+    </tbody></table></div>
+    <p class="note"><span class="badge why">WHY</span> Trapped air shrinks as it cools (gas law on <b>absolute</b> pressure: gauge + air pressure, ≈12.5 psi at 4,500 ft). A shell that cools 30°F overnight drops an 80 psi test about 5 psi with no leak at all, and a 5 psi DWV test about 1 psi, which is 20% of it. Sun on the pipe pushes it the other way. Read the gauge at the same temperature you set it at, or let this do the math. Still dropping more than this says? Soap the joints.</p>
+  </section>
+  <section data-sec="phases" data-kw="callback warranty leak punch nail screw plate pex crimp expansion propex gap belly sewer shower valve depth photo baseline prevent">
+    <div class="sec-head"><h2>Callback killers</h2><small>Prove it, then protect it</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Screws &amp; nails</th><td>Most simple leak callbacks come from trades who work after you, and the hole may not leak until the house moves. Plate anything under 1¼" from the face, mark plate spots for the drywall crew, photograph your plates. <span class="badge why">WHY</span> With no plate and a normal-length screw, the plumber usually pays for the repair (Copper Development Assn.).</td></tr>
+        <tr><th>Baseline test</th><td>Before cover: gauge photo with the time and psi. Retest at final and compare. That photo settles arguments.</td></tr>
+        <tr><th>Wall photos</th><td>Every wall and ceiling after rough, before insulation, keyed to a floor-plan number. Find pipes later without opening drywall.</td></tr>
+        <tr><th>PEX expansion (F1960)</th><td>Square cut. Ring to the stop. Insert <b>right after</b> the last expansion; you should feel resistance (none = over-expanded). After it shrinks, a gap over <b>¹⁄₁₆"</b> at the shoulder: cut 2–3" back and redo with a new ring. Under 40°F use fewer expansions and keep rings and fittings in your pocket. Never on PEX-B or C (Uponor).</td></tr>
+        <tr><th>PEX crimp</th><td>Ring ⅛"–¼" from the pipe end, tool square to the pipe, jaws fully closed, go/no-go gauge on <b>every</b> crimp. Test-crimp at the start of each job: worn tools crimp loose.</td></tr>
+        <tr><th>Freeze</th><td>Warm side of the insulation, air leaks sealed. <span class="badge why">WHY</span> Insulation only slows heat loss; with no heat source the pipe still freezes (ICC).</td></tr>
+        <tr><th>Pressure</th><td>Gauge the hose bibb at the setter before you pick PRV and expansion-tank settings. Expansion tank precharge = static house pressure (factory is about 40 psi).</td></tr>
+        <tr><th>Sewer bellies</th><td>Compacted bedding, haunch to the pipe's midline, backfill in 6" lifts, keep equipment off the trench; pea gravel won't compact (ASTM D2321). Ball or camera it before backfill and again before the slab. <span class="badge ut">UT</span> Utah County soils can collapse when they get wet, so an underground leak can settle a foundation.</td></tr>
+        <tr><th>Shower valves</th><td>Confirm tile + backer thickness with the super, then set depth to the plaster-guard range. Strap the valve solid. Flood-test pans and tubs before tile.</td></tr>
+        <tr><th>Tankless</th><td>Altitude setting (Inspect → Utah → Altitude settings), isolation/flush valves for our hard water, on-demand recirc instead of a continuous loop (a continuous loop cuts Rinnai's warranty to 3 yr).</td></tr>
+      </tbody></table></div>
+    <p class="note">Sources: Builder Magazine, Copper Development Assn., Uponor and Boshart install guides, ICC, Plumbing &amp; Mechanical (2025), Rinnai warranty. Your shop's standard wins.</p>
+  </section>
+  <section data-sec="cities" data-kw="city inspection schedule provo spanish fork springville herriman lehi saratoga springs eagle mountain west jordan south jordan park city salt lake county msd utah county">
     <div class="sec-head"><h2>City inspections</h2><small>How each city books them</small></div>
     <div class="x"><table class="t">
       <thead><tr><th>City</th><th>How to book · what's different</th></tr></thead>
       <tbody>
-        <tr><td><b>Herriman</b></td><td><span class="pn">801-446-5327</span><div class="sub">Call one working day ahead, before 4 pm. Subrough: 10 ft water or 5 psi, 15 min. Gas 5 psi, 15 min. Shower pan water test. Separate secondary-water connection inspection. Meter is on the Public Works final.</div></td></tr>
-        <tr><td><b>Lehi</b></td><td><span class="pn">385-201-1035</span><div class="sub">Phone only: no voicemail, email or online booking. 24 hr notice. Lists a 30" minimum frost line. Not-ready re-inspections get a fee.</div></td></tr>
+        <tr><th colspan="2">Utah County</th></tr>
+        <tr><td><b>Eagle Mountain</b></td><td><a href="mailto:buildinginspections@eaglemountain.gov">Email request ↗</a><div class="sub">Include the permit number. No confirmation email back = you're not on the schedule. First come, first served. Order: underground plumbing → 4-way → a separate <b>frost-protection insulation</b> inspection → final. Final needs the meter set: lid at grade, setter 20" ±2" below the lid, nothing within 5 ft; $50 re-final if it isn't.</div></td></tr>
+        <tr><td><b>Lehi</b></td><td><span class="pn">385-201-1035</span><div class="sub">Phone only: no voicemail, email or online booking. 24 hr notice. Lists a 30" minimum frost line. Not-ready re-inspections get a fee. Sewer lateral: 2% minimum slope to the property line, inspected before backfill. One culinary and one PI connection per lot.</div></td></tr>
+        <tr><td><b>Provo</b></td><td><a href="https://www.provo.gov/1019/Schedule-Building-Inspection" target="_blank" rel="noopener">Schedule an inspection ↗</a><div class="sub">Booking is through the city's self-service portal. Design frost depth 30"; house pressure should stay under 75 psi (city water report).</div></td></tr>
         <tr><td><b>Saratoga Springs</b></td><td><a href="mailto:buildinginspectionrequest@saratogasprings-ut.gov">Email request ↗</a> or <span class="pn">801-766-6507</span> x120<div class="sub">One business day ahead: by 5 pm Mon–Thu, 4 pm Fri. No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test set).</div></td></tr>
-        <tr><td><b>Eagle Mountain</b></td><td><a href="mailto:buildinginspections@eaglemountain.gov">Email request ↗</a><div class="sub">Include the permit number. No confirmation email back = you're not on the schedule. First come, first served.</div></td></tr>
+        <tr><td><b>Spanish Fork</b></td><td><a href="https://www.spanishfork.gov/living-in-our-community/building/building-permits-inspections/" target="_blank" rel="noopener">CitizenServe portal ↗</a> · help <span class="pn">801-804-4540</span><div class="sub">24 hr ahead. Ready by 8 am the day of, or a $93 re-inspection fee. Underground plumbing and water/sewer laterals inspected before cover; gas pressure test in that stage; rough plumbing on the 4-way; shower pan inspection with framing.</div></td></tr>
+        <tr><td><b>Springville</b></td><td><a href="https://www.springvilleutah.gov/community-development/wp-content/uploads/sites/5/2025/06/My-City-Inspector-Directions.pdf" target="_blank" rel="noopener">City Inspect ↗</a> · building <span class="pn">801-489-2704</span><div class="sub">Booked online in AM/PM blocks once the permit is issued; some inspections wait on earlier ones. Frost depth 30". Secondary-water switch-over inspection, $50.</div></td></tr>
+        <tr><td><b>Orem · American Fork</b></td><td><span class="sub">No booking details we could confirm online. Ask your super or the city building office.</span></td></tr>
+        <tr><th colspan="2">Salt Lake &amp; Summit</th></tr>
+        <tr><td><b>Herriman</b></td><td><span class="pn">801-446-5327</span><div class="sub">Call one working day ahead, before 4 pm. Subrough: 10 ft water or 5 psi, 15 min. Gas 5 psi, 15 min. Shower pan water test. Separate secondary-water connection inspection. Meter is on the Public Works final.</div></td></tr>
         <tr><td><b>West Jordan</b></td><td><span class="pn">801-569-5050</span><div class="sub">Building dept: inspection requirements and status. Permit Center M–F 8–5.</div></td></tr>
         <tr><td><b>South Jordan</b></td><td><a href="https://cityview.southjordanutah.gov/cityviewportal" target="_blank" rel="noopener">CityView portal ↗</a><div class="sub">Permits and inspections online.</div></td></tr>
         <tr><td><b>Park City</b></td><td><span class="pn">435-615-5101</span><div class="sub">Book in the City Inspect app by 3 pm for next day. AM 8–12, PM 12–4. Plans + permit on paper on site. Deep snow: confirm vent height.</div></td></tr>
@@ -1412,25 +1486,69 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
     <div class="sec-head"><h2>Code links</h2><small>Free read-only</small></div>
     <div class="x"><table class="t"><tbody id="list-code"></tbody></table></div>
   </section>
-  <section data-sec="utah" data-kw="secondary water pressurized irrigation pi purple non-potable cross connection culinary sprinkler">
+  <section data-sec="utah" data-kw="secondary water pressurized irrigation pi purple non-potable cross connection culinary sprinkler green box meter rp backflow">
     <div class="sec-head"><h2>Secondary water (PI)</h2><small>Very Utah</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>What it is</th><td>Pressurized irrigation: untreated canal or reservoir water for lawns, in its own pipes. Most new subdivisions here have it. Separate box and meter near the front property line.</td></tr>
+        <tr><th>What it is</th><td>Pressurized irrigation: untreated canal or reservoir water for lawns, in its own pipes. Separate box and meter near the front property line.</td></tr>
         <tr><th>The hard rule</th><td><b>Never</b> connect secondary to culinary (drinking) water, not even with a valve (Utah Code 19-4-112). That's a cross-connection.</td></tr>
-        <tr><th>Pressure</th><td>Can run 40–125 psi depending on lot elevation (Springville's numbers). If it's more than the sprinklers need, add a pressure reducer on the irrigation side.</td></tr>
-        <tr><th>Marking</th><td>Non-potable piping gets identified so nobody taps it for drinking; purple is the usual color. Follow your city's standard.</td></tr>
-        <tr><th>Inspection</th><td>Some cities inspect the sprinkler-to-secondary-box connection separately (Herriman lists it).</td></tr>
-        <tr><th><span class="badge why">WHY</span>Why care?</th><td>Canal water can carry bacteria and fertilizer. One wrong hookup and a whole neighborhood's drinking water can get it.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Why care?</th><td>It's untreated and can carry E. coli and fertilizer (Lehi). One wrong hookup and a whole neighborhood's drinking water can get it.</td></tr>
+        <tr><th>Who has it</th><td>Utah County, confirmed on city sites: <b>Lehi, Saratoga Springs, Eagle Mountain, Spanish Fork, Springville</b>. American Fork likely. Orem: no citywide PI. Elsewhere: ask.</td></tr>
+        <tr><th>Tell them apart</th><td><b>Purple = irrigation / non-potable.</b> Blue = potable. Green = sewer (APWA). Springville: purple PE tubing, purple "non-potable" tape about 12" over the pipe, tracer wire, 30" cover, green <b>IRRIGATION</b> box in the park strip. Saratoga: green box near the property line, usually a 1" ball valve.</td></tr>
+        <tr><th>Field rules</th><td>Separate trench from the water service (Eagle Mountain doesn't allow sharing). Nothing but purple past the PI box. Never a hose bibb off PI at the house. Tag PI valves.</td></tr>
+        <tr><th>Pressure</th><td>Can run 40–125 psi depending on lot elevation (Springville). If it's more than the sprinklers need, add a reducer on the irrigation side.</td></tr>
+        <tr><th>Season</th><td>About mid-April to mid-October. Saratoga drains the week of Oct 15; Lehi wants connections off by Oct 15.</td></tr>
+        <tr><th>Meters</th><td>State law: every secondary connection metered by Jan 1, 2030 (Utah Code 73-10-34). New lots may already get one.</td></tr>
+        <tr><th><span class="badge ut">UT</span>Drinking-water backup</th><td>If potable water backs up a PI system: an <b>RP</b> right after the potable connection, then a dual-source connection so only one supply can flow. Tested within 10 days of install and every year. RP at least 12" above grade, never in a pit (Utah amendment 1301.5).</td></tr>
+        <tr><th>Inspection</th><td>Some cities inspect the sprinkler-to-PI connection separately: Herriman lists it; Springville charges $50 for the switch-over.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="utah" data-kw="hardness grains anode softener">
-    <div class="sec-head"><h2>Utah water</h2><small>Why heaters scale up</small></div>
+  <section data-sec="utah" data-kw="hardness grains gpg anode softener chlorine chloramine pressure prv utah county provo orem lehi american fork saratoga">
+    <div class="sec-head"><h2>Utah water</h2><small>Hard, chlorinated, pressure varies</small></div>
+    <div class="x"><table class="t num">
+      <thead><tr><th>Where</th><th>Hardness</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>Provo</td><td>10–15 gpg</td><td class="sub">City 2024 water report</td></tr>
+        <tr><td>American Fork</td><td>13 gpg</td><td class="sub">Utility figure via tapwaterdata</td></tr>
+        <tr><td>Highland</td><td>11.4 gpg</td><td class="sub">Utility figure via tapwaterdata</td></tr>
+        <tr><td>Lehi</td><td>≈9 gpg</td><td class="sub">Calculated from Ca + Mg</td></tr>
+        <tr><td>Orem</td><td>8.2 gpg</td><td class="sub">Utility figure via tapwaterdata</td></tr>
+        <tr><td>Lindon</td><td>6.9 gpg</td><td class="sub">Utility figure via tapwaterdata</td></tr>
+        <tr><td>Saratoga Springs</td><td>5.6 gpg</td><td class="sub">Utility figure; wells + CUWCD blend</td></tr>
+        <tr><td>Salt Lake City</td><td>8–12 gpg</td><td class="sub">Treatment plants; some wells over 30</td></tr>
+        <tr><td>Eagle Mtn, Spanish Fork, Springville, Payson, Vineyard</td><td>?</td><td class="sub">Not confirmed: ask the city or test it</td></tr>
+      </tbody></table></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Hardness</th><td>Salt Lake City treatment plants about <b>8–12 grains/gal</b>; some wells over 30. Jordan Valley sources average 10–12. Anything over 7 counts as hard.</td></tr>
-        <tr><th>What it means</th><td>Scale in tanks and tankless heat exchangers, ticking and rumbling heaters. Flush tanks yearly; descale tankless per the maker. If a softener goes in, check the anode more often.</td></tr>
+        <tr><th>Hard means</th><td>Over 7 gpg is hard; over 10.5 is very hard. Many cities blend wells with river water, so it shifts by season.</td></tr>
+        <tr><th>On the job</th><td>Scale in tanks (rumble, ticking, anode wear) and in tankless heat exchangers. Rinnai's warranty excludes scale and water-quality failures, so tankless always gets isolation/flush valves. Crusty aerators look like a pressure problem and aren't.</td></tr>
+        <tr><th>Softeners</th><td>Common. No Utah amendment covers the discharge: base code applies, so an <b>air gap</b> on the regen drain into an indirect receptor. Loop location is your shop's standard. Check anodes more often on softened water.</td></tr>
+        <tr><th>Disinfection</th><td>Free chlorine in every Utah County system checked (CUWCD, Saratoga, Eagle Mountain). No chloramine found.</td></tr>
+        <tr><th>Pressure</th><td>Swings with lot elevation: bench lots and valley floors differ a lot. Provo says keep the house under 75 psi. <b>Gauge the hose bibb at the setter</b> before you set the PRV and the expansion-tank charge.</td></tr>
       </tbody></table></div>
+    <p class="note">gpg = grains per gallon (1 gpg = 17.1 mg/L). For a lot's real number, the city's annual Consumer Confidence Report or a test strip beats any table.</p>
+  </section>
+  <section data-sec="utah" data-kw="frost depth 30 ground soil collapsible settlement groundwater water table utah lake vineyard radon climate design temperature elevation">
+    <div class="sec-head"><h2>Ground &amp; climate</h2><small>Utah County</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Frost depth</th><td><b>30"</b> design (Provo, Springville; Lehi lists 30" too). Water service 6" below that: plan on <b>≈36"</b>; the city's standard drawings win.</td></tr>
+        <tr><th>Design temps</th><td>Winter 13°F, summer 95°F, Provo elevation 4,491 ft (Provo design criteria).</td></tr>
+        <tr><th>Collapsible soil</th><td>The Utah Geological Survey maps the alluvial fans from Point of the Mountain to Nephi as collapse-prone: dry soil that gets wet can drop. A small underground leak or lawn water against the foundation can settle a house. Compact in lifts; test every underground line.</td></tr>
+        <tr><th>Shallow groundwater</th><td>Trouble starts when groundwater is within about 10 ft: flooded trenches and basements (UGS). Likely near Utah Lake (Vineyard, west Provo, low Saratoga and Lehi). Read the lot's geotech report; expect sumps and footing drains. Live well levels: <b>Weather → Ground &amp; water</b>.</td></tr>
+        <tr><th>Radon</th><td>About 1 in 3 Utah homes tested is over the EPA action level (Utah DEQ). Seal every slab penetration.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="utah" data-kw="altitude elevation tankless navien rinnai dip switch high altitude setting 4500 menu 1.2.14 v65 derate gas water heater">
+    <div class="sec-head"><h2>Altitude settings</h2><small>Utah County ≈ 4,500 ft</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Navien NPE-2</th><td>Installer menu <b>1.2.14 → "2"</b> for 2,000–5,400 ft. Above 5,400 ft (some upper-bench lots) it needs the high-altitude kit.</td></tr>
+        <tr><th>Rinnai V65</th><td>DIP switches: the 2,001–5,200 ft setting, with its own gas-pressure values (tech bulletin TB-099).</td></tr>
+        <tr><th>Tank heaters</th><td>Many are certified high enough that valley elevation needs no change (one Rheem example: to 8,500 ft). Read the label.</td></tr>
+        <tr><th>The habit</th><td>Open every gas appliance manual to its altitude section. A tankless left at sea-level settings burns dirty: a classic callback.</td></tr>
+      </tbody></table></div>
+    <p class="note">Sizing gas pipe or derating by hand: <b>Calc → Gas &amp; heater</b>. The maker's altitude instructions win.</p>
   </section>
 
   <!-- ================= CALLS ================= -->
@@ -1456,6 +1574,17 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
         <tr><th><a href="https://www.enbridgegas.com/utwyid/start-stop-service/construction-services/construction-services-contacts" target="_blank" rel="noopener">Enbridge Gas ↗</a></th><td>Service <span class="pn">1-800-323-5517</span><div class="sub">Formerly Dominion / Questar. New service and meters: Construction Services. Gas leak: see Emergency above.</div></td></tr>
         <tr><th><a href="https://commerce.utah.gov/dopl/plumbing/" target="_blank" rel="noopener">DOPL ↗</a></th><td><span class="pn">801-530-6628</span><div class="sub">Licenses, renewals, exam approval.</div></td></tr>
       </tbody></table></div>
+  </section>
+  <section data-sec="emergency" data-kw="supply house store counter parts ferguson mountainland bj plumbing orem lehi american fork utah county">
+    <div class="sec-head"><h2>Supply houses</h2><small>Utah County · tap to call</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Ferguson Orem</th><td><span class="pn">801-225-8855</span><div class="sub">1554 W Business Park Dr · Mon–Fri 7 am–4 pm</div></td></tr>
+        <tr><th>Ferguson Lehi</th><td><span class="pn">385-345-9734</span><div class="sub">2001 N 1450 W</div></td></tr>
+        <tr><th>Mountainland Supply</th><td><span class="pn">801-224-6050</span><div class="sub">Orem-rooted; now part of Mountain States Supply.</div></td></tr>
+        <tr><th>BJ Plumbing Supply</th><td>Orem <span class="pn">801-224-6600</span> · American Fork <span class="pn">801-763-5861</span></td></tr>
+      </tbody></table></div>
+    <p class="note">Ask the counter about manufacturer rep trainings and lunch-and-learns: they're free, and they're where you meet the reps. Hours change; call first.</p>
   </section>
   <section data-sec="tech" data-kw="faucet cartridge leak drip valve stem toilet sink shower warranty parts">
     <div class="sec-head"><h2>Faucets &amp; fixtures</h2><small>Hours in Mountain Time</small></div>
@@ -1647,7 +1776,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
         <tr><th>Code idea</th><td>Water and drain pipe can't be put where it will freeze unless it's protected (IPC 305.4).</td></tr>
         <tr><th>Outside walls</th><td>Keep supply lines out of exterior walls, unheated attics and garages when you can. If you can't, the pipe goes on the <b>warm side</b> of the insulation.</td></tr>
         <tr><th><span class="badge why">WHY</span>Why pipes split</th><td>Ice takes about 9% more room. The split usually happens between the ice plug and a closed valve, where trapped water has nowhere to go.</td></tr>
-        <tr><th>Water service</th><td>6" below the frost line: about 36" at SLC. See <b>Rough → Underground</b>.</td></tr>
+        <tr><th>Water service</th><td>6" below the frost line: about 36" along the Wasatch Front (30" frost). See <b>Rough → Underground</b>.</td></tr>
         <tr><th>Hose bibbs</th><td>Frost-free: the valve seat sits inside the warm wall and the barrel is pitched to drain outside. A hose left on holds water in the barrel and can split it inside the wall.</td></tr>
         <tr><th>Vents</th><td>Frost closure: in very cold areas the roof vent goes up in size (see Vent sizing &amp; terminals).</td></tr>
         <tr><th>Winter tests</th><td>Water tests can freeze. Drain them right after inspection, or use the vacuum test (2021 IRC) or Utah's air-test options.</td></tr>
@@ -1686,7 +1815,8 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
         <tr><th>2 · School + hours</th><td>≥72 classroom hr per semester at 75%+. Max 3,000 OJT hr per 12 months.</td></tr>
         <tr><th>MTECH</th><td>4 yr, 8 semesters, 576 hr. Test-out after semester 4A (6,000 hr) fits the <b>residential</b> path. Confirm which license you're testing for.</td></tr>
         <tr><th>3 · Exams</th><td>Written (remote OK) + Utah Plumber Practical in person. Pass, then apply.</td></tr>
-        <tr><th>4 · Renew</th><td>Every 2 yr, Nov 30 of even years. 12 CE hr, 8 core.</td></tr>
+        <tr><th>Exam reality</th><td>Statewide pass rates, Jun 2025–Jun 2026: theory 69%, residential theory 56%, practical 55%. The practical is a PVC project and a copper project, 37 points each; the average was 26.2 on PVC and <b>25.2 on copper</b>, so practice copper. MTECH beat the state: theory 85%, practical 60%. Weak spot statewide: hydronics (DOPL bulletin, May 2026).</td></tr>
+        <tr><th>4 · Renew</th><td>Every 2 yr, Nov 30 of even years: <b>2026 is a renewal year</b>. 12 CE hr, 8 core.</td></tr>
         <tr><th>Upgrade</th><td>Residential → journeyman: 2,000 hr non-residential + 4th-year class (144 hr).</td></tr>
       </tbody></table></div>
     <div class="x"><table class="t"><tbody id="list-career"></tbody></table></div>
@@ -2171,6 +2301,7 @@ const SKIP = "#c-out, .out, #dfu-rows, #ro-steps, #ro-fit-rows, #gl-rows, #gl-tb
 let IDX = null;
 const buildIdx = () => IDX = SECTIONS.map(sec => ({
   sec,
+  h2: norm(sec.querySelector("h2").textContent),
   title: norm(sec.querySelector("h2").textContent + " " + (sec.dataset.kw || "")),
   head: norm(words(sec.querySelector(".sec-head")) + " " + (sec.dataset.kw || "") + " " + sec.dataset.where),
   all: norm(words(sec) + " " + (sec.dataset.extra || "")),
@@ -2187,7 +2318,7 @@ function apply(){
   const res = toks.map(t => new RegExp("(?:^|[^a-z0-9.])" + reEsc(t)));
   const has = (txt, list) => list.every(r => r.test(txt));
   let shown = 0; const hits = [];
-  for (const {sec, title, head, all, rows} of IDX){
+  for (const {sec, h2, title, head, all, rows} of IDX){
     if (!toks.length){
       rows.forEach(([r]) => r.hidden = false);
       sec.hidden = !(sec.dataset.g === nav.group && (nav.sub === "all" || nav.sub === sec.dataset.sec));
@@ -2202,10 +2333,9 @@ function apply(){
       if (!any && (!rows.length || sec.dataset.extra) && has(all, rem)){ rows.forEach(([r]) => r.hidden = false); any = true; }  /* sections without table rows (calculators, cards) */
     }
     sec.hidden = !any;
-    if (any){ shown++; hits.push([sec, 3*res.filter(r => r.test(title)).length + (res.length - rem.length)]); }
+    if (any){ shown++; hits.push([sec, 4*res.filter(r => r.test(h2)).length + 3*res.filter(r => r.test(title)).length + (res.length - rem.length)]); }
   }
-  /* heading matches first while searching; the book's own order otherwise */
-  /* best match first: words in the title and keywords count most */
+  /* best match first: words in the card heading count most, then keywords; the book's own order otherwise */
   const order = toks.length ? [...hits.sort((a,b) => b[1] - a[1]).map(h => h[0]), ...SECTIONS.filter(s => s.hidden)] : SECTIONS;
   order.forEach(s => book.insertBefore(s, book.querySelector("footer")));
   document.body.classList.toggle("searching", !!toks.length);
@@ -2348,10 +2478,13 @@ document.querySelector("#pipe-tbl tbody").innerHTML = PIPES.map(([n,id]) =>
   `<tr><td>${n}</td><td>${id.toFixed(3)}</td><td>${galPerFt(id).toFixed(4)}</td><td>${(galPerFt(id)*100).toFixed(2)}</td><td>${(galPerFt(id)*100*8.34).toFixed(1)}</td></tr>`).join("");
 $("p-size").innerHTML = PIPES.map((p,i) => `<option value="${i}"${i===4?" selected":""}>${p[0]}</option>`).join("");
 function pipeCalc(){
-  const g = galPerFt(PIPES[+$("p-size").value][1]) * val("p-len");
-  $("p-ans").innerHTML = isFinite(g) && g >= 0 ? `${nf(g,2)} gal<small>${nf(g*3.78541,2)} L · ${nf(g*8.34,1)} lb</small>` : warn("Enter a length of 0 or more.");
+  const g = galPerFt(PIPES[+$("p-size").value][1]) * val("p-len"), gpm = val("p-gpm");
+  if (!(isFinite(g) && g >= 0)){ $("p-ans").innerHTML = warn("Enter a length of 0 or more."); return; }
+  const s = gpm > 0 ? g / gpm * 60 : NaN;
+  const wait = isFinite(s) ? ` · hot in ≈ ${s < 90 ? `${Math.round(s)} s` : `${nf(s/60,1)} min`} at ${nf(gpm,1)} gpm` : "";
+  $("p-ans").innerHTML = `${nf(g,2)} gal<small>${nf(g*3.78541,2)} L · ${nf(g*8.34,1)} lb${wait}</small>`;
 }
-$("p-size").addEventListener("change", pipeCalc); $("p-len").addEventListener("input", pipeCalc); pipeCalc();
+$("p-size").addEventListener("change", pipeCalc); ["p-len","p-gpm"].forEach(id => $(id).addEventListener("input", pipeCalc)); pipeCalc();
 
 /* ---------- 7 offset calculator (simple + rolling) with to-scale drawings ---------- */
 document.querySelectorAll(".f16").forEach(s => {
@@ -2550,7 +2683,7 @@ function roCalc(){
   roFit(tru, t, deg);
 }
 /* "Space I have": every standard fitting angle against the distance you measured between your two points */
-const RO_ANGLES = [[60,"60°"],[45,"45°"],[22.5,"22½°"],[11.25,"11¼°"]];
+const RO_ANGLES = [[72,"72°"],[60,"60°"],[45,"45°"],[22.5,"22½°"],[11.25,"11¼°"]];
 function roFit(tru, t, cur){
   const rows = $("ro-fit-rows");
   if (tru == null){ rows.innerHTML = `<tr><td colspan="4" class="sub">Enter the offset above first.</td></tr>`; return; }
@@ -2832,6 +2965,24 @@ document.querySelectorAll("#wh-mode button").forEach(b => b.addEventListener("cl
 }));
 ["wh-btu","wh-eff","wh-in","wh-set"].forEach(id => $(id).addEventListener("input", whCalc)); whCalc();
 
+/* leak or just cold? gas law on absolute pressure; local air pressure from elevation (standard atmosphere) */
+const atmPsi = ft => 14.696 * Math.pow(1 - 6.8754e-6 * ft, 5.2559);
+function atCalc(){
+  const p = val("at-p"), t1 = val("at-t1"), t2 = val("at-t2"), el = val("at-el"), now = parseFloat($("at-now").value);
+  const ok = p >= 0 && t1 > -100 && t1 < 200 && t2 > -100 && t2 < 200 && el >= 0 && el <= 14000;
+  if (!ok){ $("at-exp").innerHTML = warn("Enter psi, two temps (°F) and an elevation."); $("at-verdict").textContent = "—"; return; }
+  const a = atmPsi(el), exp = (p + a) * (t2 + 459.67) / (t1 + 459.67) - a, d = exp - p;
+  $("at-exp").innerHTML = `${nf(exp,1)} psi<small>${d < 0 ? "−" : "+"}${nf(Math.abs(d),1)} psi from temperature · air ${nf(a,1)} psi here</small>`;
+  if (!isFinite(now)){ $("at-verdict").textContent = "—"; return; }
+  const tol = Math.max(0.25, p * 0.0125), gap = exp - now;
+  $("at-verdict").innerHTML = gap > tol
+    ? `<span class="warn">Leak likely</span><small>${nf(gap,1)} psi more drop than the cold explains. Soap the joints.</small>`
+    : now - exp > tol
+      ? `<span class="ok">Holding</span><small>Reads ${nf(now - exp,1)} psi high: pipe is warmer than you entered (sun?).</small>`
+      : `<span class="ok">Cold explains it</span><small>Within ${nf(tol,2)} psi of what temperature alone does.</small>`;
+}
+["at-p","at-t1","at-t2","at-now","at-el"].forEach(id => $(id).addEventListener("input", atCalc)); atCalc();
+
 /* ---------- 11 will it fit the stud? [pipe, smallest saw, biggest saw] ---------- */
 const SAWS = [["½\" PEX / Cu",0.875,1],["¾\" PEX / Cu",1.125,1.25],["1\" PEX / Cu",1.375,1.5],["½\" steel gas",1,1],["¾\" steel gas",1.25,1.25],["1\" steel gas",1.5,1.5],["1½\" DWV",2.125,2.125],["2\" DWV",2.625,2.625],["3\" DWV",3.75,3.75],["4\" DWV",4.75,4.75]];
 const LIMITS = [3.5*.4, 3.5*.6, 5.5*.4, 5.5*.6];
@@ -2907,7 +3058,20 @@ const CARDS = [
   ["Supply","PEX ≤1\" horizontal support spacing?","32\""],
   ["Supply","Copper ≤1¼\" horizontal support spacing?","6 ft"],
   ["Supply","ABS / PVC horizontal support spacing?","4 ft"],
-  ["Underground","Water service depth vs. frost line?","12\" deep and 6\" below frost (≈36\" at SLC)"],
+  ["Underground","Water service depth vs. frost line?","12\" deep and 6\" below frost (30\" frost here, so ≈36\")"],
+  ["Math","Travel for a 12\" offset with two 45s?","≈17\" (12 × 1.414 = 16.97)"],
+  ["Math","Fall over 40 ft at ¼\"/ft?","10\" (feet ÷ 4)"],
+  ["Math","psi from a 10 ft column of water?","≈4.3 psi (0.433 per ft)"],
+  ["Math","Feet of head from 30 psi?","≈69 ft (psi × 2.31)"],
+  ["Math","Gallons in 100 ft of ¾\" PEX?","≈2 (½\" ≈ 1, 1\" ≈ 3)"],
+  ["Math","BTU to heat 1 gallon 1°F?","8.34"],
+  ["Tests","80 psi air test set at 60°F; the shell cools to 30°F. Is a 5 psi drop a leak?","Not by itself: the cold alone drops it about 5 psi. Check with Inspect → Leak or just cold?"],
+  ["Utah","Pipe color for pressurized irrigation (PI)?","Purple (blue = potable, green = sewer)"],
+  ["Utah","Utah County design frost depth?","30\": bury the water service ≈36\""],
+  ["Utah","Navien NPE-2 altitude setting at 4,500 ft?","Installer menu 1.2.14 → 2 (2,000–5,400 ft)"],
+  ["Utah","Softener regen drain connects how?","Through an air gap to an indirect receptor"],
+  ["PEX","ProPEX joint: gap at the fitting shoulder that means redo it?","More than 1/16\": cut 2–3\" back, new ring"],
+  ["PEX","How often do you check crimps with the go/no-go gauge?","Every crimp, plus a test crimp at the start of each job"],
   ["Underground","Water service and sewer in one trench?","Water on a solid shelf ≥12\" above the sewer (or 5 ft apart)"],
   ["Underground","Minimum water service size?","¾\""],
   ["Fixtures","Toilet center to side wall, minimum?","15\""],
@@ -3164,7 +3328,7 @@ const WX = (() => {
     const wet = hs.slice(0, 12).find(x => x.pop >= 50 || x.pr >= 0.02);
     if (wet) out.push(["warn", wet.sn > 0 ? `Snow likely from ${fmtH(wet.t)}` : `Rain likely from ${fmtH(wet.t)} (${r0(wet.pop)}%)`, "Cap open pipe ends and cover cement. Trenches get a competent-person check after rain before anyone goes in. Water in a trench softens bedding."]);
     const hi = Math.max(...hs.slice(0, 12).map(x => x.feels));
-    if (hi >= 90) out.push(["warn", `Heat: feels like ${r0(hi)}°F`, "Water, shade, breaks. Cement and primer flash off fast: smaller batches, dry-fit first."]);
+    if (hi >= 90) out.push(["warn", `Heat: feels like ${r0(hi)}°F`, "Water, shade, breaks. Pipe in the sun runs 20–30°F hotter than the air, so cement flashes off: shade pipe and cans, cool ends with a damp rag, make critical joints early (Rough → Materials → Cement in heat & cold)."]);
     const uv = Math.max(...hs.slice(0, 12).map(x => x.uv || 0));
     if (uv >= 8) out.push(["warn", `UV ${r0(uv)} (very high)`, "Sunscreen and eye protection. Keep stored PEX out of the sun (UV limits in Rough → Materials → PEX install)."]);
     const snowIn = toIn(S.om.hourly.snow_depth[hourly()[0]?.i ?? 0], S.om.hourly_units.snow_depth);
@@ -3410,7 +3574,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "fieldguide-2026-10-12-weather";
+var BUILD = "fieldguide-2026-10-13-utahcounty";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
