@@ -213,7 +213,7 @@ input,select{font:inherit}
   .out td.sub{grid-column:1 / -1;padding-top:0}
 }
 .sw{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px;border:1px solid var(--edge)}
-.sw.rise{background:var(--d-rise)}.sw.roll{background:var(--d-roll)}.sw.fit{background:var(--d-fit)}.sw.cut{background:var(--d-cut)}.sw.tru{background:var(--d-tru)}.sw.run{background:repeating-linear-gradient(90deg,var(--d-run) 0 3px,transparent 3px 6px)}
+.sw.rise{background:var(--d-rise)}.sw.roll{background:var(--d-roll)}.sw.fit{background:var(--d-fit)}.sw.cut{background:var(--d-cut)}.sw.tru{background:var(--d-tru)}.sw.run{background:repeating-linear-gradient(90deg,var(--d-run) 0 3px,transparent 3px 6px)}.sw.ctr{background:var(--d-bg);border:3px solid var(--d-fit);border-radius:50%}
 .ro-stage{background:var(--d-bg);border-block:2px solid var(--edge)}
 #ro-3d,#ro-flat{width:100%;max-width:560px;height:auto;display:block;margin:0 auto}
 #ro-flat{border-top:1px solid var(--rule)}
@@ -396,7 +396,7 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
       <p class="note" id="ro-fit-note"><span class="badge why">WHY</span> Run is set by the offset and the fitting angle, so you can't pick it. Measure the space between your two points instead: whatever's left after the run is straight pipe, before or after the offset, wherever it's easiest.</p>
     </div>
     <div class="ro-stage">
-      <svg id="ro-3d" viewBox="0 0 440 270" tabindex="0" role="img" aria-roledescription="turnable 3D drawing" aria-label="3D view drawn to scale: the existing pipe, a red fitting, the blue cut piece rising at the fitting angle to a second red fitting, and the new pipe continuing. A yellow line shows the rise, a green line the roll, a purple dashed line the true offset and a white dashed line the run. Drag or use the arrow keys to turn it, plus and minus to zoom, 0 to reset."></svg>
+      <svg id="ro-3d" viewBox="0 0 440 270" tabindex="0" role="img" aria-roledescription="turnable 3D drawing" aria-label="3D view drawn to scale: Run 1, a red fitting, the blue cut piece rising at the fitting angle to a second red fitting, and Run 2 continuing. A yellow line shows the rise, a green line the roll, a purple dashed line the true offset and a dashed line the setback (run). Drag or use the arrow keys to turn it, plus and minus to zoom, 0 to reset."></svg>
       <div class="ro-view ro-views" role="group" aria-label="Look at it from">
         <button type="button" data-v="iso" aria-pressed="true">3D</button><button type="button" data-v="side" aria-pressed="false">Side</button><button type="button" data-v="top" aria-pressed="false">Top</button><button type="button" data-v="end" aria-pressed="false">End</button><button type="button" data-v="cut" aria-pressed="false">Square to cut</button>
       </div>
@@ -405,16 +405,16 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
       <div class="ro-view" role="group" aria-label="Diagram view">
         <button type="button" id="ro-big" aria-pressed="false">Enlarge ⤢</button>
       </div>
-      <div class="ro-key"><span><span class="sw fit"></span>fittings</span><span><span class="sw cut"></span>cut piece</span><span><span class="sw rise"></span>rise</span><span id="ro-key-roll"><span class="sw roll"></span>roll</span><span id="ro-key-tru"><span class="sw tru"></span>true offset</span><span><span class="sw run"></span>run</span></div>
+      <div class="ro-key"><span><span class="sw fit"></span>fittings</span><span><span class="sw cut"></span>cut piece</span><span><span class="sw rise"></span>rise</span><span id="ro-key-roll"><span class="sw roll"></span>roll</span><span id="ro-key-tru"><span class="sw tru"></span>true offset</span><span><span class="sw run"></span>setback (run)</span><span><span class="sw ctr"></span>fitting center</span></div>
     </div>
     <div class="x"><table class="t">
       <thead><tr><th>Step</th><th>Do this</th></tr></thead>
       <tbody id="ro-steps">
-        <tr><td class="n">1</td><td><span class="sw rise"></span><b id="ro-step1">Rise:</b> <span id="ro-step1-txt">measure how far the pipe moves up or down, centerline to centerline.</span></td></tr>
-        <tr class="ro-roll-step"><td class="n">2</td><td><span class="sw roll"></span><b>Roll:</b> measure how far it also moves sideways, centerline to centerline.</td></tr>
+        <tr><td class="n">1</td><td><span class="sw rise"></span><b id="ro-step1">Rise:</b> <span id="ro-step1-txt">measure how far Run 2 sits above or below Run 1, centerline to centerline.</span></td></tr>
+        <tr class="ro-roll-step"><td class="n">2</td><td><span class="sw roll"></span><b>Roll:</b> measure how far Run 2 also sits off to the side of Run 1, centerline to centerline.</td></tr>
         <tr><td class="n">3</td><td><span class="sw fit"></span><b>Fittings + take-off:</b> pick the pair (two 45s is usual). Take-off = fitting center to where the pipe bottoms out. Measure your actual fitting; it varies by brand and size. Save yours in <b>Calc → Tables → My take-offs</b> and they show up as buttons under the inputs.</td></tr>
-        <tr><td class="n">4</td><td><span class="sw run"></span><b>Set fitting 2</b> one <b>run</b> farther along the pipe than fitting 1, center to center.</td></tr>
-        <tr><td class="n">5</td><td><span class="sw cut"></span><b>Cut the blue piece</b> to cut length. <span class="ro-roll-step">Roll both fittings the same amount, the <b>Turn fittings</b> angle off plumb, so it points straight at the other pipe.</span> Dry-fit, then glue or solder.</td></tr>
+        <tr><td class="n">4</td><td><span class="sw run"></span><b>Set fitting 2</b> one <b>run (setback)</b> farther along the pipe than fitting 1, center to center (the dots in the drawing).</td></tr>
+        <tr><td class="n">5</td><td><span class="sw cut"></span><b>Cut the blue piece</b> to cut length. <span class="ro-roll-step">Roll both fittings the same amount, the <b>Turn fittings</b> angle off plumb, so it points straight at Run 2.</span> Dry-fit, then glue or solder.</td></tr>
       </tbody></table></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Fittings</th><th>Travel ×</th><th>Run ×</th></tr></thead>
@@ -2531,8 +2531,12 @@ const F = n => n.toFixed(1);
 const ln = (a,b,col,w,extra="") => `<line x1="${F(a[0])}" y1="${F(a[1])}" x2="${F(b[0])}" y2="${F(b[1])}" stroke="${col}" stroke-width="${w}" stroke-linecap="round" ${extra}/>`;
 const mid = (a,b,t=.5) => [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t];
 const along = (a,b,px) => { const dx=b[0]-a[0], dy=b[1]-a[1], d=Math.hypot(dx,dy)||1; return [a[0]+dx/d*px, a[1]+dy/d*px]; };
-const lbl = (p,dx,dy,txt,col,anchor="start",size=13.5,pr=2) => `<text data-p="${pr}" x="${F(p[0]+dx)}" y="${F(p[1]+dy)}" text-anchor="${anchor}" fill="${col}" stroke="${C.bg}" stroke-width="4" paint-order="stroke" stroke-linejoin="round" font-family="IBM Plex Mono,monospace" font-size="${size}" font-weight="600">${txt}</text>`;
-const title = (x,y,txt) => `<text x="${x}" y="${y}" fill="${C.dim}" font-size="11.5" font-weight="700" letter-spacing=".06em" font-family="Barlow Condensed,Arial Narrow,sans-serif" data-fixed="1">${txt}</text>`;
+const lbl = (p,dx,dy,txt,col,anchor="start",size=15,pr=2) => `<text data-p="${pr}" x="${F(p[0]+dx)}" y="${F(p[1]+dy)}" text-anchor="${anchor}" fill="${col}" stroke="${C.bg}" stroke-width="5" paint-order="stroke" stroke-linejoin="round" font-family="IBM Plex Mono,monospace" font-size="${size}" font-weight="700">${txt}</text>`;
+/* pipe names: big bold stencil-style tags so you can tell which pipe is which at a glance */
+const tag = (p,dx,dy,txt,anchor="start",pr=2) => `<text data-p="${pr}" x="${F(p[0]+dx)}" y="${F(p[1]+dy)}" text-anchor="${anchor}" fill="${C.text}" stroke="${C.bg}" stroke-width="5" paint-order="stroke" stroke-linejoin="round" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-size="18" font-weight="800" letter-spacing=".04em">${txt}</text>`;
+/* fitting center: where centerline measurements start and end */
+const ctr = p => `<circle cx="${F(p[0])}" cy="${F(p[1])}" r="4.5" fill="${C.bg}" stroke="${C.text}" stroke-width="2.5"/>`;
+const title = (x,y,txt) => `<text x="${x}" y="${y}" fill="${C.dim}" font-size="12.5" font-weight="700" letter-spacing=".06em" font-family="Barlow Condensed,Arial Narrow,sans-serif" data-fixed="1">${txt}</text>`;
 function scaleBar(pxPerIn, xRight, y){
   const len = NICE.find(n => n*pxPerIn >= 34) || NICE[NICE.length-1], bw = len*pxPerIn, bx = xRight - bw;
   return `<path d="M${F(bx)} ${y-5} V${y} H${F(bx+bw)} V${y-5}" fill="none" stroke="${C.text}" stroke-width="1.5"/>` +
@@ -2565,7 +2569,7 @@ function clampText(svg, panels, H){
 /* fitting = elbow: one leg along the pipe, one along the travel, each the take-off long (to scale) */
 function elbow(c, alongPipe, alongTravel, legPipe, legTravel){
   const a = along(c, alongPipe, legPipe), b = along(c, alongTravel, legTravel);
-  return `<path d="M${F(a[0])} ${F(a[1])} L${F(c[0])} ${F(c[1])} L${F(b[0])} ${F(b[1])}" fill="none" stroke="${C.fit}" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>`;
+  return `<path d="M${F(a[0])} ${F(a[1])} L${F(c[0])} ${F(c[1])} L${F(b[0])} ${F(b[1])}" fill="none" stroke="${C.fit}" stroke-width="13" stroke-linejoin="round" stroke-linecap="round"/>`;
 }
 /* 3D view: a camera you can turn (orthographic, so no perspective shrink). yaw spins around plumb, pitch tilts up to look down.
    Lines square to your eye are true scale against the scale bar; lines pointing at you look shorter. */
@@ -2586,7 +2590,7 @@ function roPts(){
   const all = Object.values(p), c = [0,1,2].map(i => (Math.min(...all.map(q => q[i])) + Math.max(...all.map(q => q[i]))) / 2);
   return {p, c};
 }
-const RO_BOX = {W:440, H:270, cy:150, w:400, h:204};
+const RO_BOX = {W:440, H:270, cy:142, w:350, h:178};  /* side and bottom margins leave room for the RUN 1 / RUN 2 names and labels under the pipe */
 function fitK(yaw, pitch){  /* scale that fits this view, centered on the middle of the job */
   const {p, c} = roPts(), P = cam(yaw, pitch), pc = P(c);
   let ex = 1e-6, ey = 1e-6; for (const q of Object.values(p)){ const s = P(q); ex = Math.max(ex, Math.abs(s[0]-pc[0])); ey = Math.max(ey, Math.abs(s[1]-pc[1])); }
@@ -2606,28 +2610,40 @@ function draw3D(){
   let o = `<rect width="${W}" height="${H}" fill="${C.bg}"/>`;
   o += title(10, 16, `${roMode === "rolling" ? "ROLLING" : "SIMPLE"} OFFSET · ${RV.name === "custom" ? "TURNED" : RO_VIEWS[RV.name][2]} · TO SCALE`);
   if (l > 0 && r > 0) o += ln(s.f1, s.c2, C.grid, 2, 'stroke-dasharray="2 5"');  /* the cut piece's shadow on a level floor */
-  o += ln(s.f1, s.c1, C.run, 1.6, 'stroke-dasharray="5 4"');
-  if (l > 0) o += ln(s.c1, s.c2, C.roll, 2.6);
-  if (r > 0) o += ln(s.c2, s.f2, C.rise, 2.6);
-  if (l > 0 && r > 0) o += ln(s.c1, s.f2, C.tru, 2, 'stroke-dasharray="4 4"');
+  o += ln(s.f1, s.c1, C.run, 2.2, 'stroke-dasharray="6 4"');
+  if (l > 0) o += ln(s.c1, s.c2, C.roll, 3.4);
+  if (r > 0) o += ln(s.c2, s.f2, C.rise, 3.4);
+  if (l > 0 && r > 0) o += ln(s.c1, s.f2, C.tru, 2.6, 'stroke-dasharray="5 4"');
   /* pipes back to front, so the nearer one draws on top */
   [[s.a0, s.f1, C.pipe], [s.f1, s.f2, cutCol], [s.f2, s.b1, C.pipe]]
-    .sort((a, b) => (a[0][2] + a[1][2]) - (b[0][2] + b[1][2])).forEach(([a, b, col]) => o += ln(a, b, col, 8));
+    .sort((a, b) => (a[0][2] + a[1][2]) - (b[0][2] + b[1][2])).forEach(([a, b, col]) => o += ln(a, b, col, 10));
   /* fittings: one leg along the pipe, one along the travel, each the take-off long in 3D */
   const leg = Math.max(to, 5 / k), u = [run/travel, l/travel, r/travel];
   const tip = (q, d) => S([q[0] + d[0]*leg, q[1] + d[1]*leg, q[2] + d[2]*leg]);
-  const el = (ce, a, b) => `<path d="M${F(a[0])} ${F(a[1])} L${F(ce[0])} ${F(ce[1])} L${F(b[0])} ${F(b[1])}" fill="none" stroke="${C.fit}" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>`;
+  const el = (ce, a, b) => `<path d="M${F(a[0])} ${F(a[1])} L${F(ce[0])} ${F(ce[1])} L${F(b[0])} ${F(b[1])}" fill="none" stroke="${C.fit}" stroke-width="13" stroke-linejoin="round" stroke-linecap="round"/>`;
   o += el(s.f1, tip(p.f1, [-1,0,0]), tip(p.f1, u)) + el(s.f2, tip(p.f2, [1,0,0]), tip(p.f2, u.map(v => -v)));
+  o += ctr(s.f1) + ctr(s.f2);
   /* labels only where the line faces you enough to read */
-  if (run >= 1/32 && len(s.f1, s.c1) > 20) o += lbl(mid(s.f1,s.c1), 0, 17, `run ${toFrac16(run)}`, C.run, "middle");
+  if (run >= 1/32 && len(s.f1, s.c1) > 20) o += lbl(mid(s.f1,s.c1), 0, 19, `setback ${toFrac16(run)}`, C.run, "middle");
   if (l > 0 && len(s.c1, s.c2) > 20) o += lbl(mid(s.c1,s.c2), 8, 14, `roll ${toFrac16(l)}`, C.roll);
   if (r > 0 && len(s.c2, s.f2) > 20) o += lbl(mid(s.c2,s.f2), 8, 4, `${roMode === "rolling" ? "rise" : "offset"} ${toFrac16(r)}`, C.rise);
-  if (l > 0 && r > 0 && len(s.c1, s.f2) > 20) o += lbl(mid(s.c1,s.f2,.45), -7, 4, `true ${toFrac16(tru)}`, C.tru, "end", 13.5, 3);
-  o += lbl(mid(s.f1,s.f2), -10, -6, cutOk ? `cut ${toFrac16(cut)}` : "too short", cutLbl, "end", 13.5, 1);
-  o += lbl(s.f1, -10, 20, angTxt, C.fit, "end", 13.5, 4);
-  o += lbl(s.a0, 0, -10, "existing", C.dim, "start", 12, 5) + lbl(s.b1, 0, -10, "new", C.dim, "end", 12, 5);
+  if (l > 0 && r > 0 && len(s.c1, s.f2) > 20) o += lbl(mid(s.c1,s.f2,.45), -7, 4, `true ${toFrac16(tru)}`, C.tru, "end", 14, 3);
+  o += lbl(mid(s.f1,s.f2), -12, -8, cutOk ? `cut ${toFrac16(cut)}` : "too short", cutLbl, "end", 16, 1);
+  o += lbl(s.f1, -12, 22, angTxt, C.fit, "end", 14, 4);
+  /* pipe names sit just past each pipe's free end, centered on the line, whichever way the view is turned */
+  const pipeTag = (free, fit, txt) => {
+    const dx = free[0] - fit[0], dy = free[1] - fit[1], d = Math.hypot(dx, dy);
+    if (d < 10) return tag(free, 0, -16, txt, "middle");  /* pipe points at you: name above the end */
+    const ux = dx / d, uy = dy / d, q = [free[0] + ux*8, free[1] + uy*8];
+    if (Math.abs(ux) >= Math.abs(uy)){
+      const roomy = ux < 0 ? q[0] - 50 > 4 : q[0] + 50 < RO_BOX.W - 4;  /* ~50 px for the name */
+      return roomy ? tag(q, 0, 6, txt, ux < 0 ? "end" : "start") : tag(free, 0, -12, txt, ux < 0 ? "start" : "end");  /* no room past the end: sit on top of it */
+    }
+    return tag(q, 0, uy < 0 ? -6 : 20, txt, "middle");
+  };
+  o += pipeTag(s.a0, s.f1, "RUN 1") + pipeTag(s.b1, s.f2, "RUN 2");
   /* which way is which: pipe, roll and up arrows turn with the view */
-  const gx = 30, gy = H - 34, axes = [[[1,0,0], C.run, "pipe"], ...(roMode === "rolling" ? [[[0,1,0], C.roll, "roll"]] : []), [[0,0,1], C.rise, "up"]];
+  const gx = 36, gy = 62, axes =  /* top-left, under the title: the bottom corners belong to RUN 1 and the scale bar */ [[[1,0,0], C.run, "pipe"], ...(roMode === "rolling" ? [[[0,1,0], C.roll, "roll"]] : []), [[0,0,1], C.rise, "up"]];
   for (const [a, col, name] of axes){
     const q = P(a), d = Math.hypot(q[0], q[1]);
     if (d < .15){ o += `<circle cx="${gx}" cy="${gy}" r="3.5" fill="${col}"/>`; continue; }  /* pointing straight at you */
@@ -2681,14 +2697,14 @@ function drawViews(r, l, run, cutOk, cut, to, travel, tru){
       const lp = Math.max(l, 0), rp = Math.max(r, 0);
       const { k, S } = fit([[0,0],[lp,0],[lp,-rp]], {x:30, y:34, w:pw-80, h:H-74});
       const O = S([0,0]), Rr = S([lp,0]), T = S([lp,-rp]);
-      if (l > 0) o += ln(O, Rr, C.roll, 2.6);
-      if (r > 0) o += ln(Rr, T, C.rise, 2.6);
-      o += ln(O, T, C.tru, 2, 'stroke-dasharray="4 4"');
-      o += `<circle cx="${F(O[0])}" cy="${F(O[1])}" r="7" fill="${C.pipe}"/><circle cx="${F(T[0])}" cy="${F(T[1])}" r="7" fill="${C.pipe}"/>`;
-      o += lbl(O, 0, 22, "existing", C.dim, "middle", 11.5, 5) + lbl(T, 0, -12, "new", C.dim, "middle", 11.5, 5);
+      if (l > 0) o += ln(O, Rr, C.roll, 3.4);
+      if (r > 0) o += ln(Rr, T, C.rise, 3.4);
+      o += ln(O, T, C.tru, 2.6, 'stroke-dasharray="5 4"');
+      o += `<circle cx="${F(O[0])}" cy="${F(O[1])}" r="9" fill="${C.pipe}"/><circle cx="${F(T[0])}" cy="${F(T[1])}" r="9" fill="${C.pipe}"/>`;
+      o += tag(O, 0, 26, "RUN 1", "middle") + tag(T, 0, -15, "RUN 2", "middle");
       if (l > 0) o += lbl(mid(O,Rr), 0, 16, `roll ${toFrac16(l)}`, C.roll, "middle");
       if (r > 0) o += lbl(mid(Rr,T), 8, 4, `${roMode === "rolling" ? "rise" : "offset"} ${toFrac16(r)}`, C.rise);
-      o += lbl(mid(O,T,.55), -8, -4, `true ${toFrac16(tru)}`, C.tru, "end", 13.5, 3);
+      o += lbl(mid(O,T,.55), -8, -4, `true ${toFrac16(tru)}`, C.tru, "end", 14, 3);
       o += scaleBar(k, pw - 8, H - 10);
     }
     o += title(Bx + 4, 16, "TRAVEL PLANE · TRUE LENGTH");
@@ -2697,16 +2713,17 @@ function drawViews(r, l, run, cutOk, cut, to, travel, tru){
       const pts = [[-lead,0],[0,0],[run,0],[run,-tru],[run+lead,-tru]];
       const { k, S } = fit(pts, {x:Bx+26, y:34, w:pw-52, h:H-74});
       const a0 = S([-lead,0]), f1 = S([0,0]), c = S([run,0]), f2 = S([run,-tru]), b1 = S([run+lead,-tru]);
-      if (run > 1e-6) o += ln(f1, c, C.run, 1.6, 'stroke-dasharray="5 4"');
-      o += ln(c, f2, C.tru, 2, 'stroke-dasharray="4 4"');
-      o += ln(a0, f1, C.pipe, 8) + ln(f2, b1, C.pipe, 8);
-      o += ln(f1, f2, cutCol, 8);
+      if (run > 1e-6) o += ln(f1, c, C.run, 2.2, 'stroke-dasharray="6 4"');
+      o += ln(c, f2, C.tru, 2.6, 'stroke-dasharray="5 4"');
+      o += ln(a0, f1, C.pipe, 10) + ln(f2, b1, C.pipe, 10);
+      o += ln(f1, f2, cutCol, 10);
       const leg = Math.max(4, to * k);
-      o += elbow(f1, a0, f2, leg, leg) + elbow(f2, b1, f1, leg, leg);
-      if (run >= 1/32) o += lbl(mid(f1,c), 0, 17, `run ${toFrac16(run)}`, C.run, "middle");
-      o += lbl(mid(c,f2), 8, 4, `true ${toFrac16(tru)}`, C.tru, "start", 13.5, 3);
-      o += lbl(mid(f1,f2), -8, -6, cutOk ? `cut ${toFrac16(cut)}` : "too short", cutLbl, "end", 13.5, 1);
-      o += lbl(f1, 6, -8, angTxt, C.fit, "start", 12, 4);
+      o += elbow(f1, a0, f2, leg, leg) + elbow(f2, b1, f1, leg, leg) + ctr(f1) + ctr(f2);
+      if (run >= 1/32) o += lbl(mid(f1,c), 0, 19, `setback ${toFrac16(run)}`, C.run, "middle");
+      o += lbl(mid(c,f2), 8, 4, `true ${toFrac16(tru)}`, C.tru, "start", 14, 3);
+      o += lbl(mid(f1,f2), -10, -8, cutOk ? `cut ${toFrac16(cut)}` : "too short", cutLbl, "end", 16, 1);
+      o += lbl(f1, 6, -10, angTxt, C.fit, "start", 13, 4);
+      o += tag(a0, 0, 26, "RUN 1", "start") + tag(b1, 0, -14, "RUN 2", "end");  /* RUN 1 under its pipe: the cut piece climbs away above it */
       o += scaleBar(k, W - 8, H - 10);
     }
     svg.innerHTML = o; clampText(svg, [[0, pw], [Bx, W]], H);
@@ -2788,7 +2805,7 @@ function setMode(m){
   document.querySelectorAll(".ro-roll-step").forEach(el => el.hidden = !rolling);
   $("ro-rise-lbl").textContent = rolling ? "Rise (up / down)" : "Offset (how far it shifts)";
   $("ro-step1").textContent = rolling ? "Rise:" : "Offset:";
-  $("ro-step1-txt").textContent = rolling ? "measure how far the pipe moves up or down, centerline to centerline." : "measure how far the pipe shifts (up, down or sideways), centerline to centerline.";
+  $("ro-step1-txt").textContent = rolling ? "measure how far Run 2 sits above or below Run 1, centerline to centerline." : "measure how far Run 2 is shifted from Run 1 (up, down or sideways), centerline to centerline.";
   let n = 0; document.querySelectorAll("#ro-steps > tr").forEach(tr => { if (!tr.hidden) tr.querySelector("td.n").textContent = ++n; });
   roCalc();
 }
@@ -3712,7 +3729,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "fieldguide-2026-10-13-3dturn";
+var BUILD = "fieldguide-2026-10-13-run12";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
