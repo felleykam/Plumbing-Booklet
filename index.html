@@ -185,8 +185,8 @@ input,select{font:inherit}
 .seg button,.mode button,.ro-view button,.btn,.btn2,.chips button{appearance:none;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;padding:4px 14px;min-height:44px;border:2px solid var(--edge);border-radius:var(--r);background:var(--sheet);color:var(--ink);cursor:pointer}
 .mode button{flex:1 1 0}
 .seg button[aria-pressed="true"],.mode button[aria-pressed="true"],.ro-view button[aria-pressed="true"]{background:var(--k);color:var(--hv);border-color:var(--k)}
-:root[data-theme="dark"] .seg button[aria-pressed="true"],:root[data-theme="dark"] .mode button[aria-pressed="true"]{background:var(--hv);color:var(--k)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"],:root:not([data-theme="light"]) .mode button[aria-pressed="true"]{background:var(--hv);color:var(--k)}}
+:root[data-theme="dark"] .seg button[aria-pressed="true"],:root[data-theme="dark"] .mode button[aria-pressed="true"],:root[data-theme="dark"] .ro-view button[aria-pressed="true"]{background:var(--hv);color:var(--k)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"],:root:not([data-theme="light"]) .mode button[aria-pressed="true"],:root:not([data-theme="light"]) .ro-view button[aria-pressed="true"]{background:var(--hv);color:var(--k)}}
 .btn{background:var(--hv);color:var(--k);border-color:var(--k);box-shadow:3px 3px 0 var(--k)}
 .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--k)}
 .btn:disabled{opacity:.5;cursor:default}
@@ -217,7 +217,13 @@ input,select{font:inherit}
 .ro-stage{background:var(--d-bg);border-block:2px solid var(--edge)}
 #ro-3d,#ro-flat{width:100%;max-width:560px;height:auto;display:block;margin:0 auto}
 #ro-flat{border-top:1px solid var(--rule)}
-.ro-view{display:flex;justify-content:center;gap:6px;padding:6px 8px}
+.ro-view{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:6px 8px}
+.ro-views button{padding:4px 11px}
+#ro-3d{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+#ro-3d.drag{cursor:grabbing}
+#ro-3d:focus-visible{outline-offset:-3px}
+.ro-stage.big #ro-3d{touch-action:none}
+.ro-hint{margin:0;padding:0 8px 4px;text-align:center;font-size:12.5px;color:var(--d-dim)}
 .ro-stage.big{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;justify-content:center;padding:env(safe-area-inset-top) 8px env(safe-area-inset-bottom);overflow:auto;border:0}
 .ro-stage.big #ro-3d,.ro-stage.big #ro-flat{max-width:none;width:100%;max-height:44vh}
 .ro-key{display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;padding:2px 8px 10px;font-size:13px;color:var(--d-text)}
@@ -390,7 +396,11 @@ footer{column-span:all;color:var(--muted);font-size:13px;border-top:2px solid va
       <p class="note" id="ro-fit-note"><span class="badge why">WHY</span> Run is set by the offset and the fitting angle, so you can't pick it. Measure the space between your two points instead: whatever's left after the run is straight pipe, before or after the offset, wherever it's easiest.</p>
     </div>
     <div class="ro-stage">
-      <svg id="ro-3d" viewBox="0 0 440 250" role="img" aria-label="3D isometric view drawn to scale: the existing pipe, a red fitting, the blue cut piece rising at the fitting angle to a second red fitting, and the new pipe continuing. A yellow line shows the rise, a green line the roll, a purple dashed line the true offset and a white dashed line the run."></svg>
+      <svg id="ro-3d" viewBox="0 0 440 270" tabindex="0" role="img" aria-roledescription="turnable 3D drawing" aria-label="3D view drawn to scale: the existing pipe, a red fitting, the blue cut piece rising at the fitting angle to a second red fitting, and the new pipe continuing. A yellow line shows the rise, a green line the roll, a purple dashed line the true offset and a white dashed line the run. Drag or use the arrow keys to turn it, plus and minus to zoom, 0 to reset."></svg>
+      <div class="ro-view ro-views" role="group" aria-label="Look at it from">
+        <button type="button" data-v="iso" aria-pressed="true">3D</button><button type="button" data-v="side" aria-pressed="false">Side</button><button type="button" data-v="top" aria-pressed="false">Top</button><button type="button" data-v="end" aria-pressed="false">End</button><button type="button" data-v="cut" aria-pressed="false">Square to cut</button>
+      </div>
+      <p class="ro-hint" id="ro-hint">Drag to turn it · pinch to zoom · double-tap to reset</p>
       <svg id="ro-flat" viewBox="0 0 440 220" role="img" aria-label="Two flat views drawn to true length with scale bars. End view: roll across and rise up, with the true offset as the diagonal between the two pipes. Travel plane: the run across and the true offset up, with the blue cut piece and red fittings at the real fitting angle."></svg>
       <div class="ro-view" role="group" aria-label="Diagram view">
         <button type="button" id="ro-big" aria-pressed="false">Enlarge ⤢</button>
@@ -2557,37 +2567,112 @@ function elbow(c, alongPipe, alongTravel, legPipe, legTravel){
   const a = along(c, alongPipe, legPipe), b = along(c, alongTravel, legTravel);
   return `<path d="M${F(a[0])} ${F(a[1])} L${F(c[0])} ${F(c[1])} L${F(b[0])} ${F(b[1])}" fill="none" stroke="${C.fit}" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>`;
 }
+/* 3D view: a camera you can turn (orthographic, so no perspective shrink). yaw spins around plumb, pitch tilts up to look down.
+   Lines square to your eye are true scale against the scale bar; lines pointing at you look shorter. */
+const RO_VIEWS = {iso:[30,28,"3D"], side:[0,0,"SIDE"], top:[0,90,"TOP (PLAN)"], end:[90,0,"END · LOOKING BACK UP THE LINE"], cut:[0,0,"SQUARE TO THE CUT PIECE"]};
+let roG = null, roAnim = 0, roRaf = 0;
+const RV = {name:"iso", last:"iso", yaw:30, pitch:28, zoom:1, px:0, py:0, k:null};
+{ const v = store.get("jpb-ro-view", "iso"); if (RO_VIEWS[v]) RV.name = RV.last = v; }
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+/* "square to cut" = side view tilted up by the fitting turn angle: the offset plane then faces you, so travel and the fitting angle read true */
+const viewAngles = n => n === "cut" ? [0, roG ? Math.atan2(roG.l, roG.r) * 180 / Math.PI : 0] : RO_VIEWS[n].slice(0, 2);
+function cam(yaw, pitch){  /* world (x along pipe, y roll, z up) → [screen x, screen y down, depth toward you] */
+  const t = yaw * Math.PI / 180, f = pitch * Math.PI / 180, ct = Math.cos(t), st = Math.sin(t), cf = Math.cos(f), sf = Math.sin(f);
+  return p => [p[0]*ct + p[1]*st, -(-p[0]*st*sf + p[1]*ct*sf + p[2]*cf), p[0]*st*cf - p[1]*ct*cf + p[2]*sf];
+}
+function roPts(){
+  const {r, l, run, tru} = roG, lead = .35 * Math.max(run, tru, 6);
+  const p = {a0:[-lead,0,0], f1:[0,0,0], c1:[run,0,0], c2:[run,l,0], f2:[run,l,r], b1:[run+lead,l,r]};
+  const all = Object.values(p), c = [0,1,2].map(i => (Math.min(...all.map(q => q[i])) + Math.max(...all.map(q => q[i]))) / 2);
+  return {p, c};
+}
+const RO_BOX = {W:440, H:270, cy:150, w:400, h:204};
+function fitK(yaw, pitch){  /* scale that fits this view, centered on the middle of the job */
+  const {p, c} = roPts(), P = cam(yaw, pitch), pc = P(c);
+  let ex = 1e-6, ey = 1e-6; for (const q of Object.values(p)){ const s = P(q); ex = Math.max(ex, Math.abs(s[0]-pc[0])); ey = Math.max(ey, Math.abs(s[1]-pc[1])); }
+  return Math.min(RO_BOX.w / 2 / ex, RO_BOX.h / 2 / ey);
+}
+function draw3D(){
+  if (!roG) return;
+  const {r, l, run, cutOk, cut, to, travel, tru} = roG;
+  const angTxt = $("ro-ang").options[$("ro-ang").selectedIndex].text;
+  const cutCol = cutOk ? C.cut : C.pipe, cutLbl = cutOk ? C.cutLbl : C.dim;
+  const svg = $("ro-3d"), {W, H} = RO_BOX;
+  if (RV.k == null) RV.k = fitK(RV.yaw, RV.pitch);
+  const {p, c} = roPts(), P = cam(RV.yaw, RV.pitch), pc = P(c), k = RV.k * RV.zoom;
+  const S = q => { const s = P(q); return [W/2 + RV.px + (s[0]-pc[0])*k, RO_BOX.cy + RV.py + (s[1]-pc[1])*k, s[2]]; };
+  const s = {}; for (const key in p) s[key] = S(p[key]);
+  const len = (a, b) => Math.hypot(b[0]-a[0], b[1]-a[1]);
+  let o = `<rect width="${W}" height="${H}" fill="${C.bg}"/>`;
+  o += title(10, 16, `${roMode === "rolling" ? "ROLLING" : "SIMPLE"} OFFSET · ${RV.name === "custom" ? "TURNED" : RO_VIEWS[RV.name][2]} · TO SCALE`);
+  if (l > 0 && r > 0) o += ln(s.f1, s.c2, C.grid, 2, 'stroke-dasharray="2 5"');  /* the cut piece's shadow on a level floor */
+  o += ln(s.f1, s.c1, C.run, 1.6, 'stroke-dasharray="5 4"');
+  if (l > 0) o += ln(s.c1, s.c2, C.roll, 2.6);
+  if (r > 0) o += ln(s.c2, s.f2, C.rise, 2.6);
+  if (l > 0 && r > 0) o += ln(s.c1, s.f2, C.tru, 2, 'stroke-dasharray="4 4"');
+  /* pipes back to front, so the nearer one draws on top */
+  [[s.a0, s.f1, C.pipe], [s.f1, s.f2, cutCol], [s.f2, s.b1, C.pipe]]
+    .sort((a, b) => (a[0][2] + a[1][2]) - (b[0][2] + b[1][2])).forEach(([a, b, col]) => o += ln(a, b, col, 8));
+  /* fittings: one leg along the pipe, one along the travel, each the take-off long in 3D */
+  const leg = Math.max(to, 5 / k), u = [run/travel, l/travel, r/travel];
+  const tip = (q, d) => S([q[0] + d[0]*leg, q[1] + d[1]*leg, q[2] + d[2]*leg]);
+  const el = (ce, a, b) => `<path d="M${F(a[0])} ${F(a[1])} L${F(ce[0])} ${F(ce[1])} L${F(b[0])} ${F(b[1])}" fill="none" stroke="${C.fit}" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>`;
+  o += el(s.f1, tip(p.f1, [-1,0,0]), tip(p.f1, u)) + el(s.f2, tip(p.f2, [1,0,0]), tip(p.f2, u.map(v => -v)));
+  /* labels only where the line faces you enough to read */
+  if (run >= 1/32 && len(s.f1, s.c1) > 20) o += lbl(mid(s.f1,s.c1), 0, 17, `run ${toFrac16(run)}`, C.run, "middle");
+  if (l > 0 && len(s.c1, s.c2) > 20) o += lbl(mid(s.c1,s.c2), 8, 14, `roll ${toFrac16(l)}`, C.roll);
+  if (r > 0 && len(s.c2, s.f2) > 20) o += lbl(mid(s.c2,s.f2), 8, 4, `${roMode === "rolling" ? "rise" : "offset"} ${toFrac16(r)}`, C.rise);
+  if (l > 0 && r > 0 && len(s.c1, s.f2) > 20) o += lbl(mid(s.c1,s.f2,.45), -7, 4, `true ${toFrac16(tru)}`, C.tru, "end", 13.5, 3);
+  o += lbl(mid(s.f1,s.f2), -10, -6, cutOk ? `cut ${toFrac16(cut)}` : "too short", cutLbl, "end", 13.5, 1);
+  o += lbl(s.f1, -10, 20, angTxt, C.fit, "end", 13.5, 4);
+  o += lbl(s.a0, 0, -10, "existing", C.dim, "start", 12, 5) + lbl(s.b1, 0, -10, "new", C.dim, "end", 12, 5);
+  /* which way is which: pipe, roll and up arrows turn with the view */
+  const gx = 30, gy = H - 34, axes = [[[1,0,0], C.run, "pipe"], ...(roMode === "rolling" ? [[[0,1,0], C.roll, "roll"]] : []), [[0,0,1], C.rise, "up"]];
+  for (const [a, col, name] of axes){
+    const q = P(a), d = Math.hypot(q[0], q[1]);
+    if (d < .15){ o += `<circle cx="${gx}" cy="${gy}" r="3.5" fill="${col}"/>`; continue; }  /* pointing straight at you */
+    const e = [gx + q[0]*22, gy + q[1]*22];
+    o += ln([gx, gy], e, col, 2.4) + `<text x="${F(gx + q[0]/d*33)}" y="${F(gy + q[1]/d*33 + 4)}" text-anchor="middle" fill="${col}" stroke="${C.bg}" stroke-width="3" paint-order="stroke" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-size="12" font-weight="700" data-fixed="1">${name}</text>`;
+  }
+  o += scaleBar(k, W - 12, H - 10);
+  svg.innerHTML = o; clampText(svg, [[0, W]], H);
+}
+const roDraw = () => { if (!roRaf) roRaf = requestAnimationFrame(() => { roRaf = 0; draw3D(); }); };
+function roPressed(){
+  document.querySelectorAll(".ro-views button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === RV.name)));
+}
+/* jump to a named view, easing there unless the phone asks for less motion */
+function roView(name){
+  if (!roG) return;
+  RV.name = RV.last = name; store.set("jpb-ro-view", name); roPressed();
+  const [ty, tp] = viewAngles(name), tk = fitK(ty, tp);
+  const from = {yaw: RV.yaw, pitch: RV.pitch, zoom: RV.zoom, px: RV.px, py: RV.py, k: RV.k ?? tk};
+  const dy = ((ty - from.yaw) % 360 + 540) % 360 - 180;
+  const dur = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 320, t0 = performance.now();
+  cancelAnimationFrame(roAnim);
+  const step = now => {
+    const t = dur ? Math.min(1, (now - t0) / dur) : 1, e = 1 - Math.pow(1 - t, 3);
+    RV.yaw = from.yaw + dy*e; RV.pitch = from.pitch + (tp - from.pitch)*e; RV.zoom = from.zoom + (1 - from.zoom)*e;
+    RV.px = from.px*(1 - e); RV.py = from.py*(1 - e); RV.k = from.k + (tk - from.k)*e;
+    draw3D(); if (t < 1) roAnim = requestAnimationFrame(step); else RV.yaw = ((ty % 360) + 360) % 360;
+  };
+  roAnim = requestAnimationFrame(step);
+}
+function roHint(){
+  const big = !!document.querySelector(".ro-stage.big"), touch = matchMedia("(pointer:coarse)").matches;
+  $("ro-hint").textContent = touch
+    ? (big ? "Drag to turn it · pinch to zoom · two fingers to slide · double-tap to reset" : "Drag sideways to turn it · Enlarge to tilt, pinch and slide · double-tap to reset")
+    : "Drag to turn it · shift-drag to slide · ctrl + scroll to zoom · double-click to reset";
+}
 function drawViews(r, l, run, cutOk, cut, to, travel, tru){
   const angTxt = $("ro-ang").options[$("ro-ang").selectedIndex].text;
   const cutCol = cutOk ? C.cut : C.pipe, cutLbl = cutOk ? C.cutLbl : C.dim;
-  { /* 3D view (cavalier oblique, true scale on all three axes) */
-    const svg = $("ro-3d"), W = 440, H = 250;
-    const P = (x,y,z) => [x + y*0.819, -z - y*0.574];
-    const lead = .35 * Math.max(run, tru, 6);
-    const pts = { a0:P(-lead,0,0), f1:P(0,0,0), c1:P(run,0,0), c2:P(run,l,0), f2:P(run,l,r), b1:P(run+lead,l,r) };
-    const { k, S } = fit(Object.values(pts), {x:48, y:30, w:W-96, h:H-62});
-    const s = {}; for (const key in pts) s[key] = S(pts[key]);
-    let o = `<rect width="${W}" height="${H}" fill="${C.bg}"/>`;
-    o += title(10, 16, `${roMode === "rolling" ? "ROLLING" : "SIMPLE"} OFFSET · 3D · TO SCALE`);
-    o += ln(s.f1, s.c1, C.run, 1.6, 'stroke-dasharray="5 4"');
-    if (l > 0) o += ln(s.c1, s.c2, C.roll, 2.6);
-    if (r > 0) o += ln(s.c2, s.f2, C.rise, 2.6);
-    if (l > 0 && r > 0) o += ln(s.c1, s.f2, C.tru, 2, 'stroke-dasharray="4 4"');
-    o += ln(s.a0, s.f1, C.pipe, 8) + ln(s.f2, s.b1, C.pipe, 8);
-    o += ln(s.f1, s.f2, cutCol, 8);
-    const travPx = Math.hypot(s.f2[0]-s.f1[0], s.f2[1]-s.f1[1]);
-    const legT = Math.max(5, travPx * to / travel), legP = Math.max(5, to * k);
-    o += elbow(s.f1, s.a0, s.f2, legP, legT) + elbow(s.f2, s.b1, s.f1, legP, legT);
-    if (run >= 1/32) o += lbl(mid(s.f1,s.c1), 0, 17, `run ${toFrac16(run)}`, C.run, "middle");
-    if (l > 0) o += lbl(mid(s.c1,s.c2), 8, 14, `roll ${toFrac16(l)}`, C.roll);
-    if (r > 0) o += lbl(mid(s.c2,s.f2), 8, 4, `${roMode === "rolling" ? "rise" : "offset"} ${toFrac16(r)}`, C.rise);
-    if (l > 0 && r > 0) o += lbl(mid(s.c1,s.f2,.45), -7, 4, `true ${toFrac16(tru)}`, C.tru, "end", 13.5, 3);
-    o += lbl(mid(s.f1,s.f2), -10, -6, cutOk ? `cut ${toFrac16(cut)}` : "too short", cutLbl, "end", 13.5, 1);
-    o += lbl(s.f1, -10, 20, angTxt, C.fit, "end", 13.5, 4);
-    o += lbl(s.a0, 0, -10, "existing", C.dim, "start", 12, 5) + lbl(s.b1, 0, -10, "new", C.dim, "end", 12, 5);
-    o += scaleBar(k, W - 12, H - 10);
-    svg.innerHTML = o; clampText(svg, [[0, W]], H);
-  }
+  roG = {r, l, run, cutOk, cut, to, travel, tru};
+  /* new numbers: named views snap to their angle (square-to-cut follows the new roll), a hand-turned view keeps its angle; both refit */
+  cancelAnimationFrame(roAnim);
+  if (RV.name !== "custom"){ [RV.yaw, RV.pitch] = viewAngles(RV.name); }
+  RV.k = null;
+  draw3D();
   { /* flat views: exact true lengths */
     const svg = $("ro-flat"), W = 440, H = 220, gap = 10, pw = (W - gap)/2, Bx = pw + gap;
     let o = `<rect width="${W}" height="${H}" fill="${C.bg}"/><line x1="${F(pw+gap/2)}" y1="8" x2="${F(pw+gap/2)}" y2="${H-8}" stroke="${C.grid}" stroke-width="2"/>`;
@@ -2628,7 +2713,8 @@ function drawViews(r, l, run, cutOk, cut, to, travel, tru){
   }
 }
 function drawEmpty(msg){
-  $("ro-3d").innerHTML = `<rect width="440" height="250" fill="${C.bg}"/><text x="220" y="128" text-anchor="middle" fill="${C.dim}" font-size="14" font-weight="600">${msg}</text>`;
+  roG = null; cancelAnimationFrame(roAnim);
+  $("ro-3d").innerHTML = `<rect width="440" height="270" fill="${C.bg}"/><text x="220" y="138" text-anchor="middle" fill="${C.dim}" font-size="14" font-weight="600">${msg}</text>`;
   $("ro-flat").innerHTML = `<rect width="440" height="220" fill="${C.bg}"/>`;
 }
 $("ro-big").addEventListener("click", () => {
@@ -2638,9 +2724,61 @@ $("ro-big").addEventListener("click", () => {
   else ["role","aria-modal","aria-label"].forEach(a => st.removeAttribute(a));
   for (let n = st; n && n !== document.body; n = n.parentElement) for (const sib of n.parentElement.children) if (sib !== n) sib.inert = on;
   $("ro-big").setAttribute("aria-pressed", String(on)); $("ro-big").textContent = on ? "Close ✕" : "Enlarge ⤢";
-  $("ro-big").focus(); roCalc();
+  $("ro-big").focus(); roHint(); roCalc();
 });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && document.querySelector(".ro-stage.big")) $("ro-big").click(); });
+
+/* turning the 3D view: one finger or mouse turns it, two fingers pinch and slide, shift or right-drag slides */
+{
+  const svg = $("ro-3d"), ptrs = new Map(); let g0 = null;
+  const custom = () => { if (RV.name !== "custom"){ RV.name = "custom"; roPressed(); } };
+  const toSvg = () => RO_BOX.W / (svg.getBoundingClientRect().width || RO_BOX.W);
+  svg.addEventListener("pointerdown", e => {
+    if (!roG || (e.pointerType === "mouse" && e.button > 2)) return;
+    cancelAnimationFrame(roAnim);
+    try { svg.setPointerCapture(e.pointerId); } catch(err){}
+    ptrs.set(e.pointerId, [e.clientX, e.clientY]); g0 = null; svg.classList.add("drag");
+  });
+  svg.addEventListener("pointermove", e => {
+    const prev = ptrs.get(e.pointerId); if (!prev || !roG) return;
+    ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+    const sc = toSvg();
+    if (ptrs.size === 1){
+      const dx = e.clientX - prev[0], dy = e.clientY - prev[1];
+      if (e.shiftKey || e.buttons === 2 || e.buttons === 4){ RV.px += dx*sc; RV.py += dy*sc; }
+      else { RV.yaw -= dx * .5; RV.pitch = clamp(RV.pitch + dy * .5, -89, 89); custom(); }
+    } else if (ptrs.size === 2){
+      const [a, b] = [...ptrs.values()], d = Math.hypot(a[0]-b[0], a[1]-b[1]) || 1, m = [(a[0]+b[0])/2, (a[1]+b[1])/2];
+      if (g0){ RV.zoom = clamp(RV.zoom * d / g0.d, .4, 8); RV.px += (m[0]-g0.m[0])*sc; RV.py += (m[1]-g0.m[1])*sc; }
+      g0 = {d, m};
+    }
+    roDraw();
+  });
+  const up = e => { ptrs.delete(e.pointerId); g0 = null; if (!ptrs.size) svg.classList.remove("drag"); };
+  ["pointerup","pointercancel","lostpointercapture"].forEach(ev => svg.addEventListener(ev, up));
+  svg.addEventListener("contextmenu", e => e.preventDefault());
+  /* scroll wheel zooms only when enlarged or with ctrl (trackpad pinch), so it never steals the page scroll */
+  svg.addEventListener("wheel", e => {
+    if (!roG || !(e.ctrlKey || document.querySelector(".ro-stage.big"))) return;
+    e.preventDefault(); RV.zoom = clamp(RV.zoom * Math.exp(-e.deltaY * .002), .4, 8); roDraw();
+  }, {passive:false});
+  svg.addEventListener("dblclick", () => roView(RV.last));
+  svg.addEventListener("keydown", e => {
+    if (!roG) return;
+    const turn = {ArrowLeft:[7.5,0], ArrowRight:[-7.5,0], ArrowUp:[0,-7.5], ArrowDown:[0,7.5]}[e.key];
+    if (turn){ RV.yaw += turn[0]; RV.pitch = clamp(RV.pitch + turn[1], -89, 89); custom(); }
+    else if (e.key === "+" || e.key === "=") RV.zoom = clamp(RV.zoom * 1.2, .4, 8);
+    else if (e.key === "-" || e.key === "_") RV.zoom = clamp(RV.zoom / 1.2, .4, 8);
+    else if (e.key === "0"){ e.preventDefault(); roView(RV.last); return; }
+    else return;
+    e.preventDefault(); roDraw();
+  });
+  document.querySelector(".ro-views").addEventListener("click", e => {
+    const b = e.target.closest("button[data-v]"); if (!b) return;
+    roView(b.dataset.v); say(b.textContent + " view");
+  });
+  roPressed(); roHint();
+}
 function setMode(m){
   roMode = m; store.set("jpb-ro-mode", m);
   document.querySelectorAll("#ro-mode button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === m)));
@@ -3574,7 +3712,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "fieldguide-2026-10-13-utahcounty";
+var BUILD = "fieldguide-2026-10-13-3dturn";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
