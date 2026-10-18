@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Barlow+Condensed:wght@700;800&family=Barlow:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap">
-<script>/* theme before paint. Auto goes by daylight where you are (Sun from dawn to dusk), not the phone's dark-mode switch. */
+<script>/* theme before paint. Sun from dawn to dusk, Night otherwise, for where you are (not the phone's dark-mode switch). A tap on the button holds the other look until the next dawn or dusk. */
 /* Civil dawn and dusk (sun 6 deg below the horizon) from the standard sunrise equation. Checks the local day and its neighbors so the UTC date change can't flip it early. */
 window.jpbDaylight=function(now,lat,lon){var R=Math.PI/180,n0=Math.round(now/864e5+2440587.5-2451545+0.0008),day=false,next=Infinity;
 for(var k=-1;k<=1;k++){var Js=n0+k-lon/360,M=(357.5291+0.98560028*Js)%360,C=1.9148*Math.sin(M*R)+0.02*Math.sin(2*M*R)+0.0003*Math.sin(3*M*R),l=(M+C+282.9372)%360,
@@ -26,7 +26,7 @@ if(now>=a&&now<b)day=true;if(a>now&&a<next)next=a;if(b>now&&b<next)next=b}return
 window.jpbAuto=function(){var p=null;try{p=JSON.parse(localStorage.getItem("jpb-wx-place"))}catch(e){}
 var ok=p&&isFinite(p.lat)&&isFinite(p.lon);return window.jpbDaylight(Date.now(),ok?+p.lat:40.761,ok?+p.lon:-111.891)};
 var t;try{t=JSON.parse(localStorage.getItem("jpb-theme"))}catch(e){}
-document.documentElement.dataset.theme=t==="light"||t==="dark"?t:(window.jpbAuto().day?"light":"dark");</script>
+document.documentElement.dataset.theme=t&&(t.look==="light"||t.look==="dark")&&t.until>Date.now()?t.look:(window.jpbAuto().day?"light":"dark");</script>
 <style>
 /* LOOK: hi-vis vest. ANSI 107 fluorescent yellow-green on black: the vest color, picked because daylight eyes are most
    sensitive to yellow-green. Sun: pure white sheets, pure black type, hi-vis card heads and answers, heavy borders.
@@ -41,6 +41,8 @@ document.documentElement.dataset.theme=t==="light"||t==="dark"?t:(window.jpbAuto
   /* group color tags */
   --g-calc:#0033CC; --g-rough:#00702E; --g-trim:#A8007A; --g-inspect:#B33A00; --g-calls:#C2001B; --g-learn:#5A1FB8; --g-parts:#00636B; --g-weather:#005A9E; --g-mine:#262626;
   --ctl:#000000; --caution:#8A5A00; --ul:#000000; --wood:#C98A3E;
+  /* logo: always sits on the black header bar, so one set for both looks */
+  --logo-tile:#CCFF00; --logo-ink:#000000; --logo-dot:#0033CC;
   /* offset drawings */
   --d-bg:#FFFFFF; --d-grid:#B8B8B8; --d-pipe:#4D4D4D; --d-fit:#C23400; --d-cut:#0033E0; --d-cut-lbl:#0033E0; --d-rise:#B0007A; --d-roll:#006A27; --d-run:#000000; --d-tru:#6A1FD0; --d-text:#000000; --d-dim:#333333;
   --acc:var(--ink);
@@ -87,7 +89,7 @@ b{font-weight:700}
 /* ===== header: black bar, stencil wordmark, hazard stripe ===== */
 .tb{margin:0 calc(-1*max(12px,env(safe-area-inset-left)));background:var(--k);color:var(--hv);padding:calc(8px + env(safe-area-inset-top)) max(12px,env(safe-area-inset-left)) 8px}
 .tb-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:10px}
-.tb img{width:34px;height:34px;border-radius:7px;flex:0 0 auto}
+.tb .logo{width:38px;height:38px;flex:0 0 auto;display:block}
 .brand{display:flex;flex-direction:column;min-width:0;margin-right:auto;line-height:1}
 .brand h1{font-family:var(--stencil);font-weight:400;font-size:clamp(18px,5.2vw,32px);letter-spacing:.03em;margin:0;color:var(--hv);white-space:nowrap}
 .brand small.pre{font-family:var(--display);font-weight:800;font-size:clamp(10px,2.7vw,13px);letter-spacing:.02em;text-transform:uppercase;color:var(--hv);margin:0 0 3px;white-space:nowrap}
@@ -409,6 +411,22 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 @media print{nav.tabs,.tools,.tb .hbtn{display:none!important}body{padding:0}section{break-inside:avoid}}
+
+/* ===== theme button: sun or moon shows the look you're in ===== */
+#theme-btn .moon{display:none}
+:root[data-theme="dark"] #theme-btn .moon{display:block}
+:root[data-theme="dark"] #theme-btn .sun{display:none}
+/* ===== my code, my city, my numbers ===== */
+.seg-lbl{align-self:center;font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex:1 1 100%}
+.mn-x{width:1%;white-space:nowrap}
+.mn-x .linkish{padding:6px 2px;min-height:40px}
+.mc-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.mc-gap{color:var(--muted);font-style:italic}
+/* ===== flashcards: why line, box counts ===== */
+.fc-why{font-size:16px;font-weight:600;line-height:1.4;color:var(--ink);text-align:left;border-top:2px dashed var(--rule);padding-top:10px}
+.fc-why b{font-family:var(--display);font-weight:800;letter-spacing:.06em;color:var(--muted);margin-right:4px}
+.fc-stats{margin:0;font-size:15.5px;line-height:1.45;color:var(--muted)}
+.fc-stats b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -417,17 +435,17 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
 
 <header class="tb">
   <div class="tb-in">
-    <img src="icon-192.png" alt="" width="34" height="34" onerror="this.remove()">
+    <svg class="logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect width="48" height="48" rx="11" fill="var(--logo-tile)"/><path d="M4 34a18 5.4 0 0 1 36 0" transform="rotate(-10 22 34)" fill="none" stroke="var(--logo-ink)" stroke-width="2.3" stroke-linecap="round" pathLength="100" stroke-dasharray="86 100"/><path d="M17.5 38.5V10.5h7.5a9.2 9.2 0 0 1 0 18.4h-7.5z" fill="var(--logo-tile)" stroke="var(--logo-tile)" stroke-width="10" stroke-linejoin="round"/><path d="M17.5 38.5V10.5h7.5a9.2 9.2 0 0 1 0 18.4h-7.5" fill="none" stroke="var(--logo-ink)" stroke-width="5.6" stroke-linejoin="round"/><rect x="12.6" y="36" width="9.8" height="6" rx="1.5" fill="var(--logo-ink)"/><path d="M40 34a18 5.4 0 0 1 -36 0" transform="rotate(-10 22 34)" fill="none" stroke="var(--logo-ink)" stroke-width="2.3" stroke-linecap="round"/><path d="M39.6 24.6c2.3 2.7 3.5 4.6 3.5 6.3a3.5 3.5 0 0 1-7 0c0-1.7 1.2-3.6 3.5-6.3z" fill="var(--logo-dot)" stroke="var(--logo-tile)" stroke-width="1.8" stroke-linejoin="round"/></svg>
     <div class="brand"><small class="pre">PlumChum's guide to the</small><h1>PLUMBIVERSE</h1><small>Utah residential</small></div>
     <button type="button" class="hbtn learn-hbtn" id="learn-btn" aria-pressed="false" aria-label="Learn: how it works, flashcards, glossary, license"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg><span>Learn</span></button>
     <button type="button" class="hbtn" id="files-btn" hidden aria-pressed="false" aria-label="My files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6l2 3h8v13H4z"/></svg><span>Files</span></button>
-    <button type="button" class="hbtn" id="theme-btn" aria-label="Color mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><span id="theme-lbl">Auto</span></button>
+    <button type="button" class="hbtn" id="theme-btn" aria-label="Color mode"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><span id="theme-lbl">Sun</span></button>
   </div>
 </header>
 <div class="stripe" aria-hidden="true"></div>
 
 <div class="wrap">
-  <button type="button" class="code-chip" id="code-jump" aria-label="Which code applies: houses 2021 IRC, other buildings 2024 IPC"><span class="badge ut">UT</span>Houses <b>2021 IRC</b> · Other <b>2024 IPC</b><span class="go">›</span></button>
+  <button type="button" class="code-chip" id="code-jump" aria-label="My code 2021 IPC. Open Which code applies"><span class="badge ut">UT</span><span id="code-chip-txt">Mine <b>2021 IPC</b> · Houses <b>2021 IRC</b></span><span class="go">›</span></button>
 
 
   <div class="tools">
@@ -1858,11 +1876,13 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
         <tr><td><b>Unincorporated SL County</b></td><td><a href="https://msd.utah.gov/205/Building-Permits-Inspections" target="_blank" rel="noopener">MSD permits &amp; inspections ↗</a><div><span class="pn">385-910-5830</span> <a href="mailto:inspections@msd.utah.gov">inspections@msd.utah.gov</a></div><div class="sub">Greater Salt Lake Municipal Services District (Kearns, Magna, Copperton, etc.). Inspection hotline or email before 3 pm for next business day.</div></td></tr>
         <tr><td><b>Salt Lake City</b></td><td><span class="sub">See <b>Site → Call → Who to call</b>.</span></td></tr>
       </tbody></table></div>
-    <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct 2026; your super's schedule and the city site win.</p>
+    <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct 2026; your super's schedule and the city site win. Pick your city once in <b>Site → Call → My city</b>.</p>
   </section>
 
-  <section data-sec="code" data-kw="code adoption 2024 ipc 2021 irc july 2026 utah amendments 15a which code applies mtech school">
+  <section data-sec="code" data-kw="code adoption 2024 ipc 2021 irc 2021 ipc my code july 2026 utah amendments 15a which code applies mtech school">
     <div class="sec-head"><h2>Which code applies</h2><small>Utah, effective 7/1/2026</small></div>
+    <div class="seg" id="code-pick" role="group" aria-label="The code I work under"><span class="seg-lbl">I work under</span><button type="button" data-code="ipc21" aria-pressed="true">2021 IPC</button><button type="button" data-code="irc21" aria-pressed="false">2021 IRC</button><button type="button" data-code="ipc24" aria-pressed="false">2024 IPC</button></div>
+    <p class="note" id="code-pick-note"></p>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Houses</th><td><b>2021 IRC</b> plumbing and gas chapters + Utah amendments. Utah did <b>not</b> move to the 2024 IRC.</td></tr>
@@ -1874,6 +1894,41 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
       </tbody></table></div>
   </section>
 
+  <section data-sec="code" data-kw="2021 ipc quick reference section numbers table 909.1 709.1 710.1 704.1 312.2 312.3 312.5 312.9 504.6 504.7 604.8 424.3 305.4 308.5 905.4 903.5 918 1002 cleanout standpipe my code">
+    <div class="sec-head"><h2>2021 IPC quick reference</h2><small>Section · rule · house if different</small></div>
+    <div class="x"><table class="t wrap">
+      <thead><tr><th>2021 IPC</th><th>What it says</th><th>House (2021 IRC)</th></tr></thead>
+      <tbody>
+        <tr><th colspan="3">Tests</th></tr>
+        <tr><td class="n">312.2</td><td>DWV water test: <b>10 ft of head</b>, 15 min</td><td>Same</td></tr>
+        <tr><td class="n">312.3</td><td>DWV air test: <b>5 psi</b>, 15 min. No air on plastic. <span class="badge ut">UT</span> Plastic only if water can't be used or would freeze: ≤6 psi, ≤15 min</td><td>Also allows a vacuum test on plastic: −5 psi, 15 min</td></tr>
+        <tr><td class="n">312.5</td><td>Water supply: at least working pressure. <span class="badge ut">UT</span> Air on plastic 50–80 psi, ≤15 min</td><td>Get the inspector's OK before air on plastic</td></tr>
+        <tr><td class="n">312.9</td><td>Shower pan: <b>2" at the threshold</b>, 15 min</td><td>Same (P2503.6)</td></tr>
+        <tr><td class="n">—</td><td>No vacuum test in the 2021 IPC (2024 adds it as 312.4)</td><td>Allowed</td></tr>
+        <tr><th colspan="3">Drains &amp; traps</th></tr>
+        <tr><td class="n">T 704.1</td><td>Slope: 2½" and under <b>¼"/ft</b> · 3"–6" <b>⅛"/ft</b></td><td>Same</td></tr>
+        <tr><td class="n">T 709.1</td><td>DFU per fixture. Shower trap (≤5.7 gpm) <b>1½"</b></td><td>Shower trap <b>2"</b></td></tr>
+        <tr><td class="n">T 710.1(2)</td><td>Horizontal branch: 1½" = 3 DFU · 2" = 6 · 3" = 20</td><td>Same</td></tr>
+        <tr><td class="n">T 909.1</td><td>Trap to vent: 1¼" 5 ft · 1½" 6 ft · 2" 8 ft · 3" 12 ft · 4" 16 ft</td><td>Same (T P3105.1)</td></tr>
+        <tr><td class="n">1002.1</td><td>Fixture outlet to trap weir: <b>24"</b> max drop</td><td>Same idea</td></tr>
+        <tr><td class="n">1002.4</td><td>Trap seal <b>2"–4"</b></td><td>Same</td></tr>
+        <tr><td class="n">708</td><td>Cleanouts: changes over 45°, every 100 ft of horizontal drain, near where the building drain meets the sewer. <b>No general base-of-stack rule.</b> 18" clear in front for 3" and up, 12" under 3"</td><td>Also one at the base of each stack</td></tr>
+        <tr><td class="n">802</td><td>Washer standpipe <b>18"–42"</b> above the trap weir</td><td>Same</td></tr>
+        <tr><th colspan="3">Vents</th></tr>
+        <tr><td class="n">905.4</td><td>Dry vent rises <b>6" above the flood rim</b> before turning horizontal</td><td>Same (P3104.5)</td></tr>
+        <tr><td class="n">903.5</td><td>Within 10 ft of a door, window or intake: end <b>3 ft</b> above its top</td><td><b>2 ft</b> (P3103.5)</td></tr>
+        <tr><td class="n"><span class="badge ut">UT</span>903.1.1</td><td>Through the roof: <b>12"</b></td><td>6" above roof or snow (P3103.1.1)</td></tr>
+        <tr><td class="n">918</td><td>AAV: <b>4"</b> above the drain it vents, 6" above attic insulation</td><td>Same idea</td></tr>
+        <tr><th colspan="3">Supply &amp; heaters</th></tr>
+        <tr><td class="n">305.4</td><td>Water service <b>12" deep and 6" below frost</b> (≈36" here)</td><td>Same (P2603.5)</td></tr>
+        <tr><td class="n">T 308.5</td><td>Supports: PEX ≤1" <b>32"</b> · copper ≤1¼" <b>6 ft</b> · ABS/PVC <b>4 ft</b>. Plastic verticals 2" and under: mid-story guide</td><td>Same (P2605.1)</td></tr>
+        <tr><td class="n">604.8</td><td>PRV when static pressure is <b>over 80 psi</b></td><td>Same</td></tr>
+        <tr><td class="n">424.3</td><td>Shower valves ASSE 1016/1069/1070, limit stop <b>≤120°F</b></td><td>Same</td></tr>
+        <tr><td class="n">504.6</td><td>T&amp;P line: full size, ends <b>≤6"</b> above floor or receptor, in view, no threads on the end, not trapped</td><td>Same</td></tr>
+        <tr><td class="n">504.7</td><td>Pan <b>1½" deep</b>, ¾" drain</td><td>Same</td></tr>
+      </tbody></table></div>
+    <p class="note">Values match the rest of this book. Section numbers are 2021 IPC; if one doesn't match your book, search the topic. On a house the inspector enforces the IRC column. <span class="badge ut">UT</span> = Utah amendment.</p>
+  </section>
   <section data-sec="code" data-kw="2021 ipc 2024 ipc edition difference older permit which code changes vacuum test">
     <div class="sec-head"><h2>2021 IPC vs 2024 IPC</h2><small>Both still on the job</small></div>
     <div class="x"><table class="t">
@@ -1976,6 +2031,44 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
         <tr><th>Unpaid wages</th><td><span class="pn">801-530-6801</span><div class="sub">Utah Labor Commission, wage claims. M–F 8a–5p.</div></td></tr>
       </tbody></table></div>
   </section>
+  <section data-sec="emergency" data-kw="stuck help who do i call problem what now frozen meter no water sewer backup spill backflow code question part id i-joist injury unsafe paid wages license hours">
+    <div class="sec-head"><h2>Stuck? Who to call</h2><small>Problem → first call</small></div>
+    <div class="x"><table class="t wrap">
+      <thead><tr><th>When…</th><th>Call first</th></tr></thead>
+      <tbody>
+        <tr><td><b>You smell gas</b> or hit a gas line</td><td>Get out. From outside: <span class="pn">911</span> or Enbridge <span class="pn">1-800-767-1689</span><div class="sub">Then: your super. Don't go back in.</div></td></tr>
+        <tr><td><b>No water at the setter</b>, frozen or leaking meter, main break</td><td>The city's water department: <b>My city</b> below<div class="sub">Then: your super. SLC: <span class="pn">801-483-6700</span> (24 hr)</div></td></tr>
+        <tr><td><b>Sewer backing up</b> from the main or the lateral at the main</td><td>The city or sewer district: <b>My city</b><div class="sub">Then: your super, before you dig</div></td></tr>
+        <tr><td><b>Drinking water may be contaminated</b> (backflow event)</td><td>The city's water department<div class="sub">Then: Division of Drinking Water <span class="pn">801-536-4200</span> (business hours)</div></td></tr>
+        <tr><td><b>Spill</b> (fuel, glycol, sewage) into a storm drain, ditch or creek</td><td>DEQ 24-hr incidents <span class="pn">801-536-4123</span><div class="sub">Then: Big or dangerous: <span class="pn">911</span>. Some need the National Response Center <span class="pn">1-800-424-8802</span></div></td></tr>
+        <tr><td><b>Backflow tester</b> or cross-connection question</td><td>DDW cross-connection program <span class="pn">385-600-3378</span><div class="sub">Then: The water system's own backflow program</div></td></tr>
+        <tr><td><b>Code question</b></td><td>Your journeyman or super, then the city inspector or plans examiner (<b>My city</b>)<div class="sub">Then: Only the local building official can rule. ICC <span class="pn">1-888-422-7233</span> sells the books.</div></td></tr>
+        <tr><td><b>Part ID</b>, error code, warranty</td><td>The maker's tech line: <b>Trim → Finders &amp; tech lines</b><div class="sub">Then: Photo the rating plate first (model + serial)</div></td></tr>
+        <tr><td><b>Hole through an I-joist</b>, LVL or truss</td><td>Joist maker: Weyerhaeuser <span class="pn">1-888-453-8358</span> · BCI <span class="pn">1-800-232-0788</span><div class="sub">Then: Trusses: never cut. The super gets the truss engineer.</div></td></tr>
+        <tr><td><b>Power line down</b> or power out at the site</td><td>Rocky Mountain Power <span class="pn">1-877-508-5088</span><div class="sub">Then: Stay 35 ft away from a downed line</div></td></tr>
+        <tr><td><b>Someone's hurt</b></td><td><span class="pn">911</span> if serious<div class="sub">Then: your employer reports to UOSH <span class="pn">801-530-6901</span> within 8 hr</div></td></tr>
+        <tr><td><b>Chemical</b> in eyes, on skin, or fumes</td><td>Poison Control <span class="pn">1-800-222-1222</span><div class="sub">Then: Read the can's first-aid label to them</div></td></tr>
+        <tr><td><b>Site feels unsafe</b> (trench, fall, electrical)</td><td>Your super<div class="sub">Then: UOSH <span class="pn">1-800-530-5090</span></div></td></tr>
+        <tr><td><b>Pay</b> is short or late</td><td>Your employer's office<div class="sub">Then: Labor Commission wage claims <span class="pn">801-530-6801</span></div></td></tr>
+        <tr><td><b>Hours or license</b> question</td><td>MTECH or your sponsor<div class="sub">Then: DOPL <span class="pn">801-530-6628</span></div></td></tr>
+      </tbody></table></div>
+    <p class="note">The first call is almost always your journeyman or super: they know the job, the city and the inspector. Save their numbers in <b>My numbers</b>.</p>
+  </section>
+  <section data-sec="emergency" data-kw="my city pick city inspection booking frost depth pi secondary water hardness phone building after hours water">
+    <div class="sec-head mc-head"><h2>My city</h2><small>Pick once · saved on this phone</small></div>
+    <div class="calc"><label for="mc-pick" class="wide"><span>City I'm working in</span><select id="mc-pick"></select></label></div>
+    <div class="x"><table class="t wrap"><tbody id="mc-out"></tbody></table></div>
+    <p class="note">From the city sites, checked Oct 2026. Blank spots say so instead of guessing. When you get a number from the city, add it to <b>My numbers</b>.</p>
+  </section>
+  <section data-sec="emergency" data-kw="my numbers save add super journeyman inspector cell phone contact">
+    <div class="sec-head"><h2>My numbers</h2><small>Saved on this phone</small></div>
+    <div class="calc">
+      <label for="mn-name"><span>Who</span><input id="mn-name" type="text" maxlength="40" autocomplete="off" placeholder="Super, inspector…"></label>
+      <label for="mn-num"><span>Number</span><input id="mn-num" type="tel" inputmode="tel" maxlength="24" autocomplete="off" placeholder="801-555-0100"></label>
+      <button type="button" class="btn" id="mn-add">Add</button>
+    </div>
+    <div class="x"><table class="t"><tbody id="mn-rows"></tbody></table></div>
+  </section>
   <section data-sec="emergency" data-kw="who to call blue stakes 811 inspections enbridge dopl">
     <div class="sec-head"><h2>Who to call</h2><small>Tap to call · hold to copy</small></div>
     <div class="x"><table class="t">
@@ -1984,6 +2077,22 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
         <tr><th><a href="https://www.slc.gov/buildingservices/building-inspections/" target="_blank" rel="noopener">SLC inspections ↗</a></th><td><span class="pn">801-535-7224</span><div class="sub">Mon–Fri 7 am–3:30 pm. To schedule: SLC Building Inspections app, the online portal or <span class="pn">801-535-6000</span> (automated); next-day requests by 3 pm. Other cities have their own line.</div></td></tr>
         <tr><th><a href="https://www.enbridgegas.com/utwyid/start-stop-service/construction-services/construction-services-contacts" target="_blank" rel="noopener">Enbridge Gas ↗</a></th><td>Service <span class="pn">1-800-323-5517</span><div class="sub">Formerly Dominion / Questar. New service and meters: Construction Services. Gas leak: see Emergency above.</div></td></tr>
         <tr><th><a href="https://commerce.utah.gov/dopl/plumbing/" target="_blank" rel="noopener">DOPL ↗</a></th><td><span class="pn">801-530-6628</span><div class="sub">Licenses, renewals, exam approval.</div></td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="emergency" data-kw="state deq ddw drinking water cross connection backflow environmental spill incident water quality labor commission icc code council salt lake public utilities cuwcd central utah water">
+    <div class="sec-head"><h2>State &amp; utilities</h2><small>Tap to call · hold to copy</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>DEQ incidents</th><td><span class="pn">801-536-4123</span><div class="sub">24 hr. Spills and environmental incidents. Life or property at risk: 911.</div></td></tr>
+        <tr><th>Drinking Water (DDW)</th><td><span class="pn">801-536-4200</span><div class="sub">Drinking water events, business hours.</div></td></tr>
+        <tr><th>Cross-connection</th><td><span class="pn">385-600-3378</span><div class="sub">DDW backflow program: certified testers and program administrators. Tester lookup on the <a href="https://deq.utah.gov/drinking-water/cross-connection-control-backflow-prevention" target="_blank" rel="noopener">DDW page ↗</a>.</div></td></tr>
+        <tr><th>Water Quality</th><td><span class="pn">801-536-4300</span><div class="sub">Releases that could reach streams, canals or groundwater.</div></td></tr>
+        <tr><th>DEQ main</th><td><span class="pn">801-536-4000</span><div class="sub">M–F 8a–5p.</div></td></tr>
+        <tr><th>National Response Center</th><td><span class="pn">1-800-424-8802</span><div class="sub">Federal spill reporting, for the incidents that require it.</div></td></tr>
+        <tr><th>Labor Commission</th><td><span class="pn">801-530-6800</span><div class="sub">Main line: workers' comp, wage claims, UOSH. Imminent danger: <span class="pn">801-530-6901</span>.</div></td></tr>
+        <tr><th>ICC</th><td><span class="pn">1-888-422-7233</span><div class="sub">1-888-ICC-SAFE, press 0. Code books, certification exams. customersuccess@iccsafe.org</div></td></tr>
+        <tr><th>SLC Public Utilities</th><td><span class="pn">801-483-6700</span><div class="sub">24-hr dispatch: water main, sewer, storm drain trouble in Salt Lake City. Customer service <span class="pn">801-483-6900</span>, M–F 8a–5p.</div></td></tr>
+        <tr><th>Central Utah Water</th><td><span class="pn">801-226-7100</span><div class="sub">Orem HQ. Wholesale water to many Utah County cities; for a house, call the city first.</div></td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="emergency" data-kw="supply house store counter parts ferguson mountainland bj plumbing orem lehi american fork utah county">
@@ -2048,6 +2157,20 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
         <tr><td><b>LP SolidStart</b></td><td><span class="pn">1-888-707-2285</span><div class="sub">LP: <span class="pn">1-888-820-0325</span></div></td><td class="sub">I-joists bought on or after 8/1/2022: Pacific Woodtech (top number). Older stock and rim board: LP.</td></tr>
       </tbody></table></div>
     <p class="note"><b>Before you call:</b> photo the label or rating plate (model + serial), know the install date, and have the address. Hours are Mountain Time and can change; numbers checked Oct 2026.</p>
+  </section>
+  <section data-sec="finders" data-kw="sump pump sewage ejector grinder zoeller liberty air admittance valve aav studor flush valve flushometer sloan fill valve fluidmaster csst tracpipe omegaflex yard hydrant frost free hose bibb woodford">
+    <div class="sec-head"><h2>Pumps, vents, flush &amp; gas tubing</h2><small>Hours in Mountain Time</small></div>
+    <div class="x"><table class="t">
+      <thead><tr><th>Company</th><th>Phone</th><th>Notes · hours MT</th></tr></thead>
+      <tbody>
+        <tr><td><b>Zoeller</b> pumps</td><td><span class="pn">1-800-928-7867</span></td><td class="sub">Sump, sewage, grinder</td></tr>
+        <tr><td><b>Liberty Pumps</b></td><td><span class="pn">1-800-543-2550</span></td><td class="sub">M–F 6a–3p</td></tr>
+        <tr><td><b>Studor</b> AAVs (IPS)</td><td><span class="pn">1-800-888-8312</span></td><td class="sub">IPS Corporation main line</td></tr>
+        <tr><td><b>Sloan</b> flush valves</td><td><span class="pn">1-888-756-2614</span><div class="sub">Customer care: <span class="pn">1-800-982-5839</span></div></td><td class="sub">Top is tech support. Care M–F 6a–4p</td></tr>
+        <tr><td><b>Fluidmaster</b></td><td><span class="sub">No US phone line</span></td><td class="sub">techsupport@fluidmaster.com or chat on their site, M–F 6:30a–6p</td></tr>
+        <tr><td><b>OmegaFlex</b> TracPipe</td><td><span class="pn">1-800-355-1039</span><div class="sub">Main: <span class="pn">610-524-7272</span></div></td><td class="sub">CSST installs and bonding questions</td></tr>
+        <tr><td><b>Woodford</b></td><td><span class="pn">1-800-621-6032</span></td><td class="sub">Freezeless wall hydrants and yard hydrants</td></tr>
+      </tbody></table></div>
   </section>
   <section data-sec="safety">
     <div class="sec-head"><h2>Jobsite safety</h2><small>OSHA 1926</small></div>
@@ -2197,16 +2320,18 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
       </tbody></table></div>
   </section>
   <section data-sec="study">
-    <div class="sec-head"><h2>Flashcards</h2><small>From this book · tap to flip</small></div>
+    <div class="sec-head"><h2>Flashcards</h2><small>Spaced repetition · tap to flip</small></div>
     <div class="fc">
       <div class="fc-meta"><span id="fc-topic">—</span><span id="fc-pos">—</span></div>
-      <button type="button" class="fc-card" id="fc-card" aria-live="polite"><span class="fc-q" id="fc-q">—</span><span class="fc-a" id="fc-a" hidden>—</span><span class="fc-hint" id="fc-hint">Tap to see the answer</span></button>
+      <button type="button" class="fc-card" id="fc-card" aria-live="polite"><span class="fc-q" id="fc-q">—</span><span class="fc-a" id="fc-a" hidden>—</span><span class="fc-why" id="fc-why" hidden>—</span><span class="fc-hint" id="fc-hint">Tap to see the answer</span></button>
       <div class="fc-btns">
         <button type="button" class="fc-miss" id="fc-miss">Missed it</button>
         <button type="button" class="fc-got" id="fc-got">Got it</button>
       </div>
-      <div class="fc-foot"><span>Score <b id="fc-score">0 / 0</b></span><select id="fc-filter" aria-label="Topic"></select><button type="button" class="linkish" id="fc-reset">Reshuffle</button></div>
+      <p class="fc-stats" id="fc-stats"></p>
+      <div class="fc-foot"><span>Score <b id="fc-score">0 / 0</b></span><select id="fc-filter" aria-label="Which cards"></select><button type="button" class="linkish" id="fc-reset">Reshuffle</button><button type="button" class="linkish" id="fc-wipe">Start over</button></div>
     </div>
+    <p class="note"><span class="badge why">HOW</span> <b>Got it</b> moves a card up a box: it comes back tomorrow, then in 3, 7 and 14 days. <b>Missed it</b> drops it to box 1, and it comes back a few cards later. <b>Due now</b> deals what's due, then up to 15 new cards.</p>
   </section>
   <section data-sec="words" data-kw="glossary dictionary terms words definition meaning what does mean vocabulary">
     <div class="sec-head"><h2>Glossary</h2><small id="gloss-n">Words on site</small></div>
@@ -2668,7 +2793,8 @@ async function copyNum(n){
   try { await navigator.clipboard.writeText(n.textContent.trim()); n.classList.add("copied"); setTimeout(() => n.classList.remove("copied"), 1200); say("Copied " + n.textContent.trim()); }
   catch(err){ const r = document.createRange(); r.selectNodeContents(n); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
 }
-document.querySelectorAll(".pn").forEach(n => {
+function bindPn(root = document){ root.querySelectorAll(".pn:not([data-pn])").forEach(n => {
+  n.dataset.pn = "";
   const digits = n.textContent.replace(/[^0-9]/g, "");
   n.tabIndex = 0; n.setAttribute("role", canCall ? "link" : "button");
   n.setAttribute("aria-label", (canCall ? "Call " : "Copy ") + n.textContent.trim());
@@ -2678,7 +2804,8 @@ document.querySelectorAll(".pn").forEach(n => {
   ["touchend","touchmove","touchcancel"].forEach(ev => n.addEventListener(ev, () => clearTimeout(hold), {passive:true}));
   n.addEventListener("contextmenu", e => { if (canCall) e.preventDefault(); });
   n.addEventListener("click", () => { if (held){ held = false; return; } if (canCall) location.href = "tel:" + digits; else copyNum(n); });
-});
+}); }
+bindPn();
 
 /* ---------- 4 navigation, search, theme ---------- */
 const GROUPS = {
@@ -2795,25 +2922,31 @@ apply();  /* early, so tabs work even if a calculator below hits an error */
 
 $("learn-btn").addEventListener("click", () => go("learn"));
 
-/* theme: Auto (by daylight) → Sun → Night. Auto switches at civil dawn and dusk for the weather tab's place (Salt Lake until one is set). */
-const THEMES = [["auto","Auto"],["light","Sun"],["dark","Night"]];
-let theme = (t => THEMES.some(x => x[0] === t) ? t : "auto")(store.get("jpb-theme", "auto"));
+/* theme: two looks, Sun and Night. They follow daylight on their own (civil dawn and dusk for the weather tab's place, Salt Lake
+   until one is set). A tap flips to the other look and holds it until the next dawn or dusk; tapping back clears the hold. */
 const redrawArt = () => { if (roReady) roCalc(); if (window.heightCalc) heightCalc(); for (const f of ["poCalc", "tsCalc", "wxRender"]) try { window[f] && window[f](); } catch(e){} };
 const daylight = () => { try { return window.jpbAuto(); } catch(e){ return {day: true, next: NaN}; } };
+let themeHold = (h => h && (h.look === "light" || h.look === "dark") && h.until > Date.now() ? h : null)(store.get("jpb-theme", null));
+const clock = t => new Date(t).toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
 function themeNow(){   /* sets the look; true if it changed */
-  const want = theme === "auto" ? (daylight().day ? "light" : "dark") : theme;
+  if (themeHold && !(themeHold.until > Date.now())){ themeHold = null; store.set("jpb-theme", null); }
+  const want = themeHold ? themeHold.look : (daylight().day ? "light" : "dark");
   if (document.documentElement.dataset.theme === want) return false;
   document.documentElement.dataset.theme = want; return true;
 }
 function themeLabel(){
-  const name = THEMES.find(x => x[0] === theme)[1], d = theme === "auto" ? daylight() : null;
-  const tip = d ? `Auto: ${d.day ? "Sun" : "Night"}${isFinite(d.next) ? ` until ${new Date(d.next).toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})}` : ""}` : name;
+  const dark = document.documentElement.dataset.theme === "dark", name = dark ? "Night" : "Sun", d = daylight();
+  const tip = themeHold ? `${name}, your pick until ${clock(themeHold.until)}. Then it follows daylight again. Tap for ${dark ? "Sun" : "Night"}.`
+    : `${name}, following daylight${isFinite(d.next) ? `: ${dark ? "Sun" : "Night"} at ${clock(d.next)}` : ""}. Tap for ${dark ? "Sun" : "Night"}.`;
   $("theme-lbl").textContent = name; $("theme-btn").title = tip; $("theme-btn").setAttribute("aria-label", "Color mode: " + tip);
 }
-function setTheme(t){ theme = t; store.set("jpb-theme", t); themeNow(); themeLabel(); redrawArt(); }
-$("theme-btn").addEventListener("click", () => setTheme(THEMES[(THEMES.findIndex(x => x[0] === theme) + 1) % THEMES.length][0]));
-setInterval(() => { if (theme === "auto"){ themeLabel(); if (themeNow()) redrawArt(); } }, 60000);
-setTheme(theme);
+$("theme-btn").addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark", d = daylight();
+  themeHold = next === (d.day ? "light" : "dark") ? null : {look: next, until: isFinite(d.next) ? d.next : Date.now() + 12*3600e3};
+  store.set("jpb-theme", themeHold); themeNow(); themeLabel(); redrawArt(); say(next === "dark" ? "Night colors" : "Sun colors");
+});
+setInterval(() => { themeLabel(); if (themeNow()) redrawArt(); }, 60000);
+themeNow(); themeLabel();
 
 /* stacked-card tables on phones: label each cell with its column header */
 document.querySelectorAll("table.cards").forEach(t => {
@@ -4001,182 +4134,327 @@ $("ck-clear").addEventListener("click", () => { ckDone[ckPh] = []; store.set("jp
 ckDraw();
 
 /* ---------- 13 flashcards (with a "missed" pile to review) ---------- */
-const CARDS = [
-  ["Math","On a ¼\" = 1'-0\" plan, 1\" on paper is how many feet?","4 ft (the scale is 1:48)"],
-  ["Math","A 24×36 plan printed \"fit to page\" on 11×17: still half scale?","No, about 46%. Calibrate on a written dimension"],
-  ["Math","Written dimension vs. what you scale off the plan: which wins?","The written dimension, always"],
-  ["Utah","Secondary and culinary on one sprinkler system: what's required?","RP on the culinary side + a swing joint (dual-source connection); RP tested within 10 days and yearly"],
-  ["Heaters","Ultra-low NOx limit for a gas heater ≤75,000 BTU/h in Utah's nonattainment areas?","10 ng/J"],
-  ["How it works","About what temperature does water boil in Salt Lake (≈4,200 ft)?","About 204°F (≈1°F lower per 500 ft)"],
-  ["Holes","Plastic pipe through a rated townhome wall needs what?","A listed firestop system with an F rating ≥ the wall's rating"],
-  ["Drains","Max trap-to-vent distance for a 2\" trap?","8 ft at ¼\"/ft"],
-  ["Drains","Max trap-to-vent for a 1½\" trap?","6 ft at ¼\"/ft"],
-  ["Drains","Max trap-to-vent for a 3\" trap?","12 ft at ⅛\"/ft"],
-  ["Drains","Minimum slope for a 3\" drain?","⅛\" per ft"],
-  ["Drains","Minimum slope for a 2\" drain?","¼\" per ft"],
-  ["Drains","Trap seal depth?","2\" minimum, 4\" maximum"],
-  ["Drains","Washer standpipe height?","18\"–42\" above the trap weir"],
-  ["Drains","Which way can a san tee turn flow?","Horizontal into vertical only"],
-  ["Drains","Fitting for vertical → horizontal?","Combo (wye + ⅛ bend) or long sweep"],
-  ["Drains","Cleanout clearance on a house, pipe under 3\"?","12\" (18\" for 3\" and up)"],
-  ["Vents","How high does a dry vent rise before going horizontal?","6\" above the flood rim of the highest fixture it serves"],
-  ["Vents","Where does a vent take off a horizontal drain?","Above the drain's centerline"],
-  ["Vents","AAV height above the drain it vents?","At least 4\" (and 6\" above attic insulation)"],
-  ["Vents","Minimum vent size?","½ the drain diameter, never under 1¼\""],
-  ["Vents","Roof vent height on a house?","6\" above the roof or expected snow, whichever is greater (IRC). Utah IPC: 12\". Run at least 12\", higher if the snow gets deeper"],
-  ["Vents","Utah through-wall vent ends how?","≥12\" out from the wall, elbow pointing down"],
-  ["Sizing","DFU of a lavatory?","1"],
-  ["Sizing","DFU of a kitchen sink (with disposer/dishwasher)?","2"],
-  ["Sizing","DFU of a 1.6 gpf toilet?","3"],
-  ["Sizing","DFU of a bathroom group with a 1.6 gpf toilet?","5"],
-  ["Sizing","Is a bidet added to a bathroom group's DFU?","No: it's already part of the group"],
-  ["Sizing","Minimum trap size for a clothes washer standpipe?","2\""],
-  ["Sizing","Max DFU on a 1½\" horizontal branch?","3"],
-  ["Sizing","Max DFU on a 2\" horizontal branch?","6"],
-  ["Sizing","Max DFU on a 3\" horizontal branch?","20"],
-  ["Sizing","Smallest building drain that can carry a toilet?","3\""],
-  ["Sizing","Shower trap size on a house (IRC)?","2\" (IPC table allows 1½\")"],
-  ["Tests","DWV water test?","10 ft of head for 15 min (2021 IRC and IPC)"],
-  ["Tests","DWV vacuum test?","−5 psi (−10\" Hg) for 15 min. In the 2021 IRC for plastic and the 2024 IPC"],
-  ["Tests","Gas test (code)?","1.5× working pressure, at least 3 psi, never oxygen"],
-  ["Tests","Utah: air test on plastic DWV?","Only if water can't be used or would freeze: ≤6 psi, ≤15 min, stand clear, bleed slowly"],
-  ["Tests","Shower pan test?","Fill 2\" deep at the threshold, hold 15 min"],
-  ["Supply","Static pressure that requires a PRV?","Over 80 psi"],
-  ["Supply","When do you need an expansion tank?","When a PRV, check or backflow device closes the system"],
-  ["Supply","Hot water limit at a shower valve?","120°F max (ASSE 1016 limit stop)"],
-  ["Supply","Utah max flow: showerhead / lav faucet?","2.0 gpm / 1.5 gpm"],
-  ["Supply","Plumbing nail plate trigger?","Pipe less than 1¼\" from the framing edge; 16 ga plate"],
-  ["Supply","PEX ≤1\" horizontal support spacing?","32\""],
-  ["Supply","Copper ≤1¼\" horizontal support spacing?","6 ft"],
-  ["Supply","ABS / PVC horizontal support spacing?","4 ft"],
-  ["Underground","Water service depth vs. frost line?","12\" deep and 6\" below frost (30\" frost here, so ≈36\")"],
-  ["Math","Travel for a 12\" offset with two 45s?","≈17\" (12 × 1.414 = 16.97)"],
-  ["Math","Fall over 40 ft at ¼\"/ft?","10\" (feet ÷ 4)"],
-  ["Math","psi from a 10 ft column of water?","≈4.3 psi (0.433 per ft)"],
-  ["Math","Feet of head from 30 psi?","≈69 ft (psi × 2.31)"],
-  ["Math","Gallons in 100 ft of ¾\" PEX?","≈2 (½\" ≈ 1, 1\" ≈ 3)"],
-  ["Math","BTU to heat 1 gallon 1°F?","8.34"],
-  ["Tests","80 psi air test set at 60°F; the shell cools to 30°F. Is a 5 psi drop a leak?","Not by itself: the cold alone drops it about 5 psi. Check with Inspect → Phases & tests → Leak or just cold?"],
-  ["Utah","Pipe color for pressurized irrigation (PI)?","Purple (blue = potable, green = sewer)"],
-  ["Utah","Navien NPE-2 altitude setting at 4,500 ft?","Installer menu 1.2.14 → 2 (2,000–5,400 ft)"],
-  ["Utah","Softener regen drain connects how?","Through an air gap to an indirect receptor"],
-  ["PEX","ProPEX joint: gap at the fitting shoulder that means redo it?","More than 1/16\": cut 2–3\" back, new ring"],
-  ["PEX","How often do you check crimps with the go/no-go gauge?","Every crimp, plus a test crimp at the start of each job"],
-  ["Underground","Water service and sewer in one trench?","Water on a solid shelf ≥12\" above the sewer (or 5 ft apart)"],
-  ["Underground","Minimum water service size?","¾\""],
-  ["Fixtures","Toilet center to side wall, minimum?","15\""],
-  ["Fixtures","Clear space in front of a toilet?","21\""],
-  ["Fixtures","Minimum shower size?","900 in², and a 30\" circle must fit"],
-  ["Fixtures","Shower liner height?","2\" above the finished threshold"],
-  ["Gas","Gas shield plate thickness?","0.0575\" steel (16 ga), same as a plumbing nail plate"],
-  ["Gas","Gas shield plates extend how far?","4\" past sole/top plates and each side of the member"],
-  ["Gas","Where does an appliance shutoff go?","Same room, within 6 ft, upstream of the connector"],
-  ["Gas","Max appliance connector length?","6 ft, never concealed or through a wall or floor"],
-  ["Gas","Support spacing for ½\" steel gas pipe?","6 ft (¾\"–1\": 8 ft, 1¼\" and up: 10 ft)"],
-  ["Gas","½\" Sch 40 capacity at 40 ft (0.5\" w.c. drop)?","81 CFH"],
-  ["Gas","CSST bonding wire?","6 AWG copper, 75 ft max, never clamped to the CSST"],
-  ["Gas","Altitude derate rule of thumb?","4% per 1,000 ft above sea level (applied above 2,000 ft), unless the maker says otherwise"],
-  ["Gas","CFH for a 100,000 BTU/h furnace (1,000 BTU/ft³)?","100 CFH"],
-  ["Heaters","T&P discharge ends where?","Air gap in the same room, in view, ≤6\" above floor or receptor"],
-  ["Heaters","PEX T&P discharge line size?","One size bigger than the valve outlet"],
-  ["Heaters","Gas water heater in a garage: ignition height?","18\" above the floor unless FVIR-listed"],
-  ["Heaters","Drain pan size?","1½\" deep, ¾\" drain"],
-  ["Heaters","Utah seismic straps go where?","Upper and lower third of the tank"],
-  ["Heaters","What does the anode rod do?","Corrodes instead of the steel tank"],
-  ["Math","1 gallon = ? cubic inches / pounds","231 in³ / 8.34 lb"],
-  ["Math","True offset formula?","√(rise² + roll²)"],
-  ["Math","45° travel multiplier?","1.414"],
-  ["Math","22½° travel multiplier?","2.613"],
-  ["Math","Threads per inch on ½\" and ¾\" NPT?","14"],
-  ["Math","Velocity formula from gpm?","ft/s = gpm × 0.4085 ÷ ID²"],
-  ["Math","PEX expansion rule (Uponor)?","1.1\" per 100 ft per 10°F"],
-  ["Math","Rolling offset: how far do you roll the fittings?","atan(roll ÷ rise) off plumb, toward the roll"],
-  ["Math","Why can't you just pick the run on an offset?","The offset and fitting angle fix it (run = offset ÷ tan angle); extra space is straight pipe"],
-  ["Materials","Copper type colors?","K green, L blue, M red, DWV yellow"],
-  ["Materials","Uponor PEX-a minimum bend radius?","6× OD"],
-  ["Materials","Max lead in solder and flux?","0.2%"],
-  ["Materials","CPVC ½–1\" cure before test above 60°F?","1 hour"],
-  ["Holes","Max bored hole in a 2×4 bearing stud?","40% of 3½\" = 1.4\""],
-  ["Holes","Does 1½\" DWV fit a 2×4 non-bearing wall?","Barely not: a 2⅛\" hole is 61% (limit 60%)"],
-  ["Holes","Top plate cut more than 50%: fix?","16 ga × 1½\" steel strap, 6\" past each side, eight 10d nails each side"],
-  ["Holes","Max notch in a sawn floor joist?","⅙ of the depth, never in the middle third (¼ at the ends)"],
-  ["Holes","Max bored hole in a sawn floor joist?","⅓ of the depth, 2\" from the edges"],
-  ["Holes","Can you notch or drill an I-joist flange?","Never. Web holes only, per the brand's chart"],
-  ["Holes","Open-web truss in the way?","Never cut a chord or web without an engineer; run through the openings"],
-  ["Safety","Trench depth that needs shoring, shielding or sloping?","5 ft or more, and shallower if the competent person sees cave-in risk"],
-  ["Safety","Trench ladder rule?","4 ft deep or more: ladder within 25 ft"],
-  ["Safety","Residential fall protection height?","6 ft"],
-  ["Safety","Report a serious injury to UOSH within?","8 hours"],
-  ["Safety","Blue Stakes notice?","48 business hours (about 3 business days); ticket good 21 days"],
-  ["Safety","You smell gas on the job. Do what?","Everyone out, no switches or flames, call from outside: Enbridge 1-800-767-1689 or 911"],
-  ["License","Journeyman requirements?","576 classroom hr + 8,000 apprentice hr"],
-  ["License","Residential journeyman requirements?","432 classroom hr + 6,000 apprentice hr"],
-  ["License","How many apprentices per supervisor?","Up to 3"],
-  ["License","Residential → journeyman upgrade?","2,000 hr non-residential + 4th-year class (144 hr)"],
-  ["License","License renewal?","Every 2 yr by Nov 30 of even years; 12 CE hr, 8 core"],
-  ["Trim","Moen Posi-Temp cartridge?","1222 (it lives in the valve)"],
-  ["Trim","Moen M-CORE 3-series cartridge?","1213 (comes with the trim)"],
-  ["Trim","Can a Posi-Temp trim go on an M-CORE valve?","No. Trim must match the valve family"],
-  ["Trim","Delta 13/14 series cartridge?","RP46074"],
-  ["Trim","Delta MultiChoice universal rough valve?","R10000 (13/14, 17 or 17T trim)"],
-  ["Trim","Delta tub spout distance below the valve?","8\"–18\" (beyond 18\": shower rise)"],
-  ["Trim","Pressure balance vs thermostatic?","Pressure balance equalizes pressures; thermostatic senses temperature"],
-  ["Trim","Disposer + new dishwasher: what first?","Knock out the dishwasher plug in the disposer"],
-  ["Trim","Angle stop outlet size for a faucet?","⅜\" OD compression"],
-  ["Utah","Utah house code since 7/1/2026?","2021 IRC + Utah amendments (not the 2024 IRC)"],
-  ["Utah","Permit applied for before 7/1/2026: which IPC?","Usually the 2021 IPC (check the permit card)"],
-  ["Utah","Can secondary water connect to culinary with a valve?","Never: that's a cross-connection"],
-  ["Utah","Gas derate at Herriman (~5,000 ft)?","About 20% (5 × 4%), only if the appliance isn't already set up for altitude"],
-  ["Utah","Incoming water temp for sizing a Utah winter heater?","40°F"],
-  ["How it works","Why does a dripping RPZ drip?","A check is leaking; the relief valve dumps water instead of letting it flow back"],
-  ["How it works","Why does a vent protect a trap?","Lets air in so falling water can't siphon the seal"],
-  ["How it works","Why is trap-to-vent distance limited?","On 1¼\"–2\" pipe at ¼\"/ft, past the limit the arm falls more than one pipe diameter, the vent opening drops below the weir, and the trap siphons"],
-  ["How it works","Why recheck a limit stop set in winter?","Warmer summer cold water makes the same stop run hotter"],
-  ["How it works","Why derate gas at altitude?","Less oxygen per ft³: full input burns dirty (soot, CO)"],
-  ["How it works","Why does a closed system need an expansion tank?","Water barely compresses; the tank's air cushion takes the expansion"],
-  ["How it works","Why are cold-climate roof vents upsized?","Frost from warm, wet vent air can seal a small pipe"],
-  ["How it works","Why pitch a frost-free hose bibb?","The seat is inside the warm wall; the outside barrel must drain"]
+/* ---------- my code: which book I work under (2021 IPC unless changed). Sets the top chip and the DFU shower trap. ---------- */
+const CODES = {
+  ipc21: ["2021 IPC", "Mine <b>2021 IPC</b> · Houses <b>2021 IRC</b>", "Set to the <b>2021 IPC</b>. <b>Calc → Sizing</b> counts a shower trap at 1½\". On a house the inspector still enforces the 2021 IRC + Utah amendments, where a shower trap is 2\"."],
+  irc21: ["2021 IRC", "Mine <b>2021 IRC</b> · Other <b>2024 IPC</b>", "Set to the <b>2021 IRC</b> (houses). <b>Calc → Sizing</b> counts a shower trap at 2\"."],
+  ipc24: ["2024 IPC", "Mine <b>2024 IPC</b> · Houses <b>2021 IRC</b>", "Set to the <b>2024 IPC</b> (non-house permits from 7/1/2026). Same tables as 2021 in this book, plus the vacuum test."]
+};
+let myCode = (c => CODES[c] ? c : "ipc21")(store.get("jpb-code", "ipc21"));
+const SHOWER = FIX.findIndex(f => /^Shower \(≤5\.7/.test(f[0]));
+function setCode(c){
+  myCode = c; store.set("jpb-code", c);
+  $("code-chip-txt").innerHTML = CODES[c][1]; $("code-pick-note").innerHTML = CODES[c][2];
+  $("code-jump").setAttribute("aria-label", `My code ${CODES[c][0]}. Houses use the 2021 IRC. Open Which code applies`);
+  document.querySelectorAll("#code-pick button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.code === c)));
+  if (SHOWER >= 0){
+    const irc = c === "irc21";
+    FIX[SHOWER][0] = irc ? "Shower (≤5.7 gpm, 2\" trap per IRC)" : "Shower (≤5.7 gpm, 1½\" trap per IPC)"; FIX[SHOWER][3] = irc ? 2 : 1.5;
+    const row = $("dfu-" + SHOWER).closest("tr"); row.cells[0].textContent = FIX[SHOWER][0];
+    row.querySelectorAll("button[data-d]").forEach(b => b.setAttribute("aria-label", `${b.dataset.d === "-1" ? "One fewer" : "One more"} ${FIX[SHOWER][0]}`));
+    dfuCalc();
+  }
+  IDX = null;
+}
+$("code-pick").addEventListener("click", e => { const b = e.target.closest("button[data-code]"); if (b) setCode(b.dataset.code); });
+setCode(myCode);
+
+/* ---------- my city: pick once. Only what the city sites confirmed (Oct 2026); gaps say so. ---------- */
+const FROST_UC = "30\" design is the Utah County norm, so water service ≈36\". Confirm on the city's standard drawings.";
+const FROST_SL = "Not confirmed for this city. SLC designs to 30\" (service ≈36\"); confirm on the city's standard drawings.";
+const GAP = t => `<span class="mc-gap">${t}</span>`;
+const NOAFTER = GAP("Not confirmed. When you get the city's after-hours water/sewer number, add it to My numbers.");
+const CITIES = [
+  ["Utah County"],
+  {id:"af", n:"American Fork", book: GAP("No booking details confirmed online. Ask your super or the building office."), pi:"Likely. Ask the city.", h:"13 gpg", f:FROST_UC},
+  {id:"em", n:"Eagle Mountain", book:"Email buildinginspections@eaglemountain.gov with the permit number. No confirmation email back = not on the schedule. First come, first served.", pi:"Yes. Separate trench from the water service (no sharing).", h:GAP("Not confirmed: test it."), f:FROST_UC,
+    notes:"Order: underground → 4-way → frost-protection insulation → final. Final needs the meter set: lid at grade, setter 20\" ±2\" below the lid, nothing within 5 ft; $50 re-final if not."},
+  {id:"hi", n:"Highland", book: GAP("Not confirmed. Ask your super or the building office."), pi:"Ask the city.", h:"11.4 gpg", f:FROST_UC},
+  {id:"le", n:"Lehi", book:'<span class="pn">385-201-1035</span> Phone only: no voicemail, email or online booking. 24 hr notice.', pi:"Yes. One culinary and one PI connection per lot; connections off by Oct 15.", h:"≈9 gpg", f:"30\" (the city lists it), so service ≈36\".",
+    notes:"Sewer lateral 2% minimum to the property line, inspected before backfill. Not ready = re-inspection fee."},
+  {id:"li", n:"Lindon", book: GAP("Not confirmed. Ask your super or the building office."), pi:"Ask the city.", h:"6.9 gpg", f:FROST_UC},
+  {id:"or", n:"Orem", book: GAP("No booking details confirmed online. Ask your super or the building office."), pi:"No citywide PI.", h:"8.2 gpg", f:FROST_UC},
+  {id:"pr", n:"Provo", book:'<a href="https://www.provo.gov/1019/Schedule-Building-Inspection" target="_blank" rel="noopener">Schedule online ↗</a> through the city\'s self-service portal.', pi:"Ask the city.", h:"10–15 gpg", f:"30\" design (Provo design criteria), so service ≈36\".",
+    notes:"Keep house pressure under 75 psi (city water report). Design temps 13°F winter, 95°F summer; elevation 4,491 ft."},
+  {id:"ss", n:"Saratoga Springs", book:'Email buildinginspectionrequest@saratogasprings-ut.gov or <span class="pn">801-766-6507</span> x120. One business day ahead: by 5 pm Mon–Thu, 4 pm Fri.', pi:"Yes. Green box near the property line, usually a 1\" ball valve. Drained the week of Oct 15.", h:"5.6 gpg", f:FROST_UC,
+    notes:"No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test)."},
+  {id:"sf", n:"Spanish Fork", book:'<a href="https://www.spanishfork.gov/living-in-our-community/building/building-permits-inspections/" target="_blank" rel="noopener">CitizenServe portal ↗</a>, 24 hr ahead. Help: <span class="pn">801-804-4540</span>', pi:"Yes.", h:GAP("Not confirmed: test it."), f:FROST_UC,
+    notes:"Ready by 8 am the day of, or a $93 re-inspection fee. Underground plumbing and laterals inspected before cover, with the gas test. Rough plumbing on the 4-way; shower pan with framing."},
+  {id:"sv", n:"Springville", book:'<a href="https://www.springvilleutah.gov/community-development/wp-content/uploads/sites/5/2025/06/My-City-Inspector-Directions.pdf" target="_blank" rel="noopener">City Inspect ↗</a>, AM/PM blocks after the permit is issued. Building: <span class="pn">801-489-2704</span>', pi:"Yes. Purple PE, purple tape ≈12\" above, tracer wire, 30\" cover, green IRRIGATION box. 40–125 psi by lot elevation. $50 switch-over inspection.", h:GAP("Not confirmed: test it."), f:"30\" (city), so service ≈36\"."},
+  ["Salt Lake & Summit"],
+  {id:"he", n:"Herriman", book:'<span class="pn">801-446-5327</span> One working day ahead, before 4 pm.', pi:"Yes. Separate secondary-water connection inspection.", h:GAP("Not confirmed: test it."), f:FROST_SL,
+    notes:"Subrough: 10 ft water or 5 psi, 15 min. Gas 5 psi, 15 min. Shower pan water test. Meter is on the Public Works final."},
+  {id:"sj", n:"South Jordan", book:'<a href="https://cityview.southjordanutah.gov/cityviewportal" target="_blank" rel="noopener">CityView portal ↗</a>: permits and inspections online.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
+  {id:"wj", n:"West Jordan", book:'Building dept <span class="pn">801-569-5050</span> for inspection requirements and status. Permit Center M–F 8–5.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
+  {id:"slc", n:"Salt Lake City", book:'SLC Building Inspections app, the online portal, or <span class="pn">801-535-6000</span> (automated). Next-day requests by 3 pm. Office <span class="pn">801-535-7224</span>, M–F 7a–3:30p.', after:'Public Utilities 24-hr dispatch <span class="pn">801-483-6700</span>. Customer service <span class="pn">801-483-6900</span>, M–F 8a–5p.', pi:"Ask the city.", h:"8–12 gpg (some wells over 30)", f:"30\" design, so service ≈36\"."},
+  {id:"msd", n:"Unincorporated SL County (MSD)", book:'Hotline <span class="pn">385-910-5830</span> or inspections@msd.utah.gov before 3 pm for the next business day. Kearns, Magna, Copperton and other MSD areas.', pi:"Ask the water provider.", h:GAP("Depends on the water provider."), f:FROST_SL},
+  {id:"pc", n:"Park City", book:'City Inspect app by 3 pm for the next day: AM 8–12, PM 12–4. Building: <span class="pn">435-615-5101</span>', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:GAP("Deeper at this elevation. Get the city's number before you dig."),
+    notes:"Plans and permit on paper on site. Deep snow: confirm vent height."}
 ];
+const cityById = id => CITIES.find(c => c.id === id);
+let myCity = (id => cityById(id) ? id : "")(store.get("jpb-city", ""));
+$("mc-pick").innerHTML = `<option value="">Pick a city…</option>` + CITIES.reduce((h, c) => h + (Array.isArray(c) ? `${h.includes("<optgroup") ? "</optgroup>" : ""}<optgroup label="${esc(c[0])}">` : `<option value="${c.id}">${esc(c.n)}</option>`), "") + "</optgroup>";
+function drawCity(){
+  $("mc-pick").value = myCity;
+  const c = cityById(myCity);
+  $("mc-out").innerHTML = !c ? `<tr><td class="sub">Pick the city on your permit. It sticks until you change it.</td></tr>` : [
+    ["Book inspections", c.book], ["Water / sewer trouble", c.after || NOAFTER], ["Secondary (PI)", esc(c.pi)], ["Hardness", c.h], ["Frost depth", c.f], ...(c.notes ? [["Watch for", esc(c.notes)]] : [])
+  ].map(([k,v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join("") +
+    `<tr><td colspan="2"><button type="button" class="linkish" id="mc-all">Compare cities: Inspect → Utah &amp; cities</button></td></tr>`;
+  bindPn($("mc-out")); IDX = null;
+  const all = $("mc-all"); if (all) all.addEventListener("click", () => go("inspect", "utah"));
+}
+$("mc-pick").addEventListener("change", e => { myCity = e.target.value; store.set("jpb-city", myCity); drawCity(); });
+drawCity();
+
+/* ---------- my numbers: the super, the journeyman, the inspector's cell. Saved on this phone only. ---------- */
+let myNums = (a => Array.isArray(a) ? a.filter(x => x && typeof x.name === "string" && typeof x.num === "string").slice(0, 60) : [])(store.get("jpb-mynums", []));
+function drawNums(){
+  $("mn-rows").innerHTML = myNums.length ? myNums.map((x,i) => `<tr><th>${esc(x.name)}</th><td><span class="pn">${esc(x.num)}</span></td><td class="mn-x"><button type="button" class="linkish" data-del="${i}" aria-label="Remove ${esc(x.name)}">Remove</button></td></tr>`).join("")
+    : `<tr><td class="sub">Nothing saved yet. Start with your super, your journeyman, the inspector's cell and the city's after-hours water line.</td></tr>`;
+  bindPn($("mn-rows")); IDX = null;
+}
+$("mn-add").addEventListener("click", () => {
+  const name = $("mn-name").value.trim(), num = $("mn-num").value.trim();
+  if (!name || num.replace(/\D/g, "").length < 3){ say("Add a name and a number first"); (name ? $("mn-num") : $("mn-name")).focus(); return; }
+  myNums.push({name: name.slice(0, 40), num: num.slice(0, 24)}); store.set("jpb-mynums", myNums);
+  $("mn-name").value = $("mn-num").value = ""; drawNums(); say("Saved " + name);
+});
+$("mn-num").addEventListener("keydown", e => { if (e.key === "Enter") $("mn-add").click(); });
+$("mn-rows").addEventListener("click", e => {
+  const b = e.target.closest("[data-del]"); if (!b) return;
+  const gone = myNums.splice(+b.dataset.del, 1)[0]; store.set("jpb-mynums", myNums); drawNums(); say("Removed " + gone.name);
+});
+drawNums();
+
+const CARDS = [
+  ["Math","On a ¼\" = 1'-0\" plan, 1\" on paper is how many feet?","4 ft (the scale is 1:48)","¼ inch stands for 12 inches, so 1 inch on paper = 48 inches = 4 ft."],
+  ["Math","A 24×36 plan printed \"fit to page\" on 11×17: still half scale?","No, about 46%. Calibrate on a written dimension","The printer shrinks the 24 in sheet to fit 11 in of paper plus margins (11 ÷ 24 ≈ 46%), so a scale ruler reads every length wrong."],
+  ["Math","Written dimension vs. what you scale off the plan: which wins?","The written dimension, always","Paper stretches, copies shrink, and a drawn line is only as good as the drafter's hand. The number is what the designer actually meant."],
+  ["Utah","Secondary and culinary on one sprinkler system: what's required?","RP on the culinary side + a swing joint (dual-source connection); RP tested within 10 days and yearly","The RP keeps untreated canal water from ever backing into drinking water, and the swing joint means only one supply can be hooked up at a time."],
+  ["Heaters","Ultra-low NOx limit for a gas heater ≤75,000 BTU/h in Utah's nonattainment areas?","10 ng/J","NOx feeds the winter inversion haze along the Wasatch Front, so Utah holds gas heaters to tighter limits than most states."],
+  ["How it works","About what temperature does water boil in Salt Lake (≈4,200 ft)?","About 204°F (≈1°F lower per 500 ft)","Less air pressure is pushing down on the water, so it boils at a lower temperature. Instructions that say 'boil' or 'scald' run cooler up here."],
+  ["Holes","Plastic pipe through a rated townhome wall needs what?","A listed firestop system with an F rating ≥ the wall's rating","Plastic melts in a fire and leaves an open hole between units. A listed firestop swells to close it so fire can't jump to the neighbor."],
+  ["Drains","Max trap-to-vent distance for a 2\" trap?","8 ft at ¼\"/ft","Go past it and the arm falls more than one pipe diameter. The vent opening ends up below the trap weir, the arm runs full, and it siphons the trap."],
+  ["Drains","Max trap-to-vent for a 1½\" trap?","6 ft at ¼\"/ft","6 ft × ¼ in = 1½ in of fall, exactly one pipe diameter. Any longer and the vent opening drops below the weir."],
+  ["Drains","Max trap-to-vent for a 3\" trap?","12 ft at ⅛\"/ft","3 in pipe runs at ⅛ in/ft, so 12 ft only falls 1½ in. That's half the diameter, so the vent opening stays well above the weir."],
+  ["Drains","Minimum slope for a 3\" drain?","⅛\" per ft","Bigger pipe carries a deeper stream, so it still scours solids at a gentler slope. Too steep and the water outruns the solids."],
+  ["Drains","Minimum slope for a 2\" drain?","¼\" per ft","Small pipe has a shallow stream. It needs the steeper slope to keep water deep and fast enough to carry solids."],
+  ["Drains","Trap seal depth?","2\" minimum, 4\" maximum","Under 2 in the seal evaporates or siphons too easily. Over 4 in the trap holds solids and fouls."],
+  ["Drains","Washer standpipe height?","18\"–42\" above the trap weir","Too short and the washer's pump-out surge overflows the top. Too tall and it's past what washer pumps are built to lift."],
+  ["Drains","Which way can a san tee turn flow?","Horizontal into vertical only","Its short turn is fine for water dropping into a stack. Turning vertical into horizontal, falling water would slam the wall and back up the branch."],
+  ["Drains","Fitting for vertical → horizontal?","Combo (wye + ⅛ bend) or long sweep","A long, gentle turn keeps falling water and solids moving instead of hitting a wall and stalling."],
+  ["Drains","Cleanout clearance on a house, pipe under 3\"?","12\" (18\" for 3\" and up)","You need room to get a snake and your arms in. Bigger pipe means bigger cables and machines."],
+  ["Vents","How high does a dry vent rise before going horizontal?","6\" above the flood rim of the highest fixture it serves","Below the flood rim, a backed-up fixture fills the vent. Then it's a drain carrying waste, and it clogs."],
+  ["Vents","Where does a vent take off a horizontal drain?","Above the drain's centerline","Tap below centerline and waste runs into the vent and clogs it. Above, it stays dry and keeps breathing."],
+  ["Vents","AAV height above the drain it vents?","At least 4\" (and 6\" above attic insulation)","If the drain backs up, waste can't reach the valve's seal. In an attic, insulation could bury it and choke the air."],
+  ["Vents","Minimum vent size?","½ the drain diameter, never under 1¼\"","Too small a vent chokes the airflow and lets frost or crud close it off."],
+  ["Vents","Roof vent height on a house?","6\" above the roof or expected snow, whichever is greater (IRC). Utah IPC: 12\". Run at least 12\", higher if the snow gets deeper","Snow can bury a short vent and seal it. Utah's deeper snow is why the IPC number here is 12 in."],
+  ["Vents","Utah through-wall vent ends how?","≥12\" out from the wall, elbow pointing down","Out and down keeps sewer gas and condensation off the siding and away from windows, and rain can't fall in."],
+  ["Sizing","DFU of a lavatory?","1","1 DFU is the base unit. A lavatory is the yardstick the whole table is built on."],
+  ["Sizing","DFU of a kitchen sink (with disposer/dishwasher)?","2","A sink basin full of water, plus a dishwasher or disposer, dumps a bigger slug at once."],
+  ["Sizing","DFU of a 1.6 gpf toilet?","3","A toilet dumps a big slug of water fast, and it carries solids."],
+  ["Sizing","DFU of a bathroom group with a 1.6 gpf toilet?","5","One person rarely runs every fixture in a bathroom at once, so the group counts less than the fixtures added up."],
+  ["Sizing","Is a bidet added to a bathroom group's DFU?","No: it's already part of the group","Same reason: one person uses one fixture at a time, so the group number already covers it."],
+  ["Sizing","Minimum trap size for a clothes washer standpipe?","2\"","A washer pumps out fast. A smaller trap and standpipe can't take the surge without overflowing."],
+  ["Sizing","Max DFU on a 1½\" horizontal branch?","3","At ¼ in/ft a 1½ in pipe only carries about three lav-size loads before it runs full and pulls trap seals."],
+  ["Sizing","Max DFU on a 2\" horizontal branch?","6","Twice the DFU of 1½ in: 2 in can take a kitchen sink plus a washer, but not a toilet's slug."],
+  ["Sizing","Max DFU on a 3\" horizontal branch?","20","3 in is the first size that takes a toilet. 20 DFU covers a few bathrooms' worth of fixtures."],
+  ["Sizing","Smallest building drain that can carry a toilet?","3\"","A toilet passes solids up to its trapway size. Anything smaller than 3 in clogs."],
+  ["Sizing","Shower trap size on a house (IRC)?","2\" (IPC table allows 1½\")","The IRC adds margin for body sprays and big heads filling the pan faster than a 1½ in trap can drain."],
+  ["Tests","DWV water test?","10 ft of head for 15 min (2021 IRC and IPC)","10 ft of water puts about 4.3 psi on the lowest joint. That's enough to find a leak without blowing fittings apart."],
+  ["Tests","DWV vacuum test?","−5 psi (−10\" Hg) for 15 min. In the 2021 IRC for plastic and the 2024 IPC","Pulling a vacuum can't blow a joint apart, and it works when water would freeze."],
+  ["Tests","Gas test (code)?","1.5× working pressure, at least 3 psi, never oxygen","Enough over working pressure to show a slow leak. Oxygen can ignite grease or pipe dope."],
+  ["Tests","Utah: air test on plastic DWV?","Only if water can't be used or would freeze: ≤6 psi, ≤15 min, stand clear, bleed slowly","Compressed air stores energy. If a plastic joint lets go, it becomes a projectile. Water just leaks."],
+  ["Tests","Shower pan test?","Fill 2\" deep at the threshold, hold 15 min","2 in covers the pan right up to the threshold. 15 min shows a slow leak before tile buries it."],
+  ["Supply","Static pressure that requires a PRV?","Over 80 psi","Over 80 psi wears out valves, fixtures and heaters early and causes water hammer."],
+  ["Supply","When do you need an expansion tank?","When a PRV, check or backflow device closes the system","Heated water expands. In a closed system it has nowhere to go, so pressure spikes and the T&P drips."],
+  ["Supply","Hot water limit at a shower valve?","120°F max (ASSE 1016 limit stop)","Scalding comes fast above 120°F. At 140°F it takes about 5 seconds."],
+  ["Supply","Utah max flow: showerhead / lav faucet?","2.0 gpm / 1.5 gpm","Utah's water-saving rules set limits below the federal 2.5 and 2.2 gpm."],
+  ["Supply","Plumbing nail plate trigger?","Pipe less than 1¼\" from the framing edge; 16 ga plate","Drywall screws and trim nails reach about 1¼ in into the framing. The plate stops them before they hit the pipe."],
+  ["Supply","PEX ≤1\" horizontal support spacing?","32\"","PEX softens and sags when hot. Close supports keep it from drooping and kinking."],
+  ["Supply","Copper ≤1¼\" horizontal support spacing?","6 ft","Copper is stiff, so it can span farther between hangers."],
+  ["Supply","ABS / PVC horizontal support spacing?","4 ft","Plastic DWV sags between supports. A sag holds water and kills your slope."],
+  ["Underground","Water service depth vs. frost line?","12\" deep and 6\" below frost (30\" frost here, so ≈36\")","The frost line is how deep the ground freezes. The 6 in margin keeps the service out of it in a hard winter."],
+  ["Math","Travel for a 12\" offset with two 45s?","≈17\" (12 × 1.414 = 16.97)","With 45s, travel = offset ÷ sin 45° = offset × 1.414."],
+  ["Math","Fall over 40 ft at ¼\"/ft?","10\" (feet ÷ 4)","¼ in of fall per foot × 40 ft = 10 in."],
+  ["Math","psi from a 10 ft column of water?","≈4.3 psi (0.433 per ft)","A 1 in square column of water 1 ft tall weighs 0.433 lb."],
+  ["Math","Feet of head from 30 psi?","≈69 ft (psi × 2.31)","Turn it around: 1 psi holds up 1 ÷ 0.433 = 2.31 ft of water."],
+  ["Math","Gallons in 100 ft of ¾\" PEX?","≈2 (½\" ≈ 1, 1\" ≈ 3)","It tells you how long you'll wait for hot water and how much water fills a line for a test."],
+  ["Math","BTU to heat 1 gallon 1°F?","8.34","That's what a BTU is: the heat to warm 1 lb of water 1°F. A gallon weighs 8.34 lb."],
+  ["Tests","80 psi air test set at 60°F; the shell cools to 30°F. Is a 5 psi drop a leak?","Not by itself: the cold alone drops it about 5 psi. Check with Inspect → Phases & tests → Leak or just cold?","Trapped air loses pressure as it cools. Use absolute temperature (°F + 460) and absolute pressure, and the cold alone explains about 5 psi."],
+  ["Utah","Pipe color for pressurized irrigation (PI)?","Purple (blue = potable, green = sewer)","Colors stop someone from tapping untreated water thinking it's drinking water."],
+  ["Utah","Navien NPE-2 altitude setting at 4,500 ft?","Installer menu 1.2.14 → 2 (2,000–5,400 ft)","Thinner air up here. The setting matches fan speed and gas to the air so it burns clean."],
+  ["Utah","Softener regen drain connects how?","Through an air gap to an indirect receptor","Without the air gap, a sewer backup could siphon into the softener and on into the house water."],
+  ["PEX","ProPEX joint: gap at the fitting shoulder that means redo it?","More than 1/16\": cut 2–3\" back, new ring","A gap means the PEX isn't seated full depth on the fitting. It can leak or pull off later behind a wall."],
+  ["PEX","How often do you check crimps with the go/no-go gauge?","Every crimp, plus a test crimp at the start of each job","Crimp tools drift out of adjustment. A bad crimp leaks behind drywall where nobody sees it."],
+  ["Underground","Water service and sewer in one trench?","Water on a solid shelf ≥12\" above the sewer (or 5 ft apart)","A leaking sewer below a water line can get pulled into it during a pressure drop. Height and distance keep them apart."],
+  ["Underground","Minimum water service size?","¾\"","Smaller pipe can't deliver a house's flow over a long run without too much pressure loss."],
+  ["Fixtures","Toilet center to side wall, minimum?","15\"","15 in from center gives a seated person room for hips and elbows."],
+  ["Fixtures","Clear space in front of a toilet?","21\"","Room for knees and to stand up."],
+  ["Fixtures","Minimum shower size?","900 in², and a 30\" circle must fit","Room to turn and wash without hitting the walls. A 30 in circle is about shoulder width."],
+  ["Fixtures","Shower liner height?","2\" above the finished threshold","Water on the shower floor wicks toward the threshold. 2 in of liner above it keeps it in the pan."],
+  ["Gas","Gas shield plate thickness?","0.0575\" steel (16 ga), same as a plumbing nail plate","Same job as a nail plate: a nail through gas pipe or CSST is a leak and a fire."],
+  ["Gas","Gas shield plates extend how far?","4\" past sole/top plates and each side of the member","Drywall and trim nails go into the plates, so the shield has to cover that zone."],
+  ["Gas","Where does an appliance shutoff go?","Same room, within 6 ft, upstream of the connector","So whoever services the appliance can shut it off without hunting for a valve."],
+  ["Gas","Max appliance connector length?","6 ft, never concealed or through a wall or floor","Connectors are thin and flexible. Short and visible means damage gets seen."],
+  ["Gas","Support spacing for ½\" steel gas pipe?","6 ft (¾\"–1\": 8 ft, 1¼\" and up: 10 ft)","Sagging pipe stresses the joints. Smaller pipe sags sooner."],
+  ["Gas","½\" Sch 40 capacity at 40 ft (0.5\" w.c. drop)?","81 CFH","Friction eats pressure as gas travels. At 40 ft, ½ in only carries 81 CFH before it loses more than 0.5 in w.c."],
+  ["Gas","CSST bonding wire?","6 AWG copper, 75 ft max, never clamped to the CSST","Lightning can arc through thin CSST walls. Bonding gives the current a path to ground. Clamping onto the CSST damages it."],
+  ["Gas","Altitude derate rule of thumb?","4% per 1,000 ft above sea level (applied above 2,000 ft), unless the maker says otherwise","Air holds about 4% less oxygen per 1,000 ft of altitude, so the appliance needs less gas to burn right."],
+  ["Gas","CFH for a 100,000 BTU/h furnace (1,000 BTU/ft³)?","100 CFH","CFH = BTU/h ÷ BTU per cubic foot: 100,000 ÷ 1,000 = 100."],
+  ["Heaters","T&P discharge ends where?","Air gap in the same room, in view, ≤6\" above floor or receptor","In view so a dripping valve gets noticed. The air gap stops backflow. Low so a blast of scalding water hits the floor, not a person."],
+  ["Heaters","PEX T&P discharge line size?","One size bigger than the valve outlet","PEX has a thicker wall than copper, so its inside is smaller. Going up a size keeps full relief flow."],
+  ["Heaters","Gas water heater in a garage: ignition height?","18\" above the floor unless FVIR-listed","Gasoline vapor is heavier than air and pools on the floor. The flame has to sit above it."],
+  ["Heaters","Drain pan size?","1½\" deep, ¾\" drain","It catches a leak and drains it before it ruins the floor or ceiling below."],
+  ["Heaters","Utah seismic straps go where?","Upper and lower third of the tank","Utah is earthquake country. A tank full of water is heavy, and two straps keep it from tipping and tearing the gas line."],
+  ["Heaters","What does the anode rod do?","Corrodes instead of the steel tank","It's a more reactive metal, so it corrodes first and the steel tank doesn't. That's why it wears out."],
+  ["Math","1 gallon = ? cubic inches / pounds","231 in³ / 8.34 lb","A US gallon is defined as 231 cubic inches. Water weighs 8.34 lb per gallon."],
+  ["Math","True offset formula?","√(rise² + roll²)","It's the Pythagorean theorem: rise and roll are the two legs, and the true offset is the long side."],
+  ["Math","45° travel multiplier?","1.414","1 ÷ sin 45° = 1.414."],
+  ["Math","22½° travel multiplier?","2.613","1 ÷ sin 22½° = 2.613."],
+  ["Math","Threads per inch on ½\" and ¾\" NPT?","14","NPT thread pitch is standard by size: ½ and ¾ in are both 14 TPI."],
+  ["Math","Velocity formula from gpm?","ft/s = gpm × 0.4085 ÷ ID²","It's gpm turned into ft³/s, divided by the pipe's inside area in square feet. 0.4085 folds all the unit conversions into one number."],
+  ["Math","PEX expansion rule (Uponor)?","1.1\" per 100 ft per 10°F","PEX grows about 10 times as much as copper when it heats up. Leave slack and use loops on long runs."],
+  ["Math","Rolling offset: how far do you roll the fittings?","atan(roll ÷ rise) off plumb, toward the roll","Rolling the fittings by that angle lines the offset up with the true offset line."],
+  ["Math","Why can't you just pick the run on an offset?","The offset and fitting angle fix it (run = offset ÷ tan angle); extra space is straight pipe","The fitting angle and the offset fix the run (run = offset ÷ tan angle). Extra space is just straight pipe."],
+  ["Materials","Copper type colors?","K green, L blue, M red, DWV yellow","K is the thickest wall, then L, then M. The color stamp tells you at a glance."],
+  ["Materials","Uponor PEX-a minimum bend radius?","6× OD","Bend it tighter and the tube kinks and chokes flow."],
+  ["Materials","Max lead in solder and flux?","0.2%","Lead leaches into drinking water. Federal law caps solder and flux at 0.2%."],
+  ["Materials","CPVC ½–1\" cure before test above 60°F?","1 hour","The solvent has to evaporate before the joint is strong enough to hold test pressure."],
+  ["Holes","Max bored hole in a 2×4 bearing stud?","40% of 3½\" = 1.4\"","Bearing studs hold up the floor or roof. Take out too much wood and they buckle."],
+  ["Holes","Does 1½\" DWV fit a 2×4 non-bearing wall?","Barely not: a 2⅛\" hole is 61% (limit 60%)","Non-bearing studs can lose 60% of their depth. 1½ in DWV is 1.9 in outside, and its 2⅛ in hole takes 61%."],
+  ["Holes","Top plate cut more than 50%: fix?","16 ga × 1½\" steel strap, 6\" past each side, eight 10d nails each side","The top plate ties the wall together. The strap rebuilds the tie you cut."],
+  ["Holes","Max notch in a sawn floor joist?","⅙ of the depth, never in the middle third (¼ at the ends)","Bending stress is highest at the top and bottom edges in the middle of the span. A notch there weakens the joist most."],
+  ["Holes","Max bored hole in a sawn floor joist?","⅓ of the depth, 2\" from the edges","The center of the depth carries the least stress. Staying 2 in from the edges keeps the high-stress wood whole."],
+  ["Holes","Can you notch or drill an I-joist flange?","Never. Web holes only, per the brand's chart","The flanges carry the bending, like the chords of a truss. Cut one and the joist can fail."],
+  ["Holes","Open-web truss in the way?","Never cut a chord or web without an engineer; run through the openings","Each truss member is engineered for its load. One cut can bring the whole truss down."],
+  ["Safety","Trench depth that needs shoring, shielding or sloping?","5 ft or more, and shallower if the competent person sees cave-in risk","A cubic yard of soil weighs over a ton. Cave-ins kill fast."],
+  ["Safety","Trench ladder rule?","4 ft deep or more: ladder within 25 ft","In a cave-in or flooding you need a fast way out."],
+  ["Safety","Residential fall protection height?","6 ft","OSHA's residential construction fall rule (1926.501) starts at 6 ft."],
+  ["Safety","Report a serious injury to UOSH within?","8 hours","Utah's UOSH rule: deaths, hospital admissions and serious injuries get reported fast so the site can be checked."],
+  ["Safety","Blue Stakes notice?","48 business hours (about 3 business days); ticket good 21 days","Utility owners need time to mark their lines. Marks fade, so tickets expire."],
+  ["Safety","You smell gas on the job. Do what?","Everyone out, no switches or flames, call from outside: Enbridge 1-800-767-1689 or 911","A light switch or phone can spark and ignite gas. Get people out before anything else."],
+  ["License","Journeyman requirements?","576 classroom hr + 8,000 apprentice hr","DOPL sets the hours to prove you've seen enough systems to work without supervision."],
+  ["License","Residential journeyman requirements?","432 classroom hr + 6,000 apprentice hr","The residential license only covers houses, so it takes fewer hours."],
+  ["License","How many apprentices per supervisor?","Up to 3","DOPL caps it so one licensee can actually watch and teach their apprentices."],
+  ["License","Residential → journeyman upgrade?","2,000 hr non-residential + 4th-year class (144 hr)","Commercial work (stacks, grease, bigger pipe) is the gap the residential license skips."],
+  ["License","License renewal?","Every 2 yr by Nov 30 of even years; 12 CE hr, 8 core","DOPL keeps licensees current as codes change every few years."],
+  ["Trim","Moen Posi-Temp cartridge?","1222 (it lives in the valve)","Posi-Temp's cartridge stays in the valve and the trim just covers it. ID the valve before you buy parts."],
+  ["Trim","Moen M-CORE 3-series cartridge?","1213 (comes with the trim)","M-CORE puts the cartridge in the trim kit, so one rough valve can take different trims."],
+  ["Trim","Can a Posi-Temp trim go on an M-CORE valve?","No. Trim must match the valve family","Each family's cartridge and handle adapter differ. A mismatch won't fit or mix right."],
+  ["Trim","Delta 13/14 series cartridge?","RP46074","13/14 is Delta's pressure-balance family. RP46074 is the cartridge that matches it."],
+  ["Trim","Delta MultiChoice universal rough valve?","R10000 (13/14, 17 or 17T trim)","One rough valve takes several trims, so the buyer can change their mind after rough-in."],
+  ["Trim","Delta tub spout distance below the valve?","8\"–18\" (beyond 18\": shower rise)","Too far below the valve and water takes the easier path up to the head. That's shower rise."],
+  ["Trim","Pressure balance vs thermostatic?","Pressure balance equalizes pressures; thermostatic senses temperature","Pressure balance reacts to a pressure drop like a toilet flush. Thermostatic holds the temperature itself."],
+  ["Trim","Disposer + new dishwasher: what first?","Knock out the dishwasher plug in the disposer","Disposers ship with the dishwasher inlet sealed. Skip the knockout and the dishwasher can't drain."],
+  ["Trim","Angle stop outlet size for a faucet?","⅜\" OD compression","Faucet supply lines use ⅜ in OD compression. It's the standard connection."],
+  ["Utah","Utah house code since 7/1/2026?","2021 IRC + Utah amendments (not the 2024 IRC)","HB 65 (2026) kept the 2021 IRC for houses and moved everything else to the 2024 codes."],
+  ["Utah","Permit applied for before 7/1/2026: which IPC?","Usually the 2021 IPC (check the permit card)","The code edition is locked in when the permit is applied for."],
+  ["Utah","Can secondary water connect to culinary with a valve?","Never: that's a cross-connection","Valves leak and get opened by mistake. Utah Code 19-4-112 bans the connection outright."],
+  ["Utah","Gas derate at Herriman (~5,000 ft)?","About 20% (5 × 4%), only if the appliance isn't already set up for altitude","Herriman sits around 5,000 ft: 5 × 4% = 20%."],
+  ["Utah","Incoming water temp for sizing a Utah winter heater?","40°F","Winter water comes in cold, so the heater has to raise it further. Size for the worst case."],
+  ["How it works","Why does a dripping RPZ drip?","A check is leaking; the relief valve dumps water instead of letting it flow back","The RPZ's middle zone is held at lower pressure than the supply. Any check leak dumps water out instead of letting it flow back."],
+  ["How it works","Why does a vent protect a trap?","Lets air in so falling water can't siphon the seal","A falling slug of water pulls a vacuum behind it. The vent lets air fill that instead of the trap water."],
+  ["How it works","Why is trap-to-vent distance limited?","On 1¼\"–2\" pipe at ¼\"/ft, past the limit the arm falls more than one pipe diameter, the vent opening drops below the weir, and the trap siphons","The vent opening has to stay above the trap weir, or the arm runs full like a siphon tube."],
+  ["How it works","Why recheck a limit stop set in winter?","Warmer summer cold water makes the same stop run hotter","A mixing valve sets proportions. Warmer cold water going in means hotter water coming out."],
+  ["How it works","Why derate gas at altitude?","Less oxygen per ft³: full input burns dirty (soot, CO)","Less oxygen with the same gas means incomplete burning: soot and carbon monoxide."],
+  ["How it works","Why does a closed system need an expansion tank?","Water barely compresses; the tank's air cushion takes the expansion","Water expands about 2% from 40°F to 120°F, and it won't squeeze. The air in the tank will."],
+  ["How it works","Why are cold-climate roof vents upsized?","Frost from warm, wet vent air can seal a small pipe","Warm, wet vent air freezes on the inside of the pipe where it passes the cold roof. A bigger pipe takes longer to close."],
+  ["How it works","Why pitch a frost-free hose bibb?","The seat is inside the warm wall; the outside barrel must drain","Water trapped in the barrel freezes and splits it. Pitch lets it drain out."],
+  ["2021 IPC","2021 IPC: max vertical drop from a fixture outlet to its trap weir?","24\" (1002.1)","A long tailpiece builds speed and can siphon the trap, and it grows gunk."],
+  ["2021 IPC","2021 IPC: which table has trap-to-vent distances?","Table 909.1","Know the table number and you can find any arm length in seconds on a test."],
+  ["2021 IPC","2021 IPC: shower trap size (Table 709.1, ≤5.7 gpm)?","1½\". On a house (IRC): 2\"","The IPC sizes for one showerhead's flow. The IRC adds margin for body sprays."],
+  ["2021 IPC","2021 IPC: which table gives DFU per fixture?","Table 709.1","DFU is the starting point for sizing every drain, so this table gets used most."],
+  ["2021 IPC","2021 IPC: horizontal branch sizes by DFU are in which table?","Table 710.1(2)","Branches run partly full on purpose, so each size has a DFU limit."],
+  ["2021 IPC","2021 IPC: DWV water test (312.2)?","10 ft of head, 15 min","10 ft of water puts about 4.3 psi on the lowest joint: enough to find leaks."],
+  ["2021 IPC","2021 IPC: DWV air test (312.3)?","5 psi for 15 min. Plastic can't be air tested (Utah allows ≤6 psi, ≤15 min only if water can't be used)","Compressed air in plastic is stored energy. A failed joint becomes a projectile."],
+  ["2021 IPC","Does the 2021 IPC have a vacuum test?","No. It was added in the 2024 IPC (312.4). The 2021 IRC allows it on houses","Each edition adds methods. Know which book your permit is under."],
+  ["2021 IPC","2021 IPC: shower pan test section?","312.9: 2\" at the threshold, 15 min","It proves the liner before tile buries it."],
+  ["2021 IPC","2021 IPC: when is a PRV required (604.8)?","Static pressure over 80 psi","High pressure wears out valves and heaters and causes water hammer."],
+  ["2021 IPC","2021 IPC: shower valve standard and max temperature (424.3)?","ASSE 1016/1069/1070, limit stop at 120°F or less","Pressure drops from a flush can scald without it."],
+  ["2021 IPC","2021 IPC: T&P discharge pipe end (504.6)?","Full size, ends ≤6\" above the floor or receptor, in view, no threads on the end, not trapped","Threads invite a cap. A trap can hold water and freeze. In view means a leak gets noticed."],
+  ["2021 IPC","2021 IPC: water heater pan (504.7)?","1½\" deep, ¾\" drain","It catches a leak and carries it away before the floor below gets ruined."],
+  ["2021 IPC","2021 IPC: water service depth (305.4)?","12\" deep and 6\" below the frost line (≈36\" here)","Keeps the service out of frozen ground in a hard winter."],
+  ["2021 IPC","2021 IPC: pipe support spacing table?","Table 308.5","Every material sags differently. One table has them all."],
+  ["2021 IPC","2021 IPC: how high does a dry vent rise before going horizontal (905.4)?","6\" above the flood rim of the highest fixture it serves","Lower than that, a backed-up fixture fills the vent and it clogs."],
+  ["2021 IPC","2021 IPC: vent end within 10 ft of a window or door (903.5)?","At least 3 ft above the top of the opening (IRC: 2 ft)","Sewer gas rises. Height keeps it out of open windows."],
+  ["2021 IPC","2021 IPC: trap seal depth (1002.4)?","2\" minimum, 4\" maximum","Too shallow evaporates or siphons. Too deep holds solids."],
+  ["2021 IPC","2021 IPC: slope for drains 2½\" and smaller (Table 704.1)?","¼\" per ft (3\"–6\": ⅛\")","Small pipe needs the steeper slope to keep water deep enough to carry solids."]
+];
+/* Smarter flashcards (Leitner boxes). New → Got it puts a card in box 2 (back tomorrow); each Got it moves it up a box:
+   back in 1, 3, 7, then 14 days. Missed it drops it to box 1: due again today, and it comes back a few cards later this round. */
+const WAIT = [0, 0, 1, 3, 7, 14];   /* days, by box 1–5 */
+const today = () => Math.floor((Date.now() - new Date().getTimezoneOffset()*60e3) / 864e5);
+const boxes = (o => { const r = {}; if (o && typeof o === "object" && !Array.isArray(o)) for (const [k,v] of Object.entries(o))
+  if (CARDS.some(c => c[1] === k) && v && v.b >= 1 && v.b <= 5 && Number.isFinite(v.due)) r[k] = {b: Math.floor(v.b), due: Math.floor(v.due)}; return r; })(store.get("jpb-fc-box", {}));
 let missed = new Set((a => Array.isArray(a) ? a.filter(q => typeof q === "string" && CARDS.some(c => c[1] === q)) : [])(store.get("jpb-fc-miss", [])));
-const MISSED = "★ Missed";
+const MISSED = "★ Missed", DUE = "Due now", NEW_PER_ROUND = 15;
+const dueCards = () => CARDS.filter(c => boxes[c[1]] && boxes[c[1]].due <= today());
+const newCards = () => CARDS.filter(c => !boxes[c[1]]);
+function fcStats(){
+  const n = [0,0,0,0,0,0]; CARDS.forEach(c => n[boxes[c[1]] ? boxes[c[1]].b : 0]++);
+  const due = dueCards().length, later = Object.values(boxes).filter(v => v.due > today()).map(v => v.due);
+  const next = !due && later.length ? Math.min(...later) - today() : 0;
+  $("fc-stats").innerHTML = `<b>${due}</b> due now${next ? ` (next in ${next} day${next > 1 ? "s" : ""})` : ""} · <b>${n[0]}</b> new · <b>${n[1] + n[2]}</b> learning · <b>${n[3] + n[4]}</b> solid · <b>${n[5]}</b> locked in`;
+}
 function fcTopics(){
-  const cur = $("fc-filter").value;
-  const list = ["All", ...(missed.size ? [MISSED] : []), ...new Set(CARDS.map(c => c[0]))];
-  $("fc-filter").innerHTML = list.map(t => `<option value="${esc(t)}">${t === MISSED ? `${MISSED} (${missed.size})` : esc(t)}</option>`).join("");
-  $("fc-filter").value = list.includes(cur) ? cur : "All";
+  const cur = $("fc-filter").value, due = dueCards().length, fresh = Math.min(NEW_PER_ROUND, newCards().length);
+  const list = [DUE, "All", ...(missed.size ? [MISSED] : []), ...new Set(CARDS.map(c => c[0]))];
+  const label = t => t === DUE ? `${DUE} (${due} + ${fresh} new)` : t === MISSED ? `${MISSED} (${missed.size})` : esc(t);
+  $("fc-filter").innerHTML = list.map(t => `<option value="${esc(t)}">${label(t)}</option>`).join("");
+  $("fc-filter").value = list.includes(cur) ? cur : DUE;
+  fcStats();
 }
 let deck = [], pos = 0, got = 0, seen = 0, flipped = false;
 function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
 function fcDeal(){
   const t = $("fc-filter").value;
-  deck = shuffle(CARDS.filter(c => t === "All" || (t === MISSED ? missed.has(c[1]) : c[0] === t)).slice()); pos = 0; got = 0; seen = 0; fcShow();
+  deck = t === DUE
+    ? shuffle(dueCards()).sort((x,y) => boxes[x[1]].b - boxes[y[1]].b).concat(shuffle(newCards()).slice(0, NEW_PER_ROUND))   /* weakest first, then new */
+    : shuffle(CARDS.filter(c => t === "All" || (t === MISSED ? missed.has(c[1]) : c[0] === t)).slice());
+  pos = 0; got = 0; seen = 0; fcShow();
 }
 function fcShow(){
   flipped = false;
-  const c = deck[pos];
-  $("fc-topic").textContent = c ? c[0] : "";
+  const c = deck[pos], v = c && boxes[c[1]];
+  $("fc-topic").textContent = c ? `${c[0]} · ${v ? `Box ${v.b} of 5` : "New"}` : "";
   $("fc-pos").textContent = deck.length ? `${Math.min(pos+1, deck.length)} of ${deck.length}` : "";
-  $("fc-q").textContent = c ? c[1] : `Done! ${got} of ${seen} right.${missed.size ? ` Pick "${MISSED}" to drill the ones you missed.` : ""} Tap Reshuffle to go again.`;
+  const done = $("fc-filter").value === DUE && !deck.length ? "Nothing due right now. Pick All or a topic to keep going, or come back tomorrow."
+    : `Done! ${got} of ${seen} right.${missed.size ? ` Pick "${MISSED}" to drill the ones you missed.` : ""} Tap Reshuffle to go again.`;
+  $("fc-q").textContent = c ? c[1] : done;
   $("fc-a").textContent = c ? c[2] : ""; $("fc-a").hidden = true;
+  $("fc-why").innerHTML = c && c[3] ? `<b>WHY</b>${esc(c[3])}` : ""; $("fc-why").hidden = true;
   $("fc-hint").hidden = !c; $("fc-hint").textContent = "Tap to see the answer";
   $("fc-score").textContent = `${got} / ${seen}`;
   $("fc-got").disabled = $("fc-miss").disabled = true;
 }
 $("fc-card").addEventListener("click", () => {
   if (!deck[pos]) return;
-  flipped = !flipped; $("fc-a").hidden = !flipped;
+  flipped = !flipped; $("fc-a").hidden = !flipped; $("fc-why").hidden = !flipped || !deck[pos][3];
   $("fc-hint").textContent = flipped ? "Tap to hide" : "Tap to see the answer";
   $("fc-got").disabled = $("fc-miss").disabled = !flipped;
 });
 const fcNext = ok => {
   if (!deck[pos] || !flipped) return;
-  const q = deck[pos][1]; ok ? missed.delete(q) : missed.add(q); store.set("jpb-fc-miss", [...missed]);
+  const c = deck[pos], q = c[1], v = boxes[q] || {b: 0, due: today()};
+  v.b = ok ? (v.b === 0 ? 2 : Math.min(5, v.b + 1)) : 1; v.due = today() + WAIT[v.b]; boxes[q] = v; store.set("jpb-fc-box", boxes);
+  ok ? missed.delete(q) : missed.add(q); store.set("jpb-fc-miss", [...missed]);
+  if (!ok) deck.splice(Math.min(deck.length, pos + 4), 0, c);   /* see it again a few cards from now */
   seen++; if (ok) got++; pos++; fcTopics(); fcShow(); $("fc-card").focus();
 };
 $("fc-got").addEventListener("click", () => fcNext(true));
 $("fc-miss").addEventListener("click", () => fcNext(false));
 $("fc-filter").addEventListener("change", fcDeal);
 $("fc-reset").addEventListener("click", fcDeal);
+{ let armed = 0;
+  $("fc-wipe").addEventListener("click", () => {
+    if (!armed){ $("fc-wipe").textContent = "Tap again to erase progress"; armed = setTimeout(() => { armed = 0; $("fc-wipe").textContent = "Start over"; }, 4000); return; }
+    clearTimeout(armed); armed = 0; $("fc-wipe").textContent = "Start over";
+    for (const k of Object.keys(boxes)) delete boxes[k]; missed.clear(); store.set("jpb-fc-box", {}); store.set("jpb-fc-miss", []);
+    fcTopics(); fcDeal(); say("Flashcard progress erased");
+  });
+}
 fcTopics(); fcDeal();
 
 IDX = null;  /* every table is rendered now: rebuild the search index on next use */
@@ -4573,7 +4851,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "plumbiverse-2026-10-17";
+var BUILD = "plumbiverse-2026-10-18";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
