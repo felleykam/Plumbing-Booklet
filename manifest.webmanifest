@@ -1,6 +1,6 @@
 {
- "name": "Plumbing Field Guide",
- "short_name": "Field Guide",
+ "name": "PlumChum's Guide to the Plumbiverse",
+ "short_name": "Plumbiverse",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",

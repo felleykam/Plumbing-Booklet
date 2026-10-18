@@ -1,4 +1,4 @@
-/* Plumbing Field Guide offline cache.
+/* PlumChum's Guide to the Plumbiverse: offline cache.
    The version comes from BUILD in index.html (registered as sw.js?v=BUILD), so bumping BUILD
    is the only step needed to push an update to phones. */
 const CACHE = "jpb-" + (new URL(location).searchParams.get("v") || "dev");

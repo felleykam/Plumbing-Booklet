@@ -8,11 +8,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Field Guide">
+<meta name="apple-mobile-web-app-title" content="Plumbiverse">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
-<title>Plumbing Field Guide</title>
+<title>PlumChum's Guide to the Plumbiverse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Barlow+Condensed:wght@700;800&family=Barlow:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap">
@@ -89,8 +89,8 @@ b{font-weight:700}
 .tb-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:10px}
 .tb img{width:34px;height:34px;border-radius:7px;flex:0 0 auto}
 .brand{display:flex;flex-direction:column;min-width:0;margin-right:auto;line-height:1}
-.brand h1{font-family:var(--stencil);font-weight:400;font-size:clamp(24px,6.4vw,32px);letter-spacing:.04em;margin:0;color:var(--hv)}
-.brand small.pre{font-size:14px;letter-spacing:.3em;color:var(--hv);margin:0 0 2px}
+.brand h1{font-family:var(--stencil);font-weight:400;font-size:clamp(18px,5.2vw,32px);letter-spacing:.03em;margin:0;color:var(--hv);white-space:nowrap}
+.brand small.pre{font-family:var(--display);font-weight:800;font-size:clamp(10px,2.7vw,13px);letter-spacing:.02em;text-transform:uppercase;color:var(--hv);margin:0 0 3px;white-space:nowrap}
 .brand small{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-k-sub);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hbtn{appearance:none;flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;min-height:46px;padding:0 12px;border:var(--bw) solid var(--hv);border-radius:var(--r);background:transparent;color:var(--hv);font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
 .hbtn svg{width:18px;height:18px}
@@ -263,6 +263,7 @@ input,select{font:inherit}
 details.more{border-top:1px solid var(--rule)}
 .learn-hbtn{display:none}
 @media (max-width:759px){nav.tabs .nav-learn{display:none}.learn-hbtn{display:inline-flex}nav.tabs button{font-size:13.5px;font-weight:800;letter-spacing:.03em}.hbtn{padding:0 9px}}
+@media (max-width:389px){.learn-hbtn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
 @media (max-width:430px){#theme-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.hbtn{min-width:44px;justify-content:center}}
 #which-d{border-top:0}
 .jump-list{display:grid;grid-template-columns:1fr;gap:6px;padding:0 12px 12px}
@@ -417,7 +418,7 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
 <header class="tb">
   <div class="tb-in">
     <img src="icon-192.png" alt="" width="34" height="34" onerror="this.remove()">
-    <div class="brand"><small class="pre">Plumbing</small><h1>FIELD GUIDE</h1><small>Utah residential</small></div>
+    <div class="brand"><small class="pre">PlumChum's guide to the</small><h1>PLUMBIVERSE</h1><small>Utah residential</small></div>
     <button type="button" class="hbtn learn-hbtn" id="learn-btn" aria-pressed="false" aria-label="Learn: how it works, flashcards, glossary, license"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg><span>Learn</span></button>
     <button type="button" class="hbtn" id="files-btn" hidden aria-pressed="false" aria-label="My files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6l2 3h8v13H4z"/></svg><span>Files</span></button>
     <button type="button" class="hbtn" id="theme-btn" aria-label="Color mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><span id="theme-lbl">Auto</span></button>
@@ -2246,7 +2247,7 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
     </form>
     <div class="x"><table class="t"><tbody id="list-mine"><tr><td class="sub">Loading your files…</td></tr></tbody></table></div>
   </section>
-  <footer><b>PLUMBING FIELD GUIDE</b> · Utah residential. A study and field aid, not the code: the adopted code, approved plans, manufacturer instructions and your inspector always win. Code text belongs to the ICC and the State of Utah; product guides belong to their makers. Facts checked October 2026.</footer>
+  <footer><b>PLUMCHUM'S GUIDE TO THE PLUMBIVERSE</b> · Utah residential. A study and field aid, not the code: the adopted code, approved plans, manufacturer instructions and your inspector always win. Code text belongs to the ICC and the State of Utah; product guides belong to their makers. Facts checked October 2026.</footer>
   </div>
 </div>
 
@@ -4572,7 +4573,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "fieldguide-2026-10-17-sun";
+var BUILD = "plumbiverse-2026-10-17";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
