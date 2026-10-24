@@ -348,6 +348,18 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 .t td.yes{background:color-mix(in srgb,var(--ok) 16%,var(--sheet))}
 .t td.no{background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--danger) 16%,var(--sheet)) 0 5px,var(--sheet) 5px 10px)}
 .wx-stale{display:inline-block;background:var(--hv);color:var(--k);font-weight:800;font-size:14.5px;padding:0 6px;border-radius:3px;margin-bottom:4px}
+
+/* ===== mech room map ===== */
+.mech-map .mm-pipe{stroke:var(--d-cut);stroke-width:4}
+.mech-map .mm-hot{stroke:var(--d-fit);stroke-width:3}
+.mech-map path.mm-hot.dash{stroke-width:2}
+.mech-map .mm-box{fill:var(--sheet);stroke:var(--ink);stroke-width:2}
+.mech-map .mm-box.dash{stroke-dasharray:4 3}
+.mech-map .mm-soft{fill:var(--hv);fill-opacity:.5}
+.mech-map .mm-wh{fill:var(--zebra)}
+.mech-map .mm-v{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.mech-map .mm-closed{fill:var(--sheet)}
+.mech-map .mm-thin{stroke-width:1}
 /* ===== plan-scale diagram ===== */
 svg.pl{display:block;width:100%;height:auto;max-width:560px;margin:0 auto;padding:10px 8px 4px}
 .pl text{fill:var(--ink);font-family:var(--body);font-weight:600;font-size:12.5px}
@@ -1587,6 +1599,291 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
     <p class="note">Louvers and grilles cut the free area: if it isn't marked, figure wood ≈ 25% open, metal ≈ 75%.</p>
   </section>
 
+  <!-- ================= MECH ROOM ================= -->
+  <section data-sec="mech" data-kw="mechanical room mech room layout order main shutoff prv softener filter loop bypass water heater expansion tank recirc basement utility room diagram what goes where">
+    <div class="sec-head"><h2>Mech room map</h2><small>What goes where on the main</small></div>
+    <svg class="pl mech-map" viewBox="0 0 400 572" role="img" aria-label="Typical Utah basement mechanical room water layout, in order along the main: 1 main shutoff, 2 PRV with gauge, 3 tee for unsoftened hose bibbs, 4 sediment filter, 5 optional carbon filter, 6 softener with bypass and its drain through an air gap, 7 tee for soft cold to the house, 8 expansion tank on the cold line to the heater, 9 water heater, 10 optional mixing valve on the hot out to the house, 11 recirc return coming back to the heater through a check valve.">
+      <text x="14" y="18" class="h">Cold comes in at the top</text>
+      <text x="14" y="34" class="s mut">Typical order. Your shop's standard and the makers' manuals win.</text>
+      <!-- main line -->
+      <path d="M60 44V462" class="ln mm-pipe"/>
+      <!-- 1 main shutoff -->
+      <path d="M50 64h20l-20 16h20z" class="mm-v"/>
+      <text x="150" y="70" class="b">① Main shutoff</text><text x="150" y="84" class="s mut">Full-port ball valve. Tag it.</text>
+      <!-- 2 PRV -->
+      <rect x="48" y="100" width="24" height="26" rx="3" class="mm-box"/><path d="M53 121l14-16m0 0h-6m6 0v6" class="ln"/>
+      <circle cx="92" cy="113" r="9" class="mm-box"/><path d="M92 113l5-4" class="ln"/><path d="M72 113h11" class="ln"/>
+      <text x="150" y="112" class="b">② PRV + gauge</text><text x="150" y="126" class="s mut">Over 80 psi static. Strainer first.</text>
+      <!-- 3 unsoftened tee -->
+      <path d="M60 158H112" class="ln mm-pipe"/><path d="M112 150v16M112 166h8" class="ln"/>
+      <text x="150" y="156" class="b">③ Tee: unsoftened</text><text x="150" y="170" class="s mut">Hose bibbs. Don't soften the lawn.</text>
+      <!-- 4 sediment -->
+      <rect x="47" y="190" width="26" height="36" rx="5" class="mm-box"/><path d="M52 200h16M52 208h16M52 216h16" class="ln mm-thin"/>
+      <text x="150" y="203" class="b">④ Sediment filter</text><text x="150" y="217" class="s mut">Protects the softener valve.</text>
+      <!-- 5 carbon -->
+      <rect x="47" y="240" width="26" height="36" rx="5" class="mm-box dash"/>
+      <text x="150" y="253" class="b">⑤ Carbon <tspan class="mut">(optional)</tspan></text><text x="150" y="267" class="s mut">Takes chlorine out; resin lasts longer.</text>
+      <!-- 6 softener loop -->
+      <path d="M60 296H96V352H60" class="ln mm-pipe"/>
+      <path d="M53 318h14l-14 12h14z" class="mm-v mm-closed"/>
+      <rect x="96" y="290" width="18" height="70" rx="8" class="mm-box mm-soft"/>
+      <rect x="118" y="314" width="22" height="46" rx="3" class="mm-box"/><path d="M114 352h4" class="ln"/>
+      <text x="129" y="341" class="xs mut" text-anchor="middle">salt</text>
+      <path d="M105 360v28" class="ln dash"/><path d="M98 388h14M101 394h8" class="ln"/>
+      <text x="150" y="300" class="b">⑥ Softener + bypass</text><text x="150" y="314" class="s mut">Bypass stays shut (filled) in service.</text>
+      <text x="150" y="330" class="s mut">Drain ↓ through an <tspan class="b">air gap</tspan>.</text>
+      <text x="150" y="345" class="s mut">Brine overflow: own line, by gravity.</text>
+      <!-- 7 soft cold -->
+      <path d="M60 374H20" class="ln mm-pipe"/><path d="M26 368l-6 6 6 6" class="ln"/>
+      <text x="16" y="366" class="xs b">COLD</text>
+      <text x="150" y="376" class="b">⑦ Tee: soft cold</text><text x="150" y="390" class="s mut">Cold trunk or manifold.</text>
+      <!-- 8 expansion tank -->
+      <path d="M60 420H92" class="ln mm-pipe"/><rect x="92" y="406" width="22" height="30" rx="11" class="mm-box"/>
+      <text x="150" y="420" class="b">⑧ Expansion tank</text><text x="150" y="434" class="s mut">On the heater's cold. Support it.</text>
+      <!-- 9 heater -->
+      <rect x="40" y="462" width="40" height="84" rx="6" class="mm-box mm-wh"/>
+      <text x="60" y="510" class="xs b" text-anchor="middle">WH</text>
+      <path d="M80 480H128" class="ln mm-hot"/><path d="M122 474l6 6-6 6" class="ln mm-hot"/>
+      <text x="113" y="472" class="xs b">HOT</text>
+      <circle cx="104" cy="480" r="7" class="mm-box dash"/>
+      <text x="150" y="476" class="b">⑨ Water heater</text><text x="150" y="490" class="s mut">Tank or tankless. Shutoff on the cold.</text>
+      <text x="150" y="510" class="b">⑩ Mixing valve <tspan class="mut">(optional)</tspan></text><text x="150" y="524" class="s mut">ASSE 1017 when the tank runs hot.</text>
+      <!-- recirc -->
+      <path d="M128 536H80" class="ln dash mm-hot"/><path d="M108 530l-8 6 8 6z" class="mm-v"/>
+      <text x="150" y="544" class="b">⑪ Recirc return</text><text x="150" y="558" class="s mut">Check valve so it can't flow backward.</text>
+    </svg>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th><span class="badge why">WHY</span>Filter first</th><td>Sand and pipe crud jam a softener's valve and foul the resin. Catch it before it gets there.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Hose bibbs before</th><td>Softening lawn water burns salt for nothing. Sinks and showers get soft water; the yard doesn't.</td></tr>
+        <tr><th>Kitchen cold</th><td>Some homeowners want a hard-water drinking tap or an <b>RO</b> at the sink. RO goes <b>after</b> the softener: soft water makes the membrane last.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Tank on the cold</th><td>The heater makes the expansion. The tank has to sit between the heater and whatever closed the system (PRV, check, softener valve), with no valve that can isolate it from the heater.</td></tr>
+        <tr><th>Leave room</th><td>Front of the heater, softener head and filter housings: room to work, see and swap. A filter jammed against a wall never gets changed.</td></tr>
+        <tr><th>Bonding</th><td>A plastic softener or filter breaks a metal water line. If the house's metal pipe is bonded, the electrician jumps it with a wire around the equipment.</td></tr>
+      </tbody></table></div>
+    <p class="note">Wells add a spin-down filter first and often UV last (after the softener, before the house). See <b>Filters</b> below.</p>
+  </section>
+
+  <section data-sec="mech" data-kw="softener install water softener loop bypass drain line air gap brine overflow 20 125 psi 110 degrees outlet dlfc solder resin tank brine tank standpipe">
+    <div class="sec-head"><h2>Softener install</h2><small>Loop, bypass, drain · the manual wins</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th><span class="badge ut">UT</span>Softener loop</th><td>Common in Utah new builds: the main comes into the mech room, loops out and back so a softener drops in later. Cap it or jump it with a bypass until then. Leave power and a drain within reach.</td></tr>
+        <tr><th>Bypass</th><td>Needed so the house keeps water while the softener's out. Use the valve's bypass or a 3-valve loop (in, out, bypass). In service, the bypass is <b>closed</b>.</td></tr>
+        <tr><th>Pressure</th><td>About <b>20–125 psi</b> at the valve (Fleck 5600SXT). Low pressure means weak backwash and a weak brine draw.</td></tr>
+        <tr><th>Hot water</th><td>Inlet water ≤ <b>110°F</b>. Heat from the water heater backs up the cold line, so don't hang the softener right off the heater's cold inlet.</td></tr>
+        <tr><th>Drain line</th><td>½" minimum; <b>¾"</b> if the run is over 20 ft or backwash is over 7 gpm (Fleck). Not too long, not too high, no smaller than the maker says.</td></tr>
+        <tr><th>Air gap</th><td>The drain ends <b>above</b> the standpipe or floor drain with an air gap, never shoved down into it. <span class="badge why">WHY</span> A backed-up drain could siphon into the house water.</td></tr>
+        <tr><th>Brine overflow</th><td>Its own line to the drain by gravity, lower than the overflow fitting. Never tee it into the valve's drain line.</td></tr>
+        <tr><th>Solder</th><td>Sweat joints before you thread on the valve; keep heat ≥ 6" from the drain flow control (Fleck). Plastic parts melt.</td></tr>
+        <tr><th>Power</th><td>A full-time 120V outlet: not on a switch, so the clock and meter keep time.</td></tr>
+        <tr><th>Location</th><td>Indoors, no freezing, level floor, not below a sewer line, out of direct sun.</td></tr>
+        <tr><th>Startup</th><td>Bypass on, flush the new pipe, then ease it back to service. Water about 1" over the brine grid before salt (Fleck). Run a manual regen and test the water.</td></tr>
+      </tbody></table></div>
+    <p class="note">Code: the softener drain is an indirect waste (air gap). NSF/ANSI 44 limits a softener to 15 psi loss at rated flow; undersized ones choke flow.</p>
+  </section>
+
+  <section data-sec="mech" data-kw="softener sizing calculator grain capacity hardness gpg people gallons per day regeneration days salt dose pounds per cubic foot resin 32000 48000 64000 iron">
+    <div class="sec-head"><h2>Softener sizer</h2><small>Grains per day → tank to buy</small></div>
+    <div class="calc">
+      <label for="sf-p">People<input id="sf-p" type="number" inputmode="numeric" min="1" step="1" value="4"></label>
+      <label for="sf-gal">Gal / person / day<input id="sf-gal" type="number" inputmode="decimal" min="1" step="any" value="75"></label>
+      <label for="sf-h">Hardness gpg<input id="sf-h" type="number" inputmode="decimal" min="0" step="any" value="12"></label>
+      <label for="sf-fe">Iron ppm<input id="sf-fe" type="number" inputmode="decimal" min="0" step="any" value="0"></label>
+      <label for="sf-d">Days between regens<input id="sf-d" type="number" inputmode="numeric" min="1" step="1" value="7"></label>
+      <label for="sf-salt">Salt per ft³<select id="sf-salt"><option value="6">6 lb · lean</option><option value="10" selected>10 lb · mid</option><option value="15">15 lb · max</option></select></label>
+    </div>
+    <div class="x"><table class="t out">
+      <tbody>
+        <tr class="hit" aria-live="polite" aria-atomic="true"><th>Buy</th><td id="sf-ans" class="big">—</td><td class="sub" id="sf-ans-s">Box size = ft³ of resin × 32,000</td></tr>
+        <tr><th>Grains a day</th><td id="sf-day" class="big">—</td><td class="sub">People × gallons × hardness</td></tr>
+        <tr><th>Resin needed</th><td id="sf-ft" class="big">—</td><td class="sub" id="sf-ft-s"></td></tr>
+        <tr><th>Salt</th><td id="sf-salt-o" class="big">—</td><td class="sub" id="sf-salt-s"></td></tr>
+      </tbody></table></div>
+    <details class="math"><summary>Show the math</summary><ol id="sf-math"></ol></details>
+    <p class="note"><span class="badge why">WHY</span> The "48,000-grain" on the box is what the resin holds at the <b>maximum</b> salt dose. Set it to save salt and the same tank holds about two thirds of that. That's why a "too big" softener is usually the right one: it runs efficient and still goes a week. Iron: the common rule adds 4 gpg per 1 ppm. Hardness for your city: <b>Inspect → Utah &amp; cities → Utah water</b>, or test it.</p>
+  </section>
+
+  <section data-sec="mech" data-kw="softener settings service salt bridge mush potassium chloride resin life hardness setting regen time 2 am metered demand timer clock not using salt hard water resin beads">
+    <div class="sec-head"><h2>Softener service</h2><small>Settings · salt · trouble</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Hardness setting</th><td>The tested gpg (plus iron, if any). Set too low → hard water by day 5. Set too high → salt and water wasted.</td></tr>
+        <tr><th>Metered vs timer</th><td><b>Metered</b> (demand) valves count gallons and regen when the resin's used up. <b>Timer</b> valves regen on set days no matter what: old-school, wasteful on a light week.</td></tr>
+        <tr><th>Regen time</th><td>Usually 2 a.m.: nobody's using water. Hard water flows to the house during regen.</td></tr>
+        <tr><th>Salt level</th><td>Keep salt above the water in the brine tank. Pellets or crystals; skip rock salt (dirt).</td></tr>
+        <tr><th>Salt bridge</th><td>A crust over an empty space: looks full, makes no brine, water goes hard. Push a broom handle down and break it.</td></tr>
+        <tr><th>Potassium</th><td>Potassium chloride works for people avoiding sodium. Costs more; the setting usually needs bumping up. Check the manual.</td></tr>
+        <tr><th>Resin life</th><td>Chlorine in city water slowly breaks resin down. A carbon filter before it, or 10% crosslink resin, buys years. Utah County systems checked use free chlorine.</td></tr>
+        <tr><th>Sodium</th><td>Softened water adds a little sodium. Fine for most people; someone on a low-sodium diet asks their doctor, or gets an RO tap.</td></tr>
+        <tr><th>Not a fix for</th><td>Bacteria, lead, arsenic, nitrate, chlorine taste. Those need filters or RO.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="mech" data-kw="sediment filter spin down cartridge micron big blue 4.5 x 20 whole house filter carbon chlorine chloramine uv ultraviolet well reverse osmosis ro air gap faucet nsf 42 53 55 58 pressure drop housing wrench o-ring">
+    <div class="sec-head"><h2>Filters</h2><small>Sediment · carbon · UV · RO</small></div>
+    <div class="x"><table class="t cards">
+      <thead><tr><th>Type</th><th>What it does</th><th>Install</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Type"><b>Spin-down</b></td><td data-label="What it does">Clear bowl with a screen. Spins sand to the bottom; open the flush valve to dump it. Screen, not a fine filter.</td><td data-label="Install">First on a well. Out of direct sun.</td></tr>
+        <tr><td data-label="Type"><b>Sediment cartridge</b></td><td data-label="What it does">Pleated or spun cartridge. Lower micron = finer and clogs faster. City water: 20–50 µm is typical before a softener.</td><td data-label="Install">Bypass and shutoffs around it. Big housings (4.5×20 "big blue") flow better and last longer than 2.5×10.</td></tr>
+        <tr><td data-label="Type"><b>Carbon</b></td><td data-label="What it does">Takes out chlorine taste and smell (NSF/ANSI 42), some chemicals (53). Catalytic carbon for chloramine.</td><td data-label="Install">Before the softener protects the resin.</td></tr>
+        <tr><td data-label="Type"><b>UV</b></td><td data-label="What it does">Kills bacteria in clear water (NSF/ANSI 55). Doesn't filter anything.</td><td data-label="Install">Last, after filters and softener: hardness and iron coat the glass sleeve. Needs power always on.</td></tr>
+        <tr><td data-label="Type"><b>RO</b></td><td data-label="What it does">Membrane strips nearly everything (NSF/ANSI 58), including sodium from softened water. Makes reject water.</td><td data-label="Install">Under the sink, after the softener. Air-gap faucet; drain saddle on the tailpiece above the trap. Hard-pipe the feed; skip self-piercing saddle valves.</td></tr>
+      </tbody></table></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>When to change</th><td>When flow drops or the gauges show more than about 10 psi across it. NSF filters are tested to lose ≤ 15 psi at their rated flow; a clogged one loses way more.</td></tr>
+        <tr><th>Housing tips</th><td>Shut off and push the red button to bleed pressure first. Wipe and silicone-grease the O-ring. Hand-tight plus a little with the wrench.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Gauges</th><td>A gauge before and after a filter turns "the pressure's bad" into a number: the difference is how plugged it is.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="mech" data-kw="salt free water conditioner tac template assisted crystallization magnetic electronic descaler ionizer alkaline water ionizer deionizer di resin mixed bed reioniator re-ionizer scale prevention no salt">
+    <div class="sec-head"><h2>Not softeners</h2><small>Salt-free, descalers, ionizers</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Salt-free (TAC)</th><td>Media turns hardness into tiny crystals that ride through instead of sticking as scale. <b>The water stays hard</b>: no slick feel, spots still dry on glass. No salt, no drain, no power. Tested by the German DVGW W512 method; no NSF standard for it. Iron and manganese foul it, so they come out first.</td></tr>
+        <tr><th>Magnetic / electronic</th><td>Clamp-on coils or magnets that claim to stop scale. Results are mixed at best. Don't sell one as a softener.</td></tr>
+        <tr><th>Water ionizers</th><td>Countertop or under-sink "alkaline" units: electrolysis plates split water into an alkaline stream to drink and an acidic stream to waste. Plumb a cold feed and a waste line. The health claims don't hold up: your body keeps its own pH. Hard water scales the plates, so they usually sit after a softener or filter.</td></tr>
+        <tr><th>Deionizers (DI)</th><td>Mixed-bed resin that pulls out nearly all minerals: spot-free rinse for cars and windows, aquariums, labs. Resin gets swapped or recharged, not salted. Not for a whole house.</td></tr>
+        <tr><th>On the job</th><td>Treat them like any treatment unit: shutoffs, bypass, a drain with an air gap if it has one, and the maker's manual.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="mech" data-kw="water heater types atmospheric natural draft power vent direct vent power direct condensing tank electric heat pump hpwh b-vent pvc draft hood which type venting choose">
+    <div class="sec-head"><h2>Tank heater types</h2><small>How it breathes decides how it's installed</small></div>
+    <div class="x"><table class="t cards">
+      <thead><tr><th>Type</th><th>Air &amp; vent</th><th>Needs</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Type"><b>Atmospheric</b><br><span class="sub">natural draft</span></td><td data-label="Air &amp; vent">Room air in. Hot exhaust rises through a draft hood into B-vent or a lined chimney, ¼"/ft up.</td><td data-label="Needs">Combustion air, a vertical path. No power: works in an outage.</td></tr>
+        <tr><td data-label="Type"><b>Power vent</b></td><td data-label="Air &amp; vent">Room air in. A blower pushes exhaust out PVC/CPVC/ABS, sidewall or roof.</td><td data-label="Needs">120V outlet. Combustion air. Max vent length and elbows per manual.</td></tr>
+        <tr><td data-label="Type"><b>Direct vent</b></td><td data-label="Air &amp; vent">Sealed. Outside air in, exhaust out, through the wall (coaxial or two pipes). No blower.</td><td data-label="Needs">Close to an outside wall.</td></tr>
+        <tr><td data-label="Type"><b>Power direct vent</b></td><td data-label="Air &amp; vent">Sealed, two pipes, with a blower: long runs, no room air.</td><td data-label="Needs">120V. Tight houses and closets.</td></tr>
+        <tr><td data-label="Type"><b>Condensing tank</b></td><td data-label="Air &amp; vent">Squeezes heat until exhaust condenses: PVC vent, acidic condensate.</td><td data-label="Needs">120V, condensate drain. Gas tanks over 55 gal since 2015.</td></tr>
+        <tr><td data-label="Type"><b>Electric</b></td><td data-label="Air &amp; vent">No vent. Two elements.</td><td data-label="Needs">240V circuit (often 30A). Slow recovery.</td></tr>
+        <tr><td data-label="Type"><b>Heat pump</b></td><td data-label="Air &amp; vent">Pulls heat from room air. See <b>Rough → Gas &amp; WH → Heat pump water heaters</b>.</td><td data-label="Needs">Air space, condensate drain, 240V (or 120V plug-in).</td></tr>
+      </tbody></table></div>
+    <p class="note">Sizing: by <b>first-hour rating</b> on the label, not tank size: <b>Calc → Sizing → Water heater output</b>. Swapping one for another (atmospheric → power vent) changes the vent, power and air: it's not a like-for-like.</p>
+  </section>
+
+  <section data-sec="mech" data-kw="tankless setup install isolation valve kit service ports relief valve gas line 199000 condensate neutralizer vent pvc minimum flow 0.5 gpm cold water sandwich buffer tank recirc navien rinnai noritz scale flush inlet filter freeze">
+    <div class="sec-head"><h2>Tankless setup</h2><small>What goes on the wall with it</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Isolation kit</th><td>Hot and cold shutoffs with <b>service ports</b> (for flushing) and a pressure relief valve. Without ports, nobody flushes it, and scale kills it.</td></tr>
+        <tr><th>Gas</th><td>Inlet is ¾", but size the <b>line</b> for full input (often 199,900 BTU/h) all the way from the meter: run the <b>Gas line sizer</b>. Undersized gas = error codes at full fire. Supply ≈ 3.5–10.5" w.c. natural gas (Navien NPE).</td></tr>
+        <tr><th>Vent</th><td>Condensing units: 2" or 3" PVC, CPVC or polypropylene per the manual; diameter and length go together. Non-condensing: stainless (special gas vent). Termination clearances from the manual.</td></tr>
+        <tr><th>Condensate</th><td>Through a neutralizer (limestone cartridge) to a drain. Acidic condensate eats cast iron and concrete. Check the media when you flush.</td></tr>
+        <tr><th>Min flow</th><td>Fires at about <b>0.5 gpm</b>. A trickle at a low-flow faucet may never light it.</td></tr>
+        <tr><th>Cold sandwich</th><td>Off-then-on quickly: hot in the pipe, then a slug of cold while it relights, then hot. Units with a small buffer tank (Navien A2) hide it.</td></tr>
+        <tr><th>Utah winter</th><td>40°F in, 120°F out = 80°F rise. A 199k unit at ~95% gives about <b>4.7 gpm</b> then, not the 5.6+ on the box (rated at 67°F rise). Two showers and a dishwasher is the limit.</td></tr>
+        <tr><th>Altitude</th><td>Set it: <b>Inspect → Utah &amp; cities → Altitude settings</b>.</td></tr>
+        <tr><th>Freeze</th><td>Units have freeze heaters that need power. Cold garage + power outage = drain it.</td></tr>
+        <tr><th>Service</th><td>Flush yearly (sooner on hard, unsoftened water) with the maker's descaler or vinegar through the ports. Clean the inlet screen; a plugged screen throws flow codes.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="mech" data-kw="recirculation recirc pump dedicated return loop crossover comfort valve grundfos demand button timer aquastat check valve legionella insulation r-3 wait for hot water pipe volume">
+    <div class="sec-head"><h2>Recirculation</h2><small>Hot water without the wait</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Dedicated return</th><td>A third line from the far fixture back to the heater. Pump at the heater, <b>check valve</b> on the return. Best result; plan it at rough-in.</td></tr>
+        <tr><th>Crossover valve</th><td>No return line: a thermostatic valve under the far sink lets hot push back through the <b>cold</b> line until it's warm. Retrofit-friendly. The catch: the first of the cold tap runs warm.</td></tr>
+        <tr><th>Built-in</th><td>Some tankless units (Navien A2, Rinnai with a pump) run the loop themselves, on a schedule or a button.</td></tr>
+        <tr><th>Controls</th><td>Running 24/7 wastes heat. Energy code wants the pump to start on a demand for hot water (button, motion, flow) and shut off when the loop's hot. A demand system using the cold line can't send back water over 104°F.</td></tr>
+        <tr><th>Insulate</th><td>The loop pipe gets insulated, R-3 (energy code). Bare loop = space heater in the wall.</td></tr>
+        <tr><th><span class="badge why">WHY</span>The wait</th><td>½" PEX holds about <b>0.0092 gal/ft</b>; ¾" about 0.018. 60 ft of ½" = half a gallon of cold to dump before hot shows: about 28 s at a 1.2 gpm lav, plus the time to warm the pipe itself.</td></tr>
+        <tr><th>Legionella</th><td>Germs like 95–115°F. Keep the loop hot, not lukewarm.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="mech" data-kw="expansion tank size sizing chart st-5 st-12 2 gallon 4.4 gallon air charge precharge failed bladder waterlogged test tap schrader support">
+    <div class="sec-head"><h2>Expansion tank</h2><small>Size · charge · is it dead?</small></div>
+    <div class="x"><table class="t num">
+      <thead><tr><th>Heater</th><th>≤ 60 psi house</th><th>80 psi house</th></tr></thead>
+      <tbody>
+        <tr><td>40 gal at 140°F</td><td>2 gal (ST-5)</td><td>2 gal (ST-5)</td></tr>
+        <tr><td>50 gal at 140°F</td><td>2 gal (ST-5)</td><td>2 gal (ST-5)</td></tr>
+        <tr><td>40 gal at 160°F</td><td>2 gal (ST-5)</td><td>4.4 gal (ST-12)</td></tr>
+        <tr><td>50 gal at 160°F</td><td>4.4 gal (ST-12)</td><td>4.4 gal (ST-12)</td></tr>
+        <tr><td>Hotter or bigger</td><td colspan="2">Use the maker's chart or app</td></tr>
+      </tbody></table></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Air charge</th><td>Set to <b>house static pressure</b> with a tire gauge and pump, water <b>off</b> and pressure bled. They ship around 40–50 psi; on a 70 psi house that's wrong.</td></tr>
+        <tr><th>Dead tank?</th><td>Tap it: a good tank sounds hollow on top. Press the Schrader valve: water out = bladder's broken. Heavy and full all the way = waterlogged.</td></tr>
+        <tr><th>Mount</th><td>A waterlogged ST-12 holds 4.4 gal: about 37 lb of water. Strap or bracket it; don't hang it off a long ½" nipple.</td></tr>
+        <tr><th>Max</th><td>Typical rating 150 psi working pressure.</td></tr>
+      </tbody></table></div>
+    <p class="note">Chart: Amtrol Therm-X-Trol, with the air charge set to house pressure. The <b>Why an expansion tank</b> card in <b>Learn</b> shows how fast pressure climbs without one.</p>
+  </section>
+
+  <section data-sec="mech" data-kw="mixing valve thermostatic asse 1017 1016 1070 scald burn time 140 130 120 legionella tempering anti scald set point">
+    <div class="sec-head"><h2>Hot enough, not too hot</h2><small>Scald vs. germs</small></div>
+    <div class="x"><table class="t num">
+      <thead><tr><th>Water</th><th>Adult skin burns in about</th></tr></thead>
+      <tbody>
+        <tr><td>140°F</td><td>5 seconds</td></tr>
+        <tr><td>130°F</td><td>30 seconds</td></tr>
+        <tr><td>120°F</td><td>5 minutes</td></tr>
+      </tbody></table></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The squeeze</th><td>Legionella grows at 95–115°F and dies off above about 131°F. A tank kept at 140°F is cleaner, but too hot at the tap.</td></tr>
+        <tr><th>ASSE 1017</th><td>One thermostatic mixing valve at the heater outlet tempers the whole house down (often ~120°F).</td></tr>
+        <tr><th>ASSE 1016 / 1070</th><td>Point-of-use: shower valves (1016, limit stop ≤ 120°F) and tub fillers (1070). These are required whatever the tank is set to.</td></tr>
+        <tr><th>Kids &amp; elders</th><td>Thin skin burns faster than the table. That's why the limit stop matters.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="mech" data-kw="mech room checklist floor drain trap primer furnace condensate humidifier gas drip leg sediment trap working space access light outlet leak sensor automatic shutoff valve flo phyn labels service clearance">
+    <div class="sec-head"><h2>Also in the mech room</h2><small>The stuff that gets forgotten</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Floor drain</th><td>Takes T&amp;P, softener, condensate. A rarely-wet drain loses its trap seal: trap primer or seal device where required (IRC P3201.2).</td></tr>
+        <tr><th>Furnace &amp; AC condensate</th><td>Indirect to the floor drain or a pump, through an air gap. HVAC installs it; leave them somewhere to go.</td></tr>
+        <tr><th>Humidifier</th><td>Furnace humidifiers want a ¼" cold feed and a small drain. A stub with a stop beats a saddle valve.</td></tr>
+        <tr><th>Gas</th><td>Shutoff and sediment trap (drip leg) at each appliance. Bond CSST. See <b>Rough → Gas &amp; WH</b>.</td></tr>
+        <tr><th>Combustion air</th><td>Finishing a basement can close in an atmospheric heater: <b>Rough → Gas &amp; WH → Combustion air</b>.</td></tr>
+        <tr><th>Working room</th><td>Clear access to every valve, filter, anode, burner and the heater's front, per each maker. A light and an outlet.</td></tr>
+        <tr><th>Leak protection</th><td>Pan where a leak does damage. Many owners add leak sensors or an automatic shutoff valve on the main (Moen Flo, Phyn and others): leave a straight run of pipe and an outlet near the main.</td></tr>
+        <tr><th>Label it</th><td>Main shutoff, bypass, recirc, PRV. A tag saves the homeowner's flood and your callback.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section data-sec="mech" data-kw="history then and now 1980 1990 2000 2010 2020 decades old house remodel service polybutylene galvanized copper pex orphaned water heater chimney fvir naeca 2004 2015 ultra low nox 2018 lead free 2014 timer softener what you'll find">
+    <div class="sec-head"><h2>Then &amp; now: 1980 → today</h2><small>What you'll find on a service call</small></div>
+    <div class="x"><table class="t cards">
+      <thead><tr><th>Era</th><th>Typical Utah mech room</th><th>Watch for</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Era"><b>1980s</b></td><td data-label="Typical Utah mech room">40-gal atmospheric gas tank sharing a B-vent or masonry chimney with a standard furnace. Copper (older: galvanized). Timer softeners. Usually no expansion tank.</td><td data-label="Watch for"><b>Polybutylene</b> (gray, 1978–1995) with plastic or copper crimp fittings. No seismic straps. Galvanized nipples rotting at the heater.</td></tr>
+        <tr><td data-label="Era"><b>1990s</b></td><td data-label="Typical Utah mech room">90% furnaces vent in PVC and leave the water heater alone in the chimney. Federal heater efficiency rules since 1990. Metered softeners show up.</td><td data-label="Watch for">The <b>orphaned heater</b>: a small heater can't warm a big cold chimney, so it spills and condenses. Fix with a liner or a different vent; check draft.</td></tr>
+        <tr><td data-label="Era"><b>2000s</b></td><td data-label="Typical Utah mech room">PEX and manifolds. Power-vent tanks in new builds. First tankless units (stainless vent). Expansion tanks become normal with PRVs.</td><td data-label="Watch for"><b>FVIR</b> gas tanks since July 2003: sealed burner door, flame arrestor; a plugged arrestor screen chokes the burner. New federal efficiency numbers in 2004.</td></tr>
+        <tr><td data-label="Era"><b>2010s</b></td><td data-label="Typical Utah mech room">Condensing tankless on PVC. Softener loops in most new homes. Recirc pumps. Lead-free brass (2014).</td><td data-label="Watch for"><b>April 2015</b> rule: tanks got 1–2" taller and 2"+ wider. A replacement may not fit the old closet. Over 55 gal: condensing gas or heat pump.</td></tr>
+        <tr><td data-label="Era"><b>2018 → now</b></td><td data-label="Typical Utah mech room"><span class="badge ut">UT</span> Ultra-low NOx gas heaters statewide from July 1, 2018; since Aug 2025, only in nonattainment areas (Wasatch Front, Uinta Basin). Smart leak shutoffs. Heat-pump-ready rough-ins.</td><td data-label="Watch for">Check the NOx number on the label. Electric tanks 20–55 gal go heat pump in <b>2029</b>.</td></tr>
+      </tbody></table></div>
+    <p class="note">How old is it? <b>Trim → ID a part → Water heater age</b> decodes serial numbers. Rule of thumb: a tank heater lasts about 8–12 years; hard water, no expansion tank and no anode checks shorten it.</p>
+  </section>
+
+  <section data-sec="mech" data-kw="troubleshooting mech room symptom no hot water lukewarm rotten egg smell sulfur popping rumbling t&amp;p dripping softener hard water salt not going down brine tank full of water low pressure resin beads tankless shutting off cold sandwich expansion tank">
+    <div class="sec-head"><h2>Mech room trouble</h2><small>Symptom → likely cause</small></div>
+    <div class="x"><table class="t cards">
+      <thead><tr><th>Symptom</th><th>Likely cause</th><th>Check</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Symptom"><b>T&amp;P drips after heating</b></td><td data-label="Likely cause">Thermal expansion; dead or missing expansion tank</td><td data-label="Check">Tap and Schrader-test the tank; gauge the house. High pressure first, T&amp;P second.</td></tr>
+        <tr><td data-label="Symptom"><b>Rumble, popping</b></td><td data-label="Likely cause">Scale on the tank bottom</td><td data-label="Check">Flush. On hard water, talk softener.</td></tr>
+        <tr><td data-label="Symptom"><b>Rotten-egg hot water</b></td><td data-label="Likely cause">Sulfate bacteria + the anode (worse with soft water)</td><td data-label="Check">Hot only? Flush, disinfect, aluminum-zinc or powered anode.</td></tr>
+        <tr><td data-label="Symptom"><b>Hot runs out fast</b></td><td data-label="Likely cause">Broken dip tube, bad element, sediment, undersized</td><td data-label="Check">Plastic bits in aerators = dip tube.</td></tr>
+        <tr><td data-label="Symptom"><b>Hard water, softener on</b></td><td data-label="Likely cause">Salt bridge, bypass open, clock off after an outage, hardness set low</td><td data-label="Check">Break the bridge, check bypass, reset time, test the water.</td></tr>
+        <tr><td data-label="Symptom"><b>Brine tank full of water</b></td><td data-label="Likely cause">Plugged injector or drain flow control, kinked drain</td><td data-label="Check">Clean the injector screen; check the drain line.</td></tr>
+        <tr><td data-label="Symptom"><b>Resin beads in aerators</b></td><td data-label="Likely cause">Cracked distributor tube or worn-out resin</td><td data-label="Check">Rebed or replace. Flush the lines.</td></tr>
+        <tr><td data-label="Symptom"><b>Low pressure all over</b></td><td data-label="Likely cause">Plugged sediment filter, PRV failing, undersized softener</td><td data-label="Check">Gauges before/after each piece; bypass them one at a time.</td></tr>
+        <tr><td data-label="Symptom"><b>Tankless goes cold mid-shower</b></td><td data-label="Likely cause">Flow below minimum, gas undersized, scale, plugged inlet screen</td><td data-label="Check">Read the error code; clock the gas; flush.</td></tr>
+        <tr><td data-label="Symptom"><b>Pressure creeps up at night</b></td><td data-label="Likely cause">PRV seat leaking by, or expansion</td><td data-label="Check">Gauge with a lazy (max) needle overnight.</td></tr>
+      </tbody></table></div>
+  </section>
+
   <section data-sec="materials" data-kw="glue cement primer solvent purple astm standard print">
     <div class="sec-head"><h2>Pipe markings</h2><small>Read the print</small></div>
     <div class="x"><table class="t">
@@ -2480,6 +2777,28 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
         <tr><th><span class="badge why">WHY</span>The aha</th><td>Water barely compresses, so a cup of expansion has nowhere to go and pressure spikes. The tank's air cushion squeezes instead. Set the air charge with the water off, or the bladder starts out already full.</td></tr>
       </tbody></table></div>
   </section>
+  <section data-sec="how" data-kw="how a softener works ion exchange resin beads sodium calcium magnesium regeneration backwash brine draw rinse refill why salt">
+    <div class="sec-head"><h2>How a softener works</h2><small>It's a trade, not a filter</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The beads</th><td>The tank is full of plastic resin beads, each covered in spots holding <b>sodium</b>.</td></tr>
+        <tr><th>The swap</th><td>Calcium and magnesium (the hardness) stick to those spots tighter than sodium does, so they bump the sodium off. Hard in, soft out, with a little sodium added.</td></tr>
+        <tr><th>Full up</th><td>Once every spot holds calcium, hardness slips through. Time to regenerate.</td></tr>
+        <tr><th>Regen</th><td><b>Backwash</b> (fluff and rinse the bed) → <b>brine draw</b> (salty water flows slow through the beads) → <b>rinse</b> → <b>refill</b> the brine tank for next time. Takes about 1–2 hours; the dirty water goes down the drain.</td></tr>
+        <tr><th><span class="badge why">WHY</span>The aha</th><td>Calcium wins one-on-one, but a flood of sodium wins by numbers: strong brine shoves the calcium back off and reloads the beads. <b>Salt isn't the softener; it's the recharge.</b> That's why more salt per regen buys more capacity, with diminishing returns.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="how tankless works flow sensor burner heat exchanger modulate temperature rise gpm minimum flow cold water sandwich">
+    <div class="sec-head"><h2>How tankless works</h2><small>Flow in, fire on</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Flow switch</th><td>Water moving past a flow sensor (about 0.5 gpm) tells the board to light the burner.</td></tr>
+        <tr><th>Modulating</th><td>The burner throttles (say 13,000 to 199,900 BTU/h) to hit the set temperature at whatever flow you're pulling.</td></tr>
+        <tr><th>Heat exchanger</th><td>Water runs through a coil in the flame's path. Condensing units add a second exchanger that pulls heat out of the exhaust until it turns to water.</td></tr>
+        <tr><th><span class="badge why">WHY</span>The aha</th><td>A tankless doesn't have a size in gallons, it has a <b>power limit</b>. gpm = BTU × eff ÷ (500 × rise). Colder incoming water means a bigger rise and fewer gpm: the same heater makes less hot water in a Utah January than in July.</td></tr>
+        <tr><th>Scale</th><td>Hardness bakes onto the hot coil like a kettle. Less water to carry the heat → overheating codes. That's what flushing fixes.</td></tr>
+      </tbody></table></div>
+  </section>
   <section data-sec="how" data-kw="water hammer bang arrestor">
     <div class="sec-head"><h2>Why water hammer happens</h2><small>Bang!</small></div>
     <div class="x"><table class="t">
@@ -2558,6 +2877,10 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
   <section data-sec="facts" data-kw="fact file water heater anode smell descale hpwh expansion tank scald mixing valve 1017 1070">
     <div class="sec-head"><h2>Water heaters</h2><small>Fact file</small></div>
     <div class="x"><table class="t"><tbody id="fact-wh"></tbody></table></div>
+  </section>
+  <section data-sec="facts" data-kw="fact file mech room softener filter tankless fvir ultra low nox naeca 2015 orphaned water heater polybutylene expansion tank recirc ionizer tac">
+    <div class="sec-head"><h2>Mech room</h2><small>Fact file</small></div>
+    <div class="x"><table class="t"><tbody id="fact-mech"></tbody></table></div>
   </section>
   <section data-sec="facts" data-kw="fact file trim posi-temp fill valve phantom flush sillcock disposer install">
     <div class="sec-head"><h2>Fixture &amp; trim installs</h2><small>Fact file</small></div>
@@ -2725,6 +3048,35 @@ for (const k of Object.keys(LIB)){ const el = $("list-"+k); if (el) el.innerHTML
 /* glossary: [term, topic, definition]. Topics: dwv, supply, gas, fit (pipe & fittings), fix (fixtures & trim), heat (water heaters), frame (framing & site), tools (tools & methods), code (code & paperwork) */
 const GLOSS_CATS = [["all","All"],["dwv","DWV"],["supply","Water"],["gas","Gas"],["fit","Pipe & fittings"],["fix","Fixtures & trim"],["heat","Heaters"],["frame","Framing & site"],["tools","Tools & methods"],["code","Code & paperwork"]];
 const GLOSS = [
+  ["Softener loop","supply","Main water line routed out and back in the mech room so a softener can be added later. Capped or bypassed until then."],
+  ["Bypass valve","supply","Valve (or 3-valve set) that sends water around a softener or filter so the house keeps water during service."],
+  ["Grain","supply","Unit of hardness. 1 grain per gallon = 17.1 mg/L. Softeners are rated in grains they can remove between regens."],
+  ["Regeneration","supply","Softener recharge: backwash, brine draw, rinse, refill. Usually runs at 2 a.m."],
+  ["Resin","supply","Plastic beads in a softener that swap sodium for calcium and magnesium."],
+  ["Brine tank","supply","The salt tank next to a softener. Makes the salty water used to recharge the resin."],
+  ["Salt bridge","supply","Hard crust of salt over an empty space in the brine tank: looks full, makes no brine."],
+  ["DLFC","supply","Drain line flow control: small washer in the softener valve that limits backwash flow. Keep solder heat away from it."],
+  ["Injector","supply","Venturi in a softener valve that pulls brine from the salt tank. A plugged one leaves the brine tank full of water."],
+  ["Metered softener","supply","Demand-initiated valve that counts gallons and regenerates only when the resin is used up."],
+  ["Spin-down filter","supply","Clear-bowl screen filter that spins sand to the bottom for flushing. First filter on a well."],
+  ["Micron (µm)","supply","Filter fineness. Smaller number = finer filter that clogs faster. A hair is about 70 µm."],
+  ["TAC","supply","Template-assisted crystallization: salt-free conditioner that keeps hardness from sticking. Doesn't soften."],
+  ["Water ionizer","supply","Electrolysis unit that splits water into alkaline and acidic streams. Health claims aren't supported."],
+  ["Deionizer (DI)","supply","Mixed-bed resin that removes nearly all minerals. Spot-free rinse, labs, aquariums."],
+  ["RO","supply","Reverse osmosis: membrane drinking-water system under a sink. Needs an air-gap faucet and a drain connection."],
+  ["UV sterilizer","supply","Ultraviolet lamp in a chamber that kills bacteria in clear water. Goes last in the treatment line."],
+  ["Crossover valve","heat","Thermostatic valve under the farthest sink that lets hot water loop back through the cold line. Recirc without a return pipe."],
+  ["Dedicated return","heat","Third pipe from the last fixture back to the water heater so a pump can keep the hot line hot."],
+  ["Buffer tank","heat","Small tank built into some tankless heaters to hide the cold-water sandwich."],
+  ["Cold-water sandwich","heat","Tankless quirk: hot, then a slug of cold, then hot, after turning the tap off and back on."],
+  ["Condensate neutralizer","heat","Cartridge of limestone chips that takes the acid out of condensing-appliance drain water."],
+  ["Isolation valve kit","heat","Hot and cold shutoffs with service ports (and a relief valve) on a tankless heater, for flushing."],
+  ["Orphaned water heater","heat","Natural-draft heater left alone in a chimney after the furnace was replaced. Drafts poorly; needs a liner."],
+  ["Power vent","heat","Water heater with a blower that pushes exhaust out plastic pipe. Needs 120V."],
+  ["Direct vent","heat","Sealed water heater or furnace that takes outside air in and vents out through the wall."],
+  ["ULN","heat","Ultra-low NOx: gas heater burning cleaner (10 ng/J). Required in Utah's nonattainment areas."],
+  ["Powered anode","heat","Titanium rod run by a small current instead of sacrificial metal. Cures rotten-egg smell; never wears out."],
+  ["ASSE 1017","heat","Thermostatic mixing valve at the water heater that tempers the whole house's hot water."],
   ["Architect's scale","tools","Three-sided ruler for building plans: ⅛\", ¼\", ½\" and more per foot. Each scale has a subdivided foot past zero for reading inches."],
   ["Engineer's scale","tools","Ruler divided in tenths (10, 20, 30… per inch) for site and civil plans, like 1\" = 20'."],
   ["Graphic scale","tools","Scale bar printed on a drawing. It shrinks with the print, so it stays right on reduced copies: calibrate on it."],
@@ -3054,6 +3406,23 @@ const GCAT = Object.fromEntries(GLOSS_CATS);
 $("gloss").innerHTML = GLOSS.map(([t,c,d]) => `<tr data-cat="${c}" data-search="${esc((t+" "+d+" "+GCAT[c]).toLowerCase())}"><th>${esc(t)}<div class="sub">${esc(GCAT[c])}</div></th><td>${esc(d)}</td></tr>`).join("");
 /* fact file: [card, topic, fact, source key]. Sources checked Oct 2026; study-guide sources say so in their label. */
 const FSRC = {
+  cpscfv: ["CPSC: flame-arrestor gas water heaters (2003)", "https://www.cpsc.gov/Newsroom/News-Releases/2003/New-Technology-In-Gas-Water-Heaters-Can-Save-LivesCPSC-GAMA-Say-New-Heaters-Will-Prevent-Fires-from-Flammable-Vapors"],
+  rhuln: ["Rheem: ultra-low NOx rules by region", "https://files.rheem.com/blobazrheem/wp-content/uploads/sites/2/RH-ULN-REG-FL-09.25_0919C.pdf"],
+  hardi: ["HARDI: Utah narrows ultra-low NOx rule (2025)", "https://hardinet.org/posts/advocacy/utah-lessens-statewide-ultra-low-nox-emission-mandate-to-nonattainment-areas"],
+  ahri: ["AHRI: residential water heater standards", "https://ahrinet.org/advocacy/regulatory/energy-efficiency/residential-products/residential-water-heaters"],
+  st15: ["StructureTech: the 2015 water heater rule", "https://structuretech.com/new-water-heater-energy-standards/"],
+  storph: ["StructureTech: venting into chimneys", "https://structuretech.com/gas-appliance-venting-chimney/"],
+  amtrol: ["Amtrol Therm-X-Trol sizing chart", "https://res.cloudinary.com/dzhpkjoqj/Amtrol/MC8520-04_22-TXT-Sizing-Chart_pzeetd.pdf"],
+  fleck: ["Pentair Fleck 5600SXT service manual", "https://inspectapedia.com/plumbing/Fleck-5600sxt-Downflow-service-manual.pdf"],
+  mnsoft: ["Minnesota Dept. of Health: water softeners", "https://www.health.mn.gov/communities/environment/water/docs/factsheet/softeners.pdf"],
+  nsfwt: ["Supply House Times: water treatment standards & installs", "https://supplyht.com/articles/89923-residential-water-treatment-products-and-installation-issues"],
+  tac: ["BNP continuing ed: template-assisted crystallization", "https://continuingeducation.bnpmedia.com/courses/brae/templateassisted-crystallization/5/"],
+  ion: ["Wikipedia: water ionizer", "https://en.wikipedia.org/wiki/Water_ionizer"],
+  recirc: ["Univ. of Illinois Smart Energy: hot water recirculation", "https://smartenergy.illinois.edu/wp-content/uploads/2021/02/Smart-Tip-HotWaterRecirc-Ver6.pdf"],
+  navq: ["Navien NPE-2 quick facts", "https://www.navieninc.com/downloads/npe-2-quickfacts-en/download"],
+  pbcm: ["CONTRACTOR: polybutylene settlements", "https://www.contractormag.com/plumbing/cm_newsarticle_328"],
+  jlcleg: ["JLC: proper water heater temperature", "https://www.jlconline.com/how-to/plumbing/proper-water-heater-temperature_o"],
+  tklm: ["Tankless maintenance guide", "https://inspectandtest.net/guides/tankless-water-heater-maintenance/"],
   egCO: ["Study guide (ICC residential): cleanouts", "https://open-exam-prep.com/study-guides/icc-residential-plumbing/sanitary-drainage-traps/cleanout-size-location"],
   egV: ["Study guide (ICC residential): vents", "https://open-exam-prep.com/study-guides/icc-residential-plumbing/vent-systems/vent-design-installation"],
   egW: ["Study guide (ICC residential): AAVs & wet venting", "https://open-exam-prep.com/study-guides/icc-residential-plumbing/vent-systems/aavs-wet-venting"],
@@ -3158,6 +3527,24 @@ const FACTS = [
   ["gas","Direct vent","Terminal to an openable window: 6\" (10k Btu/h or less), 9\" (10–50k), 12\" (50–150k).","egG"],
   ["gas","Tankless gas","Usually ¾\". A ½\" line works only on a short run designed for a bigger pressure drop. Appliances want about 5\" w.c. at the inlet to deliver 3.5\" at the burner.","rinnai"],
   ["gas","CO alarms","Required with any fuel-fired appliance or an attached garage that opens into the house: outside each sleeping area, and inside a bedroom with a fuel appliance. Hardwired with battery backup.","co"],
+  ["mech","FVIR","Gas tanks of 30, 40 and 50 gal built after July 1, 2003 must resist igniting flammable vapors (flame arrestor) and resist lint and dust buildup.","cpscfv"],
+  ["mech","Ultra-low NOx","Utah required ultra-low NOx gas water heaters statewide from July 1, 2018: 10 ng/J up to 75,000 BTU/h, 14 above.","rhuln"],
+  ["mech","NOx, 2025","HB 313 (2025) narrowed the ultra-low NOx rule to ozone and PM2.5 nonattainment areas; the Air Quality Board adopted it Aug 6, 2025. Check the address on DEQ's map.","hardi"],
+  ["mech","April 2015","Gas tanks over 55 gal effectively became condensing and electric over 55 gal became heat pumps. Smaller tanks got more insulation.","ahri"],
+  ["mech","Bigger tanks","The 2015 insulation made tanks over 2\" wider and 1–2\" taller; big heat-pump units grew about 18\". Measure before you sell a replacement.","st15"],
+  ["mech","Orphaned heater","When the furnace goes to PVC, a lone natural-draft heater can't warm the old chimney: it spills exhaust and condenses acid into the mortar. A liner sized for the heater fixes it.","storph"],
+  ["mech","Polybutylene","Gray PB with acetal insert fittings was installed 1978–1995. Settlements (Cox, Spencer) are closed; today it's just a replace-it pipe.","pbcm"],
+  ["mech","Expansion tank","For 40–50 gal at 140°F, a 2 gal tank (ST-5) covers up to 80 psi house pressure. Set the air charge to house pressure.","amtrol"],
+  ["mech","Softener specs","Fleck 5600SXT: 20–125 psi, water ≤ 110°F, ½\" drain (¾\" over 20 ft), solder ≥ 6\" from the drain flow control.","fleck"],
+  ["mech","Softener drain","Air gap on the backwash drain so wastewater can't siphon back. Don't leave a dead softener connected.","mnsoft"],
+  ["mech","15 psi","NSF/ANSI 42, 53 and 44 cap filter and softener pressure loss at 15 psi at rated flow. RO faucets with built-in air gaps are vacuum-tested under 58.","nsfwt"],
+  ["mech","Hose bibbs","Tee outside faucets off before a whole-house treatment system: treating yard water wastes it.","nsfwt"],
+  ["mech","Salt-free","TAC keeps the minerals in the water but turns them into tiny crystals that don't stick. No ANSI/NSF standard covers it; DVGW W512 is the test.","tac"],
+  ["mech","Ionizers","Alkaline water ionizers are electrolysis cells. Medical claims for alkaline water aren't supported: the body controls its own pH.","ion"],
+  ["mech","Recirc rules","Demand recirc on the cold line can't send back water over 104°F, and the pump must start on demand and stop when the loop is hot.","recirc"],
+  ["mech","Legionella","Grows at 95–115°F and starts dying above 131°F. Hence 140°F tanks with a 1017 mixing valve.","jlcleg"],
+  ["mech","Tankless specs","Navien NPE-240: up to 199,900 BTU/h, ¾\" gas inlet, 3.5–10.5\" w.c. natural gas, 0.5 gpm to fire, rated to 10,100 ft.","navq"],
+  ["mech","Inlet screen","Tankless units have a cold-inlet screen. A plugged one throws low-flow codes: clean it every flush.","tklm"],
   ["wh","T&P pipe","Rated 100 psi at 180°F. PEX with insert fittings goes one size up, with the end fastened.","whcn"],
   ["wh","Rotten eggs","Hydrogen sulfide from bacteria, sped up by the anode. Flush, disinfect, and swap in an aluminum-zinc anode.","tips"],
   ["wh","Maintenance","Flush tanks at least yearly (more with hard water). Check the anode yearly; replace it when inches of core wire show. Pro T&P inspection every 5 years.","aos"],
@@ -3231,7 +3618,7 @@ bindPn();
 /* ---------- 4 navigation, search, theme ---------- */
 const GROUPS = {
   calc:    [["layout","Layout"],["grade","Grade"],["sizing","Sizing"],["water","Pressure & flow"],["plans","Plans"],["units","Units & tables"]],
-  rough:   [["framing","Framing"],["drains","Drains"],["vents","Vents"],["supply","Water supply"],["fixtures","Fixtures"],["gas","Gas & WH"],["materials","Materials"]],
+  rough:   [["framing","Framing"],["drains","Drains"],["vents","Vents"],["supply","Water supply"],["fixtures","Fixtures"],["gas","Gas & WH"],["mech","Mech room"],["materials","Materials"]],
   trim:    [["trim","Valves & trim"],["idhow","ID a part"],["threads","Threads & sizes"],["finders","Finders & tech lines"]],
   inspect: [["phases","Phases & tests"],["code","Which code"],["utah","Utah & cities"]],
   site:    [["wxnow","Weather"],["emergency","Call"],["wxhour","Next 24 h"],["wxweek","7 days"],["wxground","Ground"],["safety","Safety"]],
@@ -4777,6 +5164,30 @@ document.querySelectorAll("#wh-mode button").forEach(b => b.addEventListener("cl
 }));
 ["wh-btu","wh-eff","wh-in","wh-set"].forEach(id => $(id).addEventListener("input", whCalc)); whCalc();
 
+/* softener sizer: grains/day = people × gal/person/day × (hardness + 4 per ppm iron); resin holds about 20k/25k/30k grains per ft³ at 6/10/15 lb salt */
+const SF_CAP = {6:20000, 10:25000, 15:30000}, SF_SIZES = [0.75, 1, 1.5, 2, 2.5, 3, 4];
+function sfCalc(){
+  const p = val("sf-p"), g = val("sf-gal"), hd = val("sf-h"), fe = val("sf-fe") || 0, d = val("sf-d"), dose = +$("sf-salt").value, cap = SF_CAP[dose];
+  if (!(p > 0 && g > 0 && hd >= 0 && fe >= 0 && d > 0 && hd + fe > 0)){ $("sf-ans").innerHTML = warn("Enter people, gallons, hardness and days."); ["sf-day","sf-ft","sf-salt-o"].forEach(i => $(i).textContent = "—"); mathOut("sf-math", []); return; }
+  const comp = hd + 4*fe, day = p*g*comp, need = day*d, ft = need/cap, pick = SF_SIZES.find(s => s >= ft - 1e-9);
+  const lbRegen = (pick || ft)*dose, regensMo = 30/d;
+  $("sf-day").textContent = fmtInt(day) + " gr";
+  $("sf-ft").textContent = nf(ft,2) + " ft³";
+  $("sf-ft-s").textContent = `Holds ${fmtInt(cap)} grains per ft³ at ${dose} lb/ft³ of salt`;
+  if (pick){ $("sf-ans").innerHTML = `${fmtInt(pick*32000)} gr`; $("sf-ans-s").textContent = `${pick} ft³ of resin. Goes about ${nf(pick*cap/day,1)} days between regens at this salt setting`; }
+  else { $("sf-ans").innerHTML = warn("Over 4 ft³: twin tanks or a commercial unit. Talk to the supplier."); $("sf-ans-s").textContent = ""; }
+  $("sf-salt-o").textContent = `${nf(lbRegen,1)} lb / regen`;
+  $("sf-salt-s").textContent = `≈ ${fmtInt(lbRegen*regensMo)} lb a month (${nf(regensMo,1)} regens)`;
+  mathOut("sf-math", [
+    `Compensated hardness = ${nf(hd,1)} gpg${fe ? ` + 4 × ${nf(fe,2)} ppm iron` : ""} = ${nf(comp,1)} gpg`,
+    `Grains a day = ${nf(p,0)} people × ${nf(g,0)} gal × ${nf(comp,1)} = ${fmtInt(day)}`,
+    `Between regens = ${fmtInt(day)} × ${nf(d,0)} days = ${fmtInt(need)} grains`,
+    `Resin = ${fmtInt(need)} ÷ ${fmtInt(cap)} per ft³ = <b>${nf(ft,2)} ft³</b>${pick ? ` → next stock size ${pick} ft³` : ""}`,
+    `Box rating = ft³ × 32,000 (the max-salt number), so ${pick || nf(ft,2)} ft³ is sold as ${fmtInt((pick||ft)*32000)}-grain`,
+    `Salt per regen = ft³ × dose = ${pick || nf(ft,2)} × ${dose} = ${nf(lbRegen,1)} lb`]);
+}
+["sf-p","sf-gal","sf-h","sf-fe","sf-d"].forEach(id => $(id).addEventListener("input", sfCalc)); $("sf-salt").addEventListener("change", sfCalc); sfCalc();
+
 /* leak or just cold? gas law on absolute pressure; local air pressure from elevation (standard atmosphere) */
 const atmPsi = ft => 14.696 * Math.pow(1 - 6.8754e-6 * ft, 5.2559);
 function atCalc(){
@@ -4935,6 +5346,26 @@ $("mn-rows").addEventListener("click", e => {
 drawNums();
 
 const CARDS = [
+  ["Mech room","Sediment filter or softener: which comes first on the main?","The filter","Sand and crud jam the softener valve and foul the resin. Catch it upstream."],
+  ["Mech room","Why tee the hose bibbs off before the softener?","Softening the lawn wastes salt","Every gallon softened costs salt and regen water. The yard doesn't care about scale."],
+  ["Mech room","Softener drain: tuck it into the standpipe or leave an air gap?","Air gap, always","A plugged drain could siphon sewer water back through the softener into the house water."],
+  ["Mech room","Brine tank overflow: tee it into the valve's drain line?","No. Its own line, by gravity, lower than the fitting","The valve drain is under pressure during regen and would push water into the brine tank."],
+  ["Mech room","4 people, 75 gal each, 12 gpg. Grains a day?","3,600 grains","4 × 75 = 300 gal × 12 gpg = 3,600. A week is 25,200 grains."],
+  ["Mech room","Box says 32,000 grains. What does it hold set to save salt (6 lb/ft³)?","About 20,000","The box number is at max salt. At 6 lb/ft³ resin holds ≈ 20k per ft³: about two thirds."],
+  ["Mech room","Where does the expansion tank go?","Cold line between the heater and the PRV/check, with no valve isolating it from the heater","The heater makes the expansion; the tank has to be able to take it."],
+  ["Mech room","Expansion tank air charge: set to what, and how?","House static pressure, with the water off and bled","Factory charge (≈40–50 psi) on a 70 psi house means the bladder starts half squashed."],
+  ["Mech room","Press the expansion tank's Schrader valve and water comes out. Meaning?","The bladder's broken: replace the tank","Air side should only ever have air."],
+  ["Mech room","A 199k tankless at 95%, 40°F in, 120°F out. Max gpm?","About 4.7 gpm","199,900 × 0.95 ÷ (500 × 80) ≈ 4.75. The box's 5.6 gpm is at a 67°F rise."],
+  ["Mech room","Tankless shuts off at a trickle. Why?","Below minimum flow (≈0.5 gpm)","The flow sensor has to see enough water before it'll fire."],
+  ["Mech room","What's the 'orphaned water heater' problem?","Lone natural-draft heater in a chimney the furnace used to warm","Not enough heat to draft: it spills exhaust and condenses acid in the masonry. Liner it."],
+  ["Mech room","FVIR became required on 30–50 gal gas tanks when?","July 1, 2003","Flame arrestor and sealed burner so garage gas fumes can't ignite."],
+  ["Mech room","Utah ultra-low NOx gas heaters: since when, and where now?","July 1, 2018 statewide; since Aug 2025 only in nonattainment areas","Wasatch Front and Uinta Basin. Check the address on DEQ's map."],
+  ["Mech room","Why are post-2015 tanks hard to fit in old closets?","Extra insulation: 2\"+ wider, 1–2\" taller","The April 2015 efficiency rule. Measure before you quote."],
+  ["Mech room","Does a salt-free (TAC) conditioner soften water?","No. Water stays hard","It turns hardness into crystals that don't stick. No slick feel, spots still show."],
+  ["Mech room","UV and softener on a well: which first?","Softener (and filters) first, UV last","Hardness and iron coat the UV sleeve and block the light."],
+  ["Mech room","Demand recirc using the cold line: max return temp?","104°F","Hotter than that and the cold tap runs hot."],
+  ["Mech room","Burn time at 140°F vs 120°F?","About 5 seconds vs about 5 minutes","Why tanks at 140°F get a 1017 mixing valve, and showers get limit stops."],
+  ["Mech room","Brine tank looks full of salt but the water's hard. First check?","A salt bridge","A crust over an empty space: no brine gets made. Break it with a broom handle."],
   ["Math","On a ¼\" = 1'-0\" plan, 1\" on paper is how many feet?","4 ft (the scale is 1:48)","¼ inch stands for 12 inches, so 1 inch on paper = 48 inches = 4 ft."],
   ["Math","A 24×36 plan printed \"fit to page\" on 11×17: still half scale?","No, about 46%. Calibrate on a written dimension","The printer shrinks the 24 in sheet to fit 11 in of paper plus margins (11 ÷ 24 ≈ 46%), so a scale ruler reads every length wrong."],
   ["Math","Written dimension vs. what you scale off the plan: which wins?","The written dimension, always","Paper stretches, copies shrink, and a drawn line is only as good as the drafter's hand. The number is what the designer actually meant."],
@@ -5782,7 +6213,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "plumbiverse-2026-10-23d";
+var BUILD = "plumbiverse-2026-10-24a";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
