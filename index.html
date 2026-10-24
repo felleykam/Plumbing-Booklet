@@ -26,7 +26,9 @@ if(now>=a&&now<b)day=true;if(a>now&&a<next)next=a;if(b>now&&b<next)next=b}return
 window.jpbAuto=function(){var p=null;try{p=JSON.parse(localStorage.getItem("jpb-wx-place"))}catch(e){}
 var ok=p&&isFinite(p.lat)&&isFinite(p.lon);return window.jpbDaylight(Date.now(),ok?+p.lat:40.761,ok?+p.lon:-111.891)};
 var t;try{t=JSON.parse(localStorage.getItem("jpb-theme"))}catch(e){}
-document.documentElement.dataset.theme=t&&(t.look==="light"||t.look==="dark")&&t.until>Date.now()?t.look:(window.jpbAuto().day?"light":"dark");</script>
+document.documentElement.dataset.theme=t&&(t.look==="light"||t.look==="dark")&&t.until>Date.now()?t.look:(window.jpbAuto().day?"light":"dark");
+/* vest color and text size, before paint too */
+try{var v=JSON.parse(localStorage.getItem("jpb-vest"));if(v==="yellow"||v==="orange")document.documentElement.dataset.vest=v;var z=+JSON.parse(localStorage.getItem("jpb-zoom"));if(z>=0.8&&z<=1.5)document.documentElement.style.setProperty("--zoom",z);}catch(e){}</script>
 <style>
 /* LOOK: hi-vis vest. ANSI 107 fluorescent yellow-green on black: the vest color, picked because daylight eyes are most
    sensitive to yellow-green. Sun: pure white sheets, pure black type, hi-vis card heads and answers, heavy borders.
@@ -78,7 +80,7 @@ document.documentElement.dataset.theme=t&&(t.look==="light"||t.look==="dark")&&t
 [hidden]{display:none!important}
 html{background:var(--paper);scroll-padding-top:150px;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;font-weight:500;line-height:1.45;
-  padding:0 max(12px,env(safe-area-inset-right)) 28px max(12px,env(safe-area-inset-left));min-height:100vh}
+  padding:0 max(12px,env(safe-area-inset-right)) 28px max(12px,env(safe-area-inset-left));min-height:100vh;min-height:100dvh}
 @media (min-width:760px){body{font-size:16px}}
 .wrap{max-width:1180px;margin:0 auto}
 a{color:inherit;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--acc)}
@@ -111,7 +113,8 @@ nav.tabs button[aria-pressed="true"]{background:var(--hv);color:var(--k);border-
 nav.tabs button[aria-pressed="true"]::before{background:var(--k)}
 @media (max-width:759px){
   body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-  nav.tabs{position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--k);border-top:5px solid var(--hv)}
+  nav.tabs{position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--k);border-top:5px solid var(--hv);transform:translateZ(0);-webkit-transform:translateZ(0)}
+  /* the bar is moved out of the sticky toolbar on phones (script): iPhone Safari drags a fixed bar along with a sticky parent that slides */
   nav.tabs button{flex-direction:column;justify-content:center;gap:3px;min-height:62px;padding:6px 0 7px;border:0;border-radius:0;background:transparent;color:var(--on-k);font-size:clamp(11.5px,3.2vw,13.5px);letter-spacing:0;box-shadow:none;min-width:0}
   nav.tabs button::before{position:absolute;top:0;left:22%;right:22%;width:auto;height:4px;border-radius:0 0 3px 3px;background:var(--acc)}
   nav.tabs button svg{width:24px;height:24px}
@@ -265,7 +268,8 @@ input,select{font:inherit}
 details.more{border-top:1px solid var(--rule)}
 .learn-hbtn{display:none}
 @media (max-width:759px){nav.tabs .nav-learn{display:none}.learn-hbtn{display:inline-flex}nav.tabs button{font-size:13.5px;font-weight:800;letter-spacing:.03em}.hbtn{padding:0 9px}}
-@media (max-width:389px){.learn-hbtn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
+@media (max-width:519px){.learn-hbtn span,.hbtn-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
+@media (max-width:419px){.tb-in{gap:6px}.hbtn{padding:0 6px;min-width:42px}.aa-hbtn{min-width:42px}}
 @media (max-width:430px){#theme-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.hbtn{min-width:44px;justify-content:center}}
 #which-d{border-top:0}
 .jump-list{display:grid;grid-template-columns:1fr;gap:6px;padding:0 12px 12px}
@@ -427,11 +431,57 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
 .fc-why b{font-family:var(--display);font-weight:800;letter-spacing:.06em;color:var(--muted);margin-right:4px}
 .fc-stats{margin:0;font-size:15.5px;line-height:1.45;color:var(--muted)}
 .fc-stats b{color:var(--ink)}
+
+/* ===== vest colors: the three ANSI 107 hi-vis background colors. The page always sets data-theme, so each look gets its own tokens. ===== */
+:root[data-vest="yellow"]{--hv:#FFE500;--logo-tile:#FFE500}
+:root[data-vest="yellow"][data-theme="light"]{--bar:#FFE500;--hi:#FFE500}
+:root[data-vest="yellow"][data-theme="dark"]{--bar-ink:#FFE500;--hi:#2E2900;--hi-edge:#FFE500;--ul:#FFE500}
+:root[data-vest="orange"]{--hv:#FF7A1F;--logo-tile:#FF7A1F}
+:root[data-vest="orange"][data-theme="light"]{--bar:#FF7A1F;--hi:#FFC9A3;--danger:#A3001A;--ok:#005722}
+:root[data-vest="orange"][data-theme="dark"]{--bar-ink:#FF7A1F;--hi:#3A1800;--hi-edge:#FF7A1F;--ul:#FF7A1F}
+/* Night dividers were 2.3:1 on the sheet; 3:1 keeps table rows apart in a dim crawlspace */
+:root[data-theme="dark"]{--rule:#6E6E6E}
+/* text size: the book scales, the toolbar and tab bar stay put so they never cover more screen */
+.book,.no-hits,.tip{zoom:var(--zoom,1)}
+
+/* ===== display panel ===== */
+.look{position:relative;z-index:30;margin:8px 0 0;padding:12px;background:var(--sheet);color:var(--ink);border:var(--bw) solid var(--edge);border-radius:var(--r);box-shadow:4px 4px 0 var(--k);display:grid;gap:12px}
+.look h2{margin:0;font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.look .row{display:grid;gap:6px}
+.look .row > b{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.look .seg{padding:0}
+.look .seg button{flex:1 1 0}
+.vest-sw{display:inline-block;width:18px;height:18px;border-radius:3px;border:2px solid var(--k);vertical-align:-3px;margin-right:6px}
+.look .sample{font-size:15px;color:var(--muted);margin:0}
+.look .close{appearance:none;font:inherit;font-size:15px;font-weight:800;min-height:44px;padding:0 12px;border:var(--bw) solid var(--ctl);border-radius:var(--r);background:var(--sheet);color:var(--ink);cursor:pointer}
+.aa-hbtn{font-family:var(--body)!important;text-transform:none!important;letter-spacing:0!important;font-size:18px!important;min-width:46px;justify-content:center}
+
+/* ===== tip of the day ===== */
+.tip{appearance:none;display:block;width:100%;margin:8px 0 0;padding:8px 12px;min-height:46px;text-align:left;font:inherit;font-size:15.5px;font-weight:600;color:var(--ink);background:var(--sheet);border:var(--bw) solid var(--edge);border-left:10px solid var(--hv);border-radius:var(--r);cursor:pointer}
+.tip .badge{background:var(--k);color:var(--hv);border-color:var(--k)}
+.tip .tip-a{display:block;margin-top:4px;font-weight:800}
+.tip .tip-a small{display:block;font-weight:500;color:var(--muted);margin-top:2px}
+
+/* ===== toast + effects layer ===== */
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:70;max-width:min(92vw,460px);padding:10px 16px;background:var(--k);color:var(--on-k);border:3px solid var(--hv);border-radius:var(--r);box-shadow:4px 4px 0 var(--hv);font-weight:700;font-size:16px;line-height:1.35;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#toast b{color:var(--hv)}
+@media (max-width:759px){#toast{bottom:calc(80px + env(safe-area-inset-bottom))}}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:65;pointer-events:none}
+.tb .logo{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tb .logo.wiggle{animation:wig .45s ease}
+@keyframes wig{25%{transform:rotate(-10deg)}60%{transform:rotate(7deg)}}
+.fc-gauge{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:700;color:var(--muted)}
+.fc-gauge svg{width:64px;height:40px;flex:0 0 auto}
+.fc-gauge b{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.tb .logo.wiggle{animation:none}#toast{transition:none}}
 </style>
 </head>
 <body>
 <noscript><div style="padding:12px;margin:12px;border:3px solid #000;background:#CCFF00;color:#000;font:16px/1.4 system-ui,sans-serif"><b>Calculators and tabs are off.</b> This viewer isn't running scripts. Open the book in Safari or Chrome.</div></noscript>
 <div id="sr-status" role="status" class="sr-only"></div>
+<canvas id="fx" aria-hidden="true" hidden></canvas>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <header class="tb">
   <div class="tb-in">
@@ -439,12 +489,25 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
     <div class="brand"><small class="pre">PlumChum's guide to the</small><h1>PLUMBIVERSE</h1><small>Utah residential</small></div>
     <button type="button" class="hbtn learn-hbtn" id="learn-btn" aria-pressed="false" aria-label="Learn: how it works, flashcards, glossary, license"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg><span>Learn</span></button>
     <button type="button" class="hbtn" id="files-btn" hidden aria-pressed="false" aria-label="My files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6l2 3h8v13H4z"/></svg><span>Files</span></button>
+    <button type="button" class="hbtn" id="look-btn" aria-expanded="false" aria-controls="look" aria-label="Settings: light, vest color, text size"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="hbtn-lbl">Settings</span></button>
     <button type="button" class="hbtn" id="theme-btn" aria-label="Color mode"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><span id="theme-lbl">Sun</span></button>
   </div>
 </header>
 <div class="stripe" aria-hidden="true"></div>
 
 <div class="wrap">
+  <div class="look" id="look" hidden role="group" aria-label="Settings">
+    <h2>Settings <button type="button" class="close" id="look-close">Done</button></h2>
+    <div class="row"><b>Light</b>
+      <div class="seg" id="look-light" role="group" aria-label="Light"><button type="button" data-l="auto">Auto</button><button type="button" data-l="light">Sun</button><button type="button" data-l="dark">Night</button></div>
+      <p class="sample" id="look-light-note"></p></div>
+    <div class="row"><b>Vest color</b>
+      <div class="seg" id="look-vest" role="group" aria-label="Vest color"><button type="button" data-v="lime"><span class="vest-sw" style="background:#CCFF00"></span>Lime</button><button type="button" data-v="yellow"><span class="vest-sw" style="background:#FFE500"></span>Yellow</button><button type="button" data-v="orange"><span class="vest-sw" style="background:#FF7A1F"></span>Orange</button></div></div>
+    <div class="row"><b>Text size</b>
+      <div class="seg" id="look-size" role="group" aria-label="Text size"><button type="button" data-z="0.9">S</button><button type="button" data-z="1">M</button><button type="button" data-z="1.15">L</button><button type="button" data-z="1.3">XL</button></div>
+      <p class="sample">Scales the book, not the tab bars. XL is for gloves and glare. Pinch zoom still works too.</p></div>
+  </div>
+  <button type="button" class="tip" id="tip" hidden aria-expanded="false"><span class="badge">TIP</span> <span id="tip-q"></span><span class="tip-a" id="tip-a" hidden></span></button>
   <button type="button" class="code-chip" id="code-jump" aria-label="My code 2021 IPC. Open Which code applies"><span class="badge ut">UT</span><span id="code-chip-txt">Mine <b>2021 IPC</b> · Houses <b>2021 IRC</b></span><span class="go">›</span></button>
 
 
@@ -476,10 +539,12 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
       <button type="button" data-go="calc|layout|Cut length"><b>Measured to a hub or a pipe end, not a fitting</b><span>Cut length · build a cut list</span></button>
       <button type="button" data-go="calc|layout|Parallel offsets"><b>Two or more pipes turn together</b><span>Parallel offsets</span></button>
       <button type="button" data-go="calc|layout|Triangle solver"><b>Know two sides or an angle, need the rest</b><span>Triangle solver</span></button>
+      <button type="button" data-go="calc|layout|Square it up"><b>Is this corner, form or room square?</b><span>Square it up · 3-4-5 or diagonals</span></button>
       <button type="button" data-go="calc|layout|Equal spacing"><b>Hangers, straps or stubs evenly spaced</b><span>Equal spacing</span></button>
       <button type="button" data-go="calc|grade|Laser rod targets"><b>Shooting grade with a laser</b><span>Grade → Laser rod targets</span></button>
       <button type="button" data-go="calc|grade|Slope &amp; fall"><b>Will this drain make grade?</b><span>Grade → Slope &amp; fall</span></button>
       <button type="button" data-go="calc|plans|Scale a plan"><b>Measuring off a plan</b><span>Plans → Scale a plan</span></button>
+      <button type="button" data-go="calc|plans|Plan take-off"><b>How much pipe is on this plan?</b><span>Plans → Plan take-off</span></button>
       <button type="button" data-go="calc|water|Pressure at the fixture"><b>Long run: will the far fixture have pressure?</b><span>Pressure &amp; flow → Pressure at the fixture</span></button>
       <button type="button" data-go="inspect|phases|Leak or just cold?"><b>Air test gauge dropped overnight</b><span>Inspect → Phases & tests → Leak or just cold?</span></button>
     </div>
@@ -620,9 +685,39 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
     <details class="math"><summary>Show the math</summary><ol id="ts-math"></ol></details>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Square a corner</th><td>3-4-5: mark 3 ft on one line and 4 ft on the other; the diagonal is exactly <b>5 ft</b> when it's square. Scale it up: 6-8-10, 9-12-15.</td></tr>
+        <tr><th>Square a corner</th><td>3-4-5: mark 3 ft on one line and 4 ft on the other; the diagonal is exactly <b>5 ft</b> when it's square. Scale it up: 6-8-10, 9-12-15. Checking a corner or a whole room: <b>Square it up</b> below.</td></tr>
         <tr><th>Circle</th><td>Circumference = 3.1416 × D. Area = 0.7854 × D².</td></tr>
       </tbody></table></div>
+  </section>
+
+  <section data-sec="layout" data-kw="square squaring corner 3 4 5 3-4-5 6-8-10 9-12-15 diagonal diagonals equal out of square check rectangle box room layout string line slab underground form batter board pythagorean wall tub shower base flange right angle 90 rack">
+    <div class="sec-head"><h2>Square it up</h2><small>3-4-5 · check a corner · check a box</small></div>
+    <div class="mode" id="sq-mode" role="group" aria-label="What are you doing">
+      <button type="button" data-sq="lay" aria-pressed="true">Lay out</button>
+      <button type="button" data-sq="corner" aria-pressed="false">Check a corner</button>
+      <button type="button" data-sq="box" aria-pressed="false">Check a box</button>
+    </div>
+    <div class="calc">
+      <label for="sq-a" id="sq-a-l">Leg A <i>(along line 1)</i><input id="sq-a" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="6'"></label>
+      <label for="sq-b" id="sq-b-l">Leg B <i>(along line 2)</i><input id="sq-b" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="8'"></label>
+      <label for="sq-d" id="sq-d-l" hidden>Diagonal <i>(what you read)</i><input id="sq-d" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10' 3/8&quot;"></label>
+      <label for="sq-d2" id="sq-d2-l" hidden>Diagonal 2 <i>(the other one)</i><input id="sq-d2" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="9' 11 1/2&quot;"></label>
+      <div class="ans" id="sq-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <div class="chips" id="sq-chips" aria-label="Handy triangles: tap to use"></div>
+    <svg id="sq-svg" class="calc-svg" viewBox="0 0 400 250" role="img" aria-label="Drawing of the corner or box to scale: the two legs, the diagonal, and which way to move to make it square. Small errors are drawn bigger so you can see them."></svg>
+    <div class="x"><table class="t out"><tbody id="sq-out"></tbody></table></div>
+    <details class="math"><summary>Show the math</summary><ol id="sq-math"></ol></details>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Underground on a slab</th><td>Pull string lines for two walls off the batter boards or forms. Square them with 6-8-10 or bigger <b>before</b> you mark flanges and drains: every stub-up is dimensioned off those lines, so a line out of square walks every stub down the run.</td></tr>
+        <tr><th>Two dimensions, two walls</th><td>Locate a drain or flange with one dimension off each wall line, each measured square to its own wall. Measure on a slant and the stub lands off its mark.</td></tr>
+        <tr><th>Bigger triangle, better</th><td>A ¹⁄₁₆" tape miss on the diagonal moves the corner the same ¹⁄₁₆"-ish no matter the size, so it's a smaller angle over longer legs. Use the biggest triangle that fits: 9-12-15 is 3× as true as 3-4-5.</td></tr>
+        <tr><th>Rooms aren't square</th><td>Before a tub, shower base or vanity rough, check the room's diagonals (<b>Check a box</b>). Out-of-square walls move where a "centered" drain lands. Split the difference or ask the super which wall to follow.</td></tr>
+        <tr><th>Burn an inch</th><td>When the tape hook can't catch a corner, hold the 1" mark on it and subtract 1" from what you read. Easy to forget: say it out loud.</td></tr>
+        <tr><th>Square cuts</th><td>A pipe cut out of square won't bottom in the hub. Wrap a straight piece of paper or tape around the pipe, line its edge up with itself, and mark along it.</td></tr>
+      </tbody></table></div>
+    <p class="note"><span class="badge why">WHY</span> In any right triangle, the two short sides squared add up to the long side squared (Pythagoras): 3² + 4² = 9 + 16 = 25 = 5². Double every side and the shape doesn't change, only the size, so 6-8-10 works too. A box with equal opposite sides is a rectangle only when both diagonals match: lean it and one diagonal grows while the other shrinks.</p>
   </section>
 
   <section data-sec="layout" data-kw="feet inches fraction add subtract calculator tape measure ft in">
@@ -991,6 +1086,8 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
       </select></label>
       <label for="ps-known" class="ps-cal" hidden>Written dimension <i>(real)</i><input id="ps-known" type="text" inputmode="text" autocomplete="off" placeholder="12' 6&quot;" value="12' 6&quot;"></label>
       <label for="ps-kpaper" class="ps-cal" hidden>Same line on paper <i>(inches)</i><input id="ps-kpaper" type="text" inputmode="text" autocomplete="off" placeholder="2 15/16" value="2 15/16"></label>
+      <label for="ps-known2" class="ps-cal" hidden>2nd dimension, other direction <i>(optional)</i><input id="ps-known2" type="text" inputmode="text" autocomplete="off" placeholder="30' 0&quot;"></label>
+      <label for="ps-kpaper2" class="ps-cal" hidden>That one on paper <i>(inches)</i><input id="ps-kpaper2" type="text" inputmode="text" autocomplete="off" placeholder="7 1/16"></label>
       <label for="ps-in" id="ps-in-l">On paper <i>(inches, tape style)</i><input id="ps-in" type="text" inputmode="text" autocomplete="off" placeholder="3 5/16" value="1 15/16"></label>
       <div class="ans" id="ps-ans" role="status" aria-atomic="true"></div>
     </div>
@@ -1003,6 +1100,31 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
         <tr><td>Any PDF</td><td>Phone, tablet</td><td>?</td><td>Zoom changes the size. Calibrate in the PDF app.</td></tr>
       </tbody></table></div>
     <p class="note">Answers are estimates: a ¹⁄₃₂" slip on paper is 1½" real at ¼" scale. The written dimension always wins over anything you scale.</p>
+  </section>
+
+  <section data-sec="plans" data-kw="plan take-off takeoff tally total pipe length footage estimate add up runs sticks how much pipe order material list scale measure plan feet waste">
+    <div class="sec-head"><h2>Plan take-off</h2><small>Add up runs off the plan</small></div>
+    <div class="mode" id="pt-kind" role="group" aria-label="How you measured it">
+      <button type="button" data-pk="paper" aria-pressed="true">Measured on paper</button>
+      <button type="button" data-pk="real" aria-pressed="false">Real length</button>
+    </div>
+    <div class="calc">
+      <label for="pt-pipe">Pipe <i>(size, type)</i><input id="pt-pipe" type="text" list="pt-pipes" autocomplete="off" maxlength="30" value="¾&quot; PEX"></label>
+      <datalist id="pt-pipes"><option value="½&quot; PEX"><option value="¾&quot; PEX"><option value="1&quot; PEX"><option value="1½&quot; ABS"><option value="2&quot; ABS"><option value="3&quot; ABS"><option value="4&quot; ABS"><option value="3&quot; PVC sewer"><option value="¾&quot; gas"><option value="1&quot; gas"></datalist>
+      <label for="pt-len" id="pt-len-l">On paper <i>(inches, tape style)</i><input id="pt-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="2 3/8"></label>
+      <label for="pt-n">Times <i>(same run)</i><input id="pt-n" type="number" inputmode="numeric" min="1" max="99" step="1" value="1"></label>
+      <div class="ans" id="pt-now" role="status" aria-atomic="true"></div>
+      <button type="button" class="btn" id="pt-add">+ Add run</button>
+    </div>
+    <p class="note" id="pt-scale"></p>
+    <div class="x"><table class="t"><thead><tr><th>#</th><th>Pipe</th><th>Real</th><th><span class="sr-only">Remove</span></th></tr></thead><tbody id="pt-rows"></tbody></table></div>
+    <div class="calc">
+      <label for="pt-waste">Add for waste<select id="pt-waste"><option value="0">none</option><option value="0.05">5%</option><option value="0.1" selected>10%</option><option value="0.15">15%</option></select></label>
+      <label for="pt-stick">Sticks<select id="pt-stick"><option value="120">10 ft</option><option value="240" selected>20 ft</option></select></label>
+      <button type="button" class="btn2" id="pt-clear">Clear list</button>
+    </div>
+    <div class="x"><table class="t num"><thead><tr><th>Pipe</th><th>On plan</th><th>To order</th><th>Sticks</th></tr></thead><tbody id="pt-sum"></tbody></table></div>
+    <p class="note"><span class="badge why">WHY</span> A floor plan only shows pipe running flat. Stacks, drops to fixtures and risers don't show up, so add them with <b>Real length</b> (a stack is about one story, 9–10 ft, per floor). Every cut leaves a scrap and offsets around framing add length the plan doesn't draw: that's what the waste allowance covers. An estimate for ordering, not a cut list: cut from field measurements.</p>
   </section>
 
   <section data-sec="plans" data-kw="architect scale reading ruler subdivided foot diagram how to read drawing scale sheet size half size toilet rough finished wall stud face">
@@ -1071,8 +1193,8 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Dimensions win</th><td>Many sets say <b>"Do not scale drawings."</b> Scale to estimate (take-offs, rough locations). Anything that sets a hole, stub or sleeve: find the dimension or ask the super.</td></tr>
-        <tr><th>Measure long</th><td>Errors grow with the scale, not the length: measure the longest run you can, then divide. A thick wall line can be an inch or more wide at ¼".</td></tr>
-        <tr><th>Both directions</th><td>Copies can stretch more one way than the other. Check a dimension across the sheet and one up and down.</td></tr>
+        <tr><th>Measure long</th><td>Your ruler slip is the same size on a short line or a long one, so a long line spreads it thin. Calibrate on the longest written dimension you can find: a ¹⁄₃₂" slip on a 30 ft line is ⅒ the error per foot of the same slip on a 3 ft line. A thick wall line can be an inch or more wide at ¼".</td></tr>
+        <tr><th>Both directions</th><td>Copies can stretch more one way than the other. In <b>Scale a plan → Calibrate</b>, fill in the optional 2nd dimension running the other way: it tells you if the copy stretched.</td></tr>
         <tr><th>Which line?</th><td>Plans dimension to the stud face, foundation face or centerline: the note or the dimension's end ticks say which. Fixture rough-ins count from the <b>finished</b> wall.</td></tr>
         <tr><th>PDF on a phone</th><td>Zoom has no scale. In a measuring PDF app (Bluebeam: Measure → Calibrate), trace a known dimension, enter its length, then check a second one before you trust it.</td></tr>
         <tr><th>Site plans</th><td>Engineer's scale (1" = 20', 30'…) for the sewer lateral and water service. Use the invert elevations (IE) for your fall budget: <b>Calc → Grade → Slope &amp; fall</b> and <b>Laser rod targets</b>.</td></tr>
@@ -2213,6 +2335,65 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
         <tr><th>Gurgle test</th><td>A drain that gurgles or a trap that keeps losing water usually means a vent problem.</td></tr>
       </tbody></table></div>
   </section>
+  <section data-sec="how" data-kw="trap seal loss lose siphon self induced siphonage back pressure blowout evaporation capillary hair string wind momentum gurgle sewer smell trap primer">
+    <div class="sec-head"><h2>Six ways a trap loses its seal</h2><small>Sewer smell? Start here</small></div>
+    <div class="x"><table class="t">
+      <thead><tr><th>How</th><th>What happens</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td><b>Self-siphonage</b></td><td>The fixture's own slug fills the arm and pulls the trap empty behind it. Round-bottom lavs and long, steep arms do it.</td><td>Vent within the trap-arm limit; keep arm slope near ¼"/ft</td></tr>
+        <tr><td><b>Induced siphonage</b></td><td>Another fixture's flow rushes past an unvented connection and sucks this trap down.</td><td>A vent on every trap; don't tie a trap arm in below a busy branch without one</td></tr>
+        <tr><td><b>Back pressure</b></td><td>Air shoved ahead of a big slug down a stack pushes up through low traps. Water jumps out of a bowl or tub drain.</td><td>Relief vents, offsets vented right, no fixtures near the base of a tall stack</td></tr>
+        <tr><td><b>Evaporation</b></td><td>Nobody uses it, the water dries up. Basement floor drains, guest showers, vacant houses.</td><td>Trap primer, deep-seal trap, or pour water in it</td></tr>
+        <tr><td><b>Capillary action</b></td><td>Hair, string or a rag draped over the weir wicks the water out like a candle wick.</td><td>Clean the trap</td></tr>
+        <tr><td><b>Wind and momentum</b></td><td>Wind gusting over a vent bounces pressure down the line; a bucket dumped fast carries the seal with it.</td><td>Vent terminal in clear air and at the right height; a trap that refills (most do)</td></tr>
+      </tbody></table></div>
+    <p class="note"><span class="badge why">WHY</span> A trap seal is only 2"–4" of water: 0.07 to 0.14 psi. Any pressure swing bigger than that, either way, moves it. Vents exist to keep the swing smaller than the seal.</p>
+  </section>
+  <section data-sec="how" data-kw="gas pressure inches water column w.c. manometer 7 inches 11 propane 2 psi system regulator why so low">
+    <div class="sec-head"><h2>Why gas pressure is so small</h2><small>Inches of water column</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The unit</th><td>A manometer is a U-tube of water. Gas pushes one side down and the other up; the difference in inches is the pressure, written <b>" w.c.</b> (water column).</td></tr>
+        <tr><th>Conversion</th><td><b>1 psi = 27.7" w.c.</b> (because 1 psi holds up 2.31 ft of water, and 2.31 × 12 = 27.7).</td></tr>
+        <tr><th>A house</th><td>Natural gas runs about <b>7" w.c.</b>, roughly ¼ psi. Propane appliances run about <b>11" w.c.</b>. That's why a psi gauge can't read it: the whole system is under half a psi.</td></tr>
+        <tr><th>Sizing drop</th><td>The common tables allow <b>0.5" w.c.</b> of loss from meter to appliance, about 7% of 7". Undersize the pipe and the far appliance starves: lazy flame, soot, CO.</td></tr>
+        <tr><th>2 psi systems</th><td>2 psi is about 55" w.c. Eight times the pressure lets smaller pipe or CSST carry the same gas, with a regulator dropping it back to 7" before the appliances.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Test pressure</th><td>The test (1.5× working, at least <b>3 psi</b>) is about 12 times what the pipe normally sees. A joint that holds that holds at 7" w.c. for good.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="toilet flush siphon jet trapway gulp gurgle weak flush fill valve refill tube rim holes hard water 1.28 1.6 gpf">
+    <div class="sec-head"><h2>How a toilet flushes</h2><small>It's a siphon</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>1 · Dump</th><td>The flapper lifts and the tank empties fast through the 2"–3" flush valve, out the rim holes and the siphon jet at the bottom of the bowl.</td></tr>
+        <tr><th>2 · Siphon</th><td>That rush fills the trapway (the S-shaped passage in the china) all the way. A full, falling column pulls the bowl empty behind it: a siphon.</td></tr>
+        <tr><th>3 · Gulp</th><td>When the bowl runs low, air gets into the trapway and breaks the siphon. That gurgle is the flush ending, not a problem.</td></tr>
+        <tr><th>4 · Refill</th><td>The fill valve refills the tank, and its little refill tube tops up the bowl so the trap seal is back.</td></tr>
+        <tr><th>Weak flush?</th><td>Tank water set low, rim holes and jet crusted with hard-water scale (common here), a partial clog in the trapway, or a flapper closing early.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Less water</th><td>Federal max is 1.6 gal per flush; WaterSense models use 1.28. They lean on a better siphon jet and glazed trapway, so they're pickier about drain slope and long, flat runs.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="prv pressure reducing valve how works spring diaphragm adjust screw clockwise set 50 60 psi creep high pressure night bypass expansion">
+    <div class="sec-head"><h2>How a PRV works</h2><small>A spring against a diaphragm</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The balance</th><td>A spring pushes the valve open. Downstream water pushes on a diaphragm to close it. Whatever pressure balances the spring is what the house gets.</td></tr>
+        <tr><th>Adjusting</th><td>Turn the screw <b>in (clockwise) to raise</b> it, out to lower it: you're squeezing the spring harder. Most come set around 50 psi. Watch a gauge on a hose bibb while you turn, with a faucet running.</td></tr>
+        <tr><th>Creep</th><td>A worn seat leaks by. At night, with nothing running, house pressure slowly climbs toward street pressure. Put a gauge with a red max needle on overnight: if the max is way over the setting, the PRV is tired.</td></tr>
+        <tr><th>Closed system</th><td>A PRV stops heated water from pushing back to the street, so the house needs an expansion tank. See <b>Why an expansion tank</b>.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Required</th><td>Over 80 psi static, code wants one. High pressure wears valves, heaters and supply lines and makes hammer worse.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="galvanic corrosion dielectric union brass nipple copper steel galvanized dissimilar metals noble anode pinhole">
+    <div class="sec-head"><h2>Why metals eat each other</h2><small>Galvanic corrosion</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The battery</th><td>Two different metals touching, with water between them, make a weak battery. Current flows, and the less noble metal dissolves.</td></tr>
+        <tr><th>Who loses</th><td>Zinc (galvanizing) and steel lose to copper and brass. Copper screwed straight into galvanized eats the steel threads, then it leaks or clogs with rust.</td></tr>
+        <tr><th>The fix</th><td>A <b>dielectric</b> union or fitting (a plastic break between the metals), or a brass or bronze fitting between them, as code allows for copper to steel. Water heater nipples are often lined for the same reason.</td></tr>
+        <tr><th><span class="badge why">WHY</span>The anode</th><td>A water heater's anode rod is the same trick on purpose: a more active metal that corrodes so the tank doesn't. Galvanic corrosion, working for you.</td></tr>
+      </tbody></table></div>
+  </section>
   <section data-sec="how" data-kw="slope why bigger pipe less fall scour">
     <div class="sec-head"><h2>Why bigger drains get less slope</h2><small>¼" vs ⅛"</small></div>
     <div class="x"><table class="t">
@@ -2233,15 +2414,18 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
       </tbody></table></div>
   </section>
   <section data-sec="how" data-kw="backflow rpz double check dual check how works">
-    <div class="sec-head"><h2>Backflow devices</h2><small>From least to most protection</small></div>
+    <div class="sec-head"><h2>Backflow devices</h2><small>Air gap first, then the stand-ins</small></div>
     <div class="x"><table class="t">
       <thead><tr><th>Device</th><th>How it works</th><th>Where you see it</th></tr></thead>
       <tbody>
+        <tr><td><b>Air gap</b></td><td>Open air between the outlet and the flood rim: at least 2× the outlet's opening, never under 1". Nothing to wear out, so it's the best protection there is.</td><td>Faucet spouts, softener and DW drains into a receptor</td></tr>
+        <tr><td><b>AVB</b></td><td>A float drops and opens to air when the supply sucks backward. No valve allowed after it: it can't stay under pressure. The <b>HBVB</b> is the screw-on cousin for hose threads.</td><td>Irrigation, hose bibbs (HBVB)</td></tr>
+        <tr><td><b>PVB</b></td><td>A spring-loaded check plus an air inlet, testable. Must sit 12" above the highest head or outlet it serves.</td><td>Sprinklers on culinary water</td></tr>
         <tr><td><b>Dual check</b></td><td>Two spring-loaded checks in a row. Can't be tested.</td><td>Water meters</td></tr>
         <tr><td><b>Double check</b> (DC)</td><td>Same idea plus shutoffs and test cocks, so it can be tested.</td><td>Fire lines, low-hazard</td></tr>
         <tr><td><b>RPZ</b></td><td>Relief valve between the two checks keeps that zone at lower pressure. If a check leaks, water <b>dumps out the relief port</b> instead of flowing back.</td><td>Irrigation, boilers, high hazard</td></tr>
       </tbody></table></div>
-    <p class="note">A dripping RPZ is doing its job: a check needs service. Utah testing rules: Rough → Water supply.</p>
+    <p class="note"><span class="badge why">WHY</span> Every device after the air gap is a stand-in for one. Moving parts can stick or leak, so higher hazards get devices that can be tested, or that dump water where you can see it. A dripping RPZ is doing its job: a check needs service. Utah testing rules: Rough → Water supply.</p>
   </section>
   <section data-sec="how" data-kw="water heater parts anode dip tube expansion">
     <div class="sec-head"><h2>Inside a tank water heater</h2><small>Know the parts</small></div>
@@ -2259,7 +2443,7 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
     <div class="x"><table class="t">
       <tbody>
         <tr><th>What happens</th><td>Heated water expands. In an open system it pushes back to the street main.</td></tr>
-        <tr><th>The catch</th><td>A PRV, check valve or backflow device blocks that path. One maker's example: 80 psi at 74°F climbs to about 310 psi at 90°F with nowhere to go.</td></tr>
+        <tr><th>The catch</th><td>A PRV, check valve or backflow device blocks that path. A.O. Smith's test on a 30-gallon heater with nowhere for the water to go: <b>80 psi at 74°F hit 400 psi by 90°F</b> and 625 psi at 105°F, and the tank bottom started to buckle. That's from warming just 16°F.</td></tr>
         <tr><th>Symptoms</th><td>T&amp;P dripping after heating, banging, bulged or leaking tank, running toilets.</td></tr>
         <tr><th>Fix</th><td>An expansion tank sized for the system, with its air charge set to the house pressure.</td></tr>
         <tr><th><span class="badge why">WHY</span>The aha</th><td>Water barely compresses, so a cup of expansion has nowhere to go and pressure spikes. The tank's air cushion squeezes instead. Set the air charge with the water off, or the bladder starts out already full.</td></tr>
@@ -2329,6 +2513,7 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
         <button type="button" class="fc-got" id="fc-got">Got it</button>
       </div>
       <p class="fc-stats" id="fc-stats"></p>
+      <div class="fc-gauge" id="fc-gauge"></div>
       <div class="fc-foot"><span>Score <b id="fc-score">0 / 0</b></span><select id="fc-filter" aria-label="Which cards"></select><button type="button" class="linkish" id="fc-reset">Reshuffle</button><button type="button" class="linkish" id="fc-wipe">Start over</button></div>
     </div>
     <p class="note"><span class="badge why">HOW</span> <b>Got it</b> moves a card up a box: it comes back tomorrow, then in 3, 7 and 14 days. <b>Missed it</b> drops it to box 1, and it comes back a few cards later. <b>Due now</b> deals what's due, then up to 15 new cards.</p>
@@ -2350,8 +2535,9 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
     <div class="x"><table class="t">
       <tbody>
         <tr><th>1 · Apprentice license</th><td>Apply to DOPL; employer names your supervisor ($116 on the 2022 form).</td></tr>
-        <tr><th>Supervision</th><td>Immediate supervision, max 3 apprentices per supervisor. 4th year: up to 8 hr unsupervised per 24.</td></tr>
-        <tr><th>2 · School + hours</th><td>≥72 classroom hr per semester at 75%+. Max 3,000 OJT hr per 12 months.</td></tr>
+        <tr><th>Supervision</th><td>Immediate supervision, max 3 apprentices per supervisor (R156-55c-401). 4th year: up to 8 hr unsupervised in any 24 (Utah Code 58-55-404, carried into the version effective 1/1/2027).</td></tr>
+        <tr><th>2 · School + hours</th><td>≥72 classroom hr per semester at 75%+. Max 3,000 OJT hr per 12 months (R156-55c-302a).</td></tr>
+        <tr><th>No-school route</th><td>Journeyman without the 576 classroom hours takes <b>16,000 hr</b> as a licensed apprentice: twice the time. School is the shortcut.</td></tr>
         <tr><th>MTECH</th><td>4 yr, 8 semesters, 576 hr. Test-out after semester 4A (6,000 hr) fits the <b>residential</b> path. Confirm which license you're testing for.</td></tr>
         <tr><th>3 · Exams</th><td>Written (remote OK) + Utah Plumber Practical in person. Pass, then apply.</td></tr>
         <tr><th>Exam reality</th><td>Statewide pass rates, Jun 2025–Jun 2026: theory 69%, residential theory 56%, practical 55%. The practical is a PVC project and a copper project, 37 points each; the average was 26.2 on PVC and <b>25.2 on copper</b>, so practice copper. MTECH beat the state: theory 85%, practical 60%. Weak spot statewide: hydronics (DOPL bulletin, May 2026).</td></tr>
@@ -2470,6 +2656,18 @@ const GLOSS = [
   ["Engineer's scale","tools","Ruler divided in tenths (10, 20, 30… per inch) for site and civil plans, like 1\" = 20'."],
   ["Graphic scale","tools","Scale bar printed on a drawing. It shrinks with the print, so it stays right on reduced copies: calibrate on it."],
   ["NTS","code","Not to scale: don't measure the drawing; use its written dimensions."],
+  ["3-4-5","tools","Squaring method: 3 ft on one line, 4 ft on the other, and the diagonal reads 5 ft when the corner is 90°. Any multiple works (6-8-10, 9-12-15)."],
+  ["Batter boards","frame","Short boards on stakes outside a dig or slab that hold string lines for walls and footings, so the lines can come down and go back up in the same place."],
+  ["Burn an inch","tools","Measure from the tape's 1\" mark instead of the hook, then subtract 1\" from the reading."],
+  ["Out of square","tools","A corner that isn't 90°. Shows up as unequal diagonals on a box or a 3-4-5 that won't close."],
+  ["Self-siphonage","dwv","A fixture's own outflow filling the trap arm and pulling its trap seal out behind it."],
+  ["Induced siphonage","dwv","Flow from another fixture pulling a trap's seal out through an unvented connection."],
+  ["Capillary action","dwv","Water creeping along a hair or string draped over a trap weir, wicking the seal away."],
+  ["Trapway","fix","The S-shaped passage cast into a toilet. When it runs full, the flush siphons."],
+  ["Siphon jet","fix","Hole at the bottom of a toilet bowl that shoots water into the trapway to start the siphon."],
+  ["Galvanic corrosion","fit","Two different metals in water acting like a battery: the less noble one dissolves. Why steel-to-copper joints get a dielectric or brass fitting."],
+  ["Creep (PRV)","supply","A worn PRV seat leaking by, so house pressure climbs toward street pressure when nothing runs."],
+  ["Take-off (plans)","tools","Measuring a plan to list the material it needs. Not the same as a fitting take-off."],
   ["Dual-source connection","supply","Utah: sprinklers that can run on secondary or culinary water, one at a time through a swing joint, with an RP on the culinary side."],
   ["Ultra-low NOx","heat","Gas water heater with very low nitrogen-oxide emissions (10 ng/J for most home units). Required in Utah's nonattainment areas."],
   ["Passive radon system","frame","Pipe from the gravel under the slab up through the roof that vents soil gas. Not a plumbing vent: never tie it into the DWV."],
@@ -2846,7 +3044,7 @@ const norm = s => " " + s.toLowerCase().replace(/¹⁄₁₆/g, " 1/16").replace
   .replace(/[‑–—−]/g, "-").replace(/[″”“]/g, '"').replace(/[’′]/g, "'").replace(/(\d)-(\d+\/\d+)/g, "$1 $2").replace(/\s+/g, " ");
 const words = el => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let s = "", n; while ((n = w.nextNode())) s += " " + n.nodeValue; return s; };
 const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const SKIP = "#c-out, .out, #dfu-rows, #ro-steps, #ro-fit-rows, #gl-rows, #gl-tbl, #cl-rows, #cl-plan, #po-rows, #ts-out, #es-marks, #lr-rows, #pf-rows, #pf-detail, .math, #wx-now, #wx-air, #wx-hours, #wx-days, #wx-nws, #wx-soil, #wx-gw, #wx-sun";
+const SKIP = "#c-out, .out, #dfu-rows, #ro-steps, #ro-fit-rows, #gl-rows, #gl-tbl, #cl-rows, #cl-plan, #po-rows, #ts-out, #sq-out, #pt-rows, #pt-sum, #es-marks, #lr-rows, #pf-rows, #pf-detail, .math, #wx-now, #wx-air, #wx-hours, #wx-days, #wx-nws, #wx-soil, #wx-gw, #wx-sun";
 let IDX = null;
 const buildIdx = () => IDX = SECTIONS.map(sec => ({
   sec,
@@ -2917,6 +3115,15 @@ $("q").addEventListener("input", () => {
   wasSearching = now;
   cancelAnimationFrame(qRaf); qRaf = requestAnimationFrame(apply);
 });
+/* phones: the bottom tab bar sits straight under <body>, not inside the sticky toolbar. The toolbar slides up out of the way
+   when you scroll down, and iPhone Safari drags a fixed bar along with a moving sticky parent: it ripped up and stuck mid-screen. */
+{ const navEl = document.querySelector("nav.tabs"), mq = matchMedia("(max-width:759px)");
+  const place = () => {
+    if (mq.matches){ if (navEl.parentElement !== document.body) document.body.appendChild(navEl); }
+    else if (navEl.parentElement !== tools) tools.insertBefore(navEl, tools.firstChild);
+  };
+  place(); if (mq.addEventListener) mq.addEventListener("change", place); else if (mq.addListener) mq.addListener(place);
+}
 drawSubs();
 apply();  /* early, so tabs work even if a calculator below hits an error */
 
@@ -2924,7 +3131,7 @@ $("learn-btn").addEventListener("click", () => go("learn"));
 
 /* theme: two looks, Sun and Night. They follow daylight on their own (civil dawn and dusk for the weather tab's place, Salt Lake
    until one is set). A tap flips to the other look and holds it until the next dawn or dusk; tapping back clears the hold. */
-const redrawArt = () => { if (roReady) roCalc(); if (window.heightCalc) heightCalc(); for (const f of ["poCalc", "tsCalc", "wxRender"]) try { window[f] && window[f](); } catch(e){} };
+const redrawArt = () => { if (roReady) roCalc(); if (window.heightCalc) heightCalc(); for (const f of ["poCalc", "tsCalc", "sqCalc", "gaugeDraw", "wxRender"]) try { window[f] && window[f](); } catch(e){} };
 const daylight = () => { try { return window.jpbAuto(); } catch(e){ return {day: true, next: NaN}; } };
 let themeHold = (h => h && (h.look === "light" || h.look === "dark") && h.until > Date.now() ? h : null)(store.get("jpb-theme", null));
 const clock = t => new Date(t).toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
@@ -2936,7 +3143,8 @@ function themeNow(){   /* sets the look; true if it changed */
 }
 function themeLabel(){
   const dark = document.documentElement.dataset.theme === "dark", name = dark ? "Night" : "Sun", d = daylight();
-  const tip = themeHold ? `${name}, your pick until ${clock(themeHold.until)}. Then it follows daylight again. Tap for ${dark ? "Sun" : "Night"}.`
+  const tip = themeHold && themeHold.until > Date.now() + 2*864e5 ? `${name}, pinned in Settings (gear). Tap for ${dark ? "Sun" : "Night"}.`
+    : themeHold ? `${name}, your pick until ${clock(themeHold.until)}. Then it follows daylight again. Tap for ${dark ? "Sun" : "Night"}.`
     : `${name}, following daylight${isFinite(d.next) ? `: ${dark ? "Sun" : "Night"} at ${clock(d.next)}` : ""}. Tap for ${dark ? "Sun" : "Night"}.`;
   $("theme-lbl").textContent = name; $("theme-btn").title = tip; $("theme-btn").setAttribute("aria-label", "Color mode: " + tip);
 }
@@ -2945,8 +3153,44 @@ $("theme-btn").addEventListener("click", () => {
   themeHold = next === (d.day ? "light" : "dark") ? null : {look: next, until: isFinite(d.next) ? d.next : Date.now() + 12*3600e3};
   store.set("jpb-theme", themeHold); themeNow(); themeLabel(); redrawArt(); say(next === "dark" ? "Night colors" : "Sun colors");
 });
-setInterval(() => { themeLabel(); if (themeNow()) redrawArt(); }, 60000);
+setInterval(() => { themeLabel(); if (themeNow()) redrawArt(); lookDraw(); }, 60000);
 themeNow(); themeLabel();
+
+/* display panel (Aa): light, vest color, text size. Sun or Night picked here stays put until you pick Auto. */
+const PIN = 8.64e15;   /* the latest date JavaScript can hold: "pinned" */
+function lookDraw(){
+  const mode = !themeHold ? "auto" : themeHold.until >= PIN - 1 ? themeHold.look : "auto";
+  $("look-light").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.l === mode)));
+  const d = daylight();
+  $("look-light-note").textContent = mode === "auto" ? `Follows daylight where you are${isFinite(d.next) ? `: switches at ${clock(d.next)}` : ""}. The sun/moon button still flips it until the next dawn or dusk.` : `Stays ${mode === "light" ? "Sun" : "Night"} until you pick Auto.`;
+  const vest = document.documentElement.dataset.vest || "lime";
+  $("look-vest").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === vest)));
+  const z = String(+store.get("jpb-zoom", 1) || 1);
+  $("look-size").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.z === z)));
+}
+$("look-light").addEventListener("click", e => {
+  const b = e.target.closest("button[data-l]"); if (!b) return;
+  themeHold = b.dataset.l === "auto" ? null : {look: b.dataset.l, until: PIN};
+  store.set("jpb-theme", themeHold); themeNow(); themeLabel(); redrawArt(); lookDraw(); say(b.textContent + " look");
+});
+$("look-vest").addEventListener("click", e => {
+  const b = e.target.closest("button[data-v]"); if (!b) return;
+  if (b.dataset.v === "lime") delete document.documentElement.dataset.vest; else document.documentElement.dataset.vest = b.dataset.v;
+  store.set("jpb-vest", b.dataset.v); redrawArt(); lookDraw(); say(b.textContent + " vest");
+});
+$("look-size").addEventListener("click", e => {
+  const b = e.target.closest("button[data-z]"); if (!b) return;
+  document.documentElement.style.setProperty("--zoom", b.dataset.z); store.set("jpb-zoom", +b.dataset.z);
+  lookDraw(); redrawArt(); say("Text size " + b.textContent);
+});
+const lookOpen = on => {
+  $("look").hidden = !on; $("look-btn").setAttribute("aria-expanded", String(on)); $("look-btn").setAttribute("aria-pressed", String(on));
+  if (on){ lookDraw(); scrollTo({top: 0}); $("look").querySelector('[aria-pressed="true"]')?.focus(); } else $("look-btn").focus();
+};
+$("look-btn").addEventListener("click", () => lookOpen($("look").hidden));
+$("look-close").addEventListener("click", () => lookOpen(false));
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("look").hidden) lookOpen(false); });
+lookDraw();
 
 /* stacked-card tables on phones: label each cell with its column header */
 document.querySelectorAll("table.cards").forEach(t => {
@@ -3555,28 +3799,46 @@ const PS_STD = [[192,'¹⁄₁₆"'],[128,'³⁄₃₂"'],[96,'⅛"'],[64,'³⁄
 let psMode = store.get("jpb-ps", "real") === "paper" ? "paper" : "real";
 const psSel = $("ps-scale");
 try { const v = store.get("jpb-ps-scale", "48"); if ([...psSel.options].some(o => o.value === v)) psSel.value = v; } catch(e){}
-function psFactor(){   /* real inches per paper inch, plus a note when calibrated */
+/* How prints usually get shrunk. A calibration is matched against scale × print size, so a ¼" plan on 11×17 "fit to page"
+   reads as what it is (¼" at 46%) instead of the look-alike "⅛" at 92%". Ties go to the earlier, more common print. */
+const PS_PRINT = [[1, ""], [0.5, "half size: 24×36 on 12×18, or 22×34 on 11×17"], [11/24, "24×36 fit to 11×17"], [8.5/24, "24×36 fit to 8½×11"]];
+const psName = name => name.includes("=") ? name : `${name} = 1'-0"`;
+function psGuess(k){
+  const hits = [];
+  for (const [r, how] of PS_PRINT) for (const [s, name] of PS_STD){ const e = Math.abs(Math.log(s / r / k)); if (e < 0.015) hits.push({e, s, r, how, name}); }
+  const say1 = h => h.r === 1 ? `a true ${psName(h.name)} plan` : `a ${psName(h.name)} plan printed at ${nf(h.r * 100, 0)}% (${h.how})`;
+  if (hits.length) return `looks like ${say1(hits[0])}${hits[1] ? `, or ${say1(hits[1])}` : ""}`;
+  const [s, name] = PS_STD.reduce((b, x) => Math.abs(Math.log(x[0] / k)) < Math.abs(Math.log(b[0] / k)) ? x : b);
+  return `matches no standard print. Closest: a ${psName(name)} plan at ${nf(s / k * 100, 0)}%. Trust the calibrated number`;
+}
+function psFactor(){   /* real inches per paper inch, plus a note when calibrated. k2 = the other direction, when given */
   if (psSel.value !== "cal") return {k: +psSel.value};
   const real = parseLen($("ps-known").value), paper = parseLen($("ps-kpaper").value);
   if (!(real > 0) || !(paper > 0)) return {err: "Enter the written dimension and what it measures on paper."};
-  const k = real / paper;
-  const [s, name] = PS_STD.reduce((b, x) => Math.abs(Math.log(x[0] / k)) < Math.abs(Math.log(b[0] / k)) ? x : b);
-  const pct = s / k * 100;
-  const nm = name.includes("=") ? name : `${name} = 1'-0"`, fit = Math.abs(pct - 100) < 1.5 ? `true ${nm} scale` : `a ${nm} plan printed at ${nf(pct, 0)}%`;
-  return {k, note: `Calibrated 1" = ${fmtFtIn(k)} · looks like ${fit}`};
+  const k = real / paper, f = {k, note: `Calibrated 1" = ${fmtFtIn(k)} · ${psGuess(k)}`};
+  const r2raw = $("ps-known2").value.trim(), p2raw = $("ps-kpaper2").value.trim();
+  if (r2raw || p2raw){
+    const r2 = parseLen(r2raw), p2 = parseLen(p2raw);
+    if (!(r2 > 0) || !(p2 > 0)){ f.note += `<br>${warn("2nd dimension: fill in both boxes, or clear them.")}`; return f; }
+    f.k2 = r2 / p2; const st = (f.k2 / k - 1) * 100;
+    f.note += `<br>Other direction: 1" = ${fmtFtIn(f.k2)} · ${Math.abs(st) < 1 ? `<b class="ok">✓ same both ways (${nf(Math.abs(st), 1)}% apart)</b>` : warn(`stretched ${nf(Math.abs(st), 1)}% more one way: use each direction's own answer`)}`;
+  }
+  return f;
 }
 function psCalc(){
   const el = $("ps-ans"), f = psFactor();
+  if (window.ptReady) ptNow();   /* the take-off card is set up later in the script */
   if (f.err){ el.innerHTML = warn(f.err); return; }
   const x = parseLen($("ps-in").value);
   if (!(x >= 0)){ el.innerHTML = warn(psMode === "real" ? `Type the paper length like 3 5/16` : `Type the real length like 12' 6"`); return; }
   const slip = f.k / 32, tail = f.note ? `<br>${f.note}` : ` · 1:${nf(f.k, 0)}`;
+  const two = f.k2 && Math.abs(f.k2 / f.k - 1) >= 0.01;   /* stretched copy: give the other direction's answer too */
   if (psMode === "real"){
     const real = Math.round(x * f.k * 2) / 2;
-    el.innerHTML = `≈ ${fmtFtIn(real)}<small>¹⁄₃₂" off on paper = ${fmtFtIn(slip)} real${tail}</small>`;
+    el.innerHTML = `≈ ${fmtFtIn(real)}<small>${two ? `along the 1st dimension · along the 2nd: ≈ ${fmtFtIn(Math.round(x * f.k2 * 2) / 2)}<br>` : ""}¹⁄₃₂" off on paper = ${fmtFtIn(slip)} real${tail}</small>`;
   } else {
     const p = x / f.k;
-    el.innerHTML = `${toFrac16(p)} on paper<small>${nf(p, 3)} in${tail}</small>`;
+    el.innerHTML = `${toFrac16(p)} on paper<small>${two ? `along the 1st dimension · along the 2nd: ${toFrac16(x / f.k2)}<br>` : ""}${nf(p, 3)} in${tail}</small>`;
   }
 }
 function psShow(){
@@ -3596,7 +3858,7 @@ document.querySelectorAll("#ps-mode button").forEach(b => b.addEventListener("cl
   psShow();
 }));
 psSel.addEventListener("change", () => { store.set("jpb-ps-scale", psSel.value); psShow(); });
-["ps-in","ps-known","ps-kpaper"].forEach(id => $(id).addEventListener("input", psCalc));
+["ps-in","ps-known","ps-kpaper","ps-known2","ps-kpaper2"].forEach(id => $(id).addEventListener("input", psCalc));
 psShow();
 
 /* ---------- 7b more layout tools: cut length + cut list, parallel offsets, triangle solver, equal spacing, laser rod ---------- */
@@ -3855,6 +4117,220 @@ function lrCalc(){
 }
 ["lr-start","lr-dist"].forEach(id => $(id).addEventListener("input", lrCalc)); ["lr-slope","lr-step"].forEach(id => $(id).addEventListener("change", lrCalc));
 lrCalc();
+
+/* ---- square it up. Lay out: diagonal = √(A² + B²). Check a corner: law of cosines gives the real angle from the two legs and
+   the diagonal you read. Check a box: for any leaning box (parallelogram) d1² + d2² = 2(L² + W²), so the square diagonal is
+   √((d1² + d2²) ÷ 2) and the lean is (d1² − d2²) ÷ 4 per unit of the other side. ---- */
+let sqMode = (m => ["lay", "corner", "box"].includes(m) ? m : "lay")(store.get("jpb-sq", "lay"));
+const SQ_IN = ["sq-a", "sq-b", "sq-d", "sq-d2"];
+{ const s = store.get("jpb-sq-v", null); if (s && typeof s === "object" && !Array.isArray(s)) SQ_IN.forEach(id => { if (typeof s[id] === "string") $(id).value = s[id].slice(0, 24); }); }
+const SQ_TRI = [[36, 48, "3-4-5 ft"], [72, 96, "6-8-10 ft"], [108, 144, "9-12-15 ft"], [144, 192, "12-16-20 ft"], [18, 24, "18-24-30 in"], [60, 144, "5-12-13 ft"]];
+$("sq-chips").innerHTML = SQ_TRI.map(([a, b, n]) => `<button type="button" data-a="${a}" data-b="${b}">${n}</button>`).join("");
+const SQ_LBL = {lay: ["Leg A ", "(along line 1)", "Leg B ", "(along line 2)"], corner: ["Leg A ", "(along line 1)", "Leg B ", "(along line 2)"], box: ["Length ", "(one side)", "Width ", "(the side next to it)"]};
+function sqShow(){
+  document.querySelectorAll("#sq-mode button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.sq === sqMode)));
+  const L = SQ_LBL[sqMode];
+  $("sq-a-l").firstChild.textContent = L[0]; $("sq-a-l").querySelector("i").textContent = L[1];
+  $("sq-b-l").firstChild.textContent = L[2]; $("sq-b-l").querySelector("i").textContent = L[3];
+  $("sq-d-l").hidden = sqMode === "lay"; $("sq-d2-l").hidden = sqMode !== "box";
+  $("sq-d-l").firstChild.textContent = sqMode === "box" ? "Diagonal 1 " : "Diagonal ";
+  $("sq-d-l").querySelector("i").textContent = sqMode === "box" ? "(corner to corner)" : "(what you read)";
+  $("sq-chips").hidden = sqMode !== "lay";
+  sqCalc();
+}
+const sqLen = x => x >= 12 ? `${fmtFtIn(x)}<small>${toFrac16(x)} · ${x.toFixed(3)} in</small>` : `${toFrac16(x)}<small>${x.toFixed(3)} in</small>`;
+const sqDeg = x => x < 1e-6 ? "0°" : x < 0.05 ?`${nf(x * 60, 1)}′` : `${nf(x, 2)}°`;   /* tiny angles read better in minutes */
+function sqCalc(){
+  const A = parseLen($("sq-a").value), B = parseLen($("sq-b").value), out = $("sq-out"), el = $("sq-ans"), svg = $("sq-svg");
+  store.set("jpb-sq-v", Object.fromEntries(SQ_IN.map(id => [id, $(id).value])));
+  const fail = t => { el.innerHTML = warn(t); out.innerHTML = ""; svg.innerHTML = ""; mathOut("sq-math", []); };
+  const nm = sqMode === "box" ? ["length", "width"] : ["leg A", "leg B"];
+  if (!(A > 0) || A > 12000) return fail(`Type ${nm[0]}, like 6' or 72.`);
+  if (!(B > 0) || B > 12000) return fail(`Type ${nm[1]}, like 8'.`);
+  const T = Math.hypot(A, B), R = 180 / Math.PI;
+  const rows = r => r.map(([h, b, s], i) => `<tr${i === 0 ? ' class="hit"' : ""}><th>${h}</th><td class="big">${b}</td><td class="sub">${s}</td></tr>`).join("");
+  if (sqMode === "lay"){
+    const even = Math.abs(T * 16 - Math.round(T * 16)) < 1e-6, miss = T / A / 16;   /* a 1/16" diagonal miss moves leg B's end about T/A × 1/16 */
+    el.innerHTML = `${fmtFtIn(T)}<small>diagonal when it's square${even ? " · comes out even" : " · rounded to ¹⁄₁₆\""}</small>`;
+    out.innerHTML = rows([
+      ["Diagonal", sqLen(T), "Corner to corner, A mark to B mark"],
+      ["1", `Mark A`, `${fmtFtIn(A)} from the corner along line 1`],
+      ["2", `Mark B`, `${fmtFtIn(B)} from the corner along line 2`],
+      ["3", `Swing it`, `Hook the A mark, swing the tape across line 2, and move line 2 until the B mark reads ${fmtFtIn(T)}`],
+      ["Tape miss", `${toFrac16(miss)}`, `How far leg B's end moves for every ¹⁄₁₆" you misread the diagonal. Bigger legs, smaller angle.`]]);
+    mathOut("sq-math", [`Diagonal = √(A² + B²) = √(${nf(A, 3)}² + ${nf(B, 3)}²) = √${nf(A*A + B*B, 2)} = <b>${toFrac16(T)}</b>`,
+      `Why: the two legs squared add up to the diagonal squared only when the corner is exactly 90°`,
+      `Tape miss: a ¹⁄₁₆" error on the diagonal swings B's end about ¹⁄₁₆ × diagonal ÷ A = ${nf(miss, 3)} in`]);
+    sqDraw({A, B, ang: 90, dev: 0});
+    return;
+  }
+  const D = parseLen($("sq-d").value);
+  if (!(D > 0)) return fail(sqMode === "box" ? "Type diagonal 1, like 14' 5 1/4\"." : "Type the diagonal you read, like 10' 3/8\".");
+  const fits = d => d < A + B - 1e-9 && d > Math.abs(A - B) + 1e-9;
+  if (sqMode === "corner"){
+    if (!fits(D)) return fail("That diagonal can't close a triangle with those legs. Check the numbers.");
+    const cos = (A*A + B*B - D*D) / (2*A*B), th = Math.acos(Math.max(-1, Math.min(1, cos))) * R, dev = th - 90, diff = D - T;
+    const ok = Math.abs(diff) <= 1/16 + 1e-9, move = 2 * B * Math.sin(Math.abs(dev) / R / 2), open = diff > 0;
+    const per8 = Math.abs(Math.tan(dev / R)) * 96;
+    el.innerHTML = ok ? `<span class="ok">✓ Square</span><small>diagonal within ¹⁄₁₆" of ${fmtFtIn(T)}</small>`
+      : `${sqDeg(Math.abs(dev))} ${open ? "open" : "tight"}<small>${open ? "Wider" : "Tighter"} than 90°. Swing the end of leg B ${toFrac16(move)} ${open ? "toward" : "away from"} the A mark.</small>`;
+    out.innerHTML = rows([
+      ["Move B's end", ok ? `<span class="ok">nothing</span>` : `${toFrac16(move)}<small>${open ? "toward A" : "away from A"}</small>`, ok ? "Close enough to call square." : `Then the diagonal reads ${fmtFtIn(T)}.`],
+      ["Should read", sqLen(T), "√(A² + B²)"],
+      ["You read", `${fmtFtIn(D)}<small>${diff >= 0 ? "+" : "−"}${toFrac16(Math.abs(diff))} ${open ? "long" : diff < 0 ? "short" : ""}</small>`, open ? "Long diagonal: the corner is open (over 90°)." : diff < 0 ? "Short diagonal: the corner is tight (under 90°)." : "Right on."],
+      ["Corner angle", `${nf(th, 2)}°`, "90° is square"],
+      ["Over 8 ft", `${toFrac16(per8)}`, "How far a wall off this corner would be out over 8 ft"]]);
+    mathOut("sq-math", [`Should read = √(${nf(A, 3)}² + ${nf(B, 3)}²) = ${toFrac16(T)}`,
+      `Angle (law of cosines) = acos((A² + B² − D²) ÷ 2AB) = acos((${nf(A*A, 1)} + ${nf(B*B, 1)} − ${nf(D*D, 1)}) ÷ ${nf(2*A*B, 1)}) = <b>${nf(th, 3)}°</b>`,
+      `Off square = ${nf(th, 3)}° − 90° = ${nf(dev, 3)}°`,
+      `B's end moves along an arc: 2 × B × sin(off ÷ 2) = 2 × ${nf(B, 2)} × sin(${nf(Math.abs(dev) / 2, 4)}°) = <b>${toFrac16(move)}</b>`]);
+    sqDraw(ok ? {A, B, ang: 90, dev: 0, D, T, ok} : {A, B, ang: th, dev, D, T, open, ok});
+    return;
+  }
+  const D2 = parseLen($("sq-d2").value);
+  if (!(D2 > 0)) return fail("Type diagonal 2, like 14' 4\".");
+  if (!fits(D) || !fits(D2)) return fail("A diagonal that long or short can't fit those sides. Check the numbers.");
+  const target = Math.sqrt((D*D + D2*D2) / 2), diff = D - D2, ok = Math.abs(diff) <= 1/8 + 1e-9;
+  const cos = (D*D - D2*D2) / (4*A*B), dev = Math.asin(Math.max(-1, Math.min(1, Math.abs(cos)))) * R;
+  const leanW = Math.abs(D*D - D2*D2) / (4*A), leanL = Math.abs(D*D - D2*D2) / (4*B), sides = Math.abs(target - T), long = D >= D2 ? 1 : 2;
+  el.innerHTML = ok ? `<span class="ok">✓ Square</span><small>diagonals within ⅛" of each other</small>`
+    : `${toFrac16(Math.abs(diff))} out<small>Push the corners on diagonal ${long} toward each other until both read ${fmtFtIn(target)}</small>`;
+  out.innerHTML = rows([
+    ["Both should read", sqLen(target), "√((d1² + d2²) ÷ 2): works even before you trust the sides"],
+    ["Difference", `${toFrac16(Math.abs(diff))}`, ok ? "⅛\" or less: square enough for rough-in" : `Diagonal ${long} is the long one`],
+    ["Corners off", sqDeg(dev), "Every corner is off by this much"],
+    ["Width sides lean", toFrac16(leanW), `The far end of each ${fmtFtIn(B)} side sits this far off square`],
+    ["Length sides lean", toFrac16(leanL), `The far end of each ${fmtFtIn(A)} side sits this far off square`],
+    ["Sides check", sides <= 0.25 ? `<span class="ok">✓ ${fmtFtIn(T)}</span>` : warn(`${toFrac16(sides)} off`), sides <= 0.25 ? "The sides match the diagonals." : "The diagonals don't fit these sides: opposite sides aren't equal. Measure all four."]]);
+  mathOut("sq-math", [`Any box with equal opposite sides: d1² + d2² = 2(L² + W²), so the square diagonal = √((${nf(D, 3)}² + ${nf(D2, 3)}²) ÷ 2) = <b>${toFrac16(target)}</b>`,
+    `From the sides: √(${nf(A, 3)}² + ${nf(B, 3)}²) = ${toFrac16(T)}. These should match: ${sides <= 0.25 ? "they do" : `they're ${toFrac16(sides)} apart`}`,
+    `Lean of a width side = (d1² − d2²) ÷ (4 × length) = ${nf(Math.abs(D*D - D2*D2), 1)} ÷ ${nf(4*A, 1)} = ${toFrac16(leanW)}`,
+    `Corner angle off 90° = asin((d1² − d2²) ÷ (4 × L × W)) = ${nf(dev, 3)}°`]);
+  /* long diagonal 1 (bottom-left to top-right) means the box leans right: corner angle under 90° */
+  sqDraw({A, B, ang: ok ? 90 : 90 - Math.sign(cos) * dev, dev: ok ? 0 : -Math.sign(cos) * dev, box: true, D, D2, target, long, ok});
+}
+/* drawing: corner at bottom left, leg A to the right, leg B up. Angles under 3° off square are drawn at 3° so you can see which way it leans. */
+function sqDraw(g){
+  const svg = $("sq-svg"), W = 400, H = 250, bg = cssv("--d-bg"), txt = cssv("--d-text"), dim = cssv("--d-dim"), run = cssv("--d-run"), rise = cssv("--d-rise"),
+    cut = cssv("--d-cut"), fit = cssv("--d-fit"), grid = cssv("--d-grid"), good = cssv("--ok");
+  const big = Math.abs(g.dev) > 1e-6 && Math.abs(g.dev) < 3, show = g.dev === 0 || Math.abs(g.dev) < 1e-6 ? 90 : 90 + Math.sign(g.dev) * Math.max(Math.abs(g.dev), 3);
+  const t = (g.dev === 0 ? 90 : show) * Math.PI / 180, bEnd = [g.B * Math.cos(t), g.B * Math.sin(t)], sqEnd = [0, g.B];
+  const pts = [[0, 0], [g.A, 0], bEnd, sqEnd]; if (g.box) pts.push([g.A + bEnd[0], bEnd[1]]);
+  const {S: M} = svgFit(pts, W, H, 42);
+  const O = M([0, 0]), Ae = M([g.A, 0]), Be = M(bEnd), Sq = M(sqEnd);
+  let s = `<rect width="${W}" height="${H}" fill="${bg}"/><defs><marker id="sq-ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${fit}"/></marker></defs>`;
+  const ttl = g.box ? "CHECK A BOX" : g.dev === 0 && !g.D ? "LAY OUT A SQUARE CORNER" : "CHECK A CORNER";
+  s += `<text x="10" y="17" fill="${dim}" font-size="13.5" font-weight="800" letter-spacing=".06em" font-family="Barlow Condensed,Arial Narrow,sans-serif">${ttl}${big ? " · LEAN DRAWN BIGGER" : ""}</text>`;
+  if (g.box){
+    const P2 = M([g.A + bEnd[0], bEnd[1]]);
+    if (!g.ok) s += `<path d="M${O[0].toFixed(1)} ${O[1].toFixed(1)} L${Ae[0].toFixed(1)} ${Ae[1].toFixed(1)} L${M([g.A, g.B])[0].toFixed(1)} ${M([g.A, g.B])[1].toFixed(1)} L${Sq[0].toFixed(1)} ${Sq[1].toFixed(1)}Z" fill="none" stroke="${grid}" stroke-width="2" stroke-dasharray="5 5"/>`;
+    const d1 = [O, P2], d2 = [Ae, Be], longD = g.long === 1 ? d1 : d2;
+    s += svgLn(d1[0], d1[1], g.ok || g.long !== 1 ? cut : fit, 2.5, 'stroke-dasharray="7 5"') + svgLn(d2[0], d2[1], g.ok || g.long !== 2 ? cut : fit, 2.5, 'stroke-dasharray="7 5"');
+    s += svgLn(O, Ae, run, 5) + svgLn(Ae, P2, rise, 5) + svgLn(P2, Be, run, 5) + svgLn(Be, O, rise, 5);
+    if (!g.ok){   /* arrows at the ends of the long diagonal, pushing in */
+      for (const [p, q] of [[longD[0], longD[1]], [longD[1], longD[0]]]){
+        const dx = q[0] - p[0], dy = q[1] - p[1], d = Math.hypot(dx, dy), u = [dx / d, dy / d], a = [p[0] - u[0] * 30, p[1] - u[1] * 30], b = [p[0] - u[0] * 8, p[1] - u[1] * 8];
+        s += `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${fit}" stroke-width="3.5" marker-end="url(#sq-ah)"/>`;
+      }
+    }
+    const m1 = [(d1[0][0] + d1[1][0]) / 2, (d1[0][1] + d1[1][1]) / 2], m2 = [(d2[0][0] + d2[1][0]) / 2, (d2[0][1] + d2[1][1]) / 2];
+    /* the diagonals cross in the middle and split the box into four wedges: diagonal 1 labels the top one, diagonal 2 the bottom, width the left */
+    s += svgTxt(m1, 0, -30, `1: ${fmtFtIn(g.D)}`, txt, "middle", 13.5) + svgTxt(m2, 0, 42, `2: ${fmtFtIn(g.D2)}`, txt, "middle", 13.5);
+    s += svgTxt([(O[0] + Ae[0]) / 2, O[1]], 0, 22, `length ${fmtFtIn(g.A)}`, txt, "middle", 14) + svgTxt([(O[0] + Be[0]) / 2, (O[1] + Be[1]) / 2], 12, 4, `width ${fmtFtIn(g.B)}`, txt, "start", 14);
+    if (g.ok) s += svgTxt([(O[0] + P2[0]) / 2, (O[1] + P2[1]) / 2], 0, 5, "✓ SQUARE", good, "middle", 18, 800);
+    svg.innerHTML = s; return;
+  }
+  if (Math.abs(g.ang - 90) > 1e-6) s += svgLn(O, Sq, grid, 3, 'stroke-dasharray="5 5"') + svgTxt(Sq, Math.abs(g.ang - 90) > 0 && g.ang > 90 ? 12 : -12, 4, "square", dim, g.ang > 90 ? "start" : "end", 12.5);
+  s += svgLn(Ae, Be, g.ok === false ? fit : cut, 3, 'stroke-dasharray="8 5"');
+  s += svgLn(O, Ae, run, 6) + svgLn(O, Be, rise, 6);
+  if (Math.abs(g.ang - 90) < 1e-6) s += `<path d="M${(O[0] + 16).toFixed(1)} ${O[1].toFixed(1)} V${(O[1] - 16).toFixed(1)} H${O[0].toFixed(1)}" fill="none" stroke="${txt}" stroke-width="2"/>`;
+  if (g.dev === 0 && !g.D){   /* tape swing arc around the A mark, through the B mark */
+    const r = Math.hypot(Be[0] - Ae[0], Be[1] - Ae[1]), a0 = Math.atan2(Be[1] - Ae[1], Be[0] - Ae[0]), sw = 0.12;
+    const p = a => [Ae[0] + r * Math.cos(a), Ae[1] + r * Math.sin(a)], q0 = p(a0 - sw), q1 = p(a0 + sw);
+    s += `<path d="M${q0[0].toFixed(1)} ${q0[1].toFixed(1)} A${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${q1[0].toFixed(1)} ${q1[1].toFixed(1)}" fill="none" stroke="${fit}" stroke-width="2.5"/>`;
+  }
+  if (g.D && !g.ok) s += `<line x1="${Be[0].toFixed(1)}" y1="${Be[1].toFixed(1)}" x2="${Sq[0].toFixed(1)}" y2="${Sq[1].toFixed(1)}" stroke="${fit}" stroke-width="3" marker-end="url(#sq-ah)"/>`;
+  for (const p of [Ae, Be]) s += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="5" fill="${bg}" stroke="${txt}" stroke-width="2.5"/>`;
+  s += svgTxt([(O[0] + Ae[0]) / 2, O[1]], 0, 22, `A ${fmtFtIn(g.A)}`, txt, "middle", 14.5);
+  s += svgTxt([(O[0] + Be[0]) / 2, (O[1] + Be[1]) / 2], -10, 4, `B ${fmtFtIn(g.B)}`, txt, "end", 14.5);
+  s += svgTxt([(Ae[0] + Be[0]) / 2, (Ae[1] + Be[1]) / 2], 10, -6, g.D ? `${g.ok ? "✓ " : ""}${fmtFtIn(g.D)}` : fmtFtIn(Math.hypot(g.A, g.B)), g.ok ? good : txt, "start", 15, 800);
+  svg.innerHTML = s;
+}
+document.querySelectorAll("#sq-mode button").forEach(b => b.addEventListener("click", () => { sqMode = b.dataset.sq; store.set("jpb-sq", sqMode); sqShow(); }));
+SQ_IN.forEach(id => $(id).addEventListener("input", sqCalc));
+$("sq-chips").addEventListener("click", e => {
+  const b = e.target.closest("button[data-a]"); if (!b) return;
+  $("sq-a").value = fmtFtIn(+b.dataset.a).replace("−", "-"); $("sq-b").value = fmtFtIn(+b.dataset.b).replace("−", "-"); sqCalc(); say(b.textContent + " triangle");
+});
+sqShow(); window.sqCalc = sqCalc;
+
+/* ---- plan take-off: runs measured off the plan at the scale set in Scale a plan, totaled per pipe with waste and sticks ---- */
+let PT = (a => Array.isArray(a) ? a.filter(r => r && isFinite(r.r) && r.r > 0).slice(0, 300).map(r => ({p: String(r.p || "").slice(0, 30), r: +r.r, s: String(r.s || "").slice(0, 60)})) : [])(store.get("jpb-pt", []));
+let ptKind = store.get("jpb-pt-kind", "paper") === "real" ? "real" : "paper", ptLast = null;
+const ptName = s => String(s).trim().replace(/\s+/g, " ") || "Pipe";
+function ptScaleName(){ return psSel.value === "cal" ? "your calibration" : psSel.options[psSel.selectedIndex].text; }
+function ptNow(){
+  const el = $("pt-now"), x = parseLen($("pt-len").value), n = Math.max(1, Math.min(99, parseInt($("pt-n").value, 10) || 1));
+  ptLast = null;
+  if (ptKind === "paper"){
+    const f = psFactor();
+    $("pt-scale").innerHTML = f.err ? warn("Scale a plan (above) is set to calibrate but isn't filled in yet.") : `Scale: <b>${esc(ptScaleName())}</b>, from <b>Scale a plan</b> above. Change it there.`;
+    if (f.err){ el.innerHTML = warn("Set the scale first."); return; }
+    if (!($("pt-len").value.trim())){ el.innerHTML = `—<small>Type a run you measured on paper</small>`; return; }
+    if (!(x > 0)){ el.innerHTML = warn("Type the paper length like 2 3/8."); return; }
+    const real = x * f.k * n;
+    ptLast = {r: real, s: `${n > 1 ? n + " × " : ""}${toFrac16(x)} on paper`};
+    el.innerHTML = `${fmtFtIn(Math.round(real))}<small>${n > 1 ? `${n} × ${fmtFtIn(Math.round(x * f.k))}` : "real"} · ${nf(real / 12, 1)} ft</small>`;
+  } else {
+    $("pt-scale").innerHTML = "Real lengths: stacks, drops and risers the floor plan doesn't show.";
+    if (!($("pt-len").value.trim())){ el.innerHTML = `—<small>Type a real length, like 9'</small>`; return; }
+    if (!(x > 0)){ el.innerHTML = warn("Type the length like 9' or 9' 6\"."); return; }
+    ptLast = {r: x * n, s: `${n > 1 ? n + " × " : ""}${fmtFtIn(x)} typed`};
+    el.innerHTML = `${fmtFtIn(x * n)}<small>${nf(x * n / 12, 1)} ft</small>`;
+  }
+}
+function ptList(){
+  $("pt-rows").innerHTML = PT.length ? PT.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.p)}<div class="sub">${esc(r.s)}</div></td><td class="n">${fmtFtIn(Math.round(r.r))}</td><td><button type="button" class="x-del" data-i="${i}" aria-label="Remove run ${i + 1}">✕</button></td></tr>`).join("")
+    : `<tr><td colspan="4" class="sub">No runs yet. Measure one on the plan, then tap <b>Add run</b>.</td></tr>`;
+  const w = +$("pt-waste").value, stick = +$("pt-stick").value, by = new Map();
+  PT.forEach(r => { const k = r.p.toLowerCase(); const g = by.get(k) || {p: r.p, t: 0, n: 0}; g.t += r.r; g.n++; by.set(k, g); });
+  const all = [...by.values()];
+  $("pt-sum").innerHTML = all.length ? all.map(g => { const order = g.t * (1 + w); return `<tr><td>${esc(g.p)}<div class="sub">${g.n} run${g.n > 1 ? "s" : ""}</div></td><td>${nf(g.t / 12, 1)} ft</td><td><b>${Math.ceil(order / 12)} ft</b></td><td>${Math.ceil(order / stick)}</td></tr>`; }).join("")
+    : `<tr><td colspan="4" class="sub">Totals per pipe show up here.</td></tr>`;
+}
+$("pt-add").addEventListener("click", () => {
+  ptNow();
+  if (!ptLast){ say("Measure a run first"); $("pt-len").focus(); return; }
+  if (PT.length >= 300){ say("Take-off list is full (300 runs)"); return; }
+  PT.push({p: ptName($("pt-pipe").value).slice(0, 30), r: ptLast.r, s: ptLast.s + (ptKind === "paper" ? ` @ ${ptScaleName()}` : "")}); store.set("jpb-pt", PT);
+  $("pt-len").value = ""; $("pt-n").value = 1; ptNow(); ptList(); IDX = null; say(`Added run ${PT.length}`); $("pt-len").focus();
+});
+$("pt-len").addEventListener("keydown", e => { if (e.key === "Enter") $("pt-add").click(); });
+["pt-len", "pt-n"].forEach(id => $(id).addEventListener("input", ptNow));
+document.querySelectorAll("#pt-kind button").forEach(b => b.addEventListener("click", () => {
+  ptKind = b.dataset.pk; store.set("jpb-pt-kind", ptKind);
+  document.querySelectorAll("#pt-kind button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  $("pt-len-l").firstChild.textContent = ptKind === "paper" ? "On paper " : "Real length ";
+  $("pt-len-l").querySelector("i").textContent = ptKind === "paper" ? "(inches, tape style)" : "(like 9' 6\")";
+  $("pt-len").placeholder = ptKind === "paper" ? "2 3/8" : "9' 6\"";
+  ptNow();
+}));
+document.querySelector(`#pt-kind button[data-pk="${ptKind}"]`).click();
+$("pt-rows").addEventListener("click", e => { const b = e.target.closest(".x-del"); if (!b) return; PT.splice(+b.dataset.i, 1); store.set("jpb-pt", PT); ptList(); IDX = null; });
+{ const w = store.get("jpb-pt-waste", null), st = store.get("jpb-pt-stick", null);
+  if (w && [...$("pt-waste").options].some(o => o.value === w)) $("pt-waste").value = w;
+  if (st && [...$("pt-stick").options].some(o => o.value === st)) $("pt-stick").value = st; }
+$("pt-waste").addEventListener("change", () => { store.set("jpb-pt-waste", $("pt-waste").value); ptList(); });
+$("pt-stick").addEventListener("change", () => { store.set("jpb-pt-stick", $("pt-stick").value); ptList(); });
+{ let armed = 0;
+  $("pt-clear").addEventListener("click", () => {
+    if (!PT.length) return;
+    if (!armed){ armed = setTimeout(() => { armed = 0; $("pt-clear").textContent = "Clear list"; }, 3000); $("pt-clear").textContent = "Tap again to clear"; return; }
+    clearTimeout(armed); armed = 0; $("pt-clear").textContent = "Clear list"; PT = []; store.set("jpb-pt", PT); ptList(); IDX = null; say("Take-off cleared");
+  });
+}
+psSel.addEventListener("change", ptNow);
+window.ptReady = true; ptNow(); ptList();
 
 /* "Which tool?" and any other data-go button: open the tab, show the card, put focus on it */
 function jumpTo(group, sub, title, focusId){
@@ -4231,6 +4707,12 @@ const CARDS = [
   ["Math","On a ¼\" = 1'-0\" plan, 1\" on paper is how many feet?","4 ft (the scale is 1:48)","¼ inch stands for 12 inches, so 1 inch on paper = 48 inches = 4 ft."],
   ["Math","A 24×36 plan printed \"fit to page\" on 11×17: still half scale?","No, about 46%. Calibrate on a written dimension","The printer shrinks the 24 in sheet to fit 11 in of paper plus margins (11 ÷ 24 ≈ 46%), so a scale ruler reads every length wrong."],
   ["Math","Written dimension vs. what you scale off the plan: which wins?","The written dimension, always","Paper stretches, copies shrink, and a drawn line is only as good as the drafter's hand. The number is what the designer actually meant."],
+  ["Math","Square a corner with legs of 6 ft and 8 ft. What should the diagonal read?","10 ft (6-8-10)","6² + 8² = 36 + 64 = 100, and √100 = 10. It's 3-4-5 doubled: same shape, bigger, so a tape misread costs half the angle."],
+  ["Math","Why use 9-12-15 instead of 3-4-5 when there's room?","A tape misread throws the angle off about ⅓ as much","A ¹⁄₁₆ in slip on the diagonal moves the corner about the same distance either way, but over legs 3× longer that's 3× less angle."],
+  ["Math","A box's opposite sides match and both diagonals read the same. Is it square?","Yes","Lean a box and one diagonal grows while the other shrinks. Equal diagonals with equal opposite sides only happen at 90°."],
+  ["Math","Diagonals read 14' 5¼\" and 14' 4\". Which corners move?","The two on the long diagonal, toward each other, until both read about 14' 4⅝\"","Squaring a leaning box shortens the long diagonal and stretches the short one. Both end near the middle: √((d1² + d2²) ÷ 2)."],
+  ["Math","Checking a shrunk print's scale: calibrate on a 3 ft dimension or a 30 ft one?","The 30 ft one","Your ruler slip is the same size on either line. Spread over 10× the length, it's 1/10 the error per foot."],
+  ["Math","A ¼\" plan printed \"fit to page\" on 11×17. What scale does it read like?","¼\" at about 46%. It looks close to ⅛\", but no ruler scale fits: calibrate","11 ÷ 24 ≈ 46%. Half of ¼\" would be ⅛\", but 46% isn't half, so an ⅛\" ruler reads every length about 8% short."],
   ["Utah","Secondary and culinary on one sprinkler system: what's required?","RP on the culinary side + a swing joint (dual-source connection); RP tested within 10 days and yearly","The RP keeps untreated canal water from ever backing into drinking water, and the swing joint means only one supply can be hooked up at a time."],
   ["Heaters","Ultra-low NOx limit for a gas heater ≤75,000 BTU/h in Utah's nonattainment areas?","10 ng/J","NOx feeds the winter inversion haze along the Wasatch Front, so Utah holds gas heaters to tighter limits than most states."],
   ["How it works","About what temperature does water boil in Salt Lake (≈4,200 ft)?","About 204°F (≈1°F lower per 500 ft)","Less air pressure is pushing down on the water, so it boils at a lower temperature. Instructions that say 'boil' or 'scald' run cooler up here."],
@@ -4357,6 +4839,24 @@ const CARDS = [
   ["How it works","Why does a dripping RPZ drip?","A check is leaking; the relief valve dumps water instead of letting it flow back","The RPZ's middle zone is held at lower pressure than the supply. Any check leak dumps water out instead of letting it flow back."],
   ["How it works","Why does a vent protect a trap?","Lets air in so falling water can't siphon the seal","A falling slug of water pulls a vacuum behind it. The vent lets air fill that instead of the trap water."],
   ["How it works","Why is trap-to-vent distance limited?","On 1¼\"–2\" pipe at ¼\"/ft, past the limit the arm falls more than one pipe diameter, the vent opening drops below the weir, and the trap siphons","The vent opening has to stay above the trap weir, or the arm runs full like a siphon tube."],
+  ["How it works","Six ways a trap loses its seal?","Self-siphonage, induced siphonage, back pressure, evaporation, capillary action, wind or momentum","A seal is only 0.07–0.14 psi of water. Suck on it, push on it, dry it out or wick it, and it's gone. Vents and primers fight all six."],
+  ["How it works","Guest shower drain smells like sewer, nothing's broken. Likely cause?","Evaporation: nobody runs water in it","An unused trap dries out in weeks. Run water in it, or add a trap primer or deep-seal trap on a drain that's always dry."],
+  ["How it works","What's the 'gulp' at the end of a flush?","Air breaking the siphon in the trapway","The tank's rush fills the trapway and siphons the bowl empty. When air gets in, the siphon stops. The refill tube then restores the trap seal."],
+  ["How it works","Why put brass or a dielectric union between steel and copper?","Galvanic corrosion: the steel side eats itself","Two metals plus water make a battery. The less noble metal, zinc and steel here, dissolves at the joint."],
+  ["How it works","PRV adjusting screw: which way raises pressure?","In (clockwise)","You're squeezing the spring harder, and the spring is what holds the valve open against downstream pressure."],
+  ["How it works","PRV set at 60 but the gauge's max needle reads 95 in the morning. Why?","Creep: the PRV seat leaks by overnight","With nothing running, a worn seat lets street pressure seep through. A gauge with a max needle left overnight catches it."],
+  ["Gas","Typical house natural gas pressure?","About 7\" w.c., roughly ¼ psi (propane about 11\" w.c.)","Burners are built for gentle pressure. That's why gas is read on a manometer, not a psi gauge."],
+  ["Gas","1 psi = how many inches of water column?","27.7\" w.c.","1 psi holds up 2.31 ft of water, and 2.31 × 12 = 27.7 in."],
+  ["Gas","Why test gas pipe at 3 psi when it runs at 7\" w.c.?","3 psi is about 12× working pressure: a joint that holds that holds for good","7 in w.c. is about ¼ psi, so the test is a big margin without stressing the pipe."],
+  ["Supply","Air gap size?","2× the outlet's opening, never less than 1\"","Water can't jump a gap that big, even if the supply goes to vacuum. No moving parts, so it's the best backflow protection."],
+  ["Supply","Atmospheric vacuum breaker (AVB): can a shutoff go after it?","No: an AVB can't stay under pressure","Its float opens to air when pressure drops. A valve after it keeps it pressurized with the float held shut, so it never gets the chance to work."],
+  ["Heaters","Closed system, 30-gal heater, 80 psi at 74°F, no expansion tank: pressure at 90°F?","About 400 psi (A.O. Smith test)","Water barely compresses. Warming it just 16°F with nowhere to go buckled the tank bottom. The T&P is the only thing left."],
+  ["Heaters","Seismic straps: where on the tank?","Upper third and lower third; the lower strap at least 4\" above the controls","Two points keep a heavy, full tank from tipping. Above the controls so the strap doesn't crush the gas valve."],
+  ["Materials","CPVC ½\"–1\" cure before a test in a cold shell (under 40°F)?","4 hours (above 60°F: 1 hr; 40–60°F: 2 hr)","Solvent evaporates slower in the cold, so the joint stays soft longer. Times are for a 150 psi test; the cement maker's chart wins."],
+  ["Fixtures","Utah flow limits are rated at what pressure?","Showerhead 2.0 gpm at 80 psi; lav 1.5 gpm at 60 psi","Utah's amendment to IRC Table P2903.2 sets them. Flow depends on pressure, so the limit names the test pressure."],
+  ["License","Journeyman with no classroom hours: how many apprentice hours?","16,000","Twice the 8,000 hr school route. The 576 hours of class are worth a lot of field time."],
+  ["License","Most OJT hours you can log in 12 months?","3,000","That's a full-time year plus some overtime. Extra hours past it don't count toward the license (R156-55c-302a)."],
+  ["License","Classroom rule each semester?","At least 72 hours, passed at 75% or better","It keeps apprentices moving through the program at a steady pace."],
   ["How it works","Why recheck a limit stop set in winter?","Warmer summer cold water makes the same stop run hotter","A mixing valve sets proportions. Warmer cold water going in means hotter water coming out."],
   ["How it works","Why derate gas at altitude?","Less oxygen per ft³: full input burns dirty (soot, CO)","Less oxygen with the same gas means incomplete burning: soot and carbon monoxide."],
   ["How it works","Why does a closed system need an expansion tank?","Water barely compresses; the tank's air cushion takes the expansion","Water expands about 2% from 40°F to 120°F, and it won't squeeze. The air in the tank will."],
@@ -4442,6 +4942,7 @@ const fcNext = ok => {
   ok ? missed.delete(q) : missed.add(q); store.set("jpb-fc-miss", [...missed]);
   if (!ok) deck.splice(Math.min(deck.length, pos + 4), 0, c);   /* see it again a few cards from now */
   seen++; if (ok) got++; pos++; fcTopics(); fcShow(); $("fc-card").focus();
+  if (window.fcEgg) window.fcEgg(ok);
 };
 $("fc-got").addEventListener("click", () => fcNext(true));
 $("fc-miss").addEventListener("click", () => fcNext(false));
@@ -4456,6 +4957,173 @@ $("fc-reset").addEventListener("click", fcDeal);
   });
 }
 fcTopics(); fcDeal();
+
+/* ---------- 13c LIFE: effects, toasts, jokes, easter eggs. Everything here is optional fun: it skips the motion when the phone asks for less. ---------- */
+const FX = (() => {
+  const cv = $("fx"), ctx = cv.getContext("2d"); let parts = [], raf = 0;
+  const calm = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const W = () => innerWidth, H = () => innerHeight;
+  function size(){ const d = Math.min(devicePixelRatio || 1, 2); cv.width = W() * d; cv.height = H() * d; ctx.setTransform(d, 0, 0, d, 0, 0); }
+  function loop(){
+    ctx.clearRect(0, 0, W(), H());
+    parts = parts.filter(p => p(ctx));
+    if (parts.length) raf = requestAnimationFrame(loop); else { raf = 0; cv.hidden = true; }
+  }
+  function add(list){ if (calm()) return false; cv.hidden = false; if (!raf){ size(); raf = requestAnimationFrame(loop); } parts.push(...list); return true; }
+  const WATER = () => document.documentElement.dataset.theme === "dark" ? "#5CA8FF" : "#0057D9";
+  /* a falling teardrop that splashes into droplets where it lands */
+  function drop(x, y, floor, delay = 0, r = 6){
+    let vy = 0, t = -delay, col = WATER();
+    return c => {
+      if (t++ < 0) return true;
+      vy += 0.45; y += vy;
+      if (y >= floor){ add(Array.from({length: 7}, (_, i) => spark(x, floor, (i - 3) * 0.9 + (Math.random() - .5), -2.5 - Math.random() * 2.5, col, 2.6))); return false; }
+      c.fillStyle = col; c.beginPath(); c.moveTo(x, y - r * 2.2); c.quadraticCurveTo(x + r * 1.1, y - r * .4, x, y + r); c.quadraticCurveTo(x - r * 1.1, y - r * .4, x, y - r * 2.2); c.fill();
+      return true;
+    };
+  }
+  function spark(x, y, vx, vy, col, r){
+    let life = 50 + Math.random() * 20;
+    return c => { vy += 0.22; x += vx; y += vy; life--; c.globalAlpha = Math.max(0, life / 60); c.fillStyle = col; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); c.globalAlpha = 1; return life > 0 && y < H() + 20; };
+  }
+  return {
+    drip(n = 14){ return add(Array.from({length: n}, () => drop(Math.random() * W(), -20, H() * (.55 + Math.random() * .4), Math.random() * 70))); },
+    one(x, y){ return add([drop(x, y, Math.min(H() - 30, y + 260), 0, 5)]); },
+    burst(x = W() / 2, y = H() / 3, n = 46){
+      const cols = [cssv("--hv"), WATER(), document.documentElement.dataset.theme === "dark" ? "#FFFFFF" : "#000000"];
+      return add(Array.from({length: n}, (_, i) => { const a = Math.random() * Math.PI * 2, s = 3 + Math.random() * 6; return spark(x, y, Math.cos(a) * s, Math.sin(a) * s - 3, cols[i % 3], 3 + Math.random() * 2.5); }));
+    },
+    /* flush: droplets spiral into the middle of the screen and go down the drain */
+    swirl(){
+      const cx = W() / 2, cy = H() / 2, col = WATER();
+      return add(Array.from({length: 70}, (_, i) => {
+        let a = i / 70 * Math.PI * 6, r = Math.max(W(), H()) * (.35 + Math.random() * .25), t = -i * .6;
+        return c => { if (t++ < 0) return true; a += .09 + 6 / (r + 20); r *= .955; c.fillStyle = col; c.globalAlpha = Math.min(1, r / 40); c.beginPath(); c.arc(cx + Math.cos(a) * r, cy + Math.sin(a) * r, 3.4, 0, 7); c.fill(); c.globalAlpha = 1; return r > 3; };
+      }));
+    }
+  };
+})();
+let toastT = 0;
+function toast(html, ms = 3600){ const t = $("toast"); t.innerHTML = html; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), ms); }
+
+/* shop talk: original one-liners for the logo, the search box and the Konami code */
+const JOKES = [
+  "Gravity: still the cheapest pump on the market.",
+  "A plumber's favorite shoe? <b>Clogs.</b>",
+  "Hot on the left. Even in the Plumbiverse.",
+  "If it hasn't been tested, it isn't done. It's just quiet.",
+  "Sewer gas walked into a trap. Never got out.",
+  "Dry-fit twice, glue once.",
+  "The vent is just the drain taking a breath.",
+  "Never trust a drain that gurgles twice.",
+  "Water always finds the one joint you didn't prime.",
+  "Payday and the 4-way: both somehow on Friday.",
+  "The ¾\" cap you just set down is now in another dimension.",
+  "Every rough-in is a promise to the trim-out crew.",
+  "A flush beats a full house.",
+  "Slope is a quarter inch of patience per foot.",
+  "PEX remembers every kink. Treat it nice."
+];
+let jokeI = Math.floor(Math.random() * JOKES.length);
+const joke = () => JOKES[jokeI++ % JOKES.length];
+
+/* logo: tap for a drip off the blue drop. Five fast taps: a joke. */
+{ const logo = document.querySelector(".tb .logo"); let taps = 0, tapT = 0;
+  logo.setAttribute("role", "button"); logo.setAttribute("tabindex", "0"); logo.setAttribute("aria-label", "PlumChum logo. Tap for a drip.");
+  logo.removeAttribute("aria-hidden");
+  const hit = () => {
+    const r = logo.getBoundingClientRect();
+    FX.one(r.left + r.width * .82, r.top + r.height * .62);
+    logo.classList.remove("wiggle"); void logo.getBoundingClientRect(); logo.classList.add("wiggle");
+    clearTimeout(tapT); tapT = setTimeout(() => taps = 0, 1500);
+    if (++taps >= 5){ taps = 0; FX.burst(r.left + r.width / 2, r.bottom + 10); toast(joke()); }
+  };
+  logo.addEventListener("click", hit);
+  logo.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); hit(); } });
+}
+
+/* search eggs: a few words do something extra. The search itself still runs. */
+{ const EGGS = {
+    flush: () => { FX.swirl(); toast("Whoosh. <b>Search cleared.</b>"); setTimeout(() => { $("q").value = ""; $("q").dispatchEvent(new Event("input")); }, 900); },
+    leak: () => { FX.drip(18); toast("Found it. <b>Soap the joints</b>, then check Inspect → Leak or just cold?"); },
+    drip: () => { FX.drip(12); toast("Drip… drip… That's a <b>cartridge</b>. Trim → ID a part."); },
+    plumbiverse: () => { FX.burst(); toast("Welcome to the <b>Plumbiverse</b>, chum."); },
+    plumchum: () => { FX.burst(); toast("PlumChum says: <b>check your slope.</b>"); },
+    joke: () => toast(joke()),
+    coffee: () => toast("Supply house coffee: <b>free, and worth every penny.</b>"),
+    lunch: () => toast("Lunch is at 12. The inspector is <b>also</b> at 12."),
+    friday: () => toast("Friday: some cities won't do a 4-way today. <b>Check My city before you call.</b>")
+  };
+  let last = "";
+  $("q").addEventListener("input", () => {
+    const t = $("q").value.trim().toLowerCase();
+    if (t !== last && EGGS[t]) setTimeout(EGGS[t], 250);
+    last = t;
+  });
+}
+
+/* flashcards: a streak gauge that climbs like a test gauge, and a rank that grows with the cards you've locked in */
+const RANKS = [[0, "Fresh apprentice"], [10, "Pipe rookie"], [30, "Trap whisperer"], [60, "Vent sage"], [100, "Journeyman material"], [140, "Plumbiverse legend"]];
+let streak = 0, best = +store.get("jpb-fc-best", 0) || 0;
+const solidCount = () => Object.values(boxes).filter(v => v.b >= 3).length;
+const rankOf = n => RANKS.reduce((r, x) => n >= x[0] ? x : r, RANKS[0]);
+function gaugeDraw(){
+  const psi = Math.min(100, streak * 8), a = Math.PI * (1 - psi / 100), ink = cssv("--ink"), hv = cssv("--hv"), dan = cssv("--danger"), mut = cssv("--rule");
+  const x = 32 + Math.cos(a) * 24, y = 36 - Math.sin(a) * 24;
+  const [n, name] = rankOf(solidCount()), next = RANKS.find(r => r[0] > solidCount());
+  $("fc-gauge").innerHTML = `<svg viewBox="0 0 64 40" aria-hidden="true"><path d="M6 36A26 26 0 0 1 58 36" fill="none" stroke="${mut}" stroke-width="6"/><path d="M53 20.7A26 26 0 0 1 58 36" fill="none" stroke="${dan}" stroke-width="6"/><line x1="32" y1="36" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${ink}" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="36" r="4" fill="${ink}"/></svg>` +
+    `<span>Streak <b>${streak}</b> (${psi} psi${psi >= 80 ? ": PRV territory" : ""}) · best ${best}<br>Rank: <b>${name}</b>${next ? ` · ${next[0] - solidCount()} more solid cards to ${next[1]}` : ""}</span>`;
+}
+let lastRank = (r => RANKS.some(x => x[1] === r) ? r : rankOf(solidCount())[1])(store.get("jpb-rank", ""));
+store.set("jpb-rank", lastRank);
+window.fcEgg = ok => {
+  if (ok){
+    streak++;
+    if (streak > best){ best = streak; store.set("jpb-fc-best", best); }
+    if (streak === 10){ toast("10 in a row: <b>80 psi.</b> Any more and you need a PRV."); FX.burst(innerWidth / 2, innerHeight * .4, 30); }
+    else if (streak === 25){ toast("25 in a row. <b>Gauge pegged.</b> Go teach somebody."); FX.burst(); }
+  } else {
+    if (streak >= 5) toast(`Pressure drop: streak of ${streak} ends. <b>Bleed it and go again.</b>`, 2600);
+    streak = 0;
+  }
+  const after = rankOf(solidCount())[1], up = RANKS.findIndex(r => r[1] === after) > RANKS.findIndex(r => r[1] === lastRank);
+  if (up){ toast(`Rank up: <b>${after}</b>`); FX.burst(); }
+  if (after !== lastRank){ lastRank = after; store.set("jpb-rank", after); }
+  gaugeDraw();
+};
+gaugeDraw();
+
+/* tip of the day: one flashcard a day, the same one all day. Tap to see the answer. */
+{ const n = today(), c = CARDS[(n * 37) % CARDS.length], el = $("tip");
+  if (c){
+    $("tip-q").textContent = c[1]; $("tip-a").innerHTML = `${esc(c[2])}${c[3] ? `<small>${esc(c[3])}</small>` : ""}`; el.hidden = false;
+    el.setAttribute("aria-label", "Tip of the day: " + c[1] + ". Tap to see the answer.");
+    el.addEventListener("click", () => { const on = $("tip-a").hidden; $("tip-a").hidden = !on; el.setAttribute("aria-expanded", String(on)); });
+  }
+}
+
+/* keyboard: the Konami code (↑ ↑ ↓ ↓ ← → ← → B A) */
+{ const K = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"]; let k = 0;
+  document.addEventListener("keydown", e => {
+    if (e.target.closest && e.target.closest("input,textarea,select")) return;
+    k = e.key.toLowerCase() === K[k].toLowerCase() ? k + 1 : (e.key === K[0] ? 1 : 0);
+    if (k === K.length){ k = 0; FX.burst(); FX.drip(10); toast("Cheat code accepted: <b>unlimited take-offs.</b> (You always had them.)"); }
+  });
+}
+
+/* footer: tap 7 times for the book's own stats */
+{ const f = book.querySelector("footer"); let n = 0, t = 0;
+  f.addEventListener("click", () => {
+    clearTimeout(t); t = setTimeout(() => n = 0, 2000); if (++n < 7) return; n = 0;
+    let bytes = 0; try { for (let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if (k.startsWith("jpb-")) bytes += k.length + (localStorage.getItem(k) || "").length; } } catch(e){}
+    const calcs = SECTIONS.filter(s => s.querySelector(".calc, .ans, .out")).length;
+    toast(`Book stats: <b>${SECTIONS.length}</b> cards · <b>${calcs}</b> tools · <b>${CARDS.length}</b> flashcards · <b>${GLOSS.length}</b> words · <b>${nf(bytes / 1024, 1)} KB</b> saved on this device`, 6000);
+    FX.burst(innerWidth / 2, innerHeight * .7, 28);
+  });
+}
+
+/* for anyone who opens the browser console */
+try { console.log("%c PLUMBIVERSE %c water flows downhill, payday flows uphill", "background:#CCFF00;color:#000;font:800 14px sans-serif;padding:3px 6px", "color:#888;font:13px monospace"); } catch(e){}
 
 IDX = null;  /* every table is rendered now: rebuild the search index on next use */
 apply();
@@ -4851,7 +5519,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "plumbiverse-2026-10-18";
+var BUILD = "plumbiverse-2026-10-23c";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
