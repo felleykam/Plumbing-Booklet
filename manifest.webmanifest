@@ -1,6 +1,7 @@
 {
- "name": "PlumChum's Guide to the Plumbiverse",
- "short_name": "Plumbiverse",
+ "name": "Utah Plumbers Digital Handbook",
+ "short_name": "UT Handbook",
+ "description": "Field math, code, mech room, trim and Utah city info for residential plumbers.",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
