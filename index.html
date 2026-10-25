@@ -1093,6 +1093,21 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
     <details class="math"><summary>Show the math</summary><ol id="lr-math"></ol></details>
     <p class="note"><span class="badge why">WHY</span> The laser beam is level. As the pipe drops away from it, the distance from the beam down to the pipe grows, so the rod reads <b>higher</b> as you go downhill. Read the same spot every time (top of pipe or invert). Ft-in rod? Type it like 4' 6 1/4".</p>
   </section>
+  <section data-sec="grade" data-kw="bore line bore holes drill holes through studs joists slope grade drop per stud hole height layout chalk line laser drain through framing">
+    <div class="sec-head"><h2>Bore line</h2><small>Where each hole goes so the drain keeps grade</small></div>
+    <div class="calc">
+      <label for="bl-mem">Drilling through<select id="bl-mem"></select></label>
+      <label for="bl-pipe">Pipe<select id="bl-pipe"></select></label>
+      <label for="bl-slope">Slope<select id="bl-slope"><option value="0.125">⅛" / ft</option><option value="0.25" selected>¼" / ft</option><option value="0.5">½" / ft</option></select></label>
+      <label for="bl-oc">Spacing<select id="bl-oc"><option value="12">12" o.c.</option><option value="16" selected>16" o.c.</option><option value="19.2">19.2" o.c.</option><option value="24">24" o.c.</option></select></label>
+      <label for="bl-n">How many members<input id="bl-n" type="number" inputmode="numeric" min="2" max="60" step="1" value="8"></label>
+      <label for="bl-h0" id="bl-h0-l">First hole center <i>(above the floor)</i><input id="bl-h0" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="20"></label>
+      <div class="ans" id="bl-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <div class="x"><table class="t num"><thead><tr><th>#</th><th>From 1st</th><th id="bl-col">Hole center</th><th>OK?</th></tr></thead><tbody id="bl-rows"></tbody></table></div>
+    <details class="math"><summary>Show the math</summary><ol id="bl-math"></ol></details>
+    <p class="note"><b>Tip:</b> mark the first and last holes, then snap a chalk line or shoot a laser across the faces: every hole lands on it. Solid lumber only; I-joists use the brand's chart (<b>Rough → Framing</b>). <span class="badge why">WHY</span> Grade is per foot, and studs are a fixed spacing, so every hole drops the same amount.</p>
+  </section>
   <section data-sec="sizing" data-kw="dfu counter drain size fixture units">
     <div class="sec-head"><h2>DFU counter</h2><small>Count fixtures → drain size</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you want to check what size drain a group of fixtures needs.</p><p><b>What's a DFU?</b> A drainage fixture unit: a rough score of how much water a fixture dumps and how often. A lav is 1, a tub 2, a toilet 3–4. Add them up, then the code tables say the smallest pipe that can carry that load at that slope.</p><p>It's a learning and check tool; the plans and your journeyman size the real job.</p></div></details>
@@ -1438,7 +1453,22 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><td><b>Decimal feet</b></td><td>0.1 ft ≈ 1³⁄₁₆" · 0.01 ft ≈ ⅛"</td><td class="n">0.25 ft = 3"</td></tr>
         <tr><td><b>PEX growth</b></td><td>≈1" per 100 ft per 10°F (copper: ≈1" per 100°F)</td><td class="n">50 ft, 60°F → ≈3"</td></tr>
         <tr><td><b>Cold air test</b></td><td>At 80 psi the gauge drops ≈2 psi per 10°F the pipe cools</td><td class="n">60→30°F ≈ −5 psi</td></tr>
-      </tbody></table></div>
+              <tr><td><b>45° with a framing square</b></td><td>12" on each leg reads <b>17"</b> across. Travel = offset ÷ 12 × 17</td><td class="n">24" → 2 × 17 = 34" (true 33.94")</td></tr>
+        <tr><td><b>Offset from a 45 travel</b></td><td>Travel × 0.7, plus a hair (× 0.707)</td><td class="n">17" → 11.9 ≈ 12"</td></tr>
+        <tr><td><b>22½° closer</b></td><td>Offset × 2⅝ (true 2.613)</td><td class="n">8" → 16 + 5 = 21"</td></tr>
+        <tr><td><b>22½° run</b></td><td>Room it takes down the line: offset × 2.4</td><td class="n">10" → 24" (true 24.1")</td></tr>
+        <tr><td><b>60° (⅙ bend)</b></td><td>Travel = offset + 15% · run = offset × 0.58</td><td class="n">10" → 11½" travel, 5¾" run</td></tr>
+        <tr><td><b>11¼° travel</b></td><td>Offset × 5⅛ (true 5.126, near exact)</td><td class="n">4" → 20½"</td></tr>
+        <tr><td><b>30° bend</b> (PEX, soft copper)</td><td>Travel = 2 × offset · run = offset × 1¾</td><td class="n">3" offset → bends 6" apart</td></tr>
+        <tr><td><b>Rolling true offset</b></td><td>Look for a 3-4-5 family: 6 & 8 → 10 · 9 & 12 → 15 · 5 & 12 → 13 · 8 & 15 → 17</td><td class="n">Roll 9, set 12 → 15 → 45 travel ≈ 21¼"</td></tr>
+        <tr><td><b>Rolling 45, any numbers</b></td><td>Travel² = 2 × (roll² + set²). Root: nearest square + leftover ÷ (2 × root)</td><td class="n">10 & 7: 298 → 17 + 9÷34 ≈ 17¼"</td></tr>
+        <tr><td><b>Drop per stud</b></td><td>¼"/ft at 16" o.c. = <b>⅓" per stud</b> (24" o.c. = ½"). ⅛"/ft at 16" = ⅙"</td><td class="n">6 studs → 2" lower</td></tr>
+        <tr><td><b>Calculator decimal → tape</b></td><td>Decimal × 16, round = sixteenths</td><td class="n">.73 × 16 = 11.7 → 12/16 = ¾"</td></tr>
+        <tr><td><b>Gallons in any pipe</b></td><td>ID² × 4 = gallons per 100 ft (true 4.08)</td><td class="n">4" drain → 16 × 4 ≈ 65 gal</td></tr>
+        <tr><td><b>Too fast?</b></td><td>ft/s ≈ gpm × 0.4 ÷ ID²</td><td class="n">8 gpm, ¾" L (.785) → ≈ 5.2 ft/s</td></tr>
+        <tr><td><b>How much is hot?</b></td><td>Hot share = (mix − cold) ÷ (tank − cold)</td><td class="n">110° from 140° tank, 50° cold → ⅔ hot</td></tr>
+        <tr><td><b>Friction, bigger or faster</b></td><td>Double the gpm → ≈ 3½× the friction. One size up (¾ → 1") → about ¼ the friction</td><td class="n">4 psi at 5 gpm → ≈ 14 psi at 10</td></tr>
+</tbody></table></div>
     <p class="note"><span class="badge why">WHY</span> Run the trick before you trust a calculator: if the screen says 34" and your head says 17", a digit slipped. Exact answers live in the calculators.</p>
   </section>
   <section data-sec="units" data-kw="take-off takeoff take off fitting center to end dwv abs pvc copper 45 90 elbow quarter eighth bend measure my">
@@ -1789,7 +1819,8 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><td>ABS DWV</td><td class="n">D2661</td><td>Cement D2235.</td></tr>
         <tr><td>ABS ↔ PVC</td><td>Transition fitting</td><td>Transition cement (D3138, green) only at drain-to-sewer joint. Check 2024 IPC 705.</td></tr>
         <tr><td>Copper</td><td class="n">B88</td><td>K green · L blue · M red · DWV yellow.</td></tr>
-      </tbody></table></div>
+              <tr><td>PEX code<div class="sub">4 digits, like 5106</div></td><td class="n">F876</td><td><b>1st digit = chlorine:</b> 5 = OK 100% of the time at 140°F (recirc lines), 1 = only 25%. <b>2nd digit = sun:</b> 1 = 1 month, 3 = 6 months. <span class="badge why">WHY</span> Our water is chlorinated, and a recirc loop is hot all day.</td></tr>
+</tbody></table></div>
   </section>
   <section data-sec="materials" data-kw="pex uponor viega zurn sharkbite bend radius uv">
     <div class="sec-head"><h2>PEX install</h2><small>Manufacturer guides</small></div>
@@ -1832,7 +1863,8 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
       <tbody>
         <tr><th>Lead-free</th><td>Solder and flux ≤0.2% lead. Pipe, fittings, fixtures ≤0.25% lead (weighted average of wetted surfaces).</td></tr>
         <tr><th>Standards</th><td>Solder ASTM B32 · flux ASTM B813 · joint practice ASTM B828.</td></tr>
-      </tbody></table></div>
+              <tr><th>Pinholes</th><td>Fast water wears through copper just past elbows and tees (erosion corrosion). Keep hot under about <b>4–5 ft/s</b>, and 2–3 ft/s above 140°F (Copper Development Assn.). Ream every cut, no solder blobs inside, and size a recirc pump to the loop, not the biggest one on the shelf.</td></tr>
+</tbody></table></div>
     <p class="note">Type colors (K, L, M, DWV): see Pipe markings.</p>
   </section>
 
@@ -1942,7 +1974,10 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><th>Location</th><td>Gas heater not in a bedroom, bathroom or a closet off them unless it's direct-vent or in a sealed closet (IRC G2406.2).</td></tr>
         <tr><th>Venting</th><td>Natural-draft connector slopes up ≥ ¼"/ft toward the vent. Power-vent and direct-vent: the maker's pipe, lengths and terminations.</td></tr>
         <tr><th>Tankless</th><td>Isolation (service) valves, condensate neutralizer to a drain on condensing units, gas line sized for full input (often 199k BTU/h: run the <b>Gas line sizer</b>), metal pipe at the unit if the maker says so. Set the <b>altitude</b> (Mech → Water heaters → Altitude settings).</td></tr>
-      </tbody></table></div>
+              <tr><th>Start-up</th><td>Open a hot faucet, fill the tank, and wait for steady flow with no air <b>before</b> the breaker or gas goes on. <span class="badge why">WHY</span> An element that fires in air burns out (maker's manual).</td></tr>
+        <tr><th>No torch on the nipples</th><td>Sweat copper to the adapters on the bench, let them cool, then thread them on. <span class="badge why">WHY</span> The ports are plastic-lined with heat traps; flame ruins them for good (GE, heat-trap nipple sheets).</td></tr>
+        <tr><th>Draft check</th><td>Natural-draft swap-outs: doors shut, range hood and bath fans on high, burner on 5 min, then smoke or a match at the draft hood. It should pull in (IFGC App. D). Pushing out = CO in the house.</td></tr>
+</tbody></table></div>
     <p class="note">Utah heater amendments: 15A-3-205 (houses); HB 65 (2026) changed some heater rules, so confirm the current text. The heater's install manual is part of the code: leave it at the house.</p>
   </section>
   <section data-sec="heaters" data-kw="water heater types atmospheric natural draft power vent direct vent power direct condensing tank electric heat pump hpwh b-vent pvc draft hood which type venting choose">
@@ -1980,7 +2015,8 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
     <div class="sec-head"><h2>Heat pump water heaters</h2><small>The 2029 federal rule</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>The rule</th><td>Electric tank heaters <b>20–55 gal made after May 6, 2029</b> must reach UEF 2.30: in practice, a heat pump. Gas tanks only get a small efficiency bump. The gas tankless rule was withdrawn in 2025.</td></tr>
+        <tr><th>The rule</th><td>Electric tanks <b>over 35 gal made after May 6, 2029</b> must be heat pumps in practice. A small electric class (20–35 gal, limited first-hour rating) can stay plain resistance, so expect 35-gal tanks sold as "40s" for tight closets. Gas tanks only get a small efficiency bump. The gas tankless rule was voided in May 2025 (DOE final rule, 89 FR 37778; still in place Oct 2026).</td></tr>
+        <tr><th>Tax credit</th><td>The federal heat pump water heater credit <b>ended Dec 31, 2025</b>. A customer quoting it has old info: ask Rocky Mountain Power or Enbridge for current rebates.</td></tr>
         <tr><th>Air</th><td>It pulls heat from room air: about <b>700 ft³</b> of space for most 240V units (some 450), or a louvered door or ducting per the maker. Best in a 50–90°F space; in a cold Utah garage it leans on the backup element.</td></tr>
         <tr><th>Condensate</th><td>It makes water. Plan a condensate drain (or pump) at rough-in, and set the unit level so it drains.</td></tr>
         <tr><th>Electric</th><td>Usually 240V / 30A, like a regular electric tank. 120V plug-in models exist for gas swaps, sized up about two tank sizes.</td></tr>
@@ -2008,6 +2044,25 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
       </tbody></table></div>
     <details class="math"><summary>Show the math</summary><ol id="wh-math"></ol></details>
     <p class="note">Plan on <b>40°F</b> incoming water in a Utah winter (Rheem's northern-state guidance). Tank sizing goes by <b>first-hour rating</b> (gallons it can deliver in the busiest hour, on the label), not just tank size. Tankless: add up the gpm of fixtures that run at the same time.</p>
+  </section>
+  <section data-sec="heaters" data-kw="hot water last how long shower run out tank minutes mixing valve 140 tempering hot share first hour recovery sizing big tub">
+    <div class="sec-head"><h2>Hot water that lasts</h2><small>How long before the shower goes cold</small></div>
+    <div class="calc">
+      <label for="hl-tank">Tank (gal)<input id="hl-tank" type="number" inputmode="decimal" min="1" step="any" value="50"></label>
+      <label for="hl-set">Tank set °F<input id="hl-set" type="number" inputmode="decimal" step="any" value="120"></label>
+      <label for="hl-in">Incoming °F<input id="hl-in" type="number" inputmode="decimal" step="any" value="40"></label>
+      <label for="hl-use">Shower °F<input id="hl-use" type="number" inputmode="decimal" step="any" value="105"></label>
+      <label for="hl-gpm">Flow (gpm)<input id="hl-gpm" type="number" inputmode="decimal" min="0" step="any" value="2.0"></label>
+      <label for="hl-rec">Recovery (gph) <i>from Water heater output</i><input id="hl-rec" type="number" inputmode="decimal" min="0" step="any" value="45"></label>
+      <label for="hl-usep">Usable share (%)<input id="hl-usep" type="number" inputmode="decimal" min="10" max="100" step="any" value="70"></label>
+    </div>
+    <div class="x"><table class="t out"><tbody>
+      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Runs out in</th><td id="hl-ans" class="big">—</td><td class="sub" id="hl-sub"></td></tr>
+      <tr><th>Hot share</th><td id="hl-f" class="big">—</td><td class="sub">Of every gallon at the head, this much comes from the tank.</td></tr>
+      <tr><th>Stored at 140°F</th><td id="hl-140" class="big">—</td><td class="sub">Behind an ASSE 1017 mixing valve set to 120°F.</td></tr>
+    </tbody></table></div>
+    <details class="math"><summary>Show the math</summary><ol id="hl-math"></ol></details>
+    <p class="note">An estimate: a tank never delivers every gallon at full heat (≈70% is a rule of thumb). Plan on <b>40°F</b> incoming in a Utah winter. Store above 120°F only behind a mixing valve: <b>scald risk</b>.</p>
   </section>
   <section data-sec="heaters" data-kw="rating plate data plate nameplate read gallons btu watts nat lp psi working pressure first hour recovery uef">
     <div class="sec-head"><h2>Reading a rating plate</h2><small>Water heaters &amp; gas appliances</small></div>
@@ -2046,7 +2101,11 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><td>Lindon</td><td>6.9 gpg</td><td class="sub">Utility figure via tapwaterdata</td></tr>
         <tr><td>Saratoga Springs</td><td>5.6 gpg</td><td class="sub">Utility figure; wells + CUWCD blend</td></tr>
         <tr><td>Salt Lake City</td><td>8–12 gpg</td><td class="sub">Treatment plants; some wells over 30</td></tr>
-        <tr><td>Eagle Mtn, Spanish Fork, Springville, Payson, Vineyard</td><td>?</td><td class="sub">Not confirmed: ask the city or test it</td></tr>
+        <tr><td>Herriman</td><td>10–15 · wells 25–60 gpg</td><td class="sub">JVWCD water only mid-Oct to spring; wells in summer (city, Nov 2025)</td></tr>
+        <tr><td>Jordan Valley (SL County)</td><td>≈10.7 avg · up to 22 gpg</td><td class="sub">JVWCD 2025 water report</td></tr>
+        <tr><td>Eagle Mountain</td><td>Not published</td><td class="sub">5 wells + CUWCD; TDS 148–1,320 ppm (2025 report). Test it: plan for scale</td></tr>
+        <tr><td>St. George</td><td>Set softeners 13–24 gpg</td><td class="sub">City 2024 water report</td></tr>
+        <tr><td>Spanish Fork, Springville, Payson, Vineyard</td><td>?</td><td class="sub">Not confirmed: ask the city or test it</td></tr>
       </tbody></table></div>
     <div class="x"><table class="t">
       <tbody>
@@ -2055,7 +2114,9 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><th>Softeners</th><td>Common. No Utah amendment covers the discharge: base code applies, so an <b>air gap</b> on the regen drain into an indirect receptor. Loop location is your shop's standard. Check anodes more often on softened water.</td></tr>
         <tr><th>Disinfection</th><td>Free chlorine in every Utah County system checked (CUWCD, Saratoga, Eagle Mountain). No chloramine found.</td></tr>
         <tr><th>Pressure</th><td>Swings with lot elevation: bench lots and valley floors differ a lot. Provo says keep the house under 75 psi. <b>Gauge the hose bibb at the setter</b> before you set the PRV and the expansion-tank charge.</td></tr>
-      </tbody></table></div>
+              <tr><th>Fluoride</th><td>Utah systems stopped adding fluoride May 7, 2025 (HB 81). Some wells still carry natural fluoride (Eagle Mountain up to 2.0 ppm in 2025, under the 4.0 limit). No plumbing effect reported.</td></tr>
+        <tr><th>Seasonal swing</th><td>A softener set in October on river water under-softens in summer on well water (Herriman). Test at the house, don't trust the average.</td></tr>
+</tbody></table></div>
     <p class="note">gpg = grains per gallon (1 gpg = 17.1 mg/L). For a lot's real number, the city's annual Consumer Confidence Report or a test strip beats any table.</p>
   </section>
   <section data-sec="treat" data-kw="softener install water softener loop bypass drain line air gap brine overflow 20 125 psi 110 degrees outlet dlfc solder resin tank brine tank standpipe">
@@ -2152,7 +2213,8 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><th>Insulate</th><td>The loop pipe gets insulated, R-3 (energy code). Bare loop = space heater in the wall.</td></tr>
         <tr><th><span class="badge why">WHY</span>The wait</th><td>½" PEX holds about <b>0.0092 gal/ft</b>; ¾" about 0.018. 60 ft of ½" = half a gallon of cold to dump before hot shows: about 28 s at a 1.2 gpm lav, plus the time to warm the pipe itself.</td></tr>
         <tr><th>Legionella</th><td>Germs like 95–115°F. Keep the loop hot, not lukewarm.</td></tr>
-      </tbody></table></div>
+              <tr><th>Hot in the cold line</th><td>After an under-sink "instant hot" crossover goes in, warm water showing up in the cold taps is a classic callback. One fixture: suspect its cartridge. The whole house: suspect the crossover valve or a mixing valve. <span class="sub">Trade practice.</span></td></tr>
+</tbody></table></div>
   </section>
   <section data-sec="hotwater" data-kw="expansion tank size sizing chart st-5 st-12 2 gallon 4.4 gallon air charge precharge failed bladder waterlogged test tap schrader support">
     <div class="sec-head"><h2>Expansion tank</h2><small>Size · charge · is it dead?</small></div>
@@ -2207,6 +2269,33 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><td data-label="Symptom"><b>Low pressure all over</b></td><td data-label="Likely cause">Plugged sediment filter, PRV failing, undersized softener</td><td data-label="Check">Gauges before/after each piece; bypass them one at a time.</td></tr>
         <tr><td data-label="Symptom"><b>Tankless goes cold mid-shower</b></td><td data-label="Likely cause">Flow below minimum, gas undersized, scale, plugged inlet screen</td><td data-label="Check">Read the error code; clock the gas; flush.</td></tr>
         <tr><td data-label="Symptom"><b>Pressure creeps up at night</b></td><td data-label="Likely cause">PRV seat leaking by, or expansion</td><td data-label="Check">Gauge with a lazy (max) needle overnight.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="mechfix" data-kw="failure fails lawsuit class action recall cpsc uponor aquapex nibco 1006 zurn qest qicksert qpex dezincification yellow brass sharkbite push to connect vst vesta tankless co carbon monoxide a.o. smith moen flo price tariff copper 232 cost">
+    <div class="sec-head"><h2>What fails &amp; what's recalled</h2><small>Know it when you see it · checked Oct 2026</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Uponor PEX-a<div class="sub">lawsuits, not proven</div></th><td>Class actions (2025–26) claim Uponor AquaPEX made about 2010–21 oxidizes and cracks early. Uponor denies it; no recall. Leak on a 2010s line: photo the print line and the crack before you cut it out, then tell your foreman.</td></tr>
+        <tr><th>NIBCO PEX 1006</th><td>Tubing made 2005–Aug 2012, plus its F1807 yellow-brass fittings and clamps, went into a $43.5M class settlement (NIBCO denied a defect). Repeat leaks on it: plan a repipe, not spot fixes.</td></tr>
+        <tr><th>Zurn Qest / QickSert</th><td>Yellow-brass crimp fittings sold 1996–2010 corroded and leaked ($20M settlement, 2013; claims closed 2020). White crust or pink crumbly brass at a crimp = replace every one of them.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Dezincification</th><td>High-zinc "yellow" brass loses its zinc in some water and goes brittle. Modern lead-free (NSF 372) and DZR brass are made to resist it.</td></tr>
+        <tr><th>Push-to-connect</th><td>Listed (ASSE 1061) and allowed concealed and buried, but many shops keep them to repairs. Failures trace to burrs, a missed depth mark or a side load on the joint. Deburr, mark depth, support it, and follow your shop's rule. <span class="sub">Failure data: anecdotes only.</span></td></tr>
+        <tr><th>Drain noise</th><td>PVC/ABS is roughly 10–15 dB louder than cast iron. Stack over a bedroom or theater: ask about a cast iron section or a rated sound wrap. Plain pipe insulation barely helps. <span class="sub">2009 source; the physics hasn't changed.</span></td></tr>
+      </tbody></table></div>
+    <div class="x"><table class="t cards">
+      <thead><tr><th>Recall</th><th>Problem</th><th>How to ID it</th></tr></thead>
+      <tbody>
+        <tr><td><b>VST (VESTA.DS) tankless</b><div class="sub">CPSC 26-026 · Oct 2025</div></td><td>Exhaust duct cracks: carbon monoxide</td><td>VRS / VRP / VTS / VTP-150 or -199, sold 2017–25. On any tankless call, check the vent joints and that the house has CO alarms.</td></tr>
+        <tr><td><b>Kicimpro kitchen faucet</b><div class="sub">CPSC 25-306 · May 2025</div></td><td>Leaches lead</td><td>KM800-01-06BN, sold online 2024–25</td></tr>
+        <tr><td><b>Camplux portable tankless</b><div class="sub">CPSC · Feb 2024</div></td><td>Gas leak at the regulator, fire</td><td>AY132, BD158, BW211, BW264, BW422</td></tr>
+        <tr><td><b>Moen Flo battery backup</b><div class="sub">CPSC 23-178 · Apr 2023</div></td><td>Battery overheats</td><td>Model 920-001, gray, FLO logo</td></tr>
+        <tr><td><b>A.O. Smith family gas tanks</b><div class="sub">Nov 2018</div></td><td>Torn burner screen: fire risk on wood floors</td><td>Serial starts 1115 through 1631. Still in plenty of basements.</td></tr>
+      </tbody></table></div>
+    <p class="note">No 2024–26 recalls found for the big makers' house water heaters, expansion tanks or main shutoffs. Check <a href="https://www.cpsc.gov/Recalls" target="_blank" rel="noopener">cpsc.gov/Recalls ↗</a> for anything newer.</p>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Copper tariff</th><td>Since Aug 1, 2025: a 50% tariff on the copper in imported pipe, tube and fittings. Spring 2026 brought more hikes on brass, PVC/CPVC and water heaters. Count fittings, return extras, keep your scrap copper. Confirm a heater is in stock before rough-in.</td></tr>
+        <tr><th>Leak shutoffs</th><td>Insurers have started offering discounts for automatic main shutoffs (Moen Flo, Phyn and others). Expect more requests: leave a straight run and an outlet at the main, and Wi-Fi reach in the mech room.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="mechfix" data-kw="history then and now 1980 1990 2000 2010 2020 decades old house remodel service polybutylene galvanized copper pex orphaned water heater chimney fvir naeca 2004 2015 ultra low nox 2018 lead free 2014 timer softener what you'll find">
@@ -2297,7 +2386,10 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><th>Dishwasher drain</th><td>High loop to the underside of the counter or an air gap, whichever your code and inspector require. <span class="badge why">WHY</span> It keeps dirty sink water from siphoning back into the dishwasher.</td></tr>
         <tr><th>Lav / sink traps</th><td>Slip joints stay accessible. Trap no bigger than the drain it empties into.</td></tr>
         <tr><th>Before you leave</th><td>Aerators off and flushed, then back on. Check every stop and supply for weeps after 10 minutes. Leave the install sheets for the owner (SLC checks them at rough and final).</td></tr>
-      </tbody></table></div>
+              <tr><th>Supply lines</th><td>Plastic nuts (toilet supply, fill-valve locknut) go on <b>by hand</b>. If it weeps, turn just enough to stop it: no wrench (Fluidmaster). A cranked plastic nut cracks later and floods the house. Bleach and cleaners stored under a sink can eat the stainless braid, so replace any line that looks rusty or frayed.</td></tr>
+        <tr><th>Owner's faucet</th><td>Look for <b>NSF/ANSI 61 or 372</b> on the box or body. In 2025 the CPSC recalled or warned about 10+ no-name online faucet brands for leaching lead. No mark: tell your foreman before you install it.</td></tr>
+        <tr><th>Blue toilet water</th><td>In-tank bleach tablets eat flappers and fill-valve seals, and Kohler, American Standard and Fluidmaster warranties exclude that damage. Mushy flapper + blue water = the tablet. Tell the owner.</td></tr>
+</tbody></table></div>
   </section>
   <section data-sec="idhow" data-kw="identify find part model number what is this how to id unknown faucet cartridge replacement match supply house counter">
     <div class="sec-head"><h2>How to ID any part</h2><small>Do it in this order</small></div>
@@ -2564,6 +2656,26 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
       </tbody></table></div>
     <p class="note">Sources: Builder Magazine, Copper Development Assn., Uponor and Boshart install guides, ICC, Plumbing &amp; Mechanical (2025), Rinnai warranty. Your shop's standard wins.</p>
   </section>
+  <section data-sec="phases" data-kw="field tips pro tips rookie mistakes callback cap count test cap vent cap test plug ball rating up valve upside down crossover warm cold solvent joint hold drains capped debris overflow putty stone granite cabinet drawer baseboard roof flashing walk through photos shower arm drop ear bonnet solder pex ticking nails floor">
+    <div class="sec-head"><h2>Habits that save callbacks</h2><small>From the trade, checked against the makers</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>"UP" goes up</th><td>Before you strap a shower valve, find <b>UP</b> on the body and put it on top: tub port down, hot on the left (Delta and Moen rough sheets). <span class="badge why">WHY</span> Upside down swaps the head and spout, and the fix is opening the tile.</td></tr>
+        <tr><th>Bonnet off to sweat</th><td>Pull the bonnet and test cap (and stops on "with stops" bodies) before you solder a valve. Flush after the test, before the cartridge goes in (Delta R10000). <span class="badge why">WHY</span> Torch heat cooks the seals; you find out at trim.</td></tr>
+        <tr><th>Cap count</th><td>At rough, write down every vent cap, test ball and plug. At final the count is zero. Look up at every roof vent from the street. <span class="badge why">WHY</span> A capped stack still drains, so nobody notices until traps gurgle. <span class="sub">Trade practice.</span></td></tr>
+        <tr><th>Read the plug</th><td>Check the test plug's back-pressure rating before you fill: 10 ft of head is about 4.3 psi, and some pillow plugs are rated 8 ft. <b>Block plugs on air tests</b> (Cherne). <span class="badge why">WHY</span> A plug that lets go floods the trench and hits whoever's in front of it.</td></tr>
+        <tr><th>Turn, then hold</th><td>Cut square, bevel, deburr. Dry fit: ⅓–⅔ of the way in before it's tight. Prime PVC until the print's gone (ABS needs no primer). Push to the stop with a ¼ turn, then <b>hold 30 s</b>, longer in cold or on big pipe (Weld-On). <span class="badge why">WHY</span> Let go early and it backs out: a short, starved joint.</td></tr>
+        <tr><th>Keep drains closed</th><td>Rough to trim: cap or tape every tub, shower, floor and sink drain and the toilet flanges. At trim, run every drain hard and flush each toilet 3 times. <span class="badge why">WHY</span> Mud and grout set in traps; the first clog in a new house is yours. <span class="sub">Trade practice.</span></td></tr>
+        <tr><th>Shower arm solid</th><td>Drop-ear elbow screwed to blocking, square to the wall. Valve and arm stubs in copper or on a bracket, not loose PEX. <span class="badge why">WHY</span> A loose ell spins when the arm is threaded, and leaks inside the wall. <span class="sub">Trade practice.</span></td></tr>
+        <tr><th>Cabinets &amp; baseboard</th><td>Get the cabinet sheet before you stub lavs and sinks: drawer bases need stubs clear of the drawers. Ask the baseboard height and put the toilet supply fully above it. <span class="sub">Trade practice.</span></td></tr>
+        <tr><th>Roof before shingles</th><td>Get vents through the deck before the roofer shingles. Late? Call the roofer to flash it: don't cut finished roofing. <span class="badge why">WHY</span> The plumber who cuts a finished roof usually owns the leak.</td></tr>
+        <tr><th>Let hot PEX move</th><td>Drill a little oversize, isolators at metal, don't clamp hot lines tight, loop long runs. Keep PEX off the tops of joists where flooring gets nailed. <span class="badge why">WHY</span> PEX that binds ticks in the wall; a nail in PEX can hold for years, then leak.</td></tr>
+        <tr><th>Walk it before trim</th><td>Before you set anything, photo chipped tubs, broken or buried stubs, mud in drains and missing access panels, and send them to your lead and the super that day. <span class="badge why">WHY</span> Damage found later gets pinned on whoever was last in the house.</td></tr>
+        <tr><th>Stone tops</th><td>Granite, marble, quartz, cultured marble: <b>stain-free putty</b> or the sink sheet's sealant. Regular putty is oil-based and can ring the drain.</td></tr>
+        <tr><th>Flood the overflow</th><td>Fill the tub into the overflow for a few minutes and check below. Snug the plate evenly. <span class="badge why">WHY</span> The overflow gasket only leaks in a full tub, into the ceiling below.</td></tr>
+      </tbody></table></div>
+    <p class="note">Sources: Delta R10000 and Moen INS2153D rough sheets, Cherne test-plug catalog, Weld-On, Oatey, InterNACHI inspector forums, HeatingHelp, Fine Homebuilding, the BC open plumbing-apprentice text, Beehive Plumbing (Utah). Your shop's standard wins.</p>
+  </section>
   <section data-sec="code" data-kw="code adoption 2024 ipc 2021 irc 2021 ipc my code july 2026 utah amendments 15a which code applies mtech school">
     <div class="sec-head"><h2>Which code applies</h2><small>Utah, effective 7/1/2026</small></div>
     <div class="seg" id="code-pick" role="group" aria-label="The code I work under"><span class="seg-lbl">I work under</span><button type="button" data-code="ipc21" aria-pressed="true">2021 IPC</button><button type="button" data-code="irc21" aria-pressed="false">2021 IRC</button><button type="button" data-code="ipc24" aria-pressed="false">2024 IPC</button></div>
@@ -2596,7 +2708,7 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><td class="n">T 909.1</td><td>Trap to vent: 1¼" 5 ft · 1½" 6 ft · 2" 8 ft · 3" 12 ft · 4" 16 ft</td><td>Same (T P3105.1)</td></tr>
         <tr><td class="n">1002.1</td><td>Fixture outlet to trap weir: <b>24"</b> max drop</td><td>Same idea</td></tr>
         <tr><td class="n">1002.4</td><td>Trap seal <b>2"–4"</b></td><td>Same</td></tr>
-        <tr><td class="n">708</td><td>Cleanouts: changes over 45°, every 100 ft of horizontal drain, near where the building drain meets the sewer. <b>No general base-of-stack rule.</b> 18" clear in front for 3" and up, 12" under 3"</td><td>Also one at the base of each stack</td></tr>
+        <tr><td class="n">708</td><td>Cleanouts: changes over 45°, every 100 ft of horizontal drain, near where the building drain meets the sewer. <b>No general base-of-stack rule.</b> 18" clear in front on 6" and smaller (36" on 8" and up)</td><td>Also one at the base of each stack. Clearance: 12" under 3", 18" for 3" and up</td></tr>
         <tr><td class="n">802</td><td>Washer standpipe <b>18"–42"</b> above the trap weir</td><td>Same</td></tr>
         <tr><th colspan="3">Vents</th></tr>
         <tr><td class="n">905.4</td><td>Dry vent rises <b>6" above the flood rim</b> before turning horizontal</td><td>Same (P3104.5)</td></tr>
@@ -2667,6 +2779,16 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><td><b>South Jordan</b></td><td><a href="https://cityview.southjordanutah.gov/cityviewportal" target="_blank" rel="noopener">CityView portal ↗</a><div class="sub">Permits and inspections online.</div></td></tr>
         <tr><td><b>Park City</b></td><td><span class="pn">435-615-5101</span><div class="sub">Book in the City Inspect app by 3 pm for next day. AM 8–12, PM 12–4. Plans + permit on paper on site. Deep snow: confirm vent height.</div></td></tr>
         <tr><td><b>Unincorporated SL County</b></td><td><a href="https://msd.utah.gov/205/Building-Permits-Inspections" target="_blank" rel="noopener">MSD permits &amp; inspections ↗</a><div><span class="pn">385-910-5830</span> <a href="mailto:inspections@msd.utah.gov">inspections@msd.utah.gov</a></div><div class="sub">Greater Salt Lake Municipal Services District (Kearns, Magna, Copperton, etc.). Inspection hotline or email before 3 pm for next business day.</div></td></tr>
+        <tr><th colspan="2">Davis, Weber, Cache &amp; Washington</th></tr>
+        <tr><td><b>Layton</b></td><td><span class="pn">801-336-3760</span> or the online permit portal<div class="sub">M–F 8–5.</div></td></tr>
+        <tr><td><b>Farmington</b></td><td><span class="pn">801-882-8954</span><div class="sub">24 hr notice; fills 1–2 days out. Storm water and grading booked separately (801-939-9286).</div></td></tr>
+        <tr><td><b>Unincorporated Weber County</b></td><td><span class="pn">801-399-8770</span><div class="sub">Done within 3 business days; AM 8:30–12 or PM 12–4.</div></td></tr>
+        <tr><td><b>Ogden</b></td><td><a href="https://www.ogdencity.gov/183/Building-Permits-Inspections" target="_blank" rel="noopener">City building page ↗</a><div class="sub">Booking steps not confirmed.</div></td></tr>
+        <tr><td><b>Logan</b></td><td><span class="pn">435-716-9030</span><div class="sub">24 hr notice; slots 9–11 and 1:30–3:30.</div></td></tr>
+        <tr><td><b>Unincorporated Cache County</b></td><td><span class="pn">435-755-1650</span>, press 1<div class="sub">By 4 pm the business day before; ready by 8 am.</div></td></tr>
+        <tr><td><b>St. George</b></td><td><a href="https://stg.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a> · building <span class="pn">435-627-4100</span><div class="sub">Booking steps not spelled out online: call.</div></td></tr>
+        <tr><td><b>Washington City</b></td><td><a href="https://washington.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a> · <span class="pn">435-656-6326</span><div class="sub">By 5 pm for the next business day.</div></td></tr>
+        <tr><th colspan="2">Salt Lake City</th></tr>
         <tr><td><b>Salt Lake City</b></td><td><span class="sub">See <b>Site → Call → Utility &amp; inspection lines</b>.</span></td></tr>
       </tbody></table></div>
     <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct 2026; your super's schedule and the city site win. Pick your city once in <b>Site → Call → My city</b>.</p>
@@ -2686,7 +2808,21 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><th>Meters</th><td>State law: every secondary connection metered by Jan 1, 2030 (Utah Code 73-10-34). New lots may already get one.</td></tr>
         <tr><th><span class="badge ut">UT</span>Drinking-water backup</th><td>If potable water backs up a PI system: an <b>RP</b> right after the potable connection, then a dual-source connection so only one supply can flow. Tested within 10 days of install and every year. RP at least 12" above grade with 12" clear around it, horizontal unless listed otherwise, never in a pit or piped straight to a drain (Utah amendments 1301.5, 608.1.2.1).</td></tr>
         <tr><th>Inspection</th><td>Some cities inspect the sprinkler-to-PI connection separately: Herriman lists it; Springville charges $50 for the switch-over.</td></tr>
+              <tr><th>2026 drought</th><td>Statewide drought emergency declared May 21, 2026. Watering rules come from the city or water district, not the state. Weber Basin cut outdoor water 20%; Roy PI shut off by Oct 1, 2026.</td></tr>
+        <tr><th>Saratoga tiers</th><td>All PI is metered. In a shortage, overuse runs from $0.35 up to $8.00 per 1,000 gal. A PI leak shows up on the owner's bill: fix it before you leave.</td></tr>
+</tbody></table></div>
+  </section>
+  <section data-sec="utah" data-kw="rebate rebates utah water savers toilet smart controller sprinkler turf lawn landscape thermwise enbridge rocky mountain power wattsmart heat pump water heater money incentive">
+    <div class="sec-head"><h2>Rebates customers ask about</h2><small>Checked Oct 2026 · amounts change</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Toilets<div class="sub">Utah Water Savers</div></th><td>Up to $150 to swap a pre-1994 toilet for WaterSense, 2 per home. <b>Last applications Oct 31, 2026</b>; the program closes Nov 1.</td></tr>
+        <tr><th>Smart sprinkler timer</th><td>Up to $100 for a WaterSense smart controller. Apply within 90 days with the receipt, an install photo and the serial number.</td></tr>
+        <tr><th>Lawn to landscape</th><td>Pays by the square foot and varies by district (CUWCD up to $3.00, Provo $1.50, Weber Basin $1.25–2.50). Nothing if work started before approval or the landscaping is required on a new build.</td></tr>
+        <tr><th>Gas heaters<div class="sub">Enbridge ThermWise</div></th><td>ENERGY STAR storage $100, tankless $300, condensing storage or hybrid $350. File within 6 months of install. <span class="pn">1-877-932-0610</span>. New homes: the rebate goes to the <b>builder</b>.</td></tr>
+        <tr><th>Heat pump heater<div class="sub">Rocky Mountain Power</div></th><td>$350 for a qualifying unit replacing an existing tank, <b>existing homes only</b>; apply within 180 days. Don't promise it on a new build.</td></tr>
       </tbody></table></div>
+    <p class="note">Sources: cuwcd.gov, slowtheflow.org, enbridgegas.com ThermWise, wattsmarthomes.com. Check the live page before you quote a number.</p>
   </section>
 
   <!-- ================= SITE ================= -->
@@ -2901,6 +3037,18 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><th>Start small</th><td>Buy the basics, then buy the tool you wished you had on the job. That's how you learn which ones matter.</td></tr>
       </tbody></table></div>
   </section>
+  <section data-sec="tools" data-kw="crimp vs expansion f1807 f1960 pex-a pex-b push fit sharkbite m12 m18 propex expander rapid seal press tool propress tracker airtag tile theft">
+    <div class="sec-head"><h2>Tool trade-offs</h2><small>Honest pros and cons</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Crimp vs expansion</th><td><b>Crimp:</b> any PEX, cheap tools, but a smaller fitting bore and every ring needs the gauge. <b>Expansion (F1960):</b> full flow, no gauge, PEX-a only, slower to seal under 40°F. Both last when done right; price and local supply decide.</td></tr>
+        <tr><th>Push-fit</th><td>No tool, costs more, wrap it before burial. Carry a few for emergencies; most shops don't rough a house with them.</td></tr>
+        <tr><th>M12 vs M18 expander</th><td>M12: ⅜–1", light for cabinets, RAPID SEAL heads for cold work. M18: ⅜–1½", heavier. Uponor heads fit both but won't auto-rotate. Many pros keep both so they don't swap heads.</td></tr>
+        <tr><th>Press tools</th><td>Copper joint in seconds, no flame, water can be in the line. The shop owns it; your job is a clean, square, fully seated pipe at the depth mark.</td></tr>
+        <tr><th>Trackers</th><td>A Bluetooth tag in the case of anything over $300 helps you <b>find</b> a stolen tool; it doesn't stop the theft. Locked box, nothing in sight and engraving still do most of the work.</td></tr>
+      </tbody></table></div>
+    <p class="note">Sources: PHCP Pros, Uponor 2024 install guide, Milwaukee spec pages, Pro Tool Reviews, Fine Homebuilding forum.</p>
+  </section>
   <section data-sec="tools" data-kw="cheap tools deals where to buy used tools ksl classifieds facebook marketplace pawn shop reconditioned refurbished black friday father's day free tool promo harbor freight acme slickdeals toolguyd stolen">
     <div class="sec-head"><h2>Finding deals</h2><small>Cheap without getting burned</small></div>
     <div class="x"><table class="t">
@@ -2993,6 +3141,16 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><td>Concrete dust</td><td>Saw: water. Drill: shroud + HEPA. Core rig: water.</td><td class="k">.1153</td></tr>
         <tr><td>Torch</td><td>Clear or shield combustibles, extinguisher in reach, fire watch during and after (1 hr per NFPA 51B)</td><td class="k">.352</td></tr>
         <tr><td>Primer / cement</td><td>Very flammable vapor: ventilate, no flame, goggles, gloves</td><td class="k">SDS</td></tr>
+              <tr><td>Silica cleanup</td><td>No dry sweeping or blowing concrete dust with air: HEPA vac or wet. Drill with shroud + dust collector: no respirator needed. Handheld saw indoors: respirator (APF 10) even with water</td><td class="k">.1153</td></tr>
+</tbody></table></div>
+  </section>
+  <section data-sec="safety" data-kw="your body hearing loss ear plugs noise 85 dba knees knee pads bursitis kneeling sewer germs tetanus hepatitis wash hands boots health">
+    <div class="sec-head"><h2>Your body</h2><small>It has to last 40 years</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Ears</th><td>About <b>1 in 4</b> noise-exposed workers building new houses have hearing loss (CDC, 2025). NIOSH limit: 85 dBA for 8 hours, half the time for every 3 dB louder. Plug in for hammer drills, saws and the compressor. It doesn't grow back.</td></tr>
+        <tr><th>Knees</th><td>Shaped pads that spread the load, not flat foam; a mat for long trim days. A swollen, squishy kneecap (bursitis) means change how you kneel now.</td></tr>
+        <tr><th>Sewer work</th><td>Keep tetanus current. Wash before you eat, drink or smoke, cover cuts, change boots before the truck. Ask your doctor about hepatitis A and B (CDC).</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="safety">
@@ -3041,6 +3199,18 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
       <li><span><b>Learn → Flashcards</b>: ten minutes a day locks it in.</span></li>
     </ol>
     <p class="note">Wandered off? Come back here and pick up the next number. One card, one aha, then move on.</p>
+  </section>
+  <section data-sec="start" data-kw="get kept apprentice habits stand out foreman journeyman helper notebook questions why correction feedback mistakes own it borrow tool">
+    <div class="sec-head"><h2>Get kept</h2><small>Habits foremen notice · trade opinion</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Be the next hand</th><td>Watch the work, not your phone. Have the next fitting, the glue or the light ready before you're asked. <span class="badge why">WHY</span> Anticipating shows you get the job, not just the task.</td></tr>
+        <tr><th>Write the why</th><td>Pocket notebook: the answer, then the why. Bring two questions a week. School and field disagree? Ask which rule they're following. <span class="badge why">WHY</span> The why solves the job you haven't seen yet.</td></tr>
+        <tr><th>Take the correction</th><td>"Got it," fix it, don't argue on site. Every few months ask your foreman: "What should I work on?"</td></tr>
+        <tr><th>Own it now</th><td>Bad joint? Say so and redo it. A leak the inspector finds costs the shop far more than your pride. <span class="badge why">WHY</span> Owning small mistakes is how you get trusted with big work.</td></tr>
+        <tr><th>Borrowed it 3 times?</th><td>Then it belongs in your bag.</td></tr>
+      </tbody></table></div>
+    <p class="note">From journeymen on Heating Help, Mike Holt's forum and a 2025 PHCC apprentice feature.</p>
   </section>
   <section data-sec="start" data-kw="about this book contact author who made built by creator deklan patrick kelley mountain side plumbing msp phone email version build update changelog feedback report a mistake wrong number">
     <div class="sec-head"><h2>About this book</h2><small>Who made it · how to reach me</small></div>
@@ -3131,6 +3301,22 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><th>Big pipe</th><td>Flows faster at the same slope: more water, less rubbing on the walls for its size. So 3" and up reach scouring speed at ⅛"/ft.</td></tr>
         <tr><th>Small pipe</th><td>More friction for the water it holds, so it needs the extra push of ¼"/ft.</td></tr>
         <tr><th>Too steep?</th><td>Code sets no maximum. You'll hear "water outruns solids"; the bigger real-world limit is your fall budget: every extra ⅛"/ft costs depth over a long run.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="why math works 1.414 square diagonal sin tan travel run rolling offset two triangles take-off sweep radius bending gain area diameter squared friction mixing 0.4085 velocity">
+    <div class="sec-head"><h2>Why the pipe math works</h2><small>The aha behind the multipliers</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Why 1.414</th><td>A 45° offset is half a square, and a square's diagonal is the side × √2 = 1.414. That's why a framing square's 12 and 12 read 17 across.</td></tr>
+        <tr><th>Small angle, long travel</th><td>Travel is the long side: offset ÷ sin(angle). Run is offset ÷ tan(angle). Shrink the angle and sin shrinks, so the multiplier grows and the fitting "lays down" farther.</td></tr>
+        <tr><th>Rolling = two triangles</th><td>The end view folds roll and set into one true offset, √(roll² + set²). After that it's a plain offset.</td></tr>
+        <tr><th>Take-off of a sweep</th><td>Centerlines meet at a virtual corner: take-off = bend radius × tan(angle ÷ 2). Bigger radius, bigger take-off.</td></tr>
+        <tr><th>Bending gain</th><td>A bend cuts the corner: the two legs to the corner are longer than the arc. That leftover (about 0.43 × radius on a 90) is why benders have a gain scale.</td></tr>
+        <tr><th>Area is diameter squared</th><td>Two 2" pipes don't make a 4": it takes four. Friction drops even faster (about diameter to the 4.87), so one size up cuts it to about a quarter.</td></tr>
+        <tr><th>Mixing is a seesaw</th><td>Hot gal × (tank° − mix°) = cold gal × (mix° − cold°). A hotter tank needs less hot per gallon, so a 140° tank behind a mixing valve gives more shower minutes.</td></tr>
+        <tr><th>Where 0.4085 comes from</th><td>gpm × 231 in³ ÷ 60 s ÷ (0.7854 × ID²) ÷ 12 = ft/s. The same chain gives gallons per foot = 0.0408 × ID², the "ID² × 4 per 100 ft" trick.</td></tr>
+        <tr><th>Top half carries air</th><td>Wet venting, circuit venting and combination waste-and-vent are one trick: the pipe is big enough that it never runs more than half full, so the top half stays an air path. That's why those pipes are upsized and slope-limited (ICC 2021 venting guide).</td></tr>
+        <tr><th>DFU vs WSFU</th><td>DFU = load on the drain; WSFU = demand on the supply. Neither is gallons: they're odds-weighted, because fixtures rarely all run at once. Don't mix the two tables.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="how" data-kw="san tee combo wye direction">
@@ -3372,6 +3558,18 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
       </tbody></table></div>
     <div class="x"><table class="t"><tbody id="list-career"></tbody></table></div>
   </section>
+  <section data-sec="career" data-kw="exam test day journeyman written practical book rules tabs highlight sticky notes calculator time 120 questions rolling offset copper edition">
+    <div class="sec-head"><h2>Test day</h2><small>Written and practical · confirm in your bulletin</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Book rules</th><td>Permanent tabs are OK. Sticky notes, removable tabs, handwritten notes and taped sheets aren't, and you can't mark the book during the test, so highlight before. Silent, non-programmable calculator; no phone.</td></tr>
+        <tr><th>Watch the clock</th><td>Reported format: 120 questions in 4 hours, open book, 70% passes. That's 2 minutes each. Can't find it in 3? Guess, flag it, move on: a blank scores the same as a wrong answer.</td></tr>
+        <tr><th>Tab smart</th><td>Start every lookup in the index. Tab chapters and the sizing tables (DFU, trap-to-vent, wet vent, gas). One color for rules, one for numbers, a loud one for <b>exceptions</b>: the questions are built on them.</td></tr>
+        <tr><th>Practical</th><td>Two projects (PVC and copper), 37 points each; one has a rolling offset. Reported: fail either and you retake both. Practice copper rolling offsets with the Offset calculator until it's boring.</td></tr>
+        <tr><th>Which edition?</th><td>The bulletin names the code edition. Section numbers move between editions even when the rule doesn't, so tab the one you're tested on.</td></tr>
+      </tbody></table></div>
+    <p class="note">Book rules: Prov's 2021 Utah test-out bulletin. Format: Plumbers Training Institute. The current DOPL candidate bulletin wins: <a href="https://utahboi.provexam.com/UtahPlumbing" target="_blank" rel="noopener">exam bulletin ↗</a>.</p>
+  </section>
 
   <!-- ================= MINE ================= -->
   <section data-sec="mine">
@@ -3549,7 +3747,7 @@ const GLOSS = [
   ["Branch interval","dwv","A story-height section of stack (at least 8 ft) where horizontal branches tie in."],
   ["Building drain","dwv","Lowest horizontal drain inside the building. Becomes the building sewer 30\" outside the wall."],
   ["Building sewer","dwv","Pipe from the end of the building drain to the city sewer or septic tank."],
-  ["Circuit vent","dwv","One vent serving a row of fixtures on a horizontal branch, tied in ahead of the last fixture."],
+  ["Circuit vent","dwv","One vent serving a row of up to 8 fixtures on a horizontal branch. It connects between the two most upstream fixture drains (IPC 914)."],
   ["Cleanout","dwv","Removable plug for snaking a drain."],
   ["Common vent","dwv","One vent serving two fixture drains that connect at the same level or within set limits."],
   ["Crown weir","dwv","Highest point of the inside bottom of the trap outlet, where water spills over. Trap seal and trap-arm length are measured from here. Also called trap weir."],
@@ -5817,8 +6015,8 @@ $("fit-rows").innerHTML = SAWS.map(([n,lo,hi]) => `<tr><td><b>${n}</b><div class
 /* ---------- 12 before-you-call checklist ---------- */
 const CK = {
   under: ["Permit card and approved plans on site","Building drain and branches at the right slope, on firm continuous bedding, no rocks against the pipe","Stub-ups where the plans put them (toilet flanges 12\" from the finished wall line); flagged so they don't get buried","Cleanouts at stack bases and where the drain leaves the house","Water service sleeve through the foundation; depth 6\" below frost (≈36\")","Water and sewer separated (5 ft, or water on a 12\" shelf)","DWV under test (water to the required head, test balls in) and holding","Nothing backfilled or covered yet"],
-  rough: ["Permit card and approved plans on site","DWV under test (water, air or vacuum, whatever your city takes) and holding","Water under test at the city's pressure; stub-outs capped","Vents: 6\" above flood rim before going flat, through the roof at the right height, AAVs accessible","Trap arms within length, vents off the top of the drain","Nail plates on every pipe under 1¼\" from the edge (gas: under 1½\")","Top plates cut over 50% are strapped","Supports and strap spacing; mid-story guides on 2\" and smaller plastic","Tubs and showers set; shower pans water-tested if required","Valves at the right depth, plaster guards on, hot on the left","Washer box, ice maker box, hose bibbs, gas stubs in","Gas under test; sediment traps planned; CSST bonded","Water heater spot ready: pan, T&P route, venting, combustion air","Firestop at rated penetrations"],
-  final: ["Every fixture set and secured; supplies tight, no weeps after 10 minutes","Shower and tub limit stops set to 120°F or less","Water heater: T&P line run right, straps, expansion tank charged, drip leg, venting, pan","Gas appliances lit and connectors leak-checked","Backflow devices tested and tagged; hose bibb vacuum breakers on","Aerators flushed and back on; disposer knockout out if there's a dishwasher","Cleanouts and access panels reachable","Install instructions left on site; permit card signed"]
+  rough: ["Permit card and approved plans on site","Shower valves: UP on top, tub port down, hot on the left, strapped solid","Test plugs rated for the head; plugs blocked on air tests","DWV under test (water, air or vacuum, whatever your city takes) and holding","Water under test at the city's pressure; stub-outs capped","Vents: 6\" above flood rim before going flat, through the roof at the right height, AAVs accessible","Trap arms within length, vents off the top of the drain","Nail plates on every pipe under 1¼\" from the edge (gas: under 1½\")","Top plates cut over 50% are strapped","Supports and strap spacing; mid-story guides on 2\" and smaller plastic","Tubs and showers set; shower pans water-tested if required","Valves at the right depth, plaster guards on, hot on the left","Washer box, ice maker box, hose bibbs, gas stubs in","Gas under test; sediment traps planned; CSST bonded","Water heater spot ready: pan, T&P route, venting, combustion air","Firestop at rated penetrations"],
+  final: ["Cap count is zero: every vent cap, test ball and plug out; each roof vent looked at from the street","Crossover check: cold valve at the heater off, open each hot tap: a trickle that dies out is fine, steady flow is a crossover","Every drain run hard, each toilet flushed 3 times, tub filled into the overflow and checked below","Every fixture set and secured; supplies tight, no weeps after 10 minutes","Shower and tub limit stops set to 120°F or less","Water heater: T&P line run right, straps, expansion tank charged, drip leg, venting, pan","Gas appliances lit and connectors leak-checked","Backflow devices tested and tagged; hose bibb vacuum breakers on","Aerators flushed and back on; disposer knockout out if there's a dishwasher","Cleanouts and access panels reachable","Install instructions left on site; permit card signed"]
 };
 let ckPh = store.get("jpb-ck-ph", "under"), ckDone = store.get("jpb-ck", {}); if (!CK[ckPh]) ckPh = "under";
 if (!ckDone || typeof ckDone !== "object" || Array.isArray(ckDone)) ckDone = {};
@@ -5907,7 +6105,16 @@ const CITIES = [
   {id:"slc", n:"Salt Lake City", book:'SLC Building Inspections app, the online portal, or <span class="pn">801-535-6000</span> (automated). Next-day requests by 3 pm. Office <span class="pn">801-535-7224</span>, M–F 7a–3:30p.', after:'Public Utilities 24-hr dispatch <span class="pn">801-483-6700</span>. Customer service <span class="pn">801-483-6900</span>, M–F 8a–5p.', pi:"Ask the city.", h:"8–12 gpg (some wells over 30)", f:"30\" design, so service ≈36\"."},
   {id:"msd", n:"Unincorporated SL County (MSD)", book:'Hotline <span class="pn">385-910-5830</span> or inspections@msd.utah.gov before 3 pm for the next business day. Kearns, Magna, Copperton and other MSD areas.', pi:"Ask the water provider.", h:GAP("Depends on the water provider."), f:FROST_SL},
   {id:"pc", n:"Park City", book:'City Inspect app by 3 pm for the next day: AM 8–12, PM 12–4. Building: <span class="pn">435-615-5101</span>', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:GAP("Deeper at this elevation. Get the city's number before you dig."),
-    notes:"Plans and permit on paper on site. Deep snow: confirm vent height."}
+    notes:"Plans and permit on paper on site. Deep snow: confirm vent height."},
+  ["Davis, Weber, Cache & Washington"],
+  {id:"ly", n:"Layton", book:'<span class="pn">801-336-3760</span> or the online permit portal (new login). M–F 8–5.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:GAP("Not confirmed: get it from the city.")},
+  {id:"fa", n:"Farmington", book:'<span class="pn">801-882-8954</span>, 24 hr notice; fills 1–2 days out.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:GAP("Not confirmed: get it from the city."), notes:"Storm water and grading inspections are booked separately: 801-939-9286."},
+  {id:"og", n:"Ogden", book:'<a href="https://www.ogdencity.gov/183/Building-Permits-Inspections" target="_blank" rel="noopener">City building page ↗</a>. ' + GAP("Booking steps not confirmed."), pi:"Ask the city. Weber Basin cut outdoor water 20% in 2026.", h:GAP("Not confirmed: test it."), f:GAP("Not confirmed: get it from the city.")},
+  {id:"wc", n:"Unincorporated Weber County", book:'<span class="pn">801-399-8770</span>. Done within 3 business days, AM 8:30–12 or PM 12–4.', pi:"Ask the water provider.", h:GAP("Depends on the water provider."), f:GAP("Not confirmed: get it from the city.")},
+  {id:"lo", n:"Logan", book:'<span class="pn">435-716-9030</span>, 24 hr notice. Slots 9–11 and 1:30–3:30.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:GAP("Not confirmed: get it from the city.")},
+  {id:"cc", n:"Unincorporated Cache County", book:'<span class="pn">435-755-1650</span>, press 1, by 4 pm the business day before. Ready by 8 am.', pi:"Ask the water provider.", h:GAP("Depends on the water provider."), f:GAP("Not confirmed: get it from the city.")},
+  {id:"sg", n:"St. George", book:'<a href="https://stg.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a>. Building <span class="pn">435-627-4100</span>.', pi:"Ask the city.", h:"Set softeners 13–24 gpg (city).", f:GAP("Not confirmed: get it from the city."), notes:"Hot, hard water: scale builds fast in heaters and tankless units."},
+  {id:"wa", n:"Washington City", book:'<a href="https://washington.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a> by 5 pm for the next business day. <span class="pn">435-656-6326</span>.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:GAP("Not confirmed: get it from the city.")}
 ];
 const cityById = id => CITIES.find(c => c.id === id);
 let myCity = (id => cityById(id) ? id : "")(store.get("jpb-city", ""));
@@ -6060,6 +6267,14 @@ const CARDS = [
   ["Gas","½\" Sch 40 capacity at 40 ft (0.5\" w.c. drop)?","81 CFH","Friction eats pressure as gas travels. At 40 ft, ½ in only carries 81 CFH before it loses more than 0.5 in w.c."],
   ["Gas","CSST bonding wire?","6 AWG copper, 75 ft max, never clamped to the CSST","Lightning can arc through thin CSST walls. Bonding gives the current a path to ground. Clamping onto the CSST damages it."],
   ["Gas","Altitude derate rule of thumb?","4% per 1,000 ft above sea level (applied above 2,000 ft), unless the maker says otherwise","Air holds about 4% less oxygen per 1,000 ft of altitude, so the appliance needs less gas to burn right."],
+  ["Vents","Stack vent vs vent stack?","Stack vent: the drain stack's own extension above the top drain. Vent stack: a separate pipe that carries only air","Same words, different pipe. Exam writers love it."],
+  ["Vents","Horizontal wet vent: how many wet-vented fixture drains can connect upstream of the dry-vented one?","One (IPC 912)","More would fill the pipe and choke the air path."],
+  ["Vents","Max DFU through a 2\" wet vent (IPC)?","4 DFU (1½\" = 1)","A wet vent has to stay half full or less so the top half still carries air."],
+  ["Vents","Island fixture vent: which fixtures may use it?","Sinks and lavs (a kitchen sink with a dishwasher or disposer is OK)","The loop can't handle a toilet's slug."],
+  ["Vents","Combination waste-and-vent: max slope?","½\" per ft (IPC 915)","Steeper flow fills the pipe and kills the air path along the top."],
+  ["Vents","Circuit vent connects where?","Between the two most upstream fixture drains, up to 8 fixtures (IPC 914)","It pulls air down the branch from the far end."],
+  ["Tests","Testing DWV in sections: which joints can see less than 10 ft of head?","Only the top 10 ft of the system. Overlap sections so every joint gets a full test (IPC 312.2)","A joint that never saw 10 ft of water was never tested."],
+  ["Gas","Sizing a gas branch: which length do you use?","The longest run, meter to the farthest outlet, for every section","Each branch only gets the pressure left over. Use the short run and the far appliance starves."],
   ["Gas","CFH for a 100,000 BTU/h furnace (1,000 BTU/ft³)?","100 CFH","CFH = BTU/h ÷ BTU per cubic foot: 100,000 ÷ 1,000 = 100."],
   ["Heaters","T&P discharge ends where?","Air gap in the same room, in view, ≤6\" above floor or receptor","In view so a dripping valve gets noticed. The air gap stops backflow. Low so a blast of scalding water hits the floor, not a person."],
   ["Heaters","PEX T&P discharge line size?","One size bigger than the valve outlet","PEX has a thicker wall than copper, so its inside is smaller. Going up a size keeps full relief flow."],
@@ -6443,6 +6658,84 @@ gaugeDraw();
 
 /* for anyone who opens the browser console */
 try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flows uphill", "background:#CCFF00;color:#000;font:800 14px sans-serif;padding:3px 6px", "color:#888;font:13px monospace"); } catch(e){}
+
+/* ---------- bore line: hole centers through studs or joists so a drain keeps grade ---------- */
+{ const BL_MEM = [["2×4 stud, bearing", 3.5, "stud", .4], ["2×4 stud, non-bearing", 3.5, "stud", .6], ["2×6 stud, bearing", 5.5, "stud", .4], ["2×6 stud, non-bearing", 5.5, "stud", .6],
+    ["2×8 joist", 7.25, "joist"], ["2×10 joist", 9.25, "joist"], ["2×12 joist", 11.25, "joist"]];
+  $("bl-mem").innerHTML = BL_MEM.map(([n], i) => `<option value="${i}"${i === 2 ? " selected" : ""}>${n}</option>`).join("");
+  $("bl-pipe").innerHTML = SAWS.map(([n, lo, hi], i) => `<option value="${i}"${i === 6 ? " selected" : ""}>${n} · ${sawTxt(lo, hi)} saw</option>`).join("");
+  let lastKind = "";
+  function blCalc(){
+    const [mName, depth, kind, frac] = BL_MEM[+$("bl-mem").value], [pName, , saw] = SAWS[+$("bl-pipe").value];
+    const sl = +$("bl-slope").value, oc = +$("bl-oc").value, n = parseInt($("bl-n").value, 10), el = $("bl-ans"), rows = $("bl-rows");
+    if (kind !== lastKind){   /* studs measure up from the floor, joists down from the top edge */
+      $("bl-h0-l").querySelector("i").textContent = kind === "stud" ? "(above the floor)" : "(down from the top of the joist; blank = as high as allowed)";
+      $("bl-col").textContent = kind === "stud" ? "Center above floor" : "Center below top";
+      if (lastKind) $("bl-h0").value = kind === "stud" ? "20" : "";
+      lastKind = kind;
+    }
+    const fail = t => { el.innerHTML = warn(t); rows.innerHTML = ""; mathOut("bl-math", []); };
+    if (!(n >= 2 && n <= 60)) return fail("How many members: 2 to 60.");
+    const raw = $("bl-h0").value.trim(), top = 2 + saw / 2;
+    const h0 = kind === "joist" && raw === "" ? top : parseLen(raw);
+    if (!(h0 >= 0) || h0 > 240) return fail(kind === "stud" ? "Type the first hole center above the floor, like 20 or 1' 8\"." : "Type how far the first center sits below the top of the joist, like 3 1/4.");
+    const drop = sl * oc / 12, sign = kind === "stud" ? -1 : 1;
+    const checks = [];
+    let sizeOk = true;
+    if (kind === "stud"){ const lim = depth * frac; sizeOk = saw <= lim + 1e-9 && saw <= depth - 1.25 + 1e-9;
+      checks.push(sizeOk ? `<b class="ok">✓ ${toFrac16(saw)} hole fits a ${mName}</b> (limit ${toFrac16(Math.min(lim, depth - 1.25))})` : warn(`✗ A ${toFrac16(saw)} hole is too big for a ${mName} (limit ${toFrac16(Math.min(lim, depth - 1.25))}): frame it 2×6 or fur it out`)); }
+    else { const lim = depth / 3; sizeOk = saw <= lim + 1e-9;
+      checks.push(sizeOk ? `<b class="ok">✓ ${toFrac16(saw)} hole is under ⅓ of the depth</b>` : warn(`✗ ${toFrac16(saw)} is over ⅓ of a ${mName} (${toFrac16(lim)})`)); }
+    let firstBad = -1;
+    rows.innerHTML = Array.from({length: n}, (_, i) => {
+      const c = h0 + sign * drop * i, dist = i * oc;
+      let ok = true, why = "";
+      if (kind === "stud"){ if (c - saw / 2 < 0){ ok = false; why = "below the floor"; } }
+      else { if (c - saw / 2 < 2 - 1e-9){ ok = false; why = "within 2\" of the top"; } else if (c + saw / 2 > depth - 2 + 1e-9){ ok = false; why = "within 2\" of the bottom"; } }
+      if (!ok && firstBad < 0) firstBad = i;
+      return `<tr${ok ? "" : ' class="hit"'}><td>${i + 1}</td><td>${fmtFtIn(dist)}</td><td>${toFrac16(c)}</td><td>${ok ? '<span class="ok">✓</span>' : warn("✗ " + why)}</td></tr>`;
+    }).join("");
+    const run = (n - 1) * oc, fall = sl * run / 12;
+    let reach = "";
+    if (kind === "joist"){ const ft = (depth - 4 - saw) / sl; reach = ft > 0 ? `Starting as high as allowed, this pipe can run <b>${nf(ft, 1)} ft</b> (${Math.floor(ft * 12 / oc) + 1} joists at ${oc}") before it hits the bottom 2".` : warn("No room: this hole won't fit between the 2\" edge zones."); }
+    const dropTxt = Math.abs(drop * 3 - 1) < 1e-9 ? '⅓"' : Math.abs(drop * 6 - 1) < 1e-9 ? '⅙"' : Math.abs(drop * 3 - 2) < 1e-9 ? '⅔"' : toFrac16(drop);
+    el.innerHTML = `${dropTxt} per ${kind}<small>${nf(drop, 3)}" · ${toFrac16(fall)} total fall over ${fmtFtIn(run)} · ${checks.join(" · ")}${reach ? "<br>" + reach : ""}${firstBad >= 0 ? `<br>${warn(`Hole ${firstBad + 1} is out of bounds: start ${kind === "stud" ? "higher" : "higher in the joist"} or use fewer members per run.`)}` : ""}</small>`;
+    mathOut("bl-math", [`Drop per member = slope × spacing = ${toFrac16(sl)}/ft × ${oc}" ÷ 12 = <b>${toFrac16(drop)}</b> (${nf(drop, 4)} in)`,
+      `Hole k center = first ${kind === "stud" ? "−" : "+"} (k − 1) × ${nf(drop, 4)}`,
+      `Total fall = ${toFrac16(sl)}/ft × ${nf(run / 12, 3)} ft = ${toFrac16(fall)}`,
+      kind === "stud" ? `Bore limit: ${Math.round(frac * 100)}% of ${depth}" = ${nf(depth * frac, 3)}", and ⅝" from each edge (${nf(depth - 1.25, 3)}")` : `Joist rules: hole ≤ ⅓ of ${depth}" = ${nf(depth / 3, 3)}", and 2" clear of the top and bottom edges`,
+      ...(reach ? [reach.replace(/<[^>]+>/g, "")] : [])]);
+  }
+  ["bl-mem", "bl-pipe", "bl-slope", "bl-oc"].forEach(id => $(id).addEventListener("change", blCalc));
+  ["bl-n", "bl-h0"].forEach(id => $(id).addEventListener("input", blCalc));
+  blCalc();
+}
+
+/* ---------- hot water that lasts: mix ratio + tank drain-down with recovery ---------- */
+{ const ids = ["hl-tank", "hl-set", "hl-in", "hl-use", "hl-gpm", "hl-rec", "hl-usep"];
+  const mins = m => !isFinite(m) ? "—" : m >= 600 ? "10+ hr" : m >= 90 ? `${nf(m / 60, 1)} hr` : `${Math.round(m)} min`;
+  function hlCalc(){
+    const [tank, set, tin, use, gpm, rec, up] = ids.map(val), el = $("hl-ans");
+    const fail = t => { el.innerHTML = warn(t); ["hl-f", "hl-140", "hl-sub"].forEach(i => $(i).textContent = ""); mathOut("hl-math", []); };
+    if (!(tank > 0 && gpm > 0 && rec >= 0 && up > 0 && up <= 100)) return fail("Enter the tank size, a flow, recovery (0 or more) and a usable share.");
+    if (!(set > use && use > tin)) return fail("The tank has to be hotter than the shower, and the shower hotter than the incoming water.");
+    const usable = tank * up / 100, f = (use - tin) / (set - tin), draw = gpm * f, net = draw - rec / 60;
+    const m = net > 0 ? usable / net : Infinity, m0 = usable / draw;
+    el.innerHTML = net > 0 ? `${mins(m)}<small>at ${nf(gpm, 1)} gpm and ${nf(use, 0)}°F · ${mins(m0)} if the burner couldn't keep up at all</small>` : `Keeps up<small>recovery beats the hot draw: it won't run out at this flow</small>`;
+    $("hl-sub").textContent = net > 0 ? "Then it fades over a few minutes, not all at once." : "";
+    $("hl-f").innerHTML = `${Math.round(f * 100)}%<small>${nf(draw, 2)} gpm hot + ${nf(gpm - draw, 2)} gpm cold</small>`;
+    let line140 = "—";
+    if (set < 140){ const f2 = (use - tin) / (140 - tin), rec2 = rec * (set - tin) / (140 - tin), net2 = gpm * f2 - rec2 / 60;
+      line140 = net2 > 0 ? `${mins(usable / net2)}<small>vs ${mins(m)} at ${nf(set, 0)}°F</small>` : `Keeps up`; }
+    else line140 = `Already ≥140°F<small>needs a mixing valve</small>`;
+    $("hl-140").innerHTML = line140;
+    mathOut("hl-math", [`Hot share = (shower − incoming) ÷ (tank − incoming) = (${nf(use, 0)} − ${nf(tin, 0)}) ÷ (${nf(set, 0)} − ${nf(tin, 0)}) = ${nf(f, 3)}`,
+      `Hot draw = ${nf(gpm, 2)} gpm × ${nf(f, 3)} = ${nf(draw, 3)} gpm`, `Recovery = ${nf(rec, 1)} gph ÷ 60 = ${nf(rec / 60, 3)} gpm`,
+      `Usable = ${nf(tank, 0)} gal × ${nf(up, 0)}% = ${nf(usable, 1)} gal`,
+      net > 0 ? `Minutes = ${nf(usable, 1)} ÷ (${nf(draw, 3)} − ${nf(rec / 60, 3)}) = <b>${nf(m, 1)}</b>` : `Recovery ≥ hot draw: it keeps up`]);
+  }
+  ids.forEach(id => $(id).addEventListener("input", hlCalc)); hlCalc();
+}
 
 IDX = null;  /* every table is rendered now: rebuild the search index on next use */
 apply();
@@ -6836,7 +7129,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-10-24e";
+var BUILD = "handbook-2026-10-25a";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
