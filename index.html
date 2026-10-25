@@ -9,8 +9,6 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="UT Handbook">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <title>Utah Plumbers Digital Handbook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,9 +25,13 @@ window.jpbAuto=function(){var p=null;try{p=JSON.parse(localStorage.getItem("jpb-
 var ok=p&&isFinite(p.lat)&&isFinite(p.lon);return window.jpbDaylight(Date.now(),ok?+p.lat:40.761,ok?+p.lon:-111.891)};
 var t;try{t=JSON.parse(localStorage.getItem("jpb-theme"))}catch(e){}
 document.documentElement.dataset.theme=t&&(t.look==="light"||t.look==="dark")&&t.until>Date.now()?t.look:(window.jpbAuto().day?"light":"dark");
+/* installed to the home screen: the status bar sits on top of the page, so the header pads itself down (class drives the CSS) */
+document.documentElement.classList.toggle("pwa",matchMedia("(display-mode: standalone)").matches||navigator.standalone===true);
 /* vest color and text size, before paint too */
 try{var P=JSON.parse(localStorage.getItem("jpb-prefs"))||{},R=document.documentElement;["skin","border","corner","font","caps","density","cols"].forEach(function(k){if(P[k]&&!(k==="skin"&&P[k]==="hivis"))R.dataset[k]=P[k]});if(P.skin==="night")R.dataset.theme="dark";R.dataset.stars=P.stars===false?"off":"on";R.dataset.fx=P.fx===false?"off":"on";}catch(e){}
 try{var v=JSON.parse(localStorage.getItem("jpb-vest"));if(v==="yellow"||v==="orange")document.documentElement.dataset.vest=v;var z=+JSON.parse(localStorage.getItem("jpb-zoom"));if(z>=0.8&&z<=1.5)document.documentElement.style.setProperty("--zoom",z);}catch(e){}</script>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
 <style>
 /* LOOK: hi-vis vest. ANSI 107 fluorescent yellow-green on black: the vest color, picked because daylight eyes are most
    sensitive to yellow-green. Sun: pure white sheets, pure black type, hi-vis card heads and answers, heavy borders.
@@ -58,16 +60,8 @@ try{var v=JSON.parse(localStorage.getItem("jpb-vest"));if(v==="yellow"||v==="ora
   --r:6px;
   color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --paper:#000000; --sheet:#0D0D0D; --ink:#FFFFFF; --muted:#D9D9D9; --rule:#4D4D4D; --edge:#BFBFBF; --zebra:#1A1A1A;
-  --bar:#1F1F1F; --bar-ink:#CCFF00; --hi:#223000; --hi-ink:#FFFFFF; --hi-edge:#CCFF00;
-  --danger:#FF5C5C; --danger-soft:#2A0808; --ok:#3DF58A;
-  --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-mech:#4FD1DB; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-parts:#4FD1DB; --g-weather:#7DD3FC; --g-mine:#FFFFFF;
-  --ctl:#BFBFBF; --caution:#FFB020; --ul:#CCFF00; --wood:#B07A3A;
-  --d-bg:#000000; --d-grid:#333333; --d-pipe:#9A9A9A; --d-fit:#FF7A33; --d-cut:#5C9DFF; --d-cut-lbl:#8FBCFF; --d-rise:#FF66CC; --d-roll:#33E07A; --d-run:#FFFFFF; --d-tru:#B48CFF; --d-text:#FFFFFF; --d-dim:#CFCFCF;
-  color-scheme:dark}}
 :root[data-theme="dark"]{
-  --paper:#000000; --sheet:#0D0D0D; --ink:#FFFFFF; --muted:#D9D9D9; --rule:#4D4D4D; --edge:#BFBFBF; --zebra:#1A1A1A;
+  --paper:#000000; --sheet:#0D0D0D; --ink:#FFFFFF; --muted:#D9D9D9; --rule:#6E6E6E; /* dividers 3:1 on the sheet so rows stay apart in a dim crawlspace */ --edge:#BFBFBF; --zebra:#1A1A1A;
   --bar:#1F1F1F; --bar-ink:#CCFF00; --hi:#223000; --hi-ink:#FFFFFF; --hi-edge:#CCFF00;
   --danger:#FF5C5C; --danger-soft:#2A0808; --ok:#3DF58A;
   --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-mech:#4FD1DB; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-parts:#4FD1DB; --g-weather:#7DD3FC; --g-mine:#FFFFFF;
@@ -90,14 +84,14 @@ b{font-weight:700}
 ::selection{background:var(--hv);color:var(--k)}
 
 /* ===== header: black bar, stencil wordmark, hazard stripe ===== */
-.tb{margin:0 calc(-1*max(12px,env(safe-area-inset-left)));background:var(--k);color:var(--hv);padding:calc(8px + env(safe-area-inset-top)) max(12px,env(safe-area-inset-left)) 8px}
+.tb{margin:0 calc(-1*max(12px,env(safe-area-inset-left)));background:var(--k);color:var(--hv);padding:8px max(12px,env(safe-area-inset-left)) 8px}
 .tb-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:10px}
-.tb .logo{width:38px;height:38px;flex:0 0 auto;display:block}
+.tb .logo{width:38px;height:38px;flex:0 0 auto;display:block;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .brand{display:flex;flex-direction:column;min-width:0;flex:1 1 auto;margin-right:auto;line-height:1}
 .brand h1{font-family:var(--stencil);font-weight:400;font-size:clamp(17px,4.4vw,32px);overflow:hidden;text-overflow:clip;letter-spacing:.03em;margin:0;color:var(--hv);white-space:nowrap}
 .brand small.pre{font-family:var(--display);font-weight:800;font-size:clamp(10px,2.7vw,13px);letter-spacing:.02em;text-transform:uppercase;color:var(--hv);margin:0 0 3px;white-space:nowrap}
 .brand small{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-k-sub);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hbtn{appearance:none;flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;min-height:46px;padding:0 12px;border:var(--bw) solid var(--hv);border-radius:var(--r);background:transparent;color:var(--hv);font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.hbtn{appearance:none;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;min-width:44px;padding:0 12px;border:var(--bw) solid var(--hv);border-radius:var(--r);background:transparent;color:var(--hv);font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
 .hbtn svg{width:18px;height:18px}
 .hbtn[aria-pressed="true"]{background:var(--hv);color:var(--k)}
 .stripe{height:10px;background:var(--stripe);margin:0 calc(-1*max(12px,env(safe-area-inset-left)))}
@@ -114,16 +108,17 @@ nav.tabs button[aria-pressed="true"]{background:var(--hv);color:var(--k);border-
 nav.tabs button[aria-pressed="true"]::before{background:var(--k)}
 @media (max-width:759px){
   body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-  nav.tabs{position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--k);border-top:5px solid var(--hv);transform:translateZ(0);-webkit-transform:translateZ(0)}
+  nav.tabs{--g-calc:#7FA6FF;--g-rough:#4ADE80;--g-mech:#4FD1DB;--g-trim:#FF7AC6;--g-parts:#4FD1DB;--g-inspect:#FF9A4D;--g-calls:#FF6B7A;--g-learn:#C3A6FF;--g-weather:#7DD3FC;--g-mine:#FFFFFF;
+    position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--k);border-top:5px solid var(--hv);transform:translateZ(0);-webkit-transform:translateZ(0);transform-origin:0 100%;will-change:transform}
   /* the bar is moved out of the sticky toolbar on phones (script): iPhone Safari drags a fixed bar along with a sticky parent that slides */
-  nav.tabs button{flex-direction:column;justify-content:center;gap:3px;min-height:62px;padding:6px 0 7px;border:0;border-radius:0;background:transparent;color:var(--on-k);font-size:clamp(10.5px,3vw,13.5px);letter-spacing:0;box-shadow:none;min-width:0}
+  nav.tabs button{flex-direction:column;justify-content:center;gap:3px;min-height:62px;padding:6px 0 7px;border:0;border-radius:0;background:transparent;color:var(--on-k);font-weight:800;font-size:clamp(12.5px,3.7vw,14px);letter-spacing:.01em;box-shadow:none;min-width:0}
   nav.tabs button::before{position:absolute;top:0;left:22%;right:22%;width:auto;height:4px;border-radius:0 0 3px 3px;background:var(--acc)}
-  nav.tabs button svg{width:24px;height:24px}
+  nav.tabs button svg{width:26px;height:26px}
   nav.tabs button[aria-pressed="true"]{background:var(--hv);color:var(--k);box-shadow:none}
 }
 
 /* ===== sticky search + sub-tabs ===== */
-.tools{position:sticky;top:0;z-index:10;background:var(--paper);padding:8px 0 8px;margin-top:2px;display:flex;flex-direction:column;gap:8px;transition:top .2s;border-bottom:2px solid transparent}
+.tools{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--paper);padding:8px 0 8px;margin-top:2px;display:flex;flex-direction:column;gap:8px;transition:top .2s;border-bottom:2px solid transparent}
 .tools.stuck{border-bottom-color:var(--edge)}
 .search{position:relative}
 .search svg{position:absolute;left:12px;top:50%;width:20px;height:20px;transform:translateY(-50%);color:var(--muted);pointer-events:none}
@@ -142,10 +137,10 @@ body.searching .subtabs{display:none}
 /* ===== cards ===== */
 .book{columns:2 480px;column-gap:16px}
 section{break-inside:avoid;display:block;background:var(--sheet);border:var(--bw) solid var(--edge);border-radius:var(--r);margin:0 0 16px;overflow:hidden}
-.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px;padding:8px 12px 7px 14px;background:var(--bar);color:var(--bar-ink);border-left:10px solid var(--acc);border-bottom:var(--bw) solid var(--edge);position:relative}
-.sec-head h2{font-family:var(--display);font-weight:800;font-size:21px;text-wrap:balance;line-height:1.1;text-transform:uppercase;letter-spacing:.04em;margin:0}
-.sec-head small{font-size:14px;font-weight:700;text-align:right}
-body.searching section[data-where] .sec-head::after{content:attr(data-where);flex-basis:100%;font-family:var(--display);font-size:13.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 6px;padding:8px 4px 7px 14px;background:var(--bar);color:var(--bar-ink);border-left:10px solid var(--acc);border-bottom:var(--bw) solid var(--edge);box-shadow:inset 3px 0 0 var(--sheet);position:relative}
+.sec-head h2{font-family:var(--display);font-weight:800;font-size:21px;text-wrap:balance;line-height:1.1;text-transform:uppercase;letter-spacing:.04em;margin:0;grid-column:1}
+.sec-head small{font-size:14px;font-weight:700;grid-column:1}
+body.searching section[data-where] .sec-head::after{content:attr(data-where);grid-column:1 / -1;font-family:var(--display);font-size:13.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 .note{font-size:15px;color:var(--muted);padding:8px 12px;margin:0;border-top:1px solid var(--rule)}
 .note b{color:var(--ink)}
 .flag{margin:0;padding:9px 12px 9px 14px;font-size:15.5px;font-weight:700;background:var(--danger-soft);border-top:1px solid var(--rule);border-left:8px solid var(--danger)}
@@ -164,8 +159,7 @@ body.searching section[data-where] .sec-head::after{content:attr(data-where);fle
 .sub{color:var(--muted);font-size:15px}
 .t .yes{color:var(--ok);font-weight:800;font-size:18px} .t .no{color:var(--danger);font-weight:800;font-size:18px}
 .t.num td.sub{font-family:var(--body);white-space:normal}
-.badge{display:inline-block;font-family:var(--display);font-weight:800;font-size:13.5px;letter-spacing:.06em;line-height:1.3;padding:0 5px;border-radius:3px;margin-right:4px;vertical-align:1px;border:1.5px solid currentColor}
-.badge.ut{color:var(--g-inspect)}
+.badge{display:inline-block;font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.06em;line-height:1.3;padding:0 5px;border-radius:3px;margin-right:4px;vertical-align:1px;border:1.5px solid currentColor}
 .badge.why{background:var(--hv);color:var(--k);border-color:var(--k)}
 .pn{display:inline-flex;align-items:center;font-family:var(--mono);font-weight:700;font-size:16px;background:var(--hi);color:var(--hi-ink);border:var(--bw) solid var(--hi-edge);border-radius:var(--r);padding:2px 9px;margin:2px 0;cursor:pointer;white-space:nowrap;text-decoration:none}
 .pn.copied{background:var(--ok);color:var(--sheet)}
@@ -215,7 +209,7 @@ input,select{font:inherit}
 .chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 12px 12px}
 .chips:empty{display:none}
 .chips button{font-family:var(--mono);font-weight:700;font-size:14.5px;text-transform:none;letter-spacing:0;min-height:46px;padding:2px 10px;background:var(--zebra)}
-.linkish{appearance:none;font:inherit;font-weight:700;background:none;border:0;padding:10px 4px;min-height:44px;color:var(--ink);text-decoration:underline;text-decoration-color:var(--hv);text-decoration-thickness:3px;text-underline-offset:4px;cursor:pointer}
+.linkish{appearance:none;font:inherit;font-weight:700;background:none;border:0;padding:10px 4px;min-height:44px;color:var(--ink);text-decoration:underline;text-decoration-color:var(--ul);text-decoration-thickness:3px;text-underline-offset:4px;cursor:pointer}
 .keys{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-bottom:1px solid var(--rule)}
 .keys button{appearance:none;flex:1 0 auto;min-width:52px;min-height:54px;padding:4px 10px;font-family:var(--mono);font-weight:700;font-size:19px;color:var(--ink);background:var(--zebra);border:var(--bw) solid var(--edge);border-radius:var(--r);cursor:pointer}
 .keys button:active{background:var(--hv);color:var(--k)}
@@ -269,10 +263,10 @@ input,select{font:inherit}
 .t.dfu td:first-child{white-space:normal}
 details.more{border-top:1px solid var(--rule)}
 .learn-hbtn{display:none}
-@media (max-width:759px){nav.tabs .nav-learn{display:none}.learn-hbtn{display:inline-flex}nav.tabs button{font-size:clamp(10.5px,3vw,13.5px);font-weight:800;letter-spacing:.02em}.hbtn{padding:0 9px}}
+@media (max-width:759px){nav.tabs .nav-learn{display:none}.learn-hbtn{display:inline-flex}.hbtn{padding:0 9px}}
 @media (max-width:519px){.learn-hbtn span,.hbtn-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
-@media (max-width:419px){.tb-in{gap:6px}.hbtn{padding:0 6px;min-width:42px}.aa-hbtn{min-width:42px}}
-@media (max-width:430px){#theme-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.hbtn{min-width:44px;justify-content:center}}
+@media (max-width:419px){.tb-in{gap:6px}.hbtn{padding:0 6px}}
+@media (max-width:430px){#theme-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
 #which-d{border-top:0}
 .jump-list{display:grid;grid-template-columns:1fr;gap:6px;padding:0 12px 12px}
 @media (min-width:560px){.jump-list{grid-template-columns:1fr 1fr}}
@@ -290,10 +284,9 @@ details.math li{padding:2px 0}
 details.math li::marker{font-weight:700;color:var(--muted)}
 .calc label.wide{flex:1 1 100%}
 .cl-ends{display:grid;grid-template-columns:1fr;border-bottom:1px solid var(--rule)}
-@media (min-width:520px){.cl-ends{grid-template-columns:1fr 1fr}.cl-end+.cl-end{border-left:1px solid var(--rule)}}
 .cl-end{display:flex;flex-direction:column;gap:6px;padding:10px 12px}
 .cl-end+.cl-end{border-top:1px solid var(--rule)}
-@media (min-width:520px){.cl-end+.cl-end{border-top:0}}
+@media (min-width:520px){.cl-ends{grid-template-columns:1fr 1fr}.cl-end+.cl-end{border-left:1px solid var(--rule);border-top:0}}
 .cl-h{font-family:var(--display);font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 .cl-end .seg{padding:0}
 .cl-end .seg button{flex:1 1 0;font-size:15px;padding:4px 6px;min-width:0}
@@ -301,8 +294,8 @@ details.math li::marker{font-weight:700;color:var(--muted)}
 .cl-v input{font-family:var(--mono);font-weight:600;font-size:18px;padding:6px 10px;min-height:52px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%}
 .cl-v input:focus{outline:none;border-color:var(--k);box-shadow:0 0 0 3px var(--hv)}
 #cl-chips{padding-top:10px}
-.t.pf td{padding:5px 4px;vertical-align:middle}.t.pf td:first-child{padding-left:10px}.t.pf th{padding:7px 4px}.t.pf th:first-child{padding-left:10px}
-.t.pf input{min-width:3.1rem;padding:6px 5px}.t.pf td:first-child{min-width:6.6rem}
+.t.pf td{padding:5px 4px;vertical-align:middle}.t.pf td:first-child{padding-left:10px;min-width:6.6rem}.t.pf th{padding:7px 4px}.t.pf th:first-child{padding-left:10px}
+.t.pf input{min-width:3.1rem;padding:6px 5px}
 .t select{font-family:var(--mono);font-weight:600;font-size:17px;padding:6px 6px;min-height:52px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%;min-width:0}
 .t select:focus{outline:none;border-color:var(--k);box-shadow:0 0 0 3px var(--hv)}
 .t.pf th i{font-style:normal;text-transform:none;letter-spacing:0}
@@ -337,18 +330,14 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
 #wx-chart{display:block;width:100%;height:auto;max-height:260px;padding:6px 6px 0}
 #wx-gw th{white-space:nowrap}
 /* ===== state colors ===== */
-.sec-head{box-shadow:inset 3px 0 0 var(--sheet)}
 @media (max-width:759px){
-  nav.tabs{--g-calc:#7FA6FF;--g-rough:#4ADE80;--g-mech:#4FD1DB;--g-trim:#FF7AC6;--g-parts:#4FD1DB;--g-inspect:#FF9A4D;--g-calls:#FF6B7A;--g-learn:#C3A6FF;--g-weather:#7DD3FC;--g-mine:#FFFFFF}
   .code-chip{min-height:44px;padding:4px 10px;font-size:14.5px;margin-top:6px}
 }
 .subtabs button,.del,.tk .x-del,.t .x-del{border-color:var(--ctl)}
 #q:focus,.calc input:focus,.calc select:focus,.up input:focus,.up select:focus,.tk input:focus,.t input:focus,.t select:focus,.cl-v input:focus{border-color:var(--k);box-shadow:0 0 0 3px var(--hv),0 0 0 5px var(--k)}
-.linkish{text-decoration-color:var(--ul)}
-.fc-btns .fc-got{color:var(--sheet)}
 .t td.yes,.t td.no{font-size:22px;line-height:1;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-.t td.yes{background:color-mix(in srgb,var(--ok) 16%,var(--sheet))}
-.t td.no{background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--danger) 16%,var(--sheet)) 0 5px,var(--sheet) 5px 10px)}
+.t td.yes{background:color-mix(in srgb,var(--ok) 16%,var(--sheet));color:color-mix(in srgb,var(--ok) 72%,var(--ink));font-weight:900}
+.t td.no{background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--danger) 16%,var(--sheet)) 0 5px,var(--sheet) 5px 10px);color:color-mix(in srgb,var(--danger) 72%,var(--ink));font-weight:900}
 .wx-stale{display:inline-block;background:var(--hv);color:var(--k);font-weight:800;font-size:14.5px;padding:0 6px;border-radius:3px;margin-bottom:4px}
 
 /* ===== mech room map ===== */
@@ -453,13 +442,10 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
 :root:not([data-skin])[data-vest="orange"]{--hv:#FF7A1F;--logo-tile:#FF7A1F}
 :root:not([data-skin])[data-vest="orange"][data-theme="light"]{--bar:#FF7A1F;--hi:#FFC9A3;--danger:#A3001A;--ok:#005722}
 :root:not([data-skin])[data-vest="orange"][data-theme="dark"]{--bar-ink:#FF7A1F;--hi:#3A1800;--hi-edge:#FF7A1F;--ul:#FF7A1F}
-/* Night dividers were 2.3:1 on the sheet; 3:1 keeps table rows apart in a dim crawlspace */
-:root[data-theme="dark"]{--rule:#6E6E6E}
 /* text size: the book scales, the toolbar and tab bar stay put so they never cover more screen */
 .book,.no-hits,.tip{zoom:var(--zoom,1)}
 
 .vest-sw{display:inline-block;width:18px;height:18px;border-radius:3px;border:2px solid var(--k);vertical-align:-3px;margin-right:6px}
-.aa-hbtn{font-family:var(--body)!important;text-transform:none!important;letter-spacing:0!important;font-size:18px!important;min-width:46px;justify-content:center}
 
 /* ===== tip of the day ===== */
 .tip{appearance:none;display:block;width:100%;margin:8px 0 0;padding:8px 12px;min-height:46px;text-align:left;font:inherit;font-size:15.5px;font-weight:600;color:var(--ink);background:var(--sheet);border:var(--bw) solid var(--edge);border-left:10px solid var(--hv);border-radius:var(--r);cursor:pointer}
@@ -472,8 +458,8 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
 #toast.on{opacity:1;transform:translate(-50%,0)}
 #toast b{color:var(--hv)}
 @media (max-width:759px){#toast{bottom:calc(80px + env(safe-area-inset-bottom))}}
+.pwa .tb{padding-top:calc(8px + env(safe-area-inset-top))}.pwa .tools{top:0}
 #fx{position:fixed;inset:0;width:100%;height:100%;z-index:65;pointer-events:none}
-.tb .logo{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .tb .logo.wiggle{animation:wig .45s ease}
 @keyframes wig{25%{transform:rotate(-10deg)}60%{transform:rotate(7deg)}}
 .fc-gauge{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:700;color:var(--muted)}
@@ -490,7 +476,7 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
 .sheet-bar .close{appearance:none;font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:.05em;text-transform:uppercase;min-height:46px;padding:0 18px;border:var(--bw) solid var(--hv);border-radius:var(--r);background:var(--hv);color:var(--k);cursor:pointer}
 .set-jump{flex:0 0 auto;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px 14px;border-bottom:var(--bw) solid var(--edge);background:var(--sheet)}
 .set-jump::-webkit-scrollbar{display:none}
-.set-jump button{flex:0 0 auto;appearance:none;font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;min-height:42px;padding:0 14px;border:var(--bw) solid var(--ctl);border-radius:999px;background:var(--sheet);color:var(--ink);cursor:pointer}
+.set-jump button{flex:0 0 auto;appearance:none;font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;min-height:44px;padding:0 14px;border:var(--bw) solid var(--ctl);border-radius:var(--r);background:var(--sheet);color:var(--ink);cursor:pointer}
 .sheet-body{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:6px max(14px,env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));flex:1 1 auto;min-height:0}
 .set-grp{border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);margin:12px 0;padding:0 12px 12px;display:grid;gap:14px;scroll-margin-top:8px}
 .set-grp h3{margin:0 -12px;padding:8px 12px;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.06em;text-transform:uppercase;background:var(--bar);color:var(--bar-ink);border-bottom:var(--bw) solid var(--edge)}
@@ -501,8 +487,6 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
 .set-grp p{margin:0}
 .sample{font-size:15px;color:var(--muted);margin:0}
 .skins{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
-.narrow-only{display:none}
-@media (max-width:519px){.wide-only{display:none}.narrow-only{display:inline}}
 .skins button>*{min-width:0}
 .skins button{appearance:none;display:grid;grid-template-columns:38px 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;text-align:left;padding:8px;min-height:64px;border:var(--bw) solid var(--ctl);border-radius:var(--r);background:var(--sheet);color:var(--ink);font:inherit;cursor:pointer}
 .skins button[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 3px var(--hv),0 0 0 5px var(--ink)}
@@ -534,8 +518,7 @@ footer .about-go{appearance:none;font:inherit;font-weight:700;color:var(--ink);b
 body.sheet-open{overflow:hidden}
 
 /* ===== pins and cross-references ===== */
-.sec-head{padding-right:50px}
-.sec-head .pin{position:absolute;top:50%;right:4px;transform:translateY(-50%);appearance:none;width:42px;height:42px;border:0;background:none;color:var(--bar-ink);font-size:24px;line-height:1;cursor:pointer;border-radius:var(--r);opacity:.55}
+.sec-head .pin{grid-column:2;grid-row:1 / span 2;position:relative;appearance:none;width:42px;height:42px;border:0;background:none;color:var(--bar-ink);font-size:24px;line-height:1;cursor:pointer;border-radius:var(--r);opacity:.85}
 .sec-head .pin[aria-pressed="true"]{opacity:1;color:var(--bar-ink);text-shadow:0 0 0 currentColor}
 .sec-head .pin:hover,.sec-head .pin:focus-visible{opacity:1}
 .xref{cursor:pointer;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--acc);border-radius:3px}
@@ -560,13 +543,11 @@ body.sheet-open{overflow:hidden}
 :root[data-skin="blueprint"][data-theme="light"]{
   --hv:#8FD8FF; --k:#0B2A55; --on-k:#FFFFFF; --on-k-sub:#C9D8F0; --paper:#E6EEF9; --sheet:#FFFFFF; --ink:#0B1F3A; --muted:#24395A; --rule:#6F86AA; --edge:#0B2A55; --zebra:#E3ECF8;
   --bar:#D2E7FF; --bar-ink:#0B1F3A; --hi:#C3E8FF; --hi-ink:#0B1F3A; --hi-edge:#0B2A55; --ctl:#0B2A55; --ul:#1257B8; --logo-tile:#8FD8FF; --logo-ink:#0B2A55; --logo-dot:#FFFFFF;
-  --stripe:repeating-linear-gradient(90deg,#8FD8FF 0 2px,#0B2A55 2px 14px)}
+  --stripe:repeating-linear-gradient(90deg,#8FD8FF 0 2px,#0B2A55 2px 14px); --bp-grid:#C7D6EC}
 :root[data-skin="blueprint"][data-theme="dark"]{
   --hv:#8FD8FF; --k:#020B18; --on-k:#EAF4FF; --on-k-sub:#B9CDEA; --paper:#06162E; --sheet:#0B2142; --ink:#EAF4FF; --muted:#BFD2EC; --rule:#5D7FAE; --edge:#7FA8DB; --zebra:#0F2A52;
   --bar:#0F2A52; --bar-ink:#9EDCFF; --hi:#123A6B; --hi-ink:#FFFFFF; --hi-edge:#8FD8FF; --ctl:#7FA8DB; --ul:#8FD8FF; --logo-tile:#8FD8FF; --logo-ink:#020B18; --logo-dot:#FFFFFF;
-  --d-bg:#06162E; --d-grid:#1D3A63; --stripe:repeating-linear-gradient(90deg,#8FD8FF 0 2px,#020B18 2px 14px)}
-:root[data-skin="blueprint"][data-theme="light"]{--bp-grid:#C7D6EC}
-:root[data-skin="blueprint"][data-theme="dark"]{--bp-grid:#10264A}
+  --d-bg:#06162E; --d-grid:#1D3A63; --stripe:repeating-linear-gradient(90deg,#8FD8FF 0 2px,#020B18 2px 14px); --bp-grid:#10264A}
 :root[data-skin="blueprint"] body{background-image:linear-gradient(var(--bp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--bp-grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
 :root[data-skin="blueprint"] .tools{background:color-mix(in srgb,var(--paper) 92%,transparent)}
 
@@ -621,7 +602,7 @@ body.sheet-open{overflow:hidden}
 :root[data-font="plain"]{--display:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--stencil:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 :root[data-font="easy"]{--display:"Atkinson Hyperlegible",Verdana,system-ui,sans-serif;--stencil:"Atkinson Hyperlegible",Verdana,system-ui,sans-serif;--body:"Atkinson Hyperlegible",Verdana,system-ui,sans-serif}
 :root[data-font="plain"] .brand h1,:root[data-font="easy"] .brand h1{font-weight:800}
-:root[data-caps="off"] :is(.sec-head h2,nav.tabs button,.subtabs button,.t thead th,.hbtn,details.math summary,.calc label,.seg button,.badge,.fc-btns button,.mode button,.look h2,.set-grp h3,.cl-h,.cl-v){text-transform:none;letter-spacing:.01em}
+:root[data-caps="off"] :is(.sec-head h2,nav.tabs button,.subtabs button,.t thead th,.hbtn,details.math summary,.calc label,.seg button,.badge,.fc-btns button,.mode button,.set-grp h3,.cl-h,.cl-v){text-transform:none;letter-spacing:.01em}
 :root[data-density="compact"] :is(.t th,.t td){padding:5px 10px}
 :root[data-density="compact"] .sec-head{padding-top:5px;padding-bottom:4px}
 :root[data-density="compact"] section{margin-bottom:10px}
@@ -662,12 +643,6 @@ details.explain p{margin:6px 0 0}
 @media (max-width:379px){.brand small.ed{display:none}.tb .hbtn{min-width:40px}.tb-in{gap:5px}}
 @media (max-width:339px){.tb .logo{display:none}}
 
-.sec-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:6px;row-gap:2px;padding-right:4px}
-.sec-head h2{grid-column:1}
-.sec-head small{grid-column:1;text-align:left}
-.sec-head .pin{grid-column:2;grid-row:1 / span 2;position:static;transform:none;opacity:.85}
-body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
-:root[data-stars="off"] .sec-head{padding-right:12px}
 
 .mech-map text.b{font-size:14.5px;font-weight:800}
 .mech-map .xs{font-size:11px}
@@ -675,26 +650,17 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
 /* ===== review fixes 2026-10-24: design team ===== */
 .wx-hero .sub{color:var(--on-k-sub)}
 .out td.big small.warn,small.warn{color:var(--ink)}
-.t td.yes{color:color-mix(in srgb,var(--ok) 72%,var(--ink));font-weight:900}
-.t td.no{color:color-mix(in srgb,var(--danger) 72%,var(--ink));font-weight:900}
-.badge.ut{color:color-mix(in srgb,var(--g-inspect) 78%,var(--ink));font-size:14px}
-.badge{font-size:14px}
-:root[data-skin="night"]{--muted:#FF6B5E}
+.badge.ut{color:color-mix(in srgb,var(--g-inspect) 78%,var(--ink))}   /* stays after .tip .badge so a UT badge inside a tip keeps its orange */
 .t td a[target]{display:inline-block;padding:10px 0}
 .pin::after{content:"";position:absolute;inset:-3px}
-.set-jump button{border-radius:var(--r);min-height:44px}
-.hbtn{min-width:44px;justify-content:center}
 @media (max-width:759px){
   .book .note,.book .sub,.book td.sub,.book .t th .sub,.book .fc-hint,footer{font-size:16px}
-  nav.tabs button{font-size:clamp(12.5px,3.7vw,14px)!important;letter-spacing:.01em!important}
-  nav.tabs button svg{width:26px;height:26px}
 }
 @media (max-width:340px){nav.tabs button{letter-spacing:0!important;font-size:12.2px!important}}
 
 /* ===== iPhone: bottom bar stays glued (bounce, keyboard, pinch-zoom) ===== */
 @media (max-width:759px){
   html,body{overscroll-behavior-y:none}
-  nav.tabs{transform-origin:0 100%;will-change:transform}
   body.kb-open nav.tabs{visibility:hidden;pointer-events:none}
 }
 </style>
@@ -3292,6 +3258,7 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Oct 25, 2026 · cleanup</th><td><b>Faster:</b> the book opens about twice as fast (search builds its index on your first search, cards no longer reshuffle at startup). <b>Fixed:</b> tapping a card title no longer pins it, only the ☆ does · calculator tables stay whole during a search · glossary had Bypass valve, Power vent and Direct vent twice · one duplicate flashcard removed. <b>Under the hood:</b> 35 repeated style rules and 4 copies of the same helper code merged.</td></tr>
         <tr><th>Oct 25, 2026 · later</th><td><b>Added:</b> Supply demand (WSFU) calculator · Jump it · Ejector &amp; sump pump · ABS or PVC? · PE-RT · AAV install rules · FVIR pilot trouble · What's new. <b>Fixed:</b> the 2018 A.O. Smith recall covered ultra-low NOx tanks · search shows only matching rows · Download backup on the claude.ai link.</td></tr>
         <tr><th>Oct 25, 2026</th><td><b>Added:</b> Bore line and Hot water that lasts calculators · 15 "Do it in your head" tricks and Why the pipe math works · Habits that save callbacks · What fails &amp; what's recalled · Rebates customers ask about · 8 cities in Davis, Weber, Cache and Washington counties · Get kept, Tool trade-offs, Test day, Your body · 8 flashcards. <b>Fixed:</b> heat pump water heater rule (tanks over 35 gal) · circuit vent definition · IPC cleanout clearance · wet vent fact · water expansion (≈1¼%, not 2%) · B-vent cap heights · shower valve standards · plastic nuts hand-tight · crimp gauge on every crimp · primer test</td></tr>
         <tr><th>Oct 24, 2026</th><td><b>Added:</b> About &amp; contact · every length box takes tape-style input (plain number = inches) · search reads 1.5 as 1½ · My city sets your elevation · Site opens on Call. <b>Fixed:</b> iPhone bottom bar tearing away (bounce, keyboard, pinch-zoom) · offline weather error you couldn't read · small text and tab labels · Delta and Alpine hours · Fluidmaster phone.</td></tr>
@@ -3681,7 +3648,23 @@ const tapeIn = raw => { raw = String(raw ?? "").trim(); const neg = /^[-−–]/
 const tapeFt = id => tapeIn($(id).value) / 12;
 const ftInTxt = ft => fmtFtIn(Math.round(ft * 12 * 16) / 16);
 const nf = (x, d=3) => isFinite(x) ? Math.abs(x) >= 1e9 ? x.toExponential(3) : (x !== 0 && Math.abs(x) < 0.01 ? (+x.toPrecision(4)).toString() : Math.abs(x) >= 1000 ? x.toLocaleString(undefined,{maximumFractionDigits:1}) : (+x.toFixed(d)).toString()) : "—";
-const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+/* CSS variables for drawings, cached per look: reading computed style 40 times a redraw forced style passes. The cache resets when theme, skin, vest or text size changes. */
+let cssSig = "", cssMemo = {};
+const cssv = n => { const d = document.documentElement, s = (d.dataset.theme || "") + (d.dataset.skin || "") + (d.dataset.vest || "") + d.style.cssText;
+  if (s !== cssSig){ cssSig = s; cssMemo = {}; }
+  return cssMemo[n] ??= getComputedStyle(d).getPropertyValue(n).trim(); };
+/* one answer-table row: label, big value, note; hit = the highlighted answer */
+const outRow = (k, v, s, hit) => `<tr${hit ? ' class="hit"' : ""}><th>${k}</th><td class="big">${v}</td><td class="sub">${s}</td></tr>`;
+/* bytes this book has saved on the device (Settings and the footer stats both show it) */
+const bookBytes = () => { let n = 0; try { for (let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if (k.startsWith("jpb-")) n += k.length + (localStorage.getItem(k) || "").length; } } catch(e){} return n; };
+/* +/− counter tables (DFU and WSFU share one markup and one set of handlers) */
+function stepTable(tbody, items, prefix, get, set){
+  tbody.innerHTML = items.map(([n, v], i) => `<tr><td>${n}</td><td class="n">${v}</td><td><span class="step"><button type="button" data-i="${i}" data-d="-1" aria-label="One fewer ${n}">−</button><input id="${prefix}-${i}" type="number" inputmode="numeric" min="0" step="1" value="0" aria-label="${n} count"><button type="button" data-i="${i}" data-d="1" aria-label="One more ${n}">+</button></span></td></tr>`).join("");
+  const idx = el => { const m = el.id && el.id.match(new RegExp("^" + prefix + "-(\\d+)$")); return m ? +m[1] : -1; };
+  tbody.addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (b) set(+b.dataset.i, get(+b.dataset.i) + (+b.dataset.d)); });
+  tbody.addEventListener("input", e => { const i = idx(e.target); if (i >= 0){ const v = Math.floor(+e.target.value); set(i, isFinite(v) && v > 0 ? v : 0); } });
+  tbody.addEventListener("change", e => { const i = idx(e.target); if (i >= 0) e.target.value = get(i); });
+}
 const store = {
   get(k, d){ try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch(e){ return d; } },
   set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
@@ -3784,8 +3767,8 @@ const GLOSS = [
   ["Condensate neutralizer","heat","Cartridge of limestone chips that takes the acid out of condensing-appliance drain water."],
   ["Isolation valve kit","heat","Hot and cold shutoffs with service ports (and a relief valve) on a tankless heater, for flushing."],
   ["Orphaned water heater","heat","Natural-draft heater left alone in a chimney after the furnace was replaced. Drafts poorly; needs a liner."],
-  ["Power vent","heat","Water heater with a blower that pushes exhaust out plastic pipe. Needs 120V."],
-  ["Direct vent","heat","Sealed water heater or furnace that takes outside air in and vents out through the wall."],
+  ["Power vent","heat","Water heater or other gas appliance with a blower that pushes exhaust out, usually through plastic pipe. Needs 120V."],
+  ["Direct vent","heat","Sealed water heater or furnace that takes combustion air from outside and vents outside through its own pipes, usually through the wall."],
   ["ULN","heat","Ultra-low NOx: gas heater burning cleaner (10 ng/J). Required in Utah's nonattainment areas."],
   ["Powered anode","heat","Titanium rod run by a small current instead of sacrificial metal. Cures rotten-egg smell; never wears out."],
   ["ASSE 1017","heat","Thermostatic mixing valve at the water heater that tempers the whole house's hot water."],
@@ -3869,7 +3852,6 @@ const GLOSS = [
   ["Back-siphonage / back-pressure","supply","Backflow caused by suction in the supply / by higher pressure downstream."],
   ["Backflow","supply","Water flowing backward into the drinking supply."],
   ["Brine line","supply","Tube between a water softener and its salt tank."],
-  ["Bypass valve","supply","Valve set that routes water around a softener or filter for service."],
   ["Cross-connection","supply","Any link between drinking water and a non-drinking source."],
   ["Culinary water","supply","Utah term for drinking (potable) water, as opposed to secondary irrigation water."],
   ["Curb stop","supply","Shutoff on the water service near the property line, under a curb box."],
@@ -3911,7 +3893,6 @@ const GLOSS = [
   ["Condensing","gas","90%+ efficient appliance that pulls so much heat it condenses water from the exhaust. Needs a condensate drain and plastic vent."],
   ["CSST","gas","Corrugated stainless steel tubing: flexible, yellow-jacketed gas pipe."],
   ["Derate","gas","Turn an appliance's input down, usually for altitude."],
-  ["Direct vent","gas","Sealed appliance that takes combustion air from outside and vents outside through its own pipes."],
   ["Draft hood","gas","Open collar on top of a natural-draft heater that lets room air mix into the flue."],
   ["Drip leg","gas","Sediment trap: capped tee and nipple before a gas appliance that catches dirt and scale."],
   ["Flare fitting","gas","Fitting that seals on a flared cone face. Used on appliance connectors."],
@@ -3924,7 +3905,6 @@ const GLOSS = [
   ["Manometer","gas","Gauge that reads low gas pressure in inches of water column."],
   ["Natural gas","gas","Methane supplied by the utility. About 1,000 BTU/ft³, lighter than air."],
   ["Natural draft","gas","Appliance whose exhaust rises up the vent by its own heat (atmospheric)."],
-  ["Power vent","gas","Appliance with a fan that pushes exhaust out, usually through plastic pipe."],
   ["Regulator","gas","Valve that drops gas pressure to what the appliance or system needs."],
   ["Sediment trap","gas","Code name for a drip leg."],
   ["Shield plate","gas","16 ga steel plate protecting gas pipe that runs close to the framing edge."],
@@ -4222,7 +4202,7 @@ const FACTS = [
   ["ut","Pumps & tanks","No booster pump on a public main unless R309-540 allows it. A nonpotable tank's makeup water needs a 4\" air gap above the overflow, or an RP.","ut205"],
   ["bf","Standards","AVB: ASSE 1001. RP: ASSE 1013. Double check: ASSE 1015. PVB: ASSE 1020. Read the tag.","bfcn"],
   ["bf","Sprinklers","Irrigation on culinary water: AVB, PVB, SVB or RP (IRC Table P2902.3).","bfcn"],
-  ["bf","Hose bibbs","Need a vacuum breaker. Water heater and boiler drain valves and washer bibbs are exempt (IRC P2902.4.3).","bfcn"],
+  ["bf","Hose bibb backflow","Need a vacuum breaker. Water heater and boiler drain valves and washer bibbs are exempt (IRC P2902.4.3).","bfcn"],
   ["bf","Air gap","Over an opening bigger than 1\": twice the opening's diameter.","bfcn"],
   ["bf","Utah programs","Every Utah water system runs a cross-connection program: each testable assembly is tested yearly by a state-certified tester, with records kept.","r309"],
   ["bf","Assemblies","Must be testable and repairable in line. PI and culinary may never be cross-connected (Utah Code 19-4-112).","r309"],
@@ -4246,11 +4226,11 @@ const FACTS = [
   ["mech","Bigger tanks","The 2015 insulation made tanks over 2\" wider and 1–2\" taller; big heat-pump units grew about 18\". Measure before you sell a replacement.","st15"],
   ["mech","Orphaned heater","When the furnace goes to PVC, a lone natural-draft heater can't warm the old chimney: it spills exhaust and condenses acid into the mortar. A liner sized for the heater fixes it.","storph"],
   ["mech","Polybutylene","Gray PB with acetal insert fittings was installed 1978–1995. Settlements (Cox, Spencer) are closed; today it's just a replace-it pipe.","pbcm"],
-  ["mech","Expansion tank","For 40–50 gal at 140°F, a 2 gal tank (ST-5) covers up to 80 psi house pressure. Set the air charge to house pressure.","amtrol"],
+  ["mech","Expansion tank sizing","For 40–50 gal at 140°F, a 2 gal tank (ST-5) covers up to 80 psi house pressure. Set the air charge to house pressure.","amtrol"],
   ["mech","Softener specs","Fleck 5600SXT: 20–125 psi, water ≤ 110°F, ½\" drain (¾\" over 20 ft), solder ≥ 6\" from the drain flow control.","fleck"],
   ["mech","Softener drain","Air gap on the backwash drain so wastewater can't siphon back. Don't leave a dead softener connected.","mnsoft"],
   ["mech","15 psi","NSF/ANSI 42, 53 and 44 cap filter and softener pressure loss at 15 psi at rated flow. RO faucets with built-in air gaps are vacuum-tested under 58.","nsfwt"],
-  ["mech","Hose bibbs","Tee outside faucets off before a whole-house treatment system: treating yard water wastes it.","nsfwt"],
+  ["mech","Hose bibbs & treatment","Tee outside faucets off before a whole-house treatment system: treating yard water wastes it.","nsfwt"],
   ["mech","Salt-free","TAC keeps the minerals in the water but turns them into tiny crystals that don't stick. No ANSI/NSF standard covers it; DVGW W512 is the test.","tac"],
   ["mech","Ionizers","Alkaline water ionizers are electrolysis cells. Medical claims for alkaline water aren't supported: the body controls its own pH.","ion"],
   ["mech","Recirc rules","Demand recirc on the cold line can't send back water over 104°F, and the pump must start on demand and stop when the loop is hot.","recirc"],
@@ -4262,7 +4242,7 @@ const FACTS = [
   ["wh","Maintenance","Flush tanks at least yearly (more with hard water). Check the anode yearly; replace it when inches of core wire show. Pro T&P inspection every 5 years.","aos"],
   ["wh","Descale","Tankless: at least yearly. Circulate vinegar or descaler 45+ min, then rinse 10+ min.","navien"],
   ["wh","Heat pump","A room under 700 ft³ needs louvers (18 in² top and bottom) or a louvered door. Runs 40–120°F, best 50–90°F; about 10% less efficient per 10°F colder.","rheem"],
-  ["wh","Expansion tank","Watts PLT-5: 2.1 gal, ships at 20 psi. Set its air to house pressure before it fills.","watts"],
+  ["wh","Expansion tank air charge","Watts PLT-5: 2.1 gal, ships at 20 psi. Set its air to house pressure before it fills.","watts"],
   ["wh","Scald times","120°F ≈ 5 min, 130°F ≈ 30 s, 140°F ≈ 6 s. An ASSE 1017 valve at the heater isn't scald protection; an ASSE 1070 at the fixture caps at 120°F.","pm"],
   ["trim","Posi-Temp heights","Tub/shower: valve 32\" above the tub floor, spout 6\"–11\" below the valve. Shower only: valve 45\"–48\". Arm 78\".","moen"],
   ["trim","Posi-Temp rough","Slip-fit tub spout needs copper with no threaded adapter. Flush the body with the cartridge out before you set it.","moen"],
@@ -4342,7 +4322,7 @@ const GNAME = {calc:"Calc",rough:"Rough",mech:"Mech",trim:"Trim",inspect:"Inspec
 const groupOf = sec => Object.keys(GROUPS).find(g => GROUPS[g].some(([s]) => s === sec));
 const SECTIONS = [...document.querySelectorAll(".book > section[data-sec]")];
 const book = document.querySelector(".book");
-let lastOrder = [];
+let lastOrder = SECTIONS.slice(), hiddenRows = [];   /* cards start in book order; rows the last search hid */
 SECTIONS.forEach(sec => {
   const g = groupOf(sec.dataset.sec); sec.dataset.g = g;
   const sub = GROUPS[g].find(([s]) => s === sec.dataset.sec)[1];
@@ -4372,7 +4352,8 @@ const norm = s => " " + s.toLowerCase().replace(/¹⁄₁₆/g, " 1/16").replace
   .replace(/\s+/g, " ");
 const words = el => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let s = "", n; while ((n = w.nextNode())) s += " " + n.nodeValue; return s; };
 const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const SKIP = "#c-out, .out, #dfu-rows, #ro-steps, #ro-fit-rows, #gl-rows, #gl-tbl, #cl-rows, #cl-plan, #po-rows, #ts-out, #sq-out, #pt-rows, #pt-sum, #es-marks, #lr-rows, #pf-rows, #pf-detail, .math, #wx-now, #wx-air, #wx-hours, #wx-days, #wx-nws, #wx-soil, #wx-gw, #wx-sun";
+/* calculator tables (inputs and answers) never get filtered by a search: hiding a fixture row would break the count */
+const SKIP = "#c-out, .out, #dfu-rows, #ws-rows, #ws-pipes, #bl-rows, #ju-out, #ej-out, #ro-steps, #ro-fit-rows, #gl-rows, #gl-tbl, #cl-rows, #cl-plan, #po-rows, #ts-out, #sq-out, #pt-rows, #pt-sum, #es-marks, #lr-rows, #pf-rows, #pf-detail, .math, #wx-now, #wx-air, #wx-hours, #wx-days, #wx-nws, #wx-soil, #wx-gw, #wx-sun";
 let IDX = null;
 const buildIdx = () => IDX = SECTIONS.map(sec => ({
   sec,
@@ -4397,34 +4378,34 @@ function apply(){
   $("files-btn").setAttribute("aria-pressed", String(nav.group === "mine"));
   $("learn-btn").setAttribute("aria-pressed", String(!term && nav.group === "learn"));
   subRow.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.sub === nav.sub)));
-  if (!IDX) buildIdx();
   const toks = norm(term).trim().split(" ").filter(Boolean).map(t => t.length > 3 && !/\d/.test(t) ? t.replace(/(s|x|z|ch|sh)es$/, "$1").replace(/([^s])s$/, "$1") : t);
   const res = toks.map(t => new RegExp("(?:^|[^a-z0-9.])" + reEsc(t)));
   const has = (txt, list) => list.every(r => r.test(txt));
   let shown = 0; const hits = [];
   const setH = (el, h) => { if (el.hidden !== h) el.hidden = h; };
+  /* put back only the rows a search hid, so rows a calculator hides on purpose stay hidden */
+  for (const r of hiddenRows) r.hidden = false;
+  hiddenRows = [];
+  const hideRow = r => { r.hidden = true; hiddenRows.push(r); };
+  if (!toks.length) for (const sec of SECTIONS){ setH(sec, !inView(sec)); if (!sec.hidden) shown++; }
+  else { if (!IDX) buildIdx();   /* built on the first search, not at startup */
   for (const {sec, h2, title, head, all, rows} of IDX){
-    if (!toks.length){
-      rows.forEach(([r]) => setH(r, false));
-      setH(sec, !inView(sec));
-      if (!sec.hidden) shown++;
-      continue;
-    }
     const rem = res.filter(r => !r.test(head));
     let any = false;
     if (!rem.length){
       /* the card matched on its keywords, not its title: show just the rows that match, when some do (Saratoga → that city's row) */
       const m = res.every(r => r.test(h2)) ? null : rows.map(([, txt]) => has(txt, res));
-      if (m && m.some(Boolean)) rows.forEach(([r], i) => setH(r, !m[i])); else rows.forEach(([r]) => setH(r, false));
+      if (m && m.some(Boolean)) rows.forEach(([r], i) => { if (!m[i]) hideRow(r); });
       any = true;
     }
     else {
-      rows.forEach(([r, txt]) => { const m = has(txt, rem); setH(r, !m); any = any || m; });
-      if (!any && has(all, rem)){ rows.forEach(([r]) => setH(r, false)); any = true; }  /* sections without table rows (calculators, cards) */
+      const m = rows.map(([, txt]) => has(txt, rem)); any = m.some(Boolean);
+      if (any) rows.forEach(([r], i) => { if (!m[i]) hideRow(r); });
+      else if (has(all, rem)) any = true;  /* sections without table rows (calculators, cards) */
     }
     setH(sec, !any);
     if (any){ shown++; hits.push([sec, 4*res.filter(r => r.test(h2)).length + 3*res.filter(r => r.test(title)).length + (res.length - rem.length)]); }
-  }
+  } }
   /* best match first: words in the card heading count most, then keywords; the book's own order otherwise */
   const order = toks.length ? [...hits.sort((a,b) => b[1] - a[1]).map(h => h[0]), ...SECTIONS.filter(s => s.hidden)] : SECTIONS;
   if (order.length !== lastOrder.length || order.some((s, i) => s !== lastOrder[i])){ const foot = book.querySelector("footer"); order.forEach(s => book.insertBefore(s, foot)); lastOrder = order; }
@@ -4435,8 +4416,8 @@ function apply(){
   const roShown = !$("ro-3d").closest("section").hidden;
   if (roReady && roShown && !roWasShown) roCalc();
   roWasShown = roShown;
-  const on = subRow.querySelector('[aria-pressed="true"]');
-  if (on && innerWidth < 760) subRow.scrollLeft = on.offsetLeft - (subRow.clientWidth - on.offsetWidth) / 2;
+  const on = subRow.querySelector('[aria-pressed="true"]');   /* center the sub-tab next frame: reading sizes now would force a layout mid-update */
+  if (on && innerWidth < 760) requestAnimationFrame(() => { subRow.scrollLeft = on.offsetLeft - (subRow.clientWidth - on.offsetWidth) / 2; });
 }
 function go(group, sub){
   nav = {group, sub: sub || (nav.group === group ? nav.sub : GROUPS[group][0][0])};
@@ -4486,7 +4467,7 @@ $("q").addEventListener("input", () => {
   document.addEventListener("focusin", queue);
   document.addEventListener("focusout", () => setTimeout(() => { queue(); if (!typing()) scrollTo(scrollX, scrollY); }, 300));   /* re-seat after the keyboard closes */
   if (mq.addEventListener) mq.addEventListener("change", queue);
-  glue();
+  queue();   /* next frame: running it mid-startup forced a layout of the whole book */
 }
 drawSubs();
 apply();  /* early, so tabs work even if a calculator below hits an error */
@@ -4596,8 +4577,7 @@ function lookDraw(){
   document.querySelectorAll("#look .tog").forEach(t => { t.setAttribute("aria-checked", String(!!PREFS[t.dataset.t])); });
   const wk = document.querySelector('#look .tog[data-t="wake"]'); if (!("wakeLock" in navigator)){ wk.disabled = true; wk.querySelector("small").textContent = "This browser can't hold the screen on. iPhone: Settings → Display → Auto-Lock."; }
   $("set-start").value = PREFS.start;
-  let bytes = 0; try { for (let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if (k.startsWith("jpb-")) bytes += k.length + (localStorage.getItem(k) || "").length; } } catch(e){}
-  $("bk-size").textContent = `${nf(bytes / 1024, 1)} KB saved on this device.`;
+  $("bk-size").textContent = `${nf(bookBytes() / 1024, 1)} KB saved on this device.`;
   $("set-build").textContent = (document.getElementById("offline-status") || {}).textContent || "";
 }
 $("set-skin").addEventListener("click", e => {
@@ -5542,12 +5522,11 @@ function tsCalc(){
   for (const k in TSF) $(TSF[k]).placeholder = g.includes(k) ? "—" : (k === "a" ? nf(a, 2) : toFrac16(res[k]).replace('"', ""));
   const near = STD_ANG.reduce((b, x) => Math.abs(x - a) < Math.abs(b - a) ? x : b);
   const lbl = k => g.includes(k) ? "you typed it" : "worked out";
-  const L = x => x >= 12 ? `${fmtFtIn(x)}<small>${toFrac16(x)} · ${x.toFixed(3)} in</small>` : `${toFrac16(x)}<small>${x.toFixed(3)} in</small>`;
-  out.innerHTML = [["Offset", L(o), lbl("o")], ["Run", L(r), lbl("r")], ["Travel", L(t), lbl("t")], ["Angle", `${nf(a, 2)}°<small>from the run</small>`, lbl("a")],
+  out.innerHTML = [["Offset", lenOut(o), lbl("o")], ["Run", lenOut(r), lbl("r")], ["Travel", lenOut(t), lbl("t")], ["Angle", `${nf(a, 2)}°<small>from the run</small>`, lbl("a")],
     ["Travel ×", `${(1/Math.sin(a*R)).toFixed(3)}<small>travel = offset × this</small>`, "Same multiplier as the offset chart"],
     ["Nearest fitting", `${near === 22.5 ? "22½" : near === 11.25 ? "11¼" : near}°<small>${Math.abs(near - a) < 0.05 ? "exact" : `${nf(Math.abs(near - a), 2)}° off`}</small>`, Math.abs(near - a) < 0.05 ? "A standard fitting does it." : "No standard fitting: change the run or bend it."],
     ["As a slope", `${nf(o / r * 12, 3)}"/ft<small>${nf(o / r * 100, 2)}%</small>`, "Rise per foot of run"]]
-    .map(([h, b, s], i) => `<tr${i === 2 ? ' class="hit"' : ""}><th>${h}</th><td class="big">${b}</td><td class="sub">${s}</td></tr>`).join("");
+    .map(([k, b, s], i) => outRow(k, b, s, i === 2)).join("");
   mathOut("ts-math", [`You gave the ${TSN[g[0]]} and ${TSN[g[1]]}.`, ...steps, `Check: offset² + run² = travel² → ${nf(o*o + r*r, 2)} ≈ ${nf(t*t, 2)}`]);
   /* drawing */
   const bg = cssv("--d-bg"), txt = cssv("--d-text"), cut = cssv("--d-cut"), rise = cssv("--d-rise"), run = cssv("--d-run"), dim = cssv("--d-dim");
@@ -5631,7 +5610,6 @@ function sqShow(){
   $("sq-chips").hidden = sqMode !== "lay";
   sqCalc();
 }
-const sqLen = x => x >= 12 ? `${fmtFtIn(x)}<small>${toFrac16(x)} · ${x.toFixed(3)} in</small>` : `${toFrac16(x)}<small>${x.toFixed(3)} in</small>`;
 const sqDeg = x => x < 1e-6 ? "0°" : x < 0.05 ?`${nf(x * 60, 1)}′` : `${nf(x, 2)}°`;   /* tiny angles read better in minutes */
 function sqCalc(){
   const A = parseLen($("sq-a").value), B = parseLen($("sq-b").value), out = $("sq-out"), el = $("sq-ans"), svg = $("sq-svg");
@@ -5641,12 +5619,12 @@ function sqCalc(){
   if (!(A > 0) || A > 12000) return fail(`Type ${nm[0]}, like 6' or 72.`);
   if (!(B > 0) || B > 12000) return fail(`Type ${nm[1]}, like 8'.`);
   const T = Math.hypot(A, B), R = 180 / Math.PI;
-  const rows = r => r.map(([h, b, s], i) => `<tr${i === 0 ? ' class="hit"' : ""}><th>${h}</th><td class="big">${b}</td><td class="sub">${s}</td></tr>`).join("");
+  const rows = r => r.map(([k, b, s], i) => outRow(k, b, s, i === 0)).join("");
   if (sqMode === "lay"){
     const even = Math.abs(T * 16 - Math.round(T * 16)) < 1e-6, miss = T / A / 16;   /* a 1/16" diagonal miss moves leg B's end about T/A × 1/16 */
     el.innerHTML = `${fmtFtIn(T)}<small>diagonal when it's square${even ? " · comes out even" : " · rounded to ¹⁄₁₆\""}</small>`;
     out.innerHTML = rows([
-      ["Diagonal", sqLen(T), "Corner to corner, A mark to B mark"],
+      ["Diagonal", lenOut(T), "Corner to corner, A mark to B mark"],
       ["1", `Mark A`, `${fmtFtIn(A)} from the corner along line 1`],
       ["2", `Mark B`, `${fmtFtIn(B)} from the corner along line 2`],
       ["3", `Swing it`, `Hook the A mark, swing the tape across line 2, and move line 2 until the B mark reads ${fmtFtIn(T)}`],
@@ -5669,7 +5647,7 @@ function sqCalc(){
       : `${sqDeg(Math.abs(dev))} ${open ? "open" : "tight"}<small>${open ? "Wider" : "Tighter"} than 90°. Swing the end of leg B ${toFrac16(move)} ${open ? "toward" : "away from"} the A mark.</small>`;
     out.innerHTML = rows([
       ["Move B's end", ok ? `<span class="ok">nothing</span>` : `${toFrac16(move)}<small>${open ? "toward A" : "away from A"}</small>`, ok ? "Close enough to call square." : `Then the diagonal reads ${fmtFtIn(T)}.`],
-      ["Should read", sqLen(T), "√(A² + B²)"],
+      ["Should read", lenOut(T), "√(A² + B²)"],
       ["You read", `${fmtFtIn(D)}<small>${diff >= 0 ? "+" : "−"}${toFrac16(Math.abs(diff))} ${open ? "long" : diff < 0 ? "short" : ""}</small>`, open ? "Long diagonal: the corner is open (over 90°)." : diff < 0 ? "Short diagonal: the corner is tight (under 90°)." : "Right on."],
       ["Corner angle", `${nf(th, 2)}°`, "90° is square"],
       ["Over 8 ft", `${toFrac16(per8)}`, "How far a wall off this corner would be out over 8 ft"]]);
@@ -5689,7 +5667,7 @@ function sqCalc(){
   el.innerHTML = ok ? `<span class="ok">✓ Square</span><small>diagonals within ⅛" of each other</small>`
     : `${toFrac16(Math.abs(diff))} out<small>Push the corners on diagonal ${long} toward each other until both read ${fmtFtIn(target)}</small>`;
   out.innerHTML = rows([
-    ["Both should read", sqLen(target), "√((d1² + d2²) ÷ 2): works even before you trust the sides"],
+    ["Both should read", lenOut(target), "√((d1² + d2²) ÷ 2): works even before you trust the sides"],
     ["Difference", `${toFrac16(Math.abs(diff))}`, ok ? "⅛\" or less: square enough for rough-in" : `Diagonal ${long} is the long one`],
     ["Corners off", sqDeg(dev), "Every corner is off by this much"],
     ["Width sides lean", toFrac16(leanW), `The far end of each ${fmtFtIn(B)} side sits this far off square`],
@@ -5949,7 +5927,7 @@ const BRANCH = [[1.5,3],[2,6],[2.5,12],[3,20],[4,160]];
 const BD4 = [[2,21],[2.5,24],[3,42],[4,216],[5,480],[6,840]], BD8 = [[3,36],[4,180],[5,390],[6,700]];
 const pipeTxt = d => ({1.5:'1½"',2:'2"',2.5:'2½"',3:'3"',4:'4"',5:'5"',6:'6"'})[d];
 const dfuRows = $("dfu-rows");
-dfuRows.innerHTML = FIX.map(([n,d],i) => `<tr><td>${n}</td><td class="n">${d}</td><td><span class="step"><button type="button" data-i="${i}" data-d="-1" aria-label="One fewer ${n}">−</button><input id="dfu-${i}" type="number" inputmode="numeric" min="0" step="1" value="0" aria-label="${n} count"><button type="button" data-i="${i}" data-d="1" aria-label="One more ${n}">+</button></span></td></tr>`).join("");
+/* markup and handlers come from stepTable (below, once dfuCalc exists) */
 let dfuCounts = FIX.map(() => 0);
 { const s = store.get("jpb-dfu", null); if (Array.isArray(s) && s.length === FIX.length) dfuCounts = s.map(v => Number.isFinite(+v) ? Math.min(999, Math.max(0, Math.floor(+v))) : 0); }
 const pick = (tbl, load, min) => { for (const [d,cap] of tbl) if (d >= min && load <= cap) return d; return null; };
@@ -5968,15 +5946,7 @@ function dfuCalc(){
   $("dfu-bd4").textContent = show(pick(BD4, total, min));
   $("dfu-bd8").textContent = show(pick(BD8, total, 3));
 }
-dfuRows.addEventListener("click", e => {
-  const b = e.target.closest("button[data-i]"); if (!b) return;
-  const i = +b.dataset.i; dfuCounts[i] = Math.max(0, dfuCounts[i] + (+b.dataset.d)); dfuCalc();
-});
-dfuRows.addEventListener("input", e => {
-  const m = e.target.id && e.target.id.match(/^dfu-(\d+)$/); if (!m) return;
-  const v = Math.floor(+e.target.value); dfuCounts[+m[1]] = isFinite(v) && v > 0 ? Math.min(v, 999) : 0; dfuCalc();
-});
-dfuRows.addEventListener("change", e => { if (/^dfu-\d+$/.test(e.target.id)) e.target.value = dfuCounts[+e.target.id.slice(4)]; });
+stepTable(dfuRows, FIX.map(([n, d]) => [n, d]), "dfu", i => dfuCounts[i], (i, v) => { dfuCounts[i] = Math.min(999, Math.max(0, v)); dfuCalc(); });
 $("dfu-clear").addEventListener("click", () => { dfuCounts = FIX.map(() => 0); dfuCalc(); });
 dfuCalc();
 
@@ -6244,7 +6214,6 @@ $("mn-rows").addEventListener("click", e => {
 drawNums();
 
 const CARDS = [
-  ["Tools","How often do you check a PEX crimp tool with the go/no-go gauge?","Every crimp, plus a test crimp to check the tool each day","A crimper drifts out of adjustment with use. A bad crimp looks fine and leaks later."],
   ["Tools","Crimp passes GO and also fits NO-GO. What's wrong?","Over-crimped: tool is closing too far","Cut it out, adjust the tool per the manual, recrimp with a new ring."],
   ["Tools","RIDGID Lifetime Service Agreement: the catch?","Register within 90 days (bought at The Home Depot), with serials","Miss the window and it's just the 3-year warranty."],
   ["Tools","A used tool's serial number is ground off. Buy it?","No. Probably stolen","Serials are how police and pawn shops match stolen tools."],
@@ -6740,7 +6709,7 @@ gaugeDraw();
 { const f = book.querySelector("footer"); let n = 0, t = 0;
   f.addEventListener("click", () => {
     clearTimeout(t); t = setTimeout(() => n = 0, 2000); if (++n < 7) return; n = 0;
-    let bytes = 0; try { for (let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if (k.startsWith("jpb-")) bytes += k.length + (localStorage.getItem(k) || "").length; } } catch(e){}
+    const bytes = bookBytes();
     const calcs = SECTIONS.filter(s => s.querySelector(".calc, .ans, .out")).length;
     toast(`Book stats: <b>${SECTIONS.length}</b> cards · <b>${calcs}</b> tools · <b>${CARDS.length}</b> flashcards · <b>${GLOSS.length}</b> words · <b>${nf(bytes / 1024, 1)} KB</b> saved on this device`, 6000);
     FX.burst(innerWidth / 2, innerHeight * .7, 28);
@@ -6839,7 +6808,7 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
     if (!(c >= 0) || !(to >= 0)) return fail("Clearance and take-off: 0 or more.");
     const R = Math.PI / 180, th = deg * R, d = c + od / 2, O = H + d, travel = O / Math.sin(th), run = deg === 90 ? 0 : O / Math.tan(th);
     const sb = d * Math.tan(th / 2), cut = travel - 2 * to, foot = 2 * run + W + 2 * sb, extra = 2 * O * Math.tan(th / 2);
-    const row = (k, v, s, hit) => `<tr${hit ? ' class="hit"' : ""}><th>${k}</th><td class="big">${v}</td><td class="sub">${s}</td></tr>`;
+    const row = outRow;
     out.innerHTML = row("Offset", lenOut(O), `Obstacle + clearance + half the pipe (${toFrac16(d)})`, true) +
       row("1st fitting", `${lenOut(run + sb)}<small>before the obstacle's edge</small>`, "Fitting center, measured back along the run. The other side mirrors it.") +
       row("2nd fitting", `${lenOut(sb)}<small>before the edge</small>`, "Center of the fitting at the top of the climb.") +
@@ -6885,7 +6854,7 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
     const gpi = Math.PI / 4 * D * D / 231, gal = gpi * pd, run = q > qin ? gal / (q - qin) * 60 : Infinity, fill = qin > 0 ? gal / qin * 60 : Infinity;
     const starts = isFinite(run) && isFinite(fill) ? 3600 / (run + fill) : 0, v = q * 0.4085 / (id * id);
     const eqL = L + (30 * n90 + 16 * n45 + 100 * nck + 8 * ngv) * id / 12, fric = hwPsi100(q, id, 150) * eqL / 100 * 2.31, tdh = lift + fric;
-    const minQ = 2 * id * id / 0.4085, row = (k, v2, s, hit) => `<tr${hit ? ' class="hit"' : ""}><th>${k}</th><td class="big">${v2}</td><td class="sub">${s}</td></tr>`;
+    const minQ = 2 * id * id / 0.4085, row = outRow;
     out.innerHTML = row("TDH", `${nf(tdh, 1)} ft<small>${nf(lift, 1)} lift + ${nf(fric, 1)} friction</small>`, `Pick a pump that makes ${nf(q, 0)} gpm at ${nf(tdh, 1)} ft of head or more.`, true) +
       row("Velocity", `${nf(v, 1)} ft/s`, v >= 2 ? `<b class="ok">✓ 2 ft/s or more: solids keep moving</b>` : warn(`✗ Under 2 ft/s: needs ${nf(minQ, 0)} gpm in this pipe, or go a size smaller`)) +
       row("Per cycle", `${nf(gal, 1)} gal<small>${nf(gpi, 2)} gal per inch</small>`, "Basin area × pump-down.") +
@@ -6908,7 +6877,6 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
   const DEM = [[1, 3.0], [2, 5.0], [3, 6.5], [4, 8.0], [5, 9.4], [6, 10.7], [7, 11.8], [8, 12.8], [9, 13.7], [10, 14.6], [11, 15.4], [12, 16.0], [13, 16.5], [14, 17.0], [15, 17.5], [16, 18.0], [17, 18.4], [18, 18.8], [19, 19.2], [20, 19.6], [25, 21.5], [30, 23.3], [35, 24.9], [40, 26.3], [45, 27.7], [50, 29.1], [60, 32.0], [80, 38.0], [100, 43.5]];
   const WP = [["PEX ½\"", 0.475], ["PEX ¾\"", 0.671], ["PEX 1\"", 0.862], ["PEX 1¼\"", 1.069], ["Cu L ¾\"", 0.785], ["Cu L 1\"", 1.025], ["Cu L 1¼\"", 1.265]];
   const rows = $("ws-rows");
-  rows.innerHTML = WS.map(([n, u], i) => `<tr><td>${n}</td><td class="n">${u}</td><td><span class="step"><button type="button" data-i="${i}" data-d="-1" aria-label="One fewer ${n}">−</button><input id="ws-${i}" type="number" inputmode="numeric" min="0" step="1" value="0" aria-label="${n} count"><button type="button" data-i="${i}" data-d="1" aria-label="One more ${n}">+</button></span></td></tr>`).join("");
   let cnt = WS.map(() => 0);
   { const s = store.get("jpb-wsfu", null); if (Array.isArray(s) && s.length === WS.length) cnt = s.map(v => Number.isFinite(+v) ? Math.min(99, Math.max(0, Math.floor(+v))) : 0); }
   const demand = u => { if (u <= 0) return 0; if (u <= 1) return DEM[0][1]; for (let i = 1; i < DEM.length; i++){ const [a, ga] = DEM[i - 1], [b, gb] = DEM[i]; if (u <= b) return ga + (gb - ga) * (u - a) / (b - a); } return NaN; };
@@ -6929,8 +6897,7 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
       `Velocity = gpm × 0.4085 ÷ ID² · friction by Hazen-Williams, C = 150`,
       `<span class="badge why">WHY</span> Demand grows slower than the fixture count: the more fixtures, the less likely they all run at once.`]);
   }
-  rows.addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (!b) return; const i = +b.dataset.i; cnt[i] = Math.max(0, Math.min(99, cnt[i] + (+b.dataset.d))); wsCalc(); });
-  rows.addEventListener("input", e => { const m = e.target.id && e.target.id.match(/^ws-(\d+)$/); if (!m) return; const v = Math.floor(+e.target.value); cnt[+m[1]] = isFinite(v) && v > 0 ? Math.min(v, 99) : 0; wsCalc(); });
+  stepTable(rows, WS, "ws", i => cnt[i], (i, v) => { cnt[i] = Math.min(99, Math.max(0, v)); wsCalc(); });
   $("ws-clear").addEventListener("click", () => { cnt = WS.map(() => 0); wsCalc(); });
   wsCalc();
 }
@@ -7327,7 +7294,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-10-25d";
+var BUILD = "handbook-2026-10-25e";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
