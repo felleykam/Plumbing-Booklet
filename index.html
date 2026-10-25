@@ -800,7 +800,7 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
     </div>
     </div></div>
   </div>
-  <div class="news" id="news" hidden><button type="button" class="news-go" id="news-go"><span class="badge">NEW</span> <b>Utah Plumbers Digital Handbook.</b> New Mech tab, Site → Tools, 8 themes in Settings, ☆ pins. <u>See the layout</u></button><button type="button" class="news-x" id="news-x" aria-label="Dismiss">✕</button></div>
+  <div class="news" id="news" hidden><button type="button" class="news-go" id="news-go"><span class="badge">NEW</span> <b>Bore line &amp; Hot water calculators</b>, 15 head-math tricks, field habits, Utah rebates, recalls. <u>What's new</u></button><button type="button" class="news-x" id="news-x" aria-label="Dismiss">✕</button></div>
   <button type="button" class="tip" id="tip" hidden aria-expanded="false"><span class="badge">TIP</span> <span id="tip-q"></span><span class="tip-a" id="tip-a" hidden></span></button>
   <button type="button" class="code-chip" id="code-jump" aria-label="My code 2021 IPC. Open Which code applies"><span class="badge ut">UT</span><span id="code-chip-txt">My code <b>2021 IPC</b> · Houses <b>2021 IRC</b></span><span class="go">›</span></button>
 
@@ -836,6 +836,8 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
       <button type="button" data-go="calc|layout|Offset calculator|ro-space"><b>Only so much room for the offset</b><span>Offset calculator → Space I have</span></button>
       <button type="button" data-go="calc|layout|Offset calculator|ro-ang"><b>Odd fitting angle or a bent pipe</b><span>Offset calculator → Other angle, or the Triangle solver</span></button>
       <button type="button" data-go="calc|layout|Cut length"><b>Measured to a hub or a pipe end, not a fitting</b><span>Cut length · build a cut list</span></button>
+      <button type="button" data-go="calc|layout|Jump it"><b>Duct, beam or pipe in the way</b><span>Jump it: over or around, with the setback</span></button>
+      <button type="button" data-go="calc|sizing|Ejector &amp; sump pump"><b>Picking or checking a sump or ejector pump</b><span>Ejector &amp; sump pump: cycle and head</span></button>
       <button type="button" data-go="calc|layout|Parallel offsets"><b>Two or more pipes turn together</b><span>Parallel offsets</span></button>
       <button type="button" data-go="calc|layout|Triangle solver"><b>Know two sides or an angle, need the rest</b><span>Triangle solver</span></button>
       <button type="button" data-go="calc|layout|Square it up"><b>Is this corner, form or room square?</b><span>Square it up · 3-4-5 or diagonals</span></button>
@@ -971,6 +973,23 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
     <div class="x"><table class="t num"><thead><tr><th>Pipe</th><th>1st fitting</th><th>2nd fitting</th></tr></thead><tbody id="po-rows"></tbody></table></div>
     <details class="math"><summary>Show the math</summary><ol id="po-math"></ol></details>
     <p class="note"><span class="badge why">WHY</span> The fittings have to sit on a line that splits the turn in half (the dashed lines); that keeps the pipes the same distance apart through the angle. The pipe on the <b>inside</b> of the first turn starts first and comes back first too. Every pipe gets the same travel and the same cut. With 90s, each next fitting moves the full spacing.</p>
+  </section>
+  <section data-sec="layout" data-kw="jump it jumper offset over around obstacle duct beam pipe in the way clearance hop double offset go over go around setback">
+    <div class="sec-head"><h2>Jump it</h2><small>Over or around a duct, beam or pipe</small></div>
+    <div class="calc">
+      <label for="ju-h">Obstacle reaches past the pipe's centerline<input id="ju-h" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="6"></label>
+      <label for="ju-w">Obstacle width <i>(along the run)</i><input id="ju-w" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10"></label>
+      <label for="ju-c">Clearance <i>(gap you want)</i><input id="ju-c" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="1/2"></label>
+      <label for="ju-od">Pipe or hub OD<select id="ju-od">
+        <option value="0.625">½" copper / PEX · 0.625"</option><option value="0.875" selected>¾" copper / PEX · 0.875"</option><option value="1.125">1" copper / PEX · 1.125"</option>
+        <option value="1.9">1½" DWV pipe · 1.9"</option><option value="2.375">2" DWV pipe · 2.375"</option><option value="3.5">3" DWV pipe · 3.5"</option><option value="2.4">1½" DWV hub · ≈2.4"</option><option value="2.9">2" DWV hub · ≈2.9"</option><option value="4.1">3" DWV hub · ≈4.1"</option></select></label>
+      <label for="ju-ang">Fittings<select id="ju-ang"><option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="22.5">22½°</option></select></label>
+      <label for="ju-to">Take-off <i>(each)</i><input id="ju-to" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="0"></label>
+    </div>
+    <div class="x"><table class="t out"><tbody id="ju-out"></tbody></table></div>
+    <svg id="ju-svg" class="calc-svg" viewBox="0 0 400 210" role="img" aria-label="Side view: the pipe rises at the fitting angle, runs past the obstacle with the clearance gap, and drops back down. Dimensions show where the first fitting goes relative to the obstacle's edge."></svg>
+    <details class="math"><summary>Show the math</summary><ol id="ju-math"></ol></details>
+    <p class="note">Measure H square to the pipe, from the pipe's centerline to the face you have to clear. Use the <b>hub</b> OD when a hub passes the corner. <span class="badge why">WHY</span> The angled piece passes closest at the corner, not where the run goes flat, so the 2nd fitting sits a little <b>before</b> the edge: clearance × tan(angle ÷ 2).</p>
   </section>
   <section data-sec="layout" data-kw="triangle solver right angle trig sine cosine tangent offset run travel angle any two diagonal square 3 4 5 pythagorean pitch slope odd angle custom">
     <div class="sec-head"><h2>Triangle solver</h2><small>Know any two → get the rest</small></div>
@@ -1143,6 +1162,25 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
       <div class="x"><table class="t num"><thead><tr><th>Length</th><th>½"</th><th>¾"</th><th>1"</th><th>1¼"</th><th>1½"</th><th>2"</th></tr></thead><tbody id="gl-tbl"></tbody></table></div>
     </details>
     <p class="note">CFH capacities from <b>IFGC Table 402.4(2)</b> (same numbers as IRC Table G2413.4(1)): natural gas, 0.60 sp. gr., 1,000 BTU/ft³. <b>Each branch:</b> same longest length, but only the load that branch carries. <b>CSST:</b> use the maker's tables. 2 psi systems use different tables. A learning tool: check it against the code book before you buy pipe.</p>
+  </section>
+  <section data-sec="sizing" data-kw="ejector sump pump basin pit cycle run time pump down gallons per inch tdh total dynamic head lift friction discharge velocity 2 ft/s check valve gate valve sewage">
+    <div class="sec-head"><h2>Ejector &amp; sump pump</h2><small>Cycle, velocity and head</small></div>
+    <div class="calc">
+      <label for="ej-d">Basin diameter <i>(inside)</i><input id="ej-d" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="18"></label>
+      <label for="ej-pd">Pump-down <i>(on to off)</i><input id="ej-pd" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10"></label>
+      <label for="ej-q">Pump flow (gpm)<input id="ej-q" type="number" inputmode="decimal" min="0" step="any" value="30"></label>
+      <label for="ej-in">Inflow (gpm) <i>while it runs</i><input id="ej-in" type="number" inputmode="decimal" min="0" step="any" value="5"></label>
+      <label for="ej-lift">Static lift <i>(low water to the high point)</i><input id="ej-lift" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="8'"></label>
+      <label for="ej-pipe">Discharge (PVC Sch 40)<select id="ej-pipe"><option value="1.380">1¼"</option><option value="1.610">1½"</option><option value="2.067" selected>2"</option><option value="3.068">3"</option></select></label>
+      <label for="ej-len">Discharge length<input id="ej-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="40'"></label>
+      <label for="ej-90">90s<input id="ej-90" type="number" inputmode="numeric" min="0" step="1" value="3"></label>
+      <label for="ej-45">45s<input id="ej-45" type="number" inputmode="numeric" min="0" step="1" value="0"></label>
+      <label for="ej-ck">Check valves<input id="ej-ck" type="number" inputmode="numeric" min="0" step="1" value="1"></label>
+      <label for="ej-gv">Full-open valves<input id="ej-gv" type="number" inputmode="numeric" min="0" step="1" value="1"></label>
+    </div>
+    <div class="x"><table class="t out"><tbody id="ej-out"></tbody></table></div>
+    <details class="math"><summary>Show the math</summary><ol id="ej-math"></ol></details>
+    <p class="note">Pick a pump whose curve gives your gpm at the <b>TDH</b> (or more). Keep discharge at <b>2 ft/s</b> or faster so solids don't settle, and check the run time against the pump maker's limits. Fitting allowances use standard L/D ratios (Crane TP-410): 90 = 30, 45 = 16, swing check = 100, full-open valve = 8 pipe diameters. Pump sizing method: Little Giant's sizing guide. The pump maker's sheet wins.</p>
   </section>
   <section data-sec="sizing" data-kw="altitude derate btu cfh elevation gas load herriman lehi heber tooele logan cedar st george park city">
     <div class="sec-head"><h2>Altitude derate</h2><small>4% per 1,000 ft · above 2,000 ft</small></div>
@@ -3223,6 +3261,16 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
     </tbody></table></div>
     <p class="note">A study and field aid, not the code: the adopted code, approved plans, maker instructions and your inspector win. <button type="button" class="linkish" id="about-open">Settings → About</button></p>
   </section>
+  <section data-sec="start" data-kw="what's new whats new changelog change log updates version build history fixed corrections">
+    <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Oct 25, 2026</th><td><b>Added:</b> Bore line and Hot water that lasts calculators · 15 "Do it in your head" tricks and Why the pipe math works · Habits that save callbacks · What fails &amp; what's recalled · Rebates customers ask about · 8 cities in Davis, Weber, Cache and Washington counties · Get kept, Tool trade-offs, Test day, Your body · 8 flashcards. <b>Fixed:</b> heat pump water heater rule (tanks over 35 gal) · circuit vent definition · IPC cleanout clearance · wet vent fact · water expansion (≈1¼%, not 2%) · B-vent cap heights · shower valve standards · plastic nuts hand-tight · crimp gauge on every crimp · primer test · Download backup now works on the claude.ai link.</td></tr>
+        <tr><th>Oct 24, 2026</th><td><b>Added:</b> About &amp; contact · every length box takes tape-style input (plain number = inches) · search reads 1.5 as 1½ · My city sets your elevation · Site opens on Call. <b>Fixed:</b> iPhone bottom bar tearing away (bounce, keyboard, pinch-zoom) · offline weather error you couldn't read · small text and tab labels · Delta and Alpine hours · Fluidmaster phone.</td></tr>
+        <tr><th>Earlier</th><td>Renamed Utah Plumbers Digital Handbook · Mech tab · Site → Tools · 8 themes · ☆ pins.</td></tr>
+      </tbody></table></div>
+    <p class="note">Wrong number or a dead link? <b>Learn → Start here → About this book</b> has my phone and email.</p>
+  </section>
   <section data-sec="how" data-kw="why vent trap siphon">
     <div class="sec-head"><h2>Why traps need vents</h2><small>The whole DWV idea</small></div>
     <div class="x"><table class="t">
@@ -4336,7 +4384,12 @@ function apply(){
     }
     const rem = res.filter(r => !r.test(head));
     let any = false;
-    if (!rem.length){ rows.forEach(([r]) => setH(r, false)); any = true; }
+    if (!rem.length){
+      /* the card matched on its keywords, not its title: show just the rows that match, when some do (Saratoga → that city's row) */
+      const m = res.every(r => r.test(h2)) ? null : rows.map(([, txt]) => has(txt, res));
+      if (m && m.some(Boolean)) rows.forEach(([r], i) => setH(r, !m[i])); else rows.forEach(([r]) => setH(r, false));
+      any = true;
+    }
     else {
       rows.forEach(([r, txt]) => { const m = has(txt, rem); setH(r, !m); any = any || m; });
       if (!any && has(all, rem)){ rows.forEach(([r]) => setH(r, false)); any = true; }  /* sections without table rows (calculators, cards) */
@@ -4453,7 +4506,7 @@ $("learn-btn").addEventListener("click", () => go("learn"));
 
 /* theme: two looks, Sun and Night. They follow daylight on their own (civil dawn and dusk for the weather tab's place, Salt Lake
    until one is set). A tap flips to the other look and holds it until the next dawn or dusk; tapping back clears the hold. */
-const redrawArt = () => { if (roReady) roCalc(); if (window.heightCalc) heightCalc(); for (const f of ["poCalc", "tsCalc", "sqCalc", "gaugeDraw", "wxRender"]) try { window[f] && window[f](); } catch(e){} };
+const redrawArt = () => { if (roReady) roCalc(); if (window.heightCalc) heightCalc(); for (const f of ["poCalc", "tsCalc", "sqCalc", "juCalc", "gaugeDraw", "wxRender"]) try { window[f] && window[f](); } catch(e){} };
 const daylight = () => { try { return window.jpbAuto(); } catch(e){ return {day: true, next: NaN}; } };
 let themeHold = (h => h && (h.look === "light" || h.look === "dark") && h.until > Date.now() ? h : null)(store.get("jpb-theme", null));
 const clock = t => new Date(t).toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
@@ -4553,8 +4606,16 @@ document.querySelector(".set-jump").addEventListener("click", e => { const b = e
 /* backup: every jpb- key in one JSON file */
 const bkDump = () => { const o = {}; try { for (let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if (k.startsWith("jpb-")) o[k] = localStorage.getItem(k); } } catch(e){} return JSON.stringify({app: "utah-plumbers-handbook", saved: new Date().toISOString(), data: o}, null, 1); };
 const bkSay = (t, cls) => { const s = $("bk-status"); s.textContent = t; s.className = "status" + (cls ? " " + cls : ""); };
-$("bk-save").addEventListener("click", () => {
-  try { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([bkDump()], {type: "application/json"})); a.download = `handbook-backup-${new Date().toISOString().slice(0,10)}.json`; document.body.appendChild(a); a.click(); a.remove(); bkSay("Backup file made. If nothing downloaded, use Copy backup and paste it into a note.", "good"); }
+$("bk-save").addEventListener("click", async () => {
+  const name = `handbook-backup-${new Date().toISOString().slice(0,10)}.json`;
+  if (window.claude && claude.use){   /* claude.ai link: the viewer only saves files through its own confirm prompt */
+    const dl = await claude.use("downloads").catch(() => null);
+    if (!dl){ bkSay("This viewer can't save files. Use Copy backup instead.", "err"); return; }
+    try { await dl.save({filename: name, data: bkDump()}); bkSay("Backup saved.", "good"); }
+    catch(e){ const c = e && e.code; bkSay(c === "declined" ? "Not saved." : c === "rate_limited" ? "A save prompt is already open. Try again in a moment." : "Couldn't save here. Use Copy backup instead.", c === "declined" ? "" : "err"); }
+    return;
+  }
+  try { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([bkDump()], {type: "application/json"})); a.download = name; document.body.appendChild(a); a.click(); a.remove(); bkSay("Backup file made. If nothing downloaded, use Copy backup and paste it into a note.", "good"); }
   catch(e){ bkSay("This viewer blocks downloads. Use Copy backup instead.", "err"); }
 });
 $("bk-copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText(bkDump()); bkSay("Copied. Paste it into a note or email to yourself.", "good"); } catch(e){ bkSay("Couldn't copy here. Try Download backup.", "err"); } });
@@ -6628,11 +6689,11 @@ gaugeDraw();
 
 
 /* one-time "what's new" strip for the rename and new layout */
-{ const NEWS = "2026-10-24", el = $("news");
+{ const NEWS = "2026-10-25", el = $("news");
   if (store.get("jpb-news", "") !== NEWS){ el.hidden = false;
     const done = () => { el.hidden = true; store.set("jpb-news", NEWS); };
     $("news-x").addEventListener("click", done);
-    $("news-go").addEventListener("click", () => { done(); jumpTo("learn", "start", "How this book is laid out"); });
+    $("news-go").addEventListener("click", () => { done(); jumpTo("learn", "start", "What's new"); });
   }
 }
 
@@ -6735,6 +6796,79 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
       net > 0 ? `Minutes = ${nf(usable, 1)} ÷ (${nf(draw, 3)} − ${nf(rec / 60, 3)}) = <b>${nf(m, 1)}</b>` : `Recovery ≥ hot draw: it keeps up`]);
   }
   ids.forEach(id => $(id).addEventListener("input", hlCalc)); hlCalc();
+}
+
+/* ---------- jump it: two offsets over an obstacle, 2nd fitting set back d·tan(θ/2) from the edge ---------- */
+{ const ids = ["ju-h", "ju-w", "ju-c", "ju-to"];
+  function juCalc(){
+    const H = parseLen($("ju-h").value), W = parseLen($("ju-w").value), c = $("ju-c").value.trim() === "" ? 0 : parseLen($("ju-c").value),
+      to = $("ju-to").value.trim() === "" ? 0 : parseLen($("ju-to").value), od = +$("ju-od").value, deg = +$("ju-ang").value, out = $("ju-out"), svg = $("ju-svg");
+    const fail = t => { out.innerHTML = `<tr><td>${warn(t)}</td></tr>`; svg.innerHTML = ""; mathOut("ju-math", []); };
+    if (!(H >= 0) || H > 240) return fail("Type how far the obstacle reaches past the pipe's centerline, like 6 or 8 1/2.");
+    if (!(W >= 0) || W > 1200) return fail("Type the obstacle width along the run, like 10.");
+    if (!(c >= 0) || !(to >= 0)) return fail("Clearance and take-off: 0 or more.");
+    const R = Math.PI / 180, th = deg * R, d = c + od / 2, O = H + d, travel = O / Math.sin(th), run = deg === 90 ? 0 : O / Math.tan(th);
+    const sb = d * Math.tan(th / 2), cut = travel - 2 * to, foot = 2 * run + W + 2 * sb, extra = 2 * O * Math.tan(th / 2);
+    const row = (k, v, s, hit) => `<tr${hit ? ' class="hit"' : ""}><th>${k}</th><td class="big">${v}</td><td class="sub">${s}</td></tr>`;
+    out.innerHTML = row("Offset", lenOut(O), `Obstacle + clearance + half the pipe (${toFrac16(d)})`, true) +
+      row("1st fitting", `${lenOut(run + sb)}<small>before the obstacle's edge</small>`, "Fitting center, measured back along the run. The other side mirrors it.") +
+      row("2nd fitting", `${lenOut(sb)}<small>before the edge</small>`, "Center of the fitting at the top of the climb.") +
+      row("Travel", lenOut(travel), "Fitting center to fitting center, each climb.") +
+      row("Cut", cut >= 1/16 ? lenOut(cut) : warn(to ? "Too short: the take-offs use it up. Try a steeper fitting." : "—"), to ? "Travel minus both take-offs." : "Enter your take-off to get the cut.") +
+      row("Footprint", lenOut(foot), "First fitting to last, along the run.") +
+      row("Extra pipe", lenOut(extra), "Compared with going straight (before take-offs).");
+    mathOut("ju-math", [`d = clearance + OD ÷ 2 = ${toFrac16(c)} + ${toFrac16(od / 2)} = ${nf(d, 4)}"`, `Offset = H + d = ${nf(H, 4)} + ${nf(d, 4)} = <b>${toFrac16(O)}</b>`,
+      `Travel = offset ÷ sin ${deg}° = ${toFrac16(travel)} · run = offset ÷ tan ${deg}° = ${toFrac16(run)}`,
+      `Setback = d × tan(${deg}° ÷ 2) = ${nf(d, 4)} × ${Math.tan(th / 2).toFixed(4)} = <b>${toFrac16(sb)}</b>: the 2nd fitting sits this far before the edge`,
+      `Footprint = 2 × run + width + 2 × setback = ${toFrac16(foot)} · extra pipe = 2 × offset × tan(${deg}° ÷ 2) = ${toFrac16(extra)}`]);
+    /* side view, x along the run, y up */
+    const x1 = 0, x2 = run, xe = run + sb, xf = xe + W, x3 = xf + sb, x4 = x3 + run, lead = Math.max(6, 0.25 * foot);
+    const pts = [[x1 - lead, 0], [x4 + lead, 0], [x2, O], [xe, H], [xe, -Math.max(2, H * .25)], [xf, H]];
+    const {S: M} = svgFit(pts, 400, 210, 30);
+    const bg = cssv("--d-bg"), pipe = cssv("--d-pipe"), cutc = cssv("--d-cut"), fit = cssv("--d-fit"), txt = cssv("--d-text"), dim = cssv("--d-dim"), grid = cssv("--d-grid");
+    const ob0 = M([xe, H]), ob1 = M([xf, -Math.max(2, H * .25)]);
+    let s = `<rect width="400" height="210" fill="${bg}"/><rect x="${ob0[0].toFixed(1)}" y="${ob0[1].toFixed(1)}" width="${(ob1[0] - ob0[0]).toFixed(1)}" height="${(ob1[1] - ob0[1]).toFixed(1)}" fill="${grid}" stroke="${dim}" stroke-width="1.5"/>`;
+    s += svgTxt([(ob0[0] + ob1[0]) / 2, (ob0[1] + ob1[1]) / 2], 0, 5, "obstacle", dim, "middle", 13);
+    const w = 6;
+    s += svgLn(M([x1 - lead, 0]), M([x1, 0]), pipe, w) + svgLn(M([x1, 0]), M([x2, O]), cutc, w) + svgLn(M([x2, O]), M([x3, O]), pipe, w) + svgLn(M([x3, O]), M([x4, 0]), cutc, w) + svgLn(M([x4, 0]), M([x4 + lead, 0]), pipe, w);
+    for (const p of [[x1, 0], [x2, O], [x3, O], [x4, 0]]){ const q = M(p); s += `<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="6" fill="${fit}"/>`; }
+    const yb = M([0, 0])[1] + 20; const a = M([x1, 0]), e = M([xe, 0]);
+    s += svgLn([a[0], yb], [e[0], yb], txt, 1.6) + svgLn([a[0], yb - 5], [a[0], yb + 5], txt, 1.6) + svgLn([e[0], yb - 5], [e[0], yb + 5], txt, 1.6);
+    s += svgTxt([(a[0] + e[0]) / 2, yb], 0, 16, `${toFrac16(run + sb)} to the edge`, txt, "middle", 13.5);
+    s += `<text x="10" y="17" fill="${dim}" font-size="13.5" font-weight="800" letter-spacing=".06em" font-family="Barlow Condensed,Arial Narrow,sans-serif">SIDE VIEW · ${deg}° · TO SCALE</text>`;
+    svg.innerHTML = s;
+  }
+  ids.forEach(id => $(id).addEventListener("input", juCalc)); ["ju-od", "ju-ang"].forEach(id => $(id).addEventListener("change", juCalc));
+  juCalc(); window.juCalc = juCalc;
+}
+
+/* ---------- ejector & sump: basin volume, cycle, velocity, Hazen-Williams friction (C 150), TDH ---------- */
+{ const num = ["ej-q", "ej-in", "ej-90", "ej-45", "ej-ck", "ej-gv"], len = ["ej-d", "ej-pd", "ej-lift", "ej-len"];
+  const tm = s => s < 90 ? `${Math.round(s)} s` : s < 5400 ? `${nf(s / 60, 1)} min` : `${nf(s / 3600, 1)} hr`;
+  function ejCalc(){
+    const D = parseLen($("ej-d").value), pd = parseLen($("ej-pd").value), lift = tapeIn($("ej-lift").value) / 12, L = tapeIn($("ej-len").value) / 12;
+    const [q, qin, n90, n45, nck, ngv] = num.map(val), id = +$("ej-pipe").value, out = $("ej-out");
+    const fail = t => { out.innerHTML = `<tr><td>${warn(t)}</td></tr>`; mathOut("ej-math", []); };
+    if (!(D > 0 && pd > 0)) return fail("Type the basin's inside diameter and the pump-down, like 18 and 10.");
+    if (!(q > 0) || !(qin >= 0)) return fail("Pump flow over 0; inflow 0 or more.");
+    if (!(lift >= 0) || !(L >= 0) || [n90, n45, nck, ngv].some(x => !(x >= 0))) return fail("Lift, length and fitting counts: 0 or more.");
+    const gpi = Math.PI / 4 * D * D / 231, gal = gpi * pd, run = q > qin ? gal / (q - qin) * 60 : Infinity, fill = qin > 0 ? gal / qin * 60 : Infinity;
+    const starts = isFinite(run) && isFinite(fill) ? 3600 / (run + fill) : 0, v = q * 0.4085 / (id * id);
+    const eqL = L + (30 * n90 + 16 * n45 + 100 * nck + 8 * ngv) * id / 12, fric = hwPsi100(q, id, 150) * eqL / 100 * 2.31, tdh = lift + fric;
+    const minQ = 2 * id * id / 0.4085, row = (k, v2, s, hit) => `<tr${hit ? ' class="hit"' : ""}><th>${k}</th><td class="big">${v2}</td><td class="sub">${s}</td></tr>`;
+    out.innerHTML = row("TDH", `${nf(tdh, 1)} ft<small>${nf(lift, 1)} lift + ${nf(fric, 1)} friction</small>`, `Pick a pump that makes ${nf(q, 0)} gpm at ${nf(tdh, 1)} ft of head or more.`, true) +
+      row("Velocity", `${nf(v, 1)} ft/s`, v >= 2 ? `<b class="ok">✓ 2 ft/s or more: solids keep moving</b>` : warn(`✗ Under 2 ft/s: needs ${nf(minQ, 0)} gpm in this pipe, or go a size smaller`)) +
+      row("Per cycle", `${nf(gal, 1)} gal<small>${nf(gpi, 2)} gal per inch</small>`, "Basin area × pump-down.") +
+      row("Run time", isFinite(run) ? tm(run) : warn("Never empties"), isFinite(run) ? "Pump on, with that inflow still coming in." : "Inflow beats the pump: go bigger.") +
+      row("Fill time", isFinite(fill) ? tm(fill) : "—", qin > 0 ? `About ${Math.round(starts)} starts an hour at that steady inflow.` : "Enter an inflow to see starts per hour.");
+    mathOut("ej-math", [`Gallons per inch = 0.7854 × ${nf(D, 3)}² ÷ 231 = ${nf(gpi, 3)}`, `Per cycle = ${nf(gpi, 3)} × ${nf(pd, 3)}" = ${nf(gal, 2)} gal`,
+      `Run = ${nf(gal, 2)} ÷ (${nf(q, 1)} − ${nf(qin, 1)}) gpm${isFinite(run) ? ` = ${tm(run)}` : ""} · fill = ${nf(gal, 2)} ÷ ${nf(qin, 1)}${isFinite(fill) ? ` = ${tm(fill)}` : ""}`,
+      `Velocity = ${nf(q, 1)} × 0.4085 ÷ ${id}² = ${nf(v, 2)} ft/s (2 ft/s needs ${nf(minQ, 1)} gpm)`,
+      `Equivalent length = ${nf(L, 1)} ft + (30 × ${n90} + 16 × ${n45} + 100 × ${nck} + 8 × ${ngv}) × ${id}" ÷ 12 = ${nf(eqL, 1)} ft`,
+      `Friction = ${nf(hwPsi100(q, id, 150), 3)} psi/100 ft × ${nf(eqL, 1)} ÷ 100 × 2.31 = ${nf(fric, 2)} ft`, `TDH = ${nf(lift, 2)} + ${nf(fric, 2)} = <b>${nf(tdh, 1)} ft</b>`]);
+  }
+  [...num, ...len].forEach(id => $(id).addEventListener("input", ejCalc)); $("ej-pipe").addEventListener("change", ejCalc);
+  ejCalc();
 }
 
 IDX = null;  /* every table is rendered now: rebuild the search index on next use */
@@ -7129,7 +7263,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-10-25b";
+var BUILD = "handbook-2026-10-25c";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
