@@ -1142,6 +1142,18 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
       </tbody></table></div>
     <p class="note">Learning tool, not a design. Never smaller than the biggest trap on it. Size stacks from their own column, and check your code's limit on toilets per 3" branch. <button type="button" class="linkish" id="dfu-clear">Clear counts</button></p>
   </section>
+  <section data-sec="sizing" data-kw="wsfu water supply fixture units demand gpm water service size main size trunk velocity supply sizing irc p2903.6 full bath half bath kitchen group laundry group hose bibb">
+    <div class="sec-head"><h2>Supply demand (WSFU)</h2><small>Count fixtures → gpm → pipe speed</small></div>
+    <div class="x"><table class="t dfu">
+      <thead><tr><th>Fixture or group</th><th>WSFU</th><th>How many</th></tr></thead>
+      <tbody id="ws-rows"></tbody></table></div>
+    <div class="x"><table class="t out"><tbody>
+      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Demand</th><td id="ws-gpm" class="big">—</td><td class="sub" id="ws-tot">Add fixtures above.</td></tr>
+    </tbody></table></div>
+    <div class="x"><table class="t num"><thead><tr><th>Pipe</th><th>ft/s</th><th>psi / 100 ft</th><th>Under 8 ft/s?</th></tr></thead><tbody id="ws-pipes"></tbody></table></div>
+    <details class="math"><summary>Show the math</summary><ol id="ws-math"></ol></details>
+    <p class="note"><b>Count a group or its parts, never both</b>: a full bath group already includes its toilet, lav and tub. Values: IRC Table P2903.6 (private use), demand from the flush-tank conversion table (P2903.6(1)), checked against Phoenix and Louisville, CO sizing sheets. The 8 ft/s line is common copper guidance, not code; PEX makers publish their own limits. A learning tool: code sizing for the water service is IRC P2903.7 / Appendix P; then check the far fixture in <b>Pressure at the fixture</b>. <button type="button" class="linkish" id="ws-clear">Clear counts</button></p>
+  </section>
   <section data-sec="sizing" data-kw="gas pipe size sizing cfh btu longest length schedule 40 black iron steel table appliance load furnace range dryer fireplace">
     <div class="sec-head"><h2>Gas line sizer</h2><small>Sch 40 steel · under 2 psi · 0.5" w.c. drop</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> adding an appliance or a tankless, or checking that a gas line is big enough.</p><p><b>The idea:</b> add the nameplate BTUs of everything on the line, divide by 1,000 to get cubic feet an hour (CFH), then read the code table at the <b>longest</b> run from the meter. That one length sizes every section (the longest-length method). Too small and appliances starve at full fire.</p></div></details>
@@ -1694,7 +1706,7 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><th>Common vent</th><td>Two fixtures can share one vent: at the same level through a double fixture fitting, or at different levels within the limits (IRC P3107).</td></tr>
         <tr><th>Wet vent</th><td>A pipe that vents some fixtures while draining others. Typical house use: horizontal wet venting for up to two bathroom groups on the same floor (IRC P3108). Size it from the wet-vent table.</td></tr>
         <tr><th>Island sink</th><td>Island vent: the vent loops up as high as possible under the counter, drops, and ties in below the fixture drain, with a cleanout (IRC P3112). Or an AAV where your inspector allows it.</td></tr>
-        <tr><th>AAV</th><td>Listed (ASSE 1051), set upright <b>≥ 4" above</b> the branch or fixture drain it vents, <b>≥ 6" above</b> attic insulation, accessible, in a space with air. At least one vent per building still goes outside. Not on sumps or ejectors unless listed for it (IRC P3114).</td></tr>
+        <tr><th>AAV</th><td>Listed (ASSE 1051), set upright <b>≥ 4" above</b> the branch or fixture drain it vents, <b>≥ 6" above</b> attic insulation, accessible, in a space with air. At least one vent per building still goes outside. Not on sumps or ejectors unless listed for it (IRC P3114). <b>Install after the DWV test.</b> Stack-type AAVs (ASSE 1050): ≥ 6" above the flood rim of the highest fixture, never on a stack over 6 branch intervals (ICC CodeNotes, 2021).</td></tr>
       </tbody></table></div>
     <p class="note">Section numbers are from the 2021 IRC. On layouts, your inspector's call wins.</p>
   </section>
@@ -1858,6 +1870,7 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><td>ABS ↔ PVC</td><td>Transition fitting</td><td>Transition cement (D3138, green) only at drain-to-sewer joint. Check 2024 IPC 705.</td></tr>
         <tr><td>Copper</td><td class="n">B88</td><td>K green · L blue · M red · DWV yellow.</td></tr>
               <tr><td>PEX code<div class="sub">4 digits, like 5106</div></td><td class="n">F876</td><td><b>1st digit = chlorine:</b> 5 = OK 100% of the time at 140°F (recirc lines), 1 = only 25%. <b>2nd digit = sun:</b> 1 = 1 month, 3 = 6 months. <span class="badge why">WHY</span> Our water is chlorinated, and a recirc loop is hot all day.</td></tr>
+        <tr><td>PE-RT</td><td class="n">F2769</td><td>Raised-temperature polyethylene: <b>not</b> cross-linked, but rated like PEX (100 psi at 180°F, 200 at 73°F). Crimp, clamp or press fittings listed for it; <b>not</b> PEX-a expansion (F1960) fittings. Ask your inspector before you swap it in (PPI, SupplyHouse).</td></tr>
 </tbody></table></div>
   </section>
   <section data-sec="materials" data-kw="pex uponor viega zurn sharkbite bend radius uv">
@@ -1885,6 +1898,19 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><td>Below 40°F</td><td>4 hr</td><td>8 hr</td></tr>
       </tbody></table></div>
     <p class="note">Timed from the last joint. Testing up to 400 psi: double the cure. Rated 100 psi at 180°F. Use ≥6" of metal at a gas water heater. Below 50°F no ratchet cutters (cracks). Hot lines need offsets for expansion (~4" per 100 ft per 100°F).</p>
+  </section>
+  <section data-sec="materials" data-kw="abs vs pvc which drain pipe black white dwv cement primer purple noise quiet cold impact uv paint transition coupling mixing">
+    <div class="sec-head"><h2>ABS or PVC?</h2><small>Both are DWV · the plans and your shop decide</small></div>
+    <div class="x"><table class="t">
+      <thead><tr><th></th><th>ABS (black)</th><th>PVC (white)</th></tr></thead>
+      <tbody>
+        <tr><th>Joining</th><td>One-step ABS cement, no primer</td><td>Purple primer + cement. The purple is how the inspector sees you primed.</td></tr>
+        <tr><th>Cold &amp; impact</th><td>Tougher in cold and on impact</td><td>More brittle cold: no ratchet cutters below about 50°F</td></tr>
+        <tr><th>Noise</th><td>Louder than PVC (Ferguson)</td><td>Quieter, but both are well louder than cast iron</td></tr>
+        <tr><th>Sun</th><td colspan="2">Neither likes UV. Exposed above ground: a thick coat of water-based latex paint.</td></tr>
+        <tr><th>Mixing them</th><td colspan="2">Regular cement won't weld ABS to PVC. Use a shielded transition coupling; green transition cement is non-pressure only and many inspectors won't take it (<b>Rough → Materials → Pipe markings</b>).</td></tr>
+      </tbody></table></div>
+    <p class="note">From Ferguson's ABS vs PVC trade guide and the cement makers. Neither is "better" everywhere: follow the plans, the city and your shop's standard.</p>
   </section>
   <section data-sec="materials" data-kw="solvent cement glue hot weather cold weather summer winter sun heat abs pvc primer weldon ips oatey set cure">
     <div class="sec-head"><h2>Cement in heat &amp; cold</h2><small>ABS · PVC · CPVC</small></div>
@@ -2305,6 +2331,7 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><td data-label="Symptom"><b>Brine tank full of water</b></td><td data-label="Likely cause">Plugged injector or drain flow control, kinked drain</td><td data-label="Check">Clean the injector screen; check the drain line.</td></tr>
         <tr><td data-label="Symptom"><b>Resin beads in aerators</b></td><td data-label="Likely cause">Cracked distributor tube or worn-out resin</td><td data-label="Check">Rebed or replace. Flush the lines.</td></tr>
         <tr><td data-label="Symptom"><b>Low pressure all over</b></td><td data-label="Likely cause">Plugged sediment filter, PRV failing, undersized softener</td><td data-label="Check">Gauges before/after each piece; bypass them one at a time.</td></tr>
+        <tr><td data-label="Symptom"><b>Gas tank pilot won't light or keeps dropping out</b></td><td data-label="Likely cause">Dust or lint packed in the flame arrestor / air intake screen (FVIR tanks)</td><td data-label="Check">Gas off, cool 15 min, brush and vacuum the intake until it comes up clean. Laundry rooms: check the filter monthly (State, A.O. Smith bulletins). Drywall dust during construction does the same (trade practice).</td></tr>
         <tr><td data-label="Symptom"><b>Tankless goes cold mid-shower</b></td><td data-label="Likely cause">Flow below minimum, gas undersized, scale, plugged inlet screen</td><td data-label="Check">Read the error code; clock the gas; flush.</td></tr>
         <tr><td data-label="Symptom"><b>Pressure creeps up at night</b></td><td data-label="Likely cause">PRV seat leaking by, or expansion</td><td data-label="Check">Gauge with a lazy (max) needle overnight.</td></tr>
       </tbody></table></div>
@@ -2327,7 +2354,7 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
         <tr><td><b>Kicimpro kitchen faucet</b><div class="sub">CPSC 25-306 · May 2025</div></td><td>Leaches lead</td><td>KM800-01-06BN, sold online 2024–25</td></tr>
         <tr><td><b>Camplux portable tankless</b><div class="sub">CPSC · Feb 2024</div></td><td>Gas leak at the regulator, fire</td><td>AY132, BD158, BW211, BW264, BW422</td></tr>
         <tr><td><b>Moen Flo battery backup</b><div class="sub">CPSC 23-178 · Apr 2023</div></td><td>Battery overheats</td><td>Model 920-001, gray, FLO logo</td></tr>
-        <tr><td><b>A.O. Smith family gas tanks</b><div class="sub">Nov 2018</div></td><td>Torn burner screen: fire risk on wood floors</td><td>Serial starts 1115 through 1631. Still in plenty of basements.</td></tr>
+        <tr><td><b>A.O. Smith family ultra-low NOx gas tanks</b><div class="sub">CPSC 19-029 · Nov 2018</div></td><td>Torn burner screen: fire risk on a wood floor</td><td>30–50 gal ultra-low NOx: A.O. Smith, State, American, Reliance, Kenmore, U.S. Craftmaster, Whirlpool. Serial starts 1115 through 1631 (made 2011–16). Data plate is by the gas valve.</td></tr>
       </tbody></table></div>
     <p class="note">No 2024–26 recalls found for the big makers' house water heaters, expansion tanks or main shutoffs. Check <a href="https://www.cpsc.gov/Recalls" target="_blank" rel="noopener">cpsc.gov/Recalls ↗</a> for anything newer.</p>
     <div class="x"><table class="t">
@@ -3265,7 +3292,8 @@ body.searching section[data-where] .sec-head::after{grid-column:1 / -1}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Oct 25, 2026</th><td><b>Added:</b> Bore line and Hot water that lasts calculators · 15 "Do it in your head" tricks and Why the pipe math works · Habits that save callbacks · What fails &amp; what's recalled · Rebates customers ask about · 8 cities in Davis, Weber, Cache and Washington counties · Get kept, Tool trade-offs, Test day, Your body · 8 flashcards. <b>Fixed:</b> heat pump water heater rule (tanks over 35 gal) · circuit vent definition · IPC cleanout clearance · wet vent fact · water expansion (≈1¼%, not 2%) · B-vent cap heights · shower valve standards · plastic nuts hand-tight · crimp gauge on every crimp · primer test · Download backup now works on the claude.ai link.</td></tr>
+        <tr><th>Oct 25, 2026 · later</th><td><b>Added:</b> Supply demand (WSFU) calculator · Jump it · Ejector &amp; sump pump · ABS or PVC? · PE-RT · AAV install rules · FVIR pilot trouble · What's new. <b>Fixed:</b> the 2018 A.O. Smith recall covered ultra-low NOx tanks · search shows only matching rows · Download backup on the claude.ai link.</td></tr>
+        <tr><th>Oct 25, 2026</th><td><b>Added:</b> Bore line and Hot water that lasts calculators · 15 "Do it in your head" tricks and Why the pipe math works · Habits that save callbacks · What fails &amp; what's recalled · Rebates customers ask about · 8 cities in Davis, Weber, Cache and Washington counties · Get kept, Tool trade-offs, Test day, Your body · 8 flashcards. <b>Fixed:</b> heat pump water heater rule (tanks over 35 gal) · circuit vent definition · IPC cleanout clearance · wet vent fact · water expansion (≈1¼%, not 2%) · B-vent cap heights · shower valve standards · plastic nuts hand-tight · crimp gauge on every crimp · primer test</td></tr>
         <tr><th>Oct 24, 2026</th><td><b>Added:</b> About &amp; contact · every length box takes tape-style input (plain number = inches) · search reads 1.5 as 1½ · My city sets your elevation · Site opens on Call. <b>Fixed:</b> iPhone bottom bar tearing away (bounce, keyboard, pinch-zoom) · offline weather error you couldn't read · small text and tab labels · Delta and Alpine hours · Fluidmaster phone.</td></tr>
         <tr><th>Earlier</th><td>Renamed Utah Plumbers Digital Handbook · Mech tab · Site → Tools · 8 themes · ☆ pins.</td></tr>
       </tbody></table></div>
@@ -6336,6 +6364,8 @@ const CARDS = [
   ["Vents","Circuit vent connects where?","Between the two most upstream fixture drains, up to 8 fixtures (IPC 914)","It pulls air down the branch from the far end."],
   ["Tests","Testing DWV in sections: which joints can see less than 10 ft of head?","Only the top 10 ft of the system. Overlap sections so every joint gets a full test (IPC 312.2)","A joint that never saw 10 ft of water was never tested."],
   ["Gas","Sizing a gas branch: which length do you use?","The longest run, meter to the farthest outlet, for every section","Each branch only gets the pressure left over. Use the short run and the far appliance starves."],
+  ["Vents","AAV: install before or after the DWV test?","After the test, and at least one vent still goes outdoors","Test pressure can damage the valve, and an AAV only lets air in: positive pressure needs an open vent (ICC CodeNotes, IRC P3114)."],
+  ["Supply","WSFU of a full bath group (private, tank toilet)?","3.6 (half bath 2.6, kitchen group 2.5)","WSFU is supply demand, not drain load: the same bathroom is 5 DFU on the drain side (IRC Table P2903.6)."],
   ["Gas","CFH for a 100,000 BTU/h furnace (1,000 BTU/ft³)?","100 CFH","CFH = BTU/h ÷ BTU per cubic foot: 100,000 ÷ 1,000 = 100."],
   ["Heaters","T&P discharge ends where?","Air gap in the same room, in view, ≤6\" above floor or receptor","In view so a dripping valve gets noticed. The air gap stops backflow. Low so a blast of scalding water hits the floor, not a person."],
   ["Heaters","PEX T&P discharge line size?","One size bigger than the valve outlet","PEX has a thicker wall than copper, so its inside is smaller. Going up a size keeps full relief flow."],
@@ -6871,6 +6901,40 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
   ejCalc();
 }
 
+/* ---------- supply demand: IRC Table P2903.6 WSFU (private) → flush-tank demand gpm → velocity per pipe ---------- */
+{ const WS = [["Full bath group (toilet, lav, tub or shower)", 3.6], ["Half bath group (toilet + lav)", 2.6], ["Kitchen group (sink + dishwasher)", 2.5], ["Laundry group (washer + laundry tub)", 2.5],
+    ["Bathtub or tub/shower (not in a group)", 1.4], ["Shower stall (not in a group)", 1.4], ["Lavatory (not in a group)", 0.7], ["Toilet, tank (not in a group)", 2.2],
+    ["Kitchen sink (not in a group)", 1.4], ["Dishwasher (not in a group)", 1.4], ["Clothes washer (not in a group)", 1.4], ["Laundry tub (not in a group)", 1.4], ["Bar sink", 0.7], ["Bidet", 0.7], ["Hose bibb", 2.5]];
+  const DEM = [[1, 3.0], [2, 5.0], [3, 6.5], [4, 8.0], [5, 9.4], [6, 10.7], [7, 11.8], [8, 12.8], [9, 13.7], [10, 14.6], [11, 15.4], [12, 16.0], [13, 16.5], [14, 17.0], [15, 17.5], [16, 18.0], [17, 18.4], [18, 18.8], [19, 19.2], [20, 19.6], [25, 21.5], [30, 23.3], [35, 24.9], [40, 26.3], [45, 27.7], [50, 29.1], [60, 32.0], [80, 38.0], [100, 43.5]];
+  const WP = [["PEX ½\"", 0.475], ["PEX ¾\"", 0.671], ["PEX 1\"", 0.862], ["PEX 1¼\"", 1.069], ["Cu L ¾\"", 0.785], ["Cu L 1\"", 1.025], ["Cu L 1¼\"", 1.265]];
+  const rows = $("ws-rows");
+  rows.innerHTML = WS.map(([n, u], i) => `<tr><td>${n}</td><td class="n">${u}</td><td><span class="step"><button type="button" data-i="${i}" data-d="-1" aria-label="One fewer ${n}">−</button><input id="ws-${i}" type="number" inputmode="numeric" min="0" step="1" value="0" aria-label="${n} count"><button type="button" data-i="${i}" data-d="1" aria-label="One more ${n}">+</button></span></td></tr>`).join("");
+  let cnt = WS.map(() => 0);
+  { const s = store.get("jpb-wsfu", null); if (Array.isArray(s) && s.length === WS.length) cnt = s.map(v => Number.isFinite(+v) ? Math.min(99, Math.max(0, Math.floor(+v))) : 0); }
+  const demand = u => { if (u <= 0) return 0; if (u <= 1) return DEM[0][1]; for (let i = 1; i < DEM.length; i++){ const [a, ga] = DEM[i - 1], [b, gb] = DEM[i]; if (u <= b) return ga + (gb - ga) * (u - a) / (b - a); } return NaN; };
+  function wsCalc(){
+    WS.forEach((_, i) => { if (document.activeElement !== $("ws-" + i)) $("ws-" + i).value = cnt[i]; });
+    store.set("jpb-wsfu", cnt);
+    const tot = WS.reduce((s, [, u], i) => s + u * cnt[i], 0), gpm = demand(tot);
+    if (!tot){ $("ws-gpm").textContent = "—"; $("ws-tot").textContent = "Add fixtures above."; $("ws-pipes").innerHTML = ""; mathOut("ws-math", []); return; }
+    if (!isFinite(gpm)){ $("ws-gpm").innerHTML = warn("Over 100 WSFU: use the full code table"); $("ws-tot").textContent = `${nf(tot, 1)} WSFU`; $("ws-pipes").innerHTML = ""; return; }
+    $("ws-gpm").innerHTML = `${nf(gpm, 1)} gpm<small>${nf(tot, 1)} WSFU</small>`;
+    $("ws-tot").textContent = "Peak demand on the pipe that feeds all of these (service, main or trunk).";
+    let best = null;
+    $("ws-pipes").innerHTML = WP.map(([n, id]) => { const v = gpm * 0.4085 / (id * id), ok = v <= 8; if (ok && !best) best = n;
+      return `<tr${ok && best === n ? ' class="hit"' : ""}><td>${n}</td><td>${nf(v, 1)}</td><td>${nf(hwPsi100(gpm, id, 150), 1)}</td><td>${ok ? '<span class="ok">✓</span>' : warn("✗ too fast")}</td></tr>`; }).join("");
+    const lo = DEM.filter(([u]) => u <= Math.max(1, tot)).pop(), hi = DEM.find(([u]) => u >= tot) || lo;
+    mathOut("ws-math", [`WSFU = ${WS.map(([n, u], i) => cnt[i] ? `${cnt[i]} × ${u}` : "").filter(Boolean).join(" + ")} = <b>${nf(tot, 1)}</b>`,
+      tot <= 1 ? `1 WSFU or less reads the first row: 3.0 gpm` : lo[0] === hi[0] ? `${hi[0]} WSFU = ${hi[1]} gpm (table)` : `Between ${lo[0]} WSFU (${lo[1]} gpm) and ${hi[0]} (${hi[1]} gpm): ${nf(gpm, 2)} gpm`,
+      `Velocity = gpm × 0.4085 ÷ ID² · friction by Hazen-Williams, C = 150`,
+      `<span class="badge why">WHY</span> Demand grows slower than the fixture count: the more fixtures, the less likely they all run at once.`]);
+  }
+  rows.addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (!b) return; const i = +b.dataset.i; cnt[i] = Math.max(0, Math.min(99, cnt[i] + (+b.dataset.d))); wsCalc(); });
+  rows.addEventListener("input", e => { const m = e.target.id && e.target.id.match(/^ws-(\d+)$/); if (!m) return; const v = Math.floor(+e.target.value); cnt[+m[1]] = isFinite(v) && v > 0 ? Math.min(v, 99) : 0; wsCalc(); });
+  $("ws-clear").addEventListener("click", () => { cnt = WS.map(() => 0); wsCalc(); });
+  wsCalc();
+}
+
 IDX = null;  /* every table is rendered now: rebuild the search index on next use */
 apply();
 
@@ -7263,7 +7327,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-10-25c";
+var BUILD = "handbook-2026-10-25d";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
