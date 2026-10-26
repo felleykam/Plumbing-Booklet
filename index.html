@@ -14,7 +14,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@700;800&family=Barlow:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap">
-<script>/* theme before paint. Sun from dawn to dusk, Night otherwise, for where you are (not the phone's dark-mode switch). A tap on the button holds the other look until the next dawn or dusk. */
+<script>/* crash catcher: if any script breaks, the footer says what and where, so a bad edit shows up on the phone instead of silently killing a calculator */
+window.jpbErrs=[];addEventListener("error",function(e){if(e.target!==window||/^Script error\.?$/.test(e.message))return;   /* skip failed image/font loads and other sites' scripts (the browser hides their details) */
+var E=window.jpbErrs;if(E.length<3)E.push((e.message||"Script error")+" (line "+(e.lineno||"?")+")");if(window.jpbShowErr)window.jpbShowErr()});
+/* theme before paint. Sun from dawn to dusk, Night otherwise, for where you are (not the phone's dark-mode switch). A tap on the button holds the other look until the next dawn or dusk. */
 /* Civil dawn and dusk (sun 6 deg below the horizon) from the standard sunrise equation. Checks the local day and its neighbors so the UTC date change can't flip it early. */
 window.jpbDaylight=function(now,lat,lon){var R=Math.PI/180,n0=Math.round(now/864e5+2440587.5-2451545+0.0008),day=false,next=Infinity;
 for(var k=-1;k<=1;k++){var Js=n0+k-lon/360,M=(357.5291+0.98560028*Js)%360,C=1.9148*Math.sin(M*R)+0.02*Math.sin(2*M*R)+0.0003*Math.sin(3*M*R),l=(M+C+282.9372)%360,
@@ -124,7 +127,6 @@ nav.tabs button[aria-pressed="true"]::before{background:var(--k)}
 .search svg{position:absolute;left:12px;top:50%;width:20px;height:20px;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 #q{width:100%;font:inherit;font-size:18px;font-weight:600;padding:9px 12px 9px 42px;min-height:52px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r)}
 #q::placeholder{color:var(--muted);font-weight:500;opacity:1}
-#q:focus{outline:none;border-color:var(--k);box-shadow:0 0 0 3px var(--hv)}
 .subtabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:1px 24px 4px 1px;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
 .subtabs::-webkit-scrollbar{display:none}
 @media (min-width:1000px){.subtabs{flex-wrap:wrap;-webkit-mask-image:none;mask-image:none;padding-right:1px}}
@@ -184,15 +186,16 @@ body.searching section[data-where] .sec-head::after{content:attr(data-where);gri
 
 /* ===== calculators ===== */
 .calc{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;padding:12px;border-bottom:1px solid var(--rule)}
-.calc label{display:flex;flex-direction:column;gap:4px;font-family:var(--display);font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);flex:1 1 120px;min-width:0}
+.calc label,.up label,.cl-v{display:flex;flex-direction:column;gap:4px;font-family:var(--display);font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);min-width:0}
+.calc label{flex:1 1 120px}
 .calc label i{font-style:normal;text-transform:none;letter-spacing:0;font-family:var(--body);font-weight:500}
 input,select{font:inherit}
-.calc input,.calc select,.up input,.up select,.tk input,.t input{font-family:var(--mono);font-weight:600;font-size:18px;padding:6px 10px;min-height:52px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%;min-width:0;text-transform:none;letter-spacing:0}
-.calc input:focus,.calc select:focus,.up input:focus,.up select:focus,.tk input:focus,.t input:focus{outline:none;border-color:var(--k);box-shadow:0 0 0 3px var(--hv)}
+.calc input,.calc select,.up input,.up select,.tk input,.t input,.cl-v input{font-family:var(--mono);font-weight:600;font-size:18px;padding:6px 10px;min-height:52px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%;min-width:0;text-transform:none;letter-spacing:0}
 .ans{flex:2 1 200px;min-width:0;font-family:var(--mono);font-weight:700;font-size:30px;line-height:1.12;color:var(--hi-ink);background:var(--hi);border:var(--bw) solid var(--hi-edge);border-radius:var(--r);padding:6px 12px}
 .ans small{display:block;font-family:var(--body);font-weight:600;font-size:15px;color:var(--hi-ink);margin-top:3px}
 .ans .warn{font-size:17px}
 .inch{display:flex;gap:4px}
+@media (max-width:480px){.calc label:has(.inch){flex:1 1 100%}}
 @media (min-width:760px){.calc label:has(.inch){flex:1 1 190px}}
 .inch input{flex:1 1 auto;min-width:0}
 .inch select{flex:0 0 5.8rem;width:5.8rem;padding-inline:6px}
@@ -202,7 +205,6 @@ input,select{font:inherit}
 .mode button{flex:1 1 0}
 .seg button[aria-pressed="true"],.mode button[aria-pressed="true"],.ro-view button[aria-pressed="true"]{background:var(--k);color:var(--hv);border-color:var(--k)}
 :root[data-theme="dark"] .seg button[aria-pressed="true"],:root[data-theme="dark"] .mode button[aria-pressed="true"],:root[data-theme="dark"] .ro-view button[aria-pressed="true"]{background:var(--hv);color:var(--k)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"],:root:not([data-theme="light"]) .mode button[aria-pressed="true"],:root:not([data-theme="light"]) .ro-view button[aria-pressed="true"]{background:var(--hv);color:var(--k)}}
 .btn{background:var(--hv);color:var(--k);border-color:var(--k);box-shadow:3px 3px 0 var(--k)}
 .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--k)}
 .btn:disabled{opacity:.5;cursor:default}
@@ -213,7 +215,7 @@ input,select{font:inherit}
 .keys{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-bottom:1px solid var(--rule)}
 .keys button{appearance:none;flex:1 0 auto;min-width:52px;min-height:54px;padding:4px 10px;font-family:var(--mono);font-weight:700;font-size:19px;color:var(--ink);background:var(--zebra);border:var(--bw) solid var(--edge);border-radius:var(--r);cursor:pointer}
 .keys button:active{background:var(--hv);color:var(--k)}
-.keys button[data-k="clear"],.keys button[data-k="back"]{color:var(--danger);border-color:var(--danger)}
+.keys button[data-k="clear"],.keys button[data-k="back"]{border-color:var(--danger);box-shadow:inset 0 -5px 0 var(--danger)}
 
 /* answer tables (offset, DFU, gas…) */
 .out td.big{font-family:var(--mono);font-weight:700;font-size:20px;line-height:1.2;white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -276,7 +278,7 @@ details.more{border-top:1px solid var(--rule)}
 .jump-list button:active{background:var(--hi)}
 section.flash{box-shadow:0 0 0 6px var(--hv);transition:box-shadow .3s}
 details.math{border-top:1px solid var(--rule);background:var(--zebra)}
-details.math summary{cursor:pointer;padding:10px 12px;min-height:48px;font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:.04em;text-transform:uppercase}
+details.math summary,details.more summary{cursor:pointer;padding:10px 12px;min-height:48px;font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:.04em;text-transform:uppercase}
 details.math summary::marker{color:var(--acc)}
 details.math ol{margin:0;padding:0 14px 12px 36px;font-family:var(--mono);font-size:15px;line-height:1.55}
 details.math ol:empty{display:none}
@@ -287,21 +289,17 @@ details.math li::marker{font-weight:700;color:var(--muted)}
 .cl-end{display:flex;flex-direction:column;gap:6px;padding:10px 12px}
 .cl-end+.cl-end{border-top:1px solid var(--rule)}
 @media (min-width:520px){.cl-ends{grid-template-columns:1fr 1fr}.cl-end+.cl-end{border-left:1px solid var(--rule);border-top:0}}
-.cl-h{font-family:var(--display);font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.cl-h,.set-grp .row>b{font-family:var(--display);font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 .cl-end .seg{padding:0}
 .cl-end .seg button{flex:1 1 0;font-size:15px;padding:4px 6px;min-width:0}
-.cl-v{display:flex;flex-direction:column;gap:4px;font-family:var(--display);font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink)}
-.cl-v input{font-family:var(--mono);font-weight:600;font-size:18px;padding:6px 10px;min-height:52px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%}
-.cl-v input:focus{outline:none;border-color:var(--k);box-shadow:0 0 0 3px var(--hv)}
 #cl-chips{padding-top:10px}
 .t.pf td{padding:5px 4px;vertical-align:middle}.t.pf td:first-child{padding-left:10px;min-width:6.6rem}.t.pf th{padding:7px 4px}.t.pf th:first-child{padding-left:10px}
 .t.pf input{min-width:3.1rem;padding:6px 5px}
 .t select{font-family:var(--mono);font-weight:600;font-size:17px;padding:6px 6px;min-height:52px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%;min-width:0}
-.t select:focus{outline:none;border-color:var(--k);box-shadow:0 0 0 3px var(--hv)}
 .t.pf th i{font-style:normal;text-transform:none;letter-spacing:0}
 .calc-svg{display:block;width:100%;max-width:560px;height:auto;margin:0 auto;background:var(--d-bg)}
 .ts-hint{border-top:0}
-#cl-rows .x-del,.t .x-del{appearance:none;width:48px;height:48px;border:var(--bw) solid var(--ctl);border-radius:var(--r);background:var(--sheet);color:var(--danger);font-size:18px;font-weight:800;cursor:pointer}
+#cl-rows .x-del,.t .x-del,.tk .x-del{appearance:none;width:48px;height:48px;border:var(--bw) solid var(--ctl);border-radius:var(--r);background:var(--sheet);color:var(--danger);font-size:18px;font-weight:800;cursor:pointer}
 .flag.ok-flag{background:var(--zebra);border-left-color:var(--ok)}
 #wx-flags .flag:first-child{border-top:0}
 .flag.warn-flag{background:var(--zebra);border-left-color:var(--caution)}
@@ -334,10 +332,10 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
   .code-chip{min-height:44px;padding:4px 10px;font-size:14.5px;margin-top:6px}
 }
 .subtabs button,.del,.tk .x-del,.t .x-del{border-color:var(--ctl)}
-#q:focus,.calc input:focus,.calc select:focus,.up input:focus,.up select:focus,.tk input:focus,.t input:focus,.t select:focus,.cl-v input:focus{border-color:var(--k);box-shadow:0 0 0 3px var(--hv),0 0 0 5px var(--k)}
+#q:focus,.calc input:focus,.calc select:focus,.up input:focus,.up select:focus,.tk input:focus,.t input:focus,.t select:focus,.cl-v input:focus{outline:none;border-color:var(--k);box-shadow:0 0 0 3px var(--hv),0 0 0 5px var(--k)}
 .t td.yes,.t td.no{font-size:22px;line-height:1;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-.t td.yes{background:color-mix(in srgb,var(--ok) 16%,var(--sheet));color:color-mix(in srgb,var(--ok) 72%,var(--ink));font-weight:900}
-.t td.no{background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--danger) 16%,var(--sheet)) 0 5px,var(--sheet) 5px 10px);color:color-mix(in srgb,var(--danger) 72%,var(--ink));font-weight:900}
+.t td.yes{background:color-mix(in srgb,var(--ok) 16%,var(--sheet));color:color-mix(in srgb,var(--ok) 60%,var(--ink));font-weight:900}
+.t td.no{background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--danger) 16%,var(--sheet)) 0 5px,var(--sheet) 5px 10px);color:color-mix(in srgb,var(--danger) 60%,var(--ink));font-weight:900}
 .wx-stale{display:inline-block;background:var(--hv);color:var(--k);font-weight:800;font-size:14.5px;padding:0 6px;border-radius:3px;margin-bottom:4px}
 
 /* ===== mech room map ===== */
@@ -365,16 +363,14 @@ svg.pl{display:block;width:100%;height:auto;max-width:560px;margin:0 auto;paddin
 #gloss tr.off{display:none}
 body.searching #gloss tr.off{display:table-row}
 #gloss-cat{padding-bottom:12px;border-bottom:1px solid var(--rule)}
-#gloss-cat button{min-height:46px;font-size:15px;padding:2px 12px}
+#gloss-cat button{min-height:46px;font-size:16px;padding:2px 12px}
 @media (max-width:759px){#gloss-cat{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-right:24px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}#gloss-cat::-webkit-scrollbar{display:none}#gloss-cat button{flex:0 0 auto}}
 .t.gloss th .sub{font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase}
-details.more summary{cursor:pointer;padding:10px 12px;min-height:48px;font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:.04em;text-transform:uppercase}
 
 /* take-offs editor */
 .tk{display:grid;grid-template-columns:1fr 7.5rem 48px;gap:6px;align-items:center;padding:6px 12px;border-top:1px solid var(--rule)}
 .tk input[type=text]:first-child,.t input[type=text]:not([inputmode]){font-family:var(--body)}
 .tk input[aria-invalid="true"],.t input[aria-invalid="true"]{border-color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger)}
-.tk .x-del{appearance:none;width:48px;height:48px;border:var(--bw) solid var(--ctl);border-radius:var(--r);background:var(--sheet);color:var(--danger);font-size:18px;font-weight:800;cursor:pointer}
 
 /* flashcards */
 .fc{padding:12px;display:flex;flex-direction:column;gap:10px}
@@ -393,7 +389,6 @@ details.more summary{cursor:pointer;padding:10px 12px;min-height:48px;font-famil
 
 /* my files */
 .up{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;padding:12px;border-bottom:1px solid var(--rule)}
-.up label{display:flex;flex-direction:column;gap:4px;font-family:var(--display);font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);min-width:0}
 .up input,.up select{font-family:var(--body)}
 .up .full{grid-column:1 / -1}
 .up .act{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -404,6 +399,7 @@ details.more summary{cursor:pointer;padding:10px 12px;min-height:48px;font-famil
 
 footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) solid var(--edge);padding-top:10px;margin-top:6px}
 #offline-status{margin-top:6px;font-weight:700}
+#err-status{margin-top:6px;padding:6px 10px;font-weight:700;color:var(--ink);background:var(--danger-soft);border-left:6px solid var(--danger)}
 #offline-status button{appearance:none;font:inherit;font-weight:700;color:var(--k);background:var(--hv);border:2px solid var(--k);border-radius:var(--r);padding:4px 12px;margin-left:8px;cursor:pointer}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* phones: multi-column tables become stacked cards so you can read one row at a time */
@@ -481,7 +477,6 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
 .set-grp{border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);margin:12px 0;padding:0 12px 12px;display:grid;gap:14px;scroll-margin-top:8px}
 .set-grp h3{margin:0 -12px;padding:8px 12px;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.06em;text-transform:uppercase;background:var(--bar);color:var(--bar-ink);border-bottom:var(--bw) solid var(--edge)}
 .set-grp .row{display:grid;gap:6px}
-.set-grp .row>b{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .set-grp .seg{padding:0;display:flex;gap:6px;flex-wrap:wrap}
 .set-grp .seg button{flex:1 1 0;min-width:max-content}
 .set-grp p{margin:0}
@@ -561,7 +556,7 @@ body.sheet-open{overflow:hidden}
   --d-bg:#140B06; --d-grid:#3A2A1E; --stripe:repeating-linear-gradient(-45deg,#F2A65E 0 10px,#0B0603 10px 20px)}
 
 :root[data-skin="redrock"][data-theme="light"]{
-  --hv:#FF9157; --k:#3D1A0D; --on-k:#FFF4EA; --on-k-sub:#F0D2C0; --paper:#F7EEE3; --sheet:#FFFDF9; --ink:#2A1209; --muted:#55301F; --rule:#93705A; --edge:#3D1A0D; --zebra:#F1E2D2;
+  --hv:#FF9157; --k:#2E1208; --on-k:#FFF4EA; --on-k-sub:#F0D2C0; --paper:#F7EEE3; --sheet:#FFFDF9; --ink:#2A1209; --muted:#55301F; --rule:#93705A; --edge:#3D1A0D; --zebra:#F1E2D2;
   --bar:#EFA982; --bar-ink:#2A1209; --hi:#FFD7BD; --hi-ink:#2A1209; --hi-edge:#3D1A0D; --ctl:#3D1A0D; --ul:#B33A12; --logo-tile:#FF9157; --logo-ink:#3D1A0D; --logo-dot:#2F7FB8;
   --stripe:repeating-linear-gradient(0deg,#FF9157 0 3px,#C4502A 3px 6px,#3D1A0D 6px 10px)}
 :root[data-skin="redrock"][data-theme="dark"]{
@@ -579,21 +574,21 @@ body.sheet-open{overflow:hidden}
   --d-bg:#06130E; --d-grid:#1D3A2D; --stripe:repeating-linear-gradient(135deg,#EEF8F3 0 8px,#9BE8C4 8px 12px,#04100B 12px 22px)}
 
 :root[data-skin="steel"][data-theme="light"]{
-  --hv:#FF8A3D; --k:#23282E; --on-k:#FFFFFF; --on-k-sub:#D0D5DB; --paper:#E8EBEE; --sheet:#FFFFFF; --ink:#111417; --muted:#2B3137; --rule:#6B747D; --edge:#23282E; --zebra:#EEF0F2;
+  --hv:#FF8A3D; --k:#15181C; --on-k:#FFFFFF; --on-k-sub:#D0D5DB; --paper:#E8EBEE; --sheet:#FFFFFF; --ink:#111417; --muted:#2B3137; --rule:#6B747D; --edge:#23282E; --zebra:#EEF0F2;
   --bar:#D6DBE0; --bar-ink:#111417; --hi:#FFD2B3; --hi-ink:#111417; --hi-edge:#23282E; --ctl:#23282E; --ul:#C2410C; --logo-tile:#FF8A3D; --logo-ink:#23282E; --logo-dot:#FFFFFF;
   --stripe:repeating-linear-gradient(-45deg,#FF8A3D 0 10px,#23282E 10px 20px)}
 :root[data-skin="steel"][data-theme="dark"]{
   --hv:#FF8A3D; --k:#0B0D0F; --on-k:#F2F4F6; --on-k-sub:#C5CBD1; --paper:#111316; --sheet:#1A1D21; --ink:#F2F4F6; --muted:#C9CFD5; --rule:#6E7883; --edge:#AAB2BA; --zebra:#22262B;
-  --bar:#262B31; --bar-ink:#FF9D5C; --hi:#3A2414; --hi-ink:#FFFFFF; --hi-edge:#FF8A3D; --ctl:#AAB2BA; --ul:#FF8A3D; --logo-tile:#FF8A3D; --logo-ink:#0B0D0F; --logo-dot:#FFFFFF;
+  --bar:#262B31; --bar-ink:#FFA66B; --hi:#3A2414; --hi-ink:#FFFFFF; --hi-edge:#FF8A3D; --ctl:#AAB2BA; --ul:#FF8A3D; --logo-tile:#FF8A3D; --logo-ink:#0B0D0F; --logo-dot:#FFFFFF;
   --d-bg:#111316; --d-grid:#2C3137; --stripe:repeating-linear-gradient(-45deg,#FF8A3D 0 10px,#0B0D0F 10px 20px)}
 
 /* Night shift: red light only, so your eyes stay dark-adapted in a crawlspace or a dark basement at 6 a.m. Always dark. */
 :root[data-skin="night"]{
-  --hv:#FF3B30; --k:#000000; --on-k:#FF5A50; --on-k-sub:#E0453C; --paper:#000000; --sheet:#070000; --ink:#FF5A50; --muted:#D9483F; --rule:#4A0E0B; --edge:#A3231C; --zebra:#120000;
-  --bar:#170000; --bar-ink:#FF5A50; --hi:#2A0200; --hi-ink:#FF7A72; --hi-edge:#FF3B30; --danger:#FF2A1F; --danger-soft:#1A0000; --ok:#FFA49E; --caution:#FF7A72;
-  --ctl:#D9483F; --ul:#FF3B30; --logo-tile:#FF3B30; --logo-ink:#000000; --logo-dot:#000000;
+  --hv:#FF6359; --k:#000000; --on-k:#FF7066; --on-k-sub:#FF6359; --paper:#000000; --sheet:#070000; --ink:#FF7066; --muted:#FF6359; --rule:#4A0E0B; --edge:#A3231C; --zebra:#120000;
+  --bar:#170000; --bar-ink:#FF7066; --hi:#2A0200; --hi-ink:#FF7A72; --hi-edge:#FF3B30; --danger:#FF5A50; --danger-soft:#1A0000; --ok:#FFA49E; --caution:#FF7A72;
+  --ctl:#FF6359; --ul:#FF6359; --logo-tile:#FF3B30; --logo-ink:#000000; --logo-dot:#000000;
   --g-calc:#FF5A50; --g-rough:#FF5A50; --g-mech:#FF5A50; --g-trim:#FF5A50; --g-inspect:#FF7A72; --g-calls:#FF3B30; --g-learn:#FF5A50; --g-parts:#FF5A50; --g-weather:#FF5A50; --g-mine:#FF5A50;
-  --d-bg:#000000; --d-grid:#2A0200; --d-pipe:#B3332B; --d-fit:#FF7A72; --d-cut:#FF5A50; --d-cut-lbl:#FF5A50; --d-rise:#FF8A82; --d-roll:#E0453C; --d-run:#FF5A50; --d-tru:#FF9C96; --d-text:#FF5A50; --d-dim:#D9483F;
+  --d-bg:#000000; --d-grid:#2A0200; --d-pipe:#B3332B; --d-fit:#FF7A72; --d-cut:#FF5A50; --d-cut-lbl:#FF5A50; --d-rise:#FF8A82; --d-roll:#E0453C; --d-run:#FF5A50; --d-tru:#FF9C96; --d-text:#FF7066; --d-dim:#FF6359;
   --stripe:repeating-linear-gradient(-45deg,#FF3B30 0 10px,#000 10px 20px); color-scheme:dark}
 :root[data-skin="night"] nav.tabs{--g-calc:#FF5A50;--g-rough:#FF5A50;--g-mech:#FF5A50;--g-trim:#FF5A50;--g-inspect:#FF5A50;--g-calls:#FF5A50;--g-learn:#FF5A50;--g-weather:#FF5A50;--g-mine:#FF5A50}
 :root[data-skin="night"] img{filter:grayscale(1) sepia(1) hue-rotate(-50deg) saturate(4) brightness(.7)}
@@ -636,11 +631,10 @@ details.explain p{margin:6px 0 0}
   .tb .hbtn{flex-direction:column;justify-content:center;gap:1px;min-width:46px;padding:2px 3px;min-height:48px;font-size:10px;letter-spacing:.02em}
   .tb .hbtn svg{width:19px;height:19px}
   .tb .learn-hbtn span,.tb .mine-hbtn .hbtn-lbl{position:static;width:auto;height:auto;overflow:visible;clip:auto;line-height:1}
-  .tb #look-btn,.tb #theme-btn{min-width:42px}
   .brand small.ed{font-size:11px;letter-spacing:.06em}
   .brand h1{font-size:clamp(15px,4.3vw,22px)}
 }
-@media (max-width:379px){.brand small.ed{display:none}.tb .hbtn{min-width:40px}.tb-in{gap:5px}}
+@media (max-width:379px){.brand small.ed{display:none}.tb .hbtn{min-width:44px}.tb-in{gap:5px}}
 @media (max-width:339px){.tb .logo{display:none}}
 
 
@@ -651,10 +645,13 @@ details.explain p{margin:6px 0 0}
 .wx-hero .sub{color:var(--on-k-sub)}
 .out td.big small.warn,small.warn{color:var(--ink)}
 .badge.ut{color:color-mix(in srgb,var(--g-inspect) 78%,var(--ink))}   /* stays after .tip .badge so a UT badge inside a tip keeps its orange */
-.t td a[target]{display:inline-block;padding:10px 0}
+.t :is(td,th) a:not(.pn),.wx-hero .sub a{display:inline-block;padding:11px 0}   /* links in tables: a 44 px tall tap target */
 .pin::after{content:"";position:absolute;inset:-3px}
 @media (max-width:759px){
-  .book .note,.book .sub,.book td.sub,.book .t th .sub,.book .fc-hint,footer{font-size:16px}
+  .book .note,.book .sub,.book td.sub,.book .t th .sub,.book .fc-hint,footer,
+  .sec-head small,.calc label,.up label,.cl-h,.cl-v,details.math ol,details.math summary,details.more summary,details.explain summary,details.explain div,
+  .ans small,.out td.big small.warn,.t .k,.ro-hint,.ro-key,.tick-foot,.fc-meta,.fc-foot,.out td.sub,.out td.big small,.jump-list span,.seg-lbl,.wx-place .sub{font-size:16px}
+  .t thead th{font-size:15.5px}
 }
 @media (max-width:340px){nav.tabs button{letter-spacing:0!important;font-size:12.2px!important}}
 
@@ -675,10 +672,10 @@ details.explain p{margin:6px 0 0}
   <div class="tb-in">
     <svg class="logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect width="48" height="48" rx="11" fill="var(--logo-tile)"/><path d="M11 7h16v9h10v25H11z" fill="var(--logo-ink)"/><path d="M24 17c4.6 5.4 7 9.2 7 12.6a7 7 0 0 1-14 0c0-3.4 2.4-7.2 7-12.6z" fill="var(--logo-tile)"/><path d="M21.2 30.2a3.2 3.2 0 0 0 3 3" fill="none" stroke="var(--logo-ink)" stroke-width="1.8" stroke-linecap="round"/></svg>
     <div class="brand"><small class="pre">Utah Plumbers</small><h1>HANDBOOK</h1><small class="ed">Digital edition</small></div>
-    <button type="button" class="hbtn learn-hbtn" id="learn-btn" aria-pressed="false" aria-label="Learn: how it works, flashcards, glossary, license"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg><span>Learn</span></button>
-    <button type="button" class="hbtn mine-hbtn" id="files-btn" aria-pressed="false" aria-label="Mine: pinned cards and my files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg><span class="hbtn-lbl">Mine</span></button>
-    <button type="button" class="hbtn" id="look-btn" aria-expanded="false" aria-controls="look" aria-label="Settings: themes, text, behavior, backup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="hbtn-lbl">Settings</span></button>
-    <button type="button" class="hbtn" id="theme-btn" aria-label="Color mode"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><span id="theme-lbl">Sun</span></button>
+    <button type="button" class="hbtn learn-hbtn" id="learn-btn" aria-pressed="false" aria-label="Learn: how it works, flashcards, glossary, license"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg><span>Learn</span></button>
+    <button type="button" class="hbtn mine-hbtn" id="files-btn" aria-pressed="false" aria-label="Mine: pinned cards and my files"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg><span class="hbtn-lbl">Mine</span></button>
+    <button type="button" class="hbtn" id="look-btn" aria-expanded="false" aria-controls="look" aria-label="Settings: themes, text, behavior, backup"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="hbtn-lbl">Settings</span></button>
+    <button type="button" class="hbtn" id="theme-btn" aria-label="Color mode"><svg aria-hidden="true" class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><span id="theme-lbl">Sun</span></button>
   </div>
 </header>
 <div class="stripe" aria-hidden="true"></div>
@@ -697,10 +694,10 @@ details.explain p{margin:6px 0 0}
           <button type="button" data-s="contrast"><span class="sw" style="--a:#FFFFFF;--b:#FFFF00;--c:#000000"></span><span class="nm">Max contrast</span><small>Black, white, yellow. Thickest lines.</small></button>
           <button type="button" data-s="blueprint"><span class="sw" style="--a:#E6EEF9;--b:#8FD8FF;--c:#0B2A55"></span><span class="nm">Blueprint</span><small>Plan-sheet blue with a grid.</small></button>
           <button type="button" data-s="copper"><span class="sw" style="--a:#FBF5EE;--b:#F2A65E;--c:#2B1810"></span><span class="nm">Copper</span><small>Warm and easy on the eyes.</small></button>
-          <button type="button" data-s="redrock"><span class="sw" style="--a:#F7EEE3;--b:#FF9157;--c:#3D1A0D"></span><span class="nm">Red Rock</span><small>Southern Utah sandstone.</small></button>
+          <button type="button" data-s="redrock"><span class="sw" style="--a:#F7EEE3;--b:#FF9157;--c:#2E1208"></span><span class="nm">Red Rock</span><small>Southern Utah sandstone.</small></button>
           <button type="button" data-s="wasatch"><span class="sw" style="--a:#F1F6F4;--b:#9BE8C4;--c:#0F2E22"></span><span class="nm">Wasatch</span><small>Pine green and snow.</small></button>
-          <button type="button" data-s="steel"><span class="sw" style="--a:#E8EBEE;--b:#FF8A3D;--c:#23282E"></span><span class="nm">Galvanized</span><small>Steel gray, safety orange.</small></button>
-          <button type="button" data-s="night"><span class="sw" style="--a:#000000;--b:#FF3B30;--c:#170000"></span><span class="nm">Night shift</span><small>Red only. Keeps night vision.</small></button>
+          <button type="button" data-s="steel"><span class="sw" style="--a:#E8EBEE;--b:#FF8A3D;--c:#15181C"></span><span class="nm">Galvanized</span><small>Steel gray, safety orange.</small></button>
+          <button type="button" data-s="night"><span class="sw" style="--a:#000000;--b:#FF6359;--c:#170000"></span><span class="nm">Night shift</span><small>Red only. Keeps night vision.</small></button>
         </div></div>
       <div class="row" id="vest-row"><b>Vest color</b>
         <div class="seg" id="look-vest" role="group" aria-label="Vest color"><button type="button" data-v="lime"><span class="vest-sw" style="background:#CCFF00"></span>Lime</button><button type="button" data-v="yellow"><span class="vest-sw" style="background:#FFE500"></span>Yellow</button><button type="button" data-v="orange"><span class="vest-sw" style="background:#FF7A1F"></span>Orange</button></div></div>
@@ -773,13 +770,13 @@ details.explain p{margin:6px 0 0}
 
   <div class="tools">
     <nav class="tabs" aria-label="Book sections">
-      <button type="button" data-group="calc" data-g="calc" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/></svg>Calc</button>
-      <button type="button" data-group="rough" data-g="rough" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h6l6-10h6"/><circle cx="9" cy="18" r="2"/><circle cx="15" cy="8" r="2"/></svg>Rough</button>
-      <button type="button" data-group="mech" data-g="mech" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="17" rx="4"/><path d="M9 20v1.5M15 20v1.5M12 13c-1.6-1.6-1.4-3.2 0-4.6 0 1.3 1.6 1.6 1.6 3.1a1.6 1.6 0 0 1-1.6 1.5z"/></svg>Mech</button>
-      <button type="button" data-group="trim" data-g="trim" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h11a4 4 0 0 1 4 4v2"/><path d="M8 9V5h3"/><path d="M19 18v1M16 20v1M22 20v1"/></svg>Trim</button>
-      <button type="button" data-group="inspect" data-g="inspect" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM8.5 13l2.5 2.5 4.5-5"/></svg>Inspect</button>
-      <button type="button" data-group="site" data-g="site" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5a7.5 7.5 0 0 1 15 0"/><path d="M10 9.3V7h4v2.3"/><path d="M12 7v9.5"/><path d="M2 16.5h17.5a2.5 2.5 0 0 1 2.5 2.5H2z"/></svg>Site</button>
-      <button type="button" class="nav-learn" data-group="learn" data-g="learn" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg>Learn</button>
+      <button type="button" data-group="calc" data-g="calc" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/></svg>Calc</button>
+      <button type="button" data-group="rough" data-g="rough" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h6l6-10h6"/><circle cx="9" cy="18" r="2"/><circle cx="15" cy="8" r="2"/></svg>Rough</button>
+      <button type="button" data-group="mech" data-g="mech" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="17" rx="4"/><path d="M9 20v1.5M15 20v1.5M12 13c-1.6-1.6-1.4-3.2 0-4.6 0 1.3 1.6 1.6 1.6 3.1a1.6 1.6 0 0 1-1.6 1.5z"/></svg>Mech</button>
+      <button type="button" data-group="trim" data-g="trim" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h11a4 4 0 0 1 4 4v2"/><path d="M8 9V5h3"/><path d="M19 18v1M16 20v1M22 20v1"/></svg>Trim</button>
+      <button type="button" data-group="inspect" data-g="inspect" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM8.5 13l2.5 2.5 4.5-5"/></svg>Inspect</button>
+      <button type="button" data-group="site" data-g="site" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5a7.5 7.5 0 0 1 15 0"/><path d="M10 9.3V7h4v2.3"/><path d="M12 7v9.5"/><path d="M2 16.5h17.5a2.5 2.5 0 0 1 2.5 2.5H2z"/></svg>Site</button>
+      <button type="button" class="nav-learn" data-group="learn" data-g="learn" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg>Learn</button>
     </nav>
     <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
       <input id="q" type="search" placeholder="Search: trap arm, 2x6, TJI, Moen 1222, 811…" aria-label="Search the book" autocomplete="off"></div>
@@ -1010,7 +1007,7 @@ details.explain p{margin:6px 0 0}
     <div class="sec-head"><h2>Feet-inch calculator</h2><small>Add, subtract, ×, ÷ · to ¹⁄₁₆"</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> adding or subtracting tape measurements without converting to decimals: center-to-center minus take-offs, splitting a run in thirds.</p><p>Type it the way the tape reads. Answers come back to the nearest ¹⁄₁₆".</p></div></details>
     <div class="calc">
-      <label for="fi-expr" style="flex:1 1 100%">Measurements<input id="fi-expr" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10' 4 3/8&quot; - 2 x 5 1/16&quot;" aria-describedby="fi-help"></label>
+      <label for="fi-expr" class="wide">Measurements<input id="fi-expr" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10' 4 3/8&quot; - 2 x 5 1/16&quot;" aria-describedby="fi-help"></label>
     </div>
     <div class="keys" role="group" aria-label="Quick keys">
       <button type="button" data-k="'">ft '</button><button type="button" data-k='"'>in "</button><button type="button" data-k=" ">space</button><button type="button" data-k="/">/</button>
@@ -2861,7 +2858,7 @@ details.explain p{margin:6px 0 0}
     <div class="sec-head"><h2>Right now</h2><small id="wx-clock">—</small></div>
     <div class="wx-loc">
       <div class="wx-place"><b id="wx-place">—</b><div class="sub" id="wx-placesub">Pick your jobsite</div></div>
-      <button type="button" class="btn" id="wx-gps"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/></svg>My location</button>
+      <button type="button" class="btn" id="wx-gps"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/></svg>My location</button>
     </div>
     <div class="calc wx-searchrow">
       <label for="wx-search">Or search a town<input id="wx-search" type="search" placeholder="Herriman, Eagle Mountain, Heber…" autocomplete="off" enterkeyhint="search"></label>
@@ -3258,6 +3255,7 @@ details.explain p{margin:6px 0 0}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Oct 25, 2026 · night</th><td><b>Easier to read:</b> every text color is now at least 7:1 against its background in all 8 skins, light and dark (Night shift reds brighter, Steel and Red rock buttons darker) · small print on phones raised to 16 px · tape-measure boxes get the full row on phones (at 320 px the number box was too narrow to show what you typed) · header buttons and table links are 44 px+ to tap. <b>Sturdier:</b> if a script ever breaks, the footer now says what broke and where. <b>Under the hood:</b> 12 more repeated style rules merged, one helper for every button group.</td></tr>
         <tr><th>Oct 25, 2026 · cleanup</th><td><b>Faster:</b> the book opens about twice as fast (search builds its index on your first search, cards no longer reshuffle at startup). <b>Fixed:</b> tapping a card title no longer pins it, only the ☆ does · calculator tables stay whole during a search · glossary had Bypass valve, Power vent and Direct vent twice · one duplicate flashcard removed. <b>Under the hood:</b> 35 repeated style rules and 4 copies of the same helper code merged.</td></tr>
         <tr><th>Oct 25, 2026 · later</th><td><b>Added:</b> Supply demand (WSFU) calculator · Jump it · Ejector &amp; sump pump · ABS or PVC? · PE-RT · AAV install rules · FVIR pilot trouble · What's new. <b>Fixed:</b> the 2018 A.O. Smith recall covered ultra-low NOx tanks · search shows only matching rows · Download backup on the claude.ai link.</td></tr>
         <tr><th>Oct 25, 2026</th><td><b>Added:</b> Bore line and Hot water that lasts calculators · 15 "Do it in your head" tricks and Why the pipe math works · Habits that save callbacks · What fails &amp; what's recalled · Rebates customers ask about · 8 cities in Davis, Weber, Cache and Washington counties · Get kept, Tool trade-offs, Test day, Your body · 8 flashcards. <b>Fixed:</b> heat pump water heater rule (tanks over 35 gal) · circuit vent definition · IPC cleanout clearance · wet vent fact · water expansion (≈1¼%, not 2%) · B-vent cap heights · shower valve standards · plastic nuts hand-tight · crimp gauge on every crimp · primer test</td></tr>
@@ -3653,6 +3651,10 @@ let cssSig = "", cssMemo = {};
 const cssv = n => { const d = document.documentElement, s = (d.dataset.theme || "") + (d.dataset.skin || "") + (d.dataset.vest || "") + d.style.cssText;
   if (s !== cssSig){ cssSig = s; cssMemo = {}; }
   return cssMemo[n] ??= getComputedStyle(d).getPropertyValue(n).trim(); };
+/* light up the pressed button in a button group: press("#ro-mode", b => b.dataset.mode === m). Takes a selector (every match) or an element. */
+const press = (box, on) => (typeof box === "string" ? document.querySelectorAll(box + " button") : box.querySelectorAll("button")).forEach(b => b.setAttribute("aria-pressed", String(on(b))));
+/* caption across the top of a calculator drawing */
+const svgCap = (fill, txt) => `<text x="10" y="17" fill="${fill}" font-size="13.5" font-weight="800" letter-spacing=".06em" font-family="Barlow Condensed,Arial Narrow,sans-serif">${txt}</text>`;
 /* one answer-table row: label, big value, note; hit = the highlighted answer */
 const outRow = (k, v, s, hit) => `<tr${hit ? ' class="hit"' : ""}><th>${k}</th><td class="big">${v}</td><td class="sub">${s}</td></tr>`;
 /* bytes this book has saved on the device (Settings and the footer stats both show it) */
@@ -4280,7 +4282,7 @@ function glossFilter(){
   let n = 0;
   $("gloss").querySelectorAll("tr").forEach(r => { const on = glCat === "all" || r.dataset.cat === glCat; r.classList.toggle("off", !on); if (on) n++; });
   if (!$("gloss-cat").children.length) $("gloss-cat").innerHTML = GLOSS_CATS.map(([k,t]) => `<button type="button" data-c="${k}">${esc(t)}</button>`).join("");
-  $("gloss-cat").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === glCat)));
+  press($("gloss-cat"), b => b.dataset.c === glCat);
   $("gloss-n").textContent = `${n} ${glCat === "all" ? "words on site" : GCAT[glCat].toLowerCase() + " words"}`;
 }
 $("gloss-cat").addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (!b) return; glCat = b.dataset.c; store.set("jpb-gloss-cat", glCat); glossFilter(); });
@@ -4374,10 +4376,10 @@ function inView(sec){
 let roWasShown = false, roReady = false;
 function apply(){
   const term = $("q").value.trim();
-  document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-pressed", String(!term && b.dataset.group === nav.group)));
+  press("nav.tabs", b => !term && b.dataset.group === nav.group);
   $("files-btn").setAttribute("aria-pressed", String(nav.group === "mine"));
   $("learn-btn").setAttribute("aria-pressed", String(!term && nav.group === "learn"));
-  subRow.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.sub === nav.sub)));
+  press(subRow, b => b.dataset.sub === nav.sub);
   const toks = norm(term).trim().split(" ").filter(Boolean).map(t => t.length > 3 && !/\d/.test(t) ? t.replace(/(s|x|z|ch|sh)es$/, "$1").replace(/([^s])s$/, "$1") : t);
   const res = toks.map(t => new RegExp("(?:^|[^a-z0-9.])" + reEsc(t)));
   const has = (txt, list) => list.every(r => r.test(txt));
@@ -4568,11 +4570,11 @@ function lookDraw(){
   const d = daylight();
   $("look-light-note").textContent = night ? "Night shift is always dark. Pick another theme to use Sun." : mode === "auto" ? `Follows daylight where you are${isFinite(d.next) ? `: switches at ${clock(d.next)}` : ""}. The sun/moon button flips it until the next dawn or dusk.` : `Stays ${mode === "light" ? "Sun" : "Night"} until you pick Auto.`;
   const vest = ROOT.dataset.vest || "lime";
-  $("look-vest").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === vest)));
+  press($("look-vest"), b => b.dataset.v === vest);
   $("vest-row").hidden = (PREFS.skin || "hivis") !== "hivis";
-  $("set-skin").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === (PREFS.skin || "hivis"))));
+  press($("set-skin"), b => b.dataset.s === (PREFS.skin || "hivis"));
   const z = String(+store.get("jpb-zoom", 1) || 1);
-  $("look-size").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.z === z)));
+  press($("look-size"), b => b.dataset.z === z);
   document.querySelectorAll("#look .seg[data-pref]").forEach(g => { const v = String(PREFS[g.dataset.pref] ?? ""); g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v))); });
   document.querySelectorAll("#look .tog").forEach(t => { t.setAttribute("aria-checked", String(!!PREFS[t.dataset.t])); });
   const wk = document.querySelector('#look .tog[data-t="wake"]'); if (!("wakeLock" in navigator)){ wk.disabled = true; wk.querySelector("small").textContent = "This browser can't hold the screen on. iPhone: Settings → Display → Auto-Lock."; }
@@ -4718,7 +4720,7 @@ function convert(){
 }
 document.querySelectorAll("#c-kind button").forEach(b => b.addEventListener("click", () => {
   kind = b.dataset.kind;
-  document.querySelectorAll("#c-kind button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  press("#c-kind", x => x === b);
   fillFrom(); convert();
 }));
 $("c-val").addEventListener("input", convert); cFrom.addEventListener("change", convert);
@@ -4927,7 +4929,7 @@ function draw3D(){
 }
 const roDraw = () => { if (!roRaf) roRaf = requestAnimationFrame(() => { roRaf = 0; draw3D(); }); };
 function roPressed(){
-  document.querySelectorAll(".ro-views button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === RV.name)));
+  press(".ro-views", b => b.dataset.v === RV.name);
 }
 /* jump to a named view, easing there unless the phone asks for less motion */
 function roView(name){
@@ -5070,7 +5072,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && document.q
 }
 function setMode(m){
   roMode = m; store.set("jpb-ro-mode", m);
-  document.querySelectorAll("#ro-mode button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === m)));
+  press("#ro-mode", b => b.dataset.mode === m);
   const rolling = m === "rolling";
   $("ro-roll-wrap").hidden = !rolling; $("ro-true-row").hidden = !rolling; $("ro-turn-row").hidden = !rolling;
   $("ro-key-roll").hidden = !rolling; $("ro-key-tru").hidden = !rolling;
@@ -5261,7 +5263,7 @@ document.querySelectorAll("#sl-mode button").forEach(b => b.addEventListener("cl
   slMode = b.dataset.sl; store.set("jpb-sl", slMode); slShow();
 }));
 function slShow(){
-  document.querySelectorAll("#sl-mode button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.sl === slMode)));
+  press("#sl-mode", x => x.dataset.sl === slMode);
   $("sl-pitch-l").hidden = slMode !== "fall"; $("sl-fall-l").hidden = slMode === "fall"; slCalc();
 }
 slShow();
@@ -5315,7 +5317,7 @@ function psCalc(){
   }
 }
 function psShow(){
-  document.querySelectorAll("#ps-mode button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.ps === psMode)));
+  press("#ps-mode", b => b.dataset.ps === psMode);
   const cal = psSel.value === "cal";
   document.querySelectorAll(".ps-cal").forEach(l => l.hidden = !cal);
   $("ps-in-l").firstChild.textContent = psMode === "real" ? "On paper " : "Real length ";
@@ -5487,7 +5489,7 @@ function poCalc(){
     o += svgLn([a[0], y], [b[0], y], txt, 1.8) + svgLn([a[0], y-5], [a[0], y+5], txt, 1.8) + svgLn([b[0], y-5], [b[0], y+5], txt, 1.8);
     o += svgTxt([b[0], y], 8, 5, `setback ${toFrac16(sb)}`, txt, "start", 14);
   }
-  o += `<text x="10" y="17" fill="${dim}" font-size="13.5" font-weight="800" letter-spacing=".06em" font-family="Barlow Condensed,Arial Narrow,sans-serif">PLAN VIEW · ${n} PIPES · ${nf(deg,2)}° · fittings on the dashed lines</text>`;
+  o += svgCap(dim, `PLAN VIEW · ${n} PIPES · ${nf(deg,2)}° · fittings on the dashed lines`);
   svg.innerHTML = o;
 }
 ["po-s"].forEach(id => $(id).addEventListener("input", poCalc)); ["po-ang","po-n"].forEach(id => $(id).addEventListener("change", poCalc));
@@ -5566,7 +5568,7 @@ function esCalc(){
   rows.innerHTML = marks.map((m, i) => `<tr><td>${i + 1}</td><td>${fmtFtIn(m)}</td><td>${(m / 12).toFixed(2)}</td></tr>`).join("");
 }
 function esShow(){
-  document.querySelectorAll("#es-mode button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.es === esMode)));
+  press("#es-mode", b => b.dataset.es === esMode);
   $("es-max-l").hidden = esMode !== "max"; $("es-n-l").hidden = esMode === "max"; esCalc();
 }
 document.querySelectorAll("#es-mode button").forEach(b => b.addEventListener("click", () => { esMode = b.dataset.es; store.set("jpb-es", esMode); esShow(); }));
@@ -5600,7 +5602,7 @@ const SQ_TRI = [[36, 48, "3-4-5 ft"], [72, 96, "6-8-10 ft"], [108, 144, "9-12-15
 $("sq-chips").innerHTML = SQ_TRI.map(([a, b, n]) => `<button type="button" data-a="${a}" data-b="${b}">${n}</button>`).join("");
 const SQ_LBL = {lay: ["Leg A ", "(along line 1)", "Leg B ", "(along line 2)"], corner: ["Leg A ", "(along line 1)", "Leg B ", "(along line 2)"], box: ["Length ", "(one side)", "Width ", "(the side next to it)"]};
 function sqShow(){
-  document.querySelectorAll("#sq-mode button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.sq === sqMode)));
+  press("#sq-mode", b => b.dataset.sq === sqMode);
   const L = SQ_LBL[sqMode];
   $("sq-a-l").firstChild.textContent = L[0]; $("sq-a-l").querySelector("i").textContent = L[1];
   $("sq-b-l").firstChild.textContent = L[2]; $("sq-b-l").querySelector("i").textContent = L[3];
@@ -5691,7 +5693,7 @@ function sqDraw(g){
   const O = M([0, 0]), Ae = M([g.A, 0]), Be = M(bEnd), Sq = M(sqEnd);
   let s = `<rect width="${W}" height="${H}" fill="${bg}"/><defs><marker id="sq-ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${fit}"/></marker></defs>`;
   const ttl = g.box ? "CHECK A BOX" : g.dev === 0 && !g.D ? "LAY OUT A SQUARE CORNER" : "CHECK A CORNER";
-  s += `<text x="10" y="17" fill="${dim}" font-size="13.5" font-weight="800" letter-spacing=".06em" font-family="Barlow Condensed,Arial Narrow,sans-serif">${ttl}${big ? " · LEAN DRAWN BIGGER" : ""}</text>`;
+  s += svgCap(dim, `${ttl}${big ? " · LEAN DRAWN BIGGER" : ""}`);
   if (g.box){
     const P2 = M([g.A + bEnd[0], bEnd[1]]);
     if (!g.ok) s += `<path d="M${O[0].toFixed(1)} ${O[1].toFixed(1)} L${Ae[0].toFixed(1)} ${Ae[1].toFixed(1)} L${M([g.A, g.B])[0].toFixed(1)} ${M([g.A, g.B])[1].toFixed(1)} L${Sq[0].toFixed(1)} ${Sq[1].toFixed(1)}Z" fill="none" stroke="${grid}" stroke-width="2" stroke-dasharray="5 5"/>`;
@@ -5780,7 +5782,7 @@ $("pt-len").addEventListener("keydown", e => { if (e.key === "Enter") $("pt-add"
 ["pt-len", "pt-n"].forEach(id => $(id).addEventListener("input", ptNow));
 document.querySelectorAll("#pt-kind button").forEach(b => b.addEventListener("click", () => {
   ptKind = b.dataset.pk; store.set("jpb-pt-kind", ptKind);
-  document.querySelectorAll("#pt-kind button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  press("#pt-kind", x => x === b);
   $("pt-len-l").firstChild.textContent = ptKind === "paper" ? "On paper " : "Real length ";
   $("pt-len-l").querySelector("i").textContent = ptKind === "paper" ? "(inches, tape style)" : "(like 9' 6\")";
   $("pt-len").placeholder = ptKind === "paper" ? "2 3/8" : "9' 6\"";
@@ -5910,7 +5912,7 @@ function tvCalc(){
 }
 document.querySelectorAll("#tv-mode button").forEach(btn => btn.addEventListener("click", () => {
   tvShape = btn.dataset.tv;
-  document.querySelectorAll("#tv-mode button").forEach(x => x.setAttribute("aria-pressed", String(x === btn)));
+  press("#tv-mode", x => x === btn);
   $("tv-b-l").hidden = tvShape === "round";
   $("tv-a-l").firstChild.textContent = tvShape === "round" ? "Diameter (in)" : "Length (in)";
   tvCalc();
@@ -6014,7 +6016,7 @@ function whCalc(){
 }
 document.querySelectorAll("#wh-mode button").forEach(b => b.addEventListener("click", () => {
   whMode = b.dataset.wh;
-  document.querySelectorAll("#wh-mode button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  press("#wh-mode", x => x === b);
   if (whMode === "tankless" && val("wh-btu") === 40000){ $("wh-btu").value = 199000; $("wh-eff").value = 95; }
   if (whMode === "tank" && val("wh-btu") === 199000){ $("wh-btu").value = 40000; $("wh-eff").value = 80; }
   whCalc();
@@ -6081,7 +6083,7 @@ let ckPh = store.get("jpb-ck-ph", "under"), ckDone = store.get("jpb-ck", {}); if
 if (!ckDone || typeof ckDone !== "object" || Array.isArray(ckDone)) ckDone = {};
 for (const k in ckDone) ckDone[k] = Array.isArray(ckDone[k]) ? ckDone[k].filter(t => typeof t === "string" && CK[k] && CK[k].includes(t)) : [];
 function ckDraw(){
-  document.querySelectorAll("#ck-phase button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.ph === ckPh)));
+  press("#ck-phase", x => x.dataset.ph === ckPh);
   const done = new Set(ckDone[ckPh] || []);
   $("ck-list").innerHTML = CK[ckPh].map((t,i) => `<li><label><input type="checkbox" data-i="${i}"${done.has(t) ? " checked" : ""}><span>${esc(t)}</span></label></li>`).join("");
   $("ck-count").textContent = `${done.size} of ${CK[ckPh].length} done`;
@@ -6113,7 +6115,7 @@ function setCode(c){
   myCode = c; store.set("jpb-code", c);
   $("code-chip-txt").innerHTML = CODES[c][1]; $("code-pick-note").innerHTML = CODES[c][2];
   $("code-jump").setAttribute("aria-label", `My code ${CODES[c][0]}. Houses use the 2021 IRC. Open Which code applies`);
-  document.querySelectorAll("#code-pick button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.code === c)));
+  press("#code-pick", b => b.dataset.code === c);
   if (SHOWER >= 0){
     const irc = c === "irc21";
     FIX[SHOWER][0] = irc ? "Shower (≤5.7 gpm, 2\" trap per IRC)" : "Shower (≤5.7 gpm, 1½\" trap per IPC)"; FIX[SHOWER][3] = irc ? 2 : 1.5;
@@ -6652,11 +6654,11 @@ let streak = 0, best = +store.get("jpb-fc-best", 0) || 0;
 const solidCount = () => Object.values(boxes).filter(v => v.b >= 3).length;
 const rankOf = n => RANKS.reduce((r, x) => n >= x[0] ? x : r, RANKS[0]);
 function gaugeDraw(){
-  const psi = Math.min(100, streak * 8), a = Math.PI * (1 - psi / 100), ink = cssv("--ink"), hv = cssv("--hv"), dan = cssv("--danger"), mut = cssv("--rule");
+  const psi = Math.min(100, streak * 8), a = Math.PI * (1 - psi / 100), ink = cssv("--ink"), dan = cssv("--danger"), mut = cssv("--rule");
   const x = 32 + Math.cos(a) * 24, y = 36 - Math.sin(a) * 24;
-  const [n, name] = rankOf(solidCount()), next = RANKS.find(r => r[0] > solidCount());
+  const solid = solidCount(), [, name] = rankOf(solid), next = RANKS.find(r => r[0] > solid);
   $("fc-gauge").innerHTML = `<svg viewBox="0 0 64 40" aria-hidden="true"><path d="M6 36A26 26 0 0 1 58 36" fill="none" stroke="${mut}" stroke-width="6"/><path d="M53 20.7A26 26 0 0 1 58 36" fill="none" stroke="${dan}" stroke-width="6"/><line x1="32" y1="36" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${ink}" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="36" r="4" fill="${ink}"/></svg>` +
-    `<span>Streak <b>${streak}</b> (${psi} psi${psi >= 80 ? ": PRV territory" : ""}) · best ${best}<br>Rank: <b>${name}</b>${next ? ` · ${next[0] - solidCount()} more solid cards to ${next[1]}` : ""}</span>`;
+    `<span>Streak <b>${streak}</b> (${psi} psi${psi >= 80 ? ": PRV territory" : ""}) · best ${best}<br>Rank: <b>${name}</b>${next ? ` · ${next[0] - solid} more solid cards to ${next[1]}` : ""}</span>`;
 }
 let lastRank = (r => RANKS.some(x => x[1] === r) ? r : rankOf(solidCount())[1])(store.get("jpb-rank", ""));
 store.set("jpb-rank", lastRank);
@@ -6726,7 +6728,7 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
   $("bl-pipe").innerHTML = SAWS.map(([n, lo, hi], i) => `<option value="${i}"${i === 6 ? " selected" : ""}>${n} · ${sawTxt(lo, hi)} saw</option>`).join("");
   let lastKind = "";
   function blCalc(){
-    const [mName, depth, kind, frac] = BL_MEM[+$("bl-mem").value], [pName, , saw] = SAWS[+$("bl-pipe").value];
+    const [mName, depth, kind, frac] = BL_MEM[+$("bl-mem").value], [, , saw] = SAWS[+$("bl-pipe").value];
     const sl = +$("bl-slope").value, oc = +$("bl-oc").value, n = parseInt($("bl-n").value, 10), el = $("bl-ans"), rows = $("bl-rows");
     if (kind !== lastKind){   /* studs measure up from the floor, joists down from the top edge */
       $("bl-h0-l").querySelector("i").textContent = kind === "stud" ? "(above the floor)" : "(down from the top of the joist; blank = as high as allowed)";
@@ -6834,7 +6836,7 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
     const yb = M([0, 0])[1] + 20; const a = M([x1, 0]), e = M([xe, 0]);
     s += svgLn([a[0], yb], [e[0], yb], txt, 1.6) + svgLn([a[0], yb - 5], [a[0], yb + 5], txt, 1.6) + svgLn([e[0], yb - 5], [e[0], yb + 5], txt, 1.6);
     s += svgTxt([(a[0] + e[0]) / 2, yb], 0, 16, `${toFrac16(run + sb)} to the edge`, txt, "middle", 13.5);
-    s += `<text x="10" y="17" fill="${dim}" font-size="13.5" font-weight="800" letter-spacing=".06em" font-family="Barlow Condensed,Arial Narrow,sans-serif">SIDE VIEW · ${deg}° · TO SCALE</text>`;
+    s += svgCap(dim, `SIDE VIEW · ${deg}° · TO SCALE`);
     svg.innerHTML = s;
   }
   ids.forEach(id => $(id).addEventListener("input", juCalc)); ["ju-od", "ju-ang"].forEach(id => $(id).addEventListener("change", juCalc));
@@ -7294,11 +7296,15 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-10-25e";
+var BUILD = "handbook-2026-10-25f";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
   if (foot) foot.appendChild(note);
+  var err = document.createElement("div"); err.id = "err-status"; err.setAttribute("role", "alert"); err.hidden = true;
+  if (foot) foot.appendChild(err);
+  window.jpbShowErr = function(){ var E = window.jpbErrs || []; if (!E.length) return; err.hidden = false; err.textContent = "⚠ Something in the book broke: " + E.join(" · ") + ". Screenshot this for Deklan."; };
+  window.jpbShowErr();
   if (!("serviceWorker" in navigator) || window.claude) { note.textContent = "Build " + BUILD; return; }
   navigator.serviceWorker.register("sw.js?v=" + encodeURIComponent(BUILD)).then(function(){ return navigator.serviceWorker.ready; })
     .then(function(){ note.textContent = "✓ Saved on this device: works with no signal. Build " + BUILD; })
