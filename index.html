@@ -688,6 +688,25 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
 #home-card .tip{margin:0;border-width:0;border-top:1px solid var(--rule);border-radius:0}
 .news-line{appearance:none;display:block;width:100%;text-align:left;font:inherit;font-size:16px;padding:10px 12px;min-height:48px;border:0;border-top:1px solid var(--rule);background:none;color:var(--ink);cursor:pointer}
 .news-line .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--danger);margin-right:6px;vertical-align:1px}
+
+/* ===== stage 3: fraction pad, result actions, tape, test log, notes, shop ===== */
+.fpad{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px;margin-top:4px}
+.fpad button{appearance:none;min-height:46px;padding:0;font-family:var(--mono);font-weight:700;font-size:17px;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--zebra);color:var(--ink);cursor:pointer}
+.fpad button[aria-pressed="true"]{background:var(--k);color:var(--hv);border-color:var(--k)}
+@media (max-width:420px){.fpad{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.res-act{display:flex;flex-wrap:wrap;gap:8px;padding:8px 12px;border-top:1px solid var(--rule)}
+.res-act button{appearance:none;font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;min-height:44px;padding:2px 14px;border:var(--bw) solid var(--ctl);border-radius:var(--r);background:var(--sheet);color:var(--ink);cursor:pointer}
+.tape-item{border-top:1px solid var(--rule);padding:0 12px 10px}
+.tape-item pre,.tape-last{white-space:pre-wrap;font-family:var(--mono);font-size:15px;line-height:1.45;margin:4px 0 8px;padding:8px 10px;background:var(--zebra);border-radius:var(--r);color:var(--ink)}
+.tape-last{margin:4px 12px 8px}
+.tl-btns{padding:8px 12px 0}
+.card-note{margin:0;padding:8px 12px;background:color-mix(in srgb,var(--hv) 22%,var(--sheet));border-bottom:1px solid var(--rule);font-weight:600}
+.card-note b{font-family:var(--display);letter-spacing:.06em;text-transform:uppercase;margin-right:6px}
+.note-edit,.shop-bar{padding:10px 12px;border-bottom:1px solid var(--rule);background:var(--zebra)}
+.note-edit textarea{width:100%;font:inherit;font-size:17px;padding:8px 10px;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);color:var(--ink);margin-top:4px}
+.badge.shop{color:var(--sheet);background:var(--ink);border-color:var(--ink)}
+.shop-edit td[contenteditable]{outline:2px dashed var(--acc);outline-offset:-4px;background:var(--sheet)}
+td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 </style>
 </head>
 <body>
@@ -844,6 +863,21 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
     <div class="sec-head"><h2>Pinned cards</h2><small>Your shortcuts · saved on this device</small></div>
     <p class="note" id="pins-note">Tap the <b>☆</b> on any card's header to pin it here. Good for the five cards you open every day: your city, the offset calculator, your rough-in heights.</p>
   </section>
+  <section data-sec="notes" id="notes-help" data-kw="my notes card notes">
+    <div class="sec-head"><h2>My notes</h2><small>Your notes on any card · saved on this device</small></div>
+    <p class="note" id="notes-note">Open any card's <b>⋯</b> menu and pick <b>Add a note</b>: "Lehi inspector wants the test cap visible." Notes show on the card, turn up in search and go in your backup.</p>
+  </section>
+  <section data-sec="tape" id="tape-card" data-kw="results tape history saved results calculator answers copy share">
+    <div class="sec-head"><h2>Results tape</h2><small>Calculator answers you saved</small></div>
+    <div id="tape-list"></div>
+    <div class="set-btns"><button type="button" class="btn ghost" id="tape-copy">Copy all</button><button type="button" class="del" id="tape-clear">Clear the tape</button></div>
+    <p class="note">Tap <b>Add to tape</b> under any calculator's answer. The last 30 stay here on this device.</p>
+  </section>
+  <section data-sec="shop" id="shop-help" data-kw="my shop standards company rules override typical heights brands stub-out">
+    <div class="sec-head"><h2>My shop</h2><small>Your shop's numbers over "typical"</small></div>
+    <p class="note" id="shop-note">Your shop's standard beats "typical." On any table card, open <b>⋯</b> → <b>Edit for my shop</b>, tap a cell and type your shop's number. Edited cells show <span class="badge shop">SHOP</span> with the typical value under them. Cards you've edited show up here.</p>
+    <div class="set-btns"><button type="button" class="del" id="shop-reset">Reset all shop edits</button></div>
+  </section>
 
   <!-- ================= CALC ================= -->
     <section data-sec="home" id="home-card" data-kw="home start dashboard recent offline emergency my city">
@@ -874,7 +908,7 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
       <button type="button" data-go="mech|heaters|Water heater output"><b>Will the water heater keep up?</b><span>Service → Water heaters → Water heater output</span></button>
       <button type="button" data-go="mech|treat|Softener sizer"><b>What size softener?</b><span>Service → Treatment → Softener sizer</span></button>
       <button type="button" data-go="calc|water|Pressure at the fixture"><b>Long run: will the far fixture have pressure?</b><span>Flow → Pressure at the fixture</span></button>
-      <button type="button" data-go="inspect|phases|Leak or just cold?"><b>Air test gauge dropped overnight</b><span>Inspect → Tests → Leak or just cold?</span></button>
+      <button type="button" data-go="inspect|phases|Test log"><b>Air test gauge dropped overnight</b><span>Inspect → Tests → Test log</span></button>
     </div>
     </details>
   </section>
@@ -904,6 +938,7 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
         <tr id="ro-turn-row"><th>Turn fittings</th><td id="ro-turn" class="big">—</td><td class="sub">Roll both fittings this far off plumb, toward the roll side, so the cut piece aims at the new pipe.</td></tr>
       </tbody></table></div>
     <details class="math"><summary>Show the math</summary><ol id="ro-math"></ol></details>
+    <details class="more fold" id="ro-space-d"><summary>Space I have: will it fit?</summary>
     <div class="ro-fit">
       <div class="calc">
         <label for="ro-space"><span>Space I have <i>(along the pipe, between your two points)</i></span><span class="inch"><input id="ro-space" type="number" inputmode="decimal" min="0" step="any" placeholder="optional"><select id="ro-space-f" class="f16" aria-label="Space, extra sixteenths"></select></span></label>
@@ -912,6 +947,9 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
       <p class="note" id="ro-exact" hidden></p>
       <p class="note" id="ro-fit-note"><span class="badge why">WHY</span> Run is set by the offset and the fitting angle, so you can't pick it. Measure the space between your two points instead: whatever's left after the run is straight pipe, before or after the offset, wherever it's easiest.</p>
     </div>
+
+    </details>
+    <details class="more fold" id="ro-draw-d"><summary>Drawing: 3D and flat views</summary>
     <div class="ro-stage">
       <svg id="ro-3d" viewBox="0 0 440 270" tabindex="0" role="img" aria-roledescription="turnable 3D drawing" aria-label="3D view drawn to scale: Run 1, a red fitting, the blue cut piece rising at the fitting angle to a second red fitting, and Run 2 continuing. A magenta line shows the rise, a green line the roll, a purple dashed line the true offset and a dashed line the setback (run). Drag or use the arrow keys to turn it, plus and minus to zoom, 0 to reset."></svg>
       <div class="ro-view ro-views" role="group" aria-label="Look at it from">
@@ -924,6 +962,9 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
       </div>
       <div class="ro-key"><span><span class="sw fit"></span>fittings</span><span><span class="sw cut"></span>cut piece</span><span><span class="sw rise"></span>rise</span><span id="ro-key-roll"><span class="sw roll"></span>roll</span><span id="ro-key-tru"><span class="sw tru"></span>true offset</span><span><span class="sw run"></span>setback (run)</span><span><span class="sw ctr"></span>fitting center</span></div>
     </div>
+
+    </details>
+    <details class="more fold"><summary>Step by step</summary>
     <div class="x"><table class="t">
       <thead><tr><th>Step</th><th>Do this</th></tr></thead>
       <tbody id="ro-steps">
@@ -933,6 +974,11 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
         <tr><td class="n">4</td><td><span class="sw run"></span><b>Set fitting 2</b> one <b>run (setback)</b> farther along the pipe than fitting 1, center to center (the dots in the drawing).</td></tr>
         <tr><td class="n">5</td><td><span class="sw cut"></span><b>Cut the blue piece</b> to cut length. <span class="ro-roll-step">Roll both fittings the same amount, the <b>Turn fittings</b> angle off plumb, so it points straight at Run 2.</span> Dry-fit, then glue or solder.</td></tr>
       </tbody></table></div>
+
+    </details>
+  </section>
+  <section data-sec="layout" data-kw="offset multiplier multipliers 1.414 45 22.5 60 constant travel run by hand chart">
+    <div class="sec-head"><h2>Offset multipliers</h2><small>No typing: offset × this</small></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Fittings</th><th>Travel ×</th><th>Run ×</th></tr></thead>
       <tbody>
@@ -944,6 +990,7 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
         <tr><td>11¼°</td><td>5.126</td><td>5.027</td></tr>
       </tbody></table></div>
     <p class="note">By hand: <b>true offset × multiplier</b>. For a simple offset the true offset is just the offset.</p>
+
   </section>
   <section data-sec="layout" data-kw="cut length cut list center to center c-c take-off takeoff socket depth hub face pipe end nipple sticks waste kerf measure piece">
     <div class="sec-head"><h2>Cut length</h2><small>Measure → cut · build a cut list</small></div>
@@ -2751,8 +2798,30 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
     <div class="tick-foot"><span id="ck-count" aria-live="polite"></span><button type="button" class="linkish" id="ck-clear">Uncheck all</button></div>
     <p class="note">Typical items. Your city's list and your lead win.</p>
   </section>
-  <section data-sec="phases" data-kw="pressure test air test water test vacuum gauge hold psi">
-    <div class="sec-head"><h2>Test values</h2><small>Gauge or water column must hold</small></div>
+    <section data-sec="phases" data-kw="test log record pressure test hold time start stop dwv water supply gas vacuum test values how long psi head what must hold leak or just cold air test temperature cold drop gauge falling leak overnight winter shell pressure correction gas test">
+    <div class="sec-head"><h2>Test log</h2><small>Hold it · log it · leak or just cold?</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> an air test lost pressure overnight and you're not sure if it's a leak or just the house cooling down.</p><p><b>The idea:</b> air shrinks when it cools, so the gauge drops even with no leak. Enter the start pressure and the temperatures; it tells you what the gauge <i>should</i> read from cold alone. Lower than that = look for a leak.</p></div></details>
+    <div class="calc">
+      <label for="tl-type">Test<select id="tl-type"><option>DWV water test</option><option>DWV air test</option><option>DWV vacuum test</option><option>Water supply test</option><option>Gas test</option><option>Shower pan flood test</option></select></label>
+      <label for="tl-where" class="wide">Job / area <i>(optional)</i><input id="tl-where" type="text" autocomplete="off" placeholder="Lot 12 · upstairs baths"></label>
+    </div>
+    <div class="calc">
+      <label for="at-p">Test started at (psi)<input id="at-p" type="number" inputmode="decimal" min="0" step="any" value="80"></label>
+      <label for="at-t1">Pipe temp then (°F)<input id="at-t1" type="number" inputmode="decimal" step="any" value="60"></label>
+      <label for="at-t2">Pipe temp now (°F)<input id="at-t2" type="number" inputmode="decimal" step="any" value="30"></label>
+      <label for="at-now">Gauge reads now <i>(optional)</i><input id="at-now" type="number" inputmode="decimal" min="0" step="any" placeholder="psi"></label>
+      <label for="at-el">Elevation (ft)<input id="at-el" type="number" inputmode="numeric" min="0" step="any" value="4500"></label>
+    </div>
+    <div class="x"><table class="t out"><tbody>
+      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Cold alone would read</th><td id="at-exp" class="big">—</td><td class="sub" id="at-why">Same air, new temperature.</td></tr>
+      <tr><th>Verdict</th><td id="at-verdict" class="big">—</td><td class="sub">Enter what the gauge reads now.</td></tr>
+    </tbody></table></div>
+    <div class="set-btns tl-btns"><button type="button" class="btn" id="tl-start">Start test now</button><button type="button" class="btn ghost" id="tl-stop">Stop &amp; log it</button></div>
+    <p class="note" id="tl-run" aria-live="polite"></p>
+    <div id="tl-list"></div>
+    <details class="math"><summary>Show the math</summary><ol id="at-math"></ol></details>
+    <p class="note"><span class="badge why">WHY</span> Trapped air shrinks as it cools (gas law on <b>absolute</b> pressure: gauge + air pressure, ≈12.5 psi at 4,500 ft). A shell that cools 30°F overnight drops an 80 psi test about 5 psi with no leak at all, and a 5 psi DWV test about 1 psi, which is 20% of it. Sun on the pipe pushes it the other way. Read the gauge at the same temperature you set it at, or let this do the math. Still dropping more than this says? Soap the joints.</p>
+      <details class="more fold"><summary>Test values: what must hold, and for how long</summary>
     <div class="x"><table class="t wrap">
       <thead><tr><th>System</th><th>Method</th><th>Value</th><th>Hold</th></tr></thead>
       <tbody>
@@ -2766,23 +2835,8 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
         <tr><td>Gas</td><td>Air, nitrogen or CO₂, never oxygen</td><td class="n">1.5× working<br>≥3 psi</td><td class="n">10 min</td></tr>
       </tbody></table></div>
     <p class="note">Many Utah cities want gas at <b>5 psi for 15 min</b>. <span class="badge ut">UT</span> plastic air tests are capped: watch the gauge, stand clear, bleed down slowly. A joint can blow.</p>
-  </section>
-  <section data-sec="phases" data-kw="air test temperature cold drop gauge falling leak overnight winter shell pressure correction gas test">
-    <div class="sec-head"><h2>Leak or just cold?</h2><small>Air-test gauge vs. temperature</small></div>
-    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> an air test lost pressure overnight and you're not sure if it's a leak or just the house cooling down.</p><p><b>The idea:</b> air shrinks when it cools, so the gauge drops even with no leak. Enter the start pressure and the temperatures; it tells you what the gauge <i>should</i> read from cold alone. Lower than that = look for a leak.</p></div></details>
-    <div class="calc">
-      <label for="at-p">Test started at (psi)<input id="at-p" type="number" inputmode="decimal" min="0" step="any" value="80"></label>
-      <label for="at-t1">Pipe temp then (°F)<input id="at-t1" type="number" inputmode="decimal" step="any" value="60"></label>
-      <label for="at-t2">Pipe temp now (°F)<input id="at-t2" type="number" inputmode="decimal" step="any" value="30"></label>
-      <label for="at-now">Gauge reads now <i>(optional)</i><input id="at-now" type="number" inputmode="decimal" min="0" step="any" placeholder="psi"></label>
-      <label for="at-el">Elevation (ft)<input id="at-el" type="number" inputmode="numeric" min="0" step="any" value="4500"></label>
-    </div>
-    <div class="x"><table class="t out"><tbody>
-      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Cold alone would read</th><td id="at-exp" class="big">—</td><td class="sub" id="at-why">Same air, new temperature.</td></tr>
-      <tr><th>Verdict</th><td id="at-verdict" class="big">—</td><td class="sub">Enter what the gauge reads now.</td></tr>
-    </tbody></table></div>
-    <details class="math"><summary>Show the math</summary><ol id="at-math"></ol></details>
-    <p class="note"><span class="badge why">WHY</span> Trapped air shrinks as it cools (gas law on <b>absolute</b> pressure: gauge + air pressure, ≈12.5 psi at 4,500 ft). A shell that cools 30°F overnight drops an 80 psi test about 5 psi with no leak at all, and a 5 psi DWV test about 1 psi, which is 20% of it. Sun on the pipe pushes it the other way. Read the gauge at the same temperature you set it at, or let this do the math. Still dropping more than this says? Soap the joints.</p>
+  
+    </details>
   </section>
   <section data-sec="phases" data-kw="callback warranty leak punch nail screw plate pex crimp expansion propex gap belly sewer shower valve depth photo baseline prevent field tips pro tips rookie mistakes callback cap count test cap vent cap test plug ball rating up valve upside down crossover warm cold solvent joint hold drains capped debris overflow putty stone granite cabinet drawer baseboard roof flashing walk through photos shower arm drop ear bonnet solder pex ticking nails floor">
     <div class="sec-head"><h2>Habits that save callbacks</h2><small>From the trade, checked against the makers</small></div>
@@ -3292,6 +3346,7 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Oct 31, 2026 · field tools</th><td><b>New:</b> a ⅛–⅞ fraction pad under every inch box (no tiny dropdowns) · the Offset calculator is a third as long, with multipliers in their own card · Copy, Share and Add to tape under every calculator answer (Mine → Tape) · Test log: start a test, come back, log it with the leak-or-cold verdict and share it · notes on any card (⋯ → Add a note), searchable · My shop: put your shop's numbers over "typical" (⋯ → Edit for my shop).</td></tr>
         <tr><th>Oct 31, 2026 · new layout</th><td><b>New:</b> a Home screen (Emergency, your city, pinned, recent, offline status) and a 3-question setup · tabs are now Home · Calc · Build · Service · Trim, with Inspect, Contacts, Jobsite, Learn and Mine under More · the phone's Back button steps back through tabs, searches and sheets · every card has a ⋯ menu: copy link, share, print · Contacts gathers every phone list · one Weather card · See also links between explainers and field cards · search knows synonyms (PRV, T&amp;P, sillcock) and code sections (P3005.2) and shows the best 8 with tab chips · code edition is a real setting and the DFU counter says which code it used · Sun/Night follows your phone. <b>Fixed:</b> searching "flush…" no longer clears the box · weather no longer says "updated 9 min ago" under an error. <b>Merged:</b> Callback killers into Habits, etiquette into Get kept, 3 number cards into Numbers to know, 3 plan-scale cards into one, 9 tool cards into 3 (now in Learn).</td></tr>
         <tr><th>Oct 31, 2026</th><td><b>Added:</b> Joint tricks (sweat, tape, no-hub torque) · Compression &amp; flare · Shutdowns, leaks, freezes &amp; hammer · grade-on-a-level trick · 16 "Tricks" flashcards (they show up as tips of the day too).</td></tr>
         <tr><th>Oct 25, 2026 · night</th><td><b>Easier to read:</b> every text color is now at least 7:1 against its background in all 8 skins, light and dark (Night shift reds brighter, Steel and Red rock buttons darker) · small print on phones raised to 16 px · tape-measure boxes get the full row on phones (at 320 px the number box was too narrow to show what you typed) · header buttons and table links are 44 px+ to tap. <b>Sturdier:</b> if a script ever breaks, the footer now says what broke and where. <b>Under the hood:</b> 12 more repeated style rules merged, one helper for every button group.</td></tr>
@@ -3545,7 +3600,7 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
       <tbody>
         <tr><th>Rule of thumb</th><td>Water boils about <b>1°F lower per 500 ft</b> of elevation (the table uses the real air pressure, so it can differ by a degree).</td></tr>
         <tr><th>Hot water flashes</th><td>Inside a tank, pressure keeps water liquid well past boiling. Once it's out of the pipe, anything hotter than the local boiling point turns to steam. A runaway heater at 205°F in Salt Lake spits steam at faucets and the T&amp;P outlet. That's one reason the T&amp;P line ends low and in plain view.</td></tr>
-        <tr><th>Test gauges</th><td>Gauges read <b>psig</b>: zero is your local air pressure, so a 5 psi test means the same thing anywhere. Temperature still moves the needle: <b>Inspect → Tests → Leak or just cold?</b></td></tr>
+        <tr><th>Test gauges</th><td>Gauges read <b>psig</b>: zero is your local air pressure, so a 5 psi test means the same thing anywhere. Temperature still moves the needle: <b>Inspect → Tests → Test log</b></td></tr>
         <tr><th>Gas</th><td>Thinner air, less oxygen: appliances derate about 4% per 1,000 ft above 2,000 ft (<b>Calc → Sizing → Altitude derate</b>). Tankless altitude settings: <b>Service → Water heaters → Altitude settings</b>.</td></tr>
       </tbody></table></div>
   </section>
@@ -4359,7 +4414,7 @@ const GROUPS = {
   contacts:[["emergency","Call"],["techlines","Tech lines"],["houses","Supply houses"]],
   site:    [["wxnow","Weather"],["safety","Safety"]],
   learn:   [["start","Start here"],["how","How it works"],["facts","Fact file"],["study","Flashcards"],["words","Glossary"],["tools","Tools"],["career","License"]],
-  mine:    [["pins","Pinned"],["mine","My files"]]
+  mine:    [["pins","Pinned"],["notes","Notes"],["tape","Tape"],["shop","My shop"],["mine","My files"]]
 };
 const GNAME = {home:"Home",calc:"Calc",rough:"Build",mech:"Service",trim:"Trim",inspect:"Inspect",contacts:"Contacts",site:"Jobsite",learn:"Learn",mine:"Mine"};
 const MORE_G = ["inspect","contacts","site","learn","mine"];   /* phones: these live behind More */
@@ -4410,7 +4465,12 @@ const buildIdx = () => IDX = SECTIONS.map(sec => ({
 }));
 /* what the current tab shows. Mine → Pinned shows pinned cards from anywhere in the book. */
 function inView(sec){
-  if (nav.group === "mine") return nav.sub === "mine" ? sec.dataset.sec === "mine" : (sec.dataset.pin === "1" || sec.dataset.sec === "pins");
+  if (nav.group === "mine"){
+    if (nav.sub === "notes") return sec.dataset.note === "1" || sec.id === "notes-help";
+    if (nav.sub === "shop") return sec.dataset.shop === "1" || sec.id === "shop-help";
+    if (nav.sub === "tape" || nav.sub === "mine") return sec.dataset.sec === nav.sub;
+    return sec.dataset.pin === "1" || sec.dataset.sec === "pins";
+  }
   return sec.dataset.g === nav.group && nav.sub === sec.dataset.sec;
 }
 let roWasShown = false, roReady = false;
@@ -4571,7 +4631,7 @@ function pinNote(){
   $("pins-note").innerHTML = n ? `<b>${n}</b> pinned. Tap a gold <b>★</b> to unpin. Pins are saved on this device.` : `Tap the <b>☆</b> on any card's header to pin it here. Good for the cards you open every day: your city, the offset calculator, rough-in heights.`;
 }
 SECTIONS.forEach(sec => {
-  if (sec.dataset.sec === "pins" || sec.dataset.sec === "mine" || sec.id === "home-card") return;
+  if (["pins","mine","notes","tape","shop"].includes(sec.dataset.sec) || sec.id === "home-card") return;
   const id = sec.dataset.sec + ":" + slug(sec.querySelector("h2").textContent), head = sec.querySelector(".sec-head"), t = esc(sec.querySelector("h2").textContent);
   sec.dataset.pid = id; if (PINS.has(id)) sec.dataset.pin = "1";
   head.insertAdjacentHTML("beforeend", `<button type="button" class="pin" aria-pressed="${PINS.has(id)}" aria-label="Pin ${t} to Mine">${PINS.has(id) ? "★" : "☆"}</button><button type="button" class="cmenu" aria-haspopup="menu" aria-label="${t}: link, share, print">⋯</button>`);
@@ -4639,9 +4699,9 @@ const SEE = [["Why traps need vents","Venting rules"],["Six ways a trap loses it
   ["Why an expansion tank","Expansion tank"],["How a softener works","Softener install"],["How tankless works","Tankless setup"],["Static vs. flowing pressure","Pressure at the fixture"],
   ["How a T&P valve works","Water heater install"],["How a frost-free hose bibb works","Freeze protection"],["Why water hammer happens","Shutdowns, leaks, freezes & hammer"],
   ["Manifold vs trunk-and-branch","Water supply"],["Freeze protection","Shutdowns, leaks, freezes & hammer"],["Altitude: what changes up here","Altitude derate"],["Altitude: what changes up here","Altitude settings"],
-  ["Altitude derate","Altitude settings"],["Drains, vents & cleanouts","Venting rules"],["Tests & inspections","Test values"],["Utah's IRC amendments","2021 IPC quick reference"],["Gas piping & venting","Gas piping"],
+  ["Altitude derate","Altitude settings"],["Drains, vents & cleanouts","Venting rules"],["Tests & inspections","Test log"],["Utah's IRC amendments","2021 IPC quick reference"],["Gas piping & venting","Gas piping"],
   ["Water heaters","Water heater install"],["Mech room","Mech room map"],["Fixture & trim installs","Trim-out (finish): rest of the house"],["Pipe, fittings & joints","Joint tricks"],["Safety facts","Jobsite safety"],
-  ["Utah water rules & more","Utah water"],["Leak or just cold?","Test values"],["Compression & flare","Thread types"],["Expansion tank","Mech room trouble"]];
+  ["Utah water rules & more","Utah water"],["Compression & flare","Thread types"],["Expansion tank","Mech room trouble"]];
 { const byT = t => SECTIONS.find(s => s.querySelector("h2").textContent.trim() === t), links = new Map();
   SEE.forEach(([a, b]) => { const A = byT(a), B = byT(b); if (!A || !B) return; [[A, B], [B, A]].forEach(([x, y]) => { if (!links.has(x)) links.set(x, []); if (!links.get(x).includes(y)) links.get(x).push(y); }); });
   links.forEach((ys, x) => x.insertAdjacentHTML("beforeend", `<p class="note see-also"><b class="see-k">See also</b> ${ys.map(y => `<button type="button" class="linkish" data-see="${y.dataset.pid}">${esc(y.querySelector("h2").textContent)} <span aria-hidden="true">›</span></button>`).join(" ")}</p>`));
@@ -5976,7 +6036,7 @@ function jumpToSec(sec, focusId, noPush){
   requestAnimationFrame(() => {
     sec.scrollIntoView({block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
     const f = focusId && $(focusId); const h = sec.querySelector("h2");
-    if (f){ setTimeout(() => f.focus({preventScroll: true}), 350); }
+    if (f){ for (let p = f.parentElement; p; p = p.parentElement) if (p.tagName === "DETAILS") p.open = true; setTimeout(() => f.focus({preventScroll: true}), 350); }
     else { h.tabIndex = -1; h.focus({preventScroll: true}); }
     sec.classList.add("flash"); setTimeout(() => sec.classList.remove("flash"), 1200);
   });
@@ -6485,7 +6545,7 @@ const CARDS = [
   ["Math","Feet of head from 30 psi?","≈69 ft (psi × 2.31)","Turn it around: 1 psi holds up 1 ÷ 0.433 = 2.31 ft of water."],
   ["Math","Gallons in 100 ft of ¾\" PEX?","≈2 (½\" ≈ 1, 1\" ≈ 3)","It tells you how long you'll wait for hot water and how much water fills a line for a test."],
   ["Math","BTU to heat 1 gallon 1°F?","8.34","That's what a BTU is: the heat to warm 1 lb of water 1°F. A gallon weighs 8.34 lb."],
-  ["Tests","80 psi air test set at 60°F; the shell cools to 30°F. Is a 5 psi drop a leak?","Not by itself: the cold alone drops it about 5 psi. Check with Inspect → Tests → Leak or just cold?","Trapped air loses pressure as it cools. Use absolute temperature (°F + 460) and absolute pressure, and the cold alone explains about 5 psi."],
+  ["Tests","80 psi air test set at 60°F; the shell cools to 30°F. Is a 5 psi drop a leak?","Not by itself: the cold alone drops it about 5 psi. Check with Inspect → Tests → Test log","Trapped air loses pressure as it cools. Use absolute temperature (°F + 460) and absolute pressure, and the cold alone explains about 5 psi."],
   ["Utah","Pipe color for pressurized irrigation (PI)?","Purple (blue = potable, green = sewer)","Colors stop someone from tapping untreated water thinking it's drinking water."],
   ["Utah","Navien NPE-2 altitude setting at 4,500 ft?","Installer menu 1.2.14 → 2 (2,000–5,400 ft)","Thinner air up here. The setting matches fan speed and gas to the air so it burns clean."],
   ["Utah","Softener regen drain connects how?","Through an air gap to an indirect receptor","Without the air gap, a sewer backup could siphon into the softener and on into the house water."],
@@ -6855,6 +6915,152 @@ gaugeDraw();
   $("news-go").addEventListener("click", () => { store.set("jpb-news", NEWS); $("news-dot").hidden = true; jumpTo("learn", "start", "What's new"); });
 }
 
+/* ---------- tape fractions by tap: a ⅛–⅞ pad under any inch box while you're in it (no tiny dropdowns with gloves on) ---------- */
+{ const pad = document.createElement("div"); pad.className = "fpad"; pad.setAttribute("role", "group"); pad.setAttribute("aria-label", "Add a fraction"); pad.hidden = true;
+  pad.innerHTML = [[0,"+0"],[2,"⅛"],[4,"¼"],[6,"⅜"],[8,"½"],[10,"⅝"],[12,"¾"],[14,"⅞"],["+1","+¹⁄₁₆"]].map(([n, t]) => `<button type="button" data-n="${n}">${t}</button>`).join("");
+  let sel = null;
+  const mark = () => pad.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.n === sel.value)));
+  document.addEventListener("focusin", e => {
+    const box = e.target.closest && e.target.closest(".inch"); if (!box) return;
+    const s = box.querySelector("select.f16"); if (!s) return;
+    sel = s; box.after(pad); pad.hidden = false; mark();
+  });
+  pad.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b || !sel) return;
+    sel.value = String(b.dataset.n === "+1" ? Math.min(15, +sel.value + 1) : +b.dataset.n);
+    ["change", "input"].forEach(t => sel.dispatchEvent(new Event(t, {bubbles: true}))); mark();
+  });
+}
+{ const dr = $("ro-draw-d"); if (dr) dr.addEventListener("toggle", () => { if (dr.open && roReady) roCalc(); });
+  const sp = $("ro-space-d"); if (sp && $("ro-space").value) sp.open = true; }
+
+/* ---------- copy / share / tape for every calculator answer ---------- */
+function calcText(sec){
+  const lines = [sec.querySelector("h2").textContent.toUpperCase()];
+  sec.querySelectorAll(".calc label").forEach(l => {
+    if (l.closest("[hidden]") || l.closest("details:not([open])")) return;
+    const c = l.cloneNode(true); c.querySelectorAll("input,select,.fpad,i").forEach(x => x.remove());
+    const name = c.textContent.replace(/\s+/g, " ").trim(); if (!name) return;
+    const inp = l.querySelector("input:not([type=checkbox]),select:not(.f16)"); if (!inp) return;
+    let v = inp.tagName === "SELECT" ? (inp.selectedOptions[0] || {}).textContent || "" : inp.value.trim();
+    const f = l.querySelector("select.f16"); if (f && +f.value) v = (v || "0") + " " + f.selectedOptions[0].textContent.replace("+", "") + '"';
+    if (v) lines.push(`${name}: ${v}`);
+  });
+  lines.push("—");
+  const ans = sec.querySelector(".ans"); if (ans) lines.push(ans.innerText.replace(/\s*\n\s*/g, " · ").trim());
+  sec.querySelectorAll(".out").forEach(t => { if (t.closest("details:not([open])")) return; t.querySelectorAll("tr").forEach(r => { if (r.hidden) return;
+    const th = r.querySelector("th"), td = r.querySelector("td.big"); if (th && td && td.textContent.trim() && td.textContent.trim() !== "—") lines.push(`${th.textContent.trim()}: ${td.innerText.replace(/\s*\n\s*/g, " · ").trim()}`); }); });
+  return lines.join("\n") + "\n(Utah Plumbers Digital Handbook)";
+}
+let TAPE = (a => Array.isArray(a) ? a.filter(x => x && typeof x.text === "string").slice(0, 30) : [])(store.get("jpb-tape", []));
+function tapeDraw(){
+  $("tape-list").innerHTML = TAPE.length ? TAPE.map((x, i) => `<div class="tape-item"><p class="card-h">${esc(new Date(x.t).toLocaleString([], {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"}))}</p><pre>${esc(x.text)}</pre><div class="set-btns"><button type="button" class="btn ghost" data-tc="${i}">Copy</button><button type="button" class="del" data-td="${i}">Remove</button></div></div>`).join("")
+    : `<p class="note">Nothing on the tape yet.</p>`;
+}
+async function copyText(t, ok){ try { await navigator.clipboard.writeText(t); toast(ok || "Copied."); } catch(e){ prompt("Copy this:", t); } }
+SECTIONS.forEach(sec => {
+  if (sec.dataset.g === "site" || !sec.querySelector(".out tr.hit, .ans")) return;
+  const anchor = sec.querySelector(".ans") || sec.querySelector(".out tr.hit").closest(".x");
+  anchor.insertAdjacentHTML("afterend", `<div class="res-act"><button type="button" data-ra="copy">Copy</button>${navigator.share ? `<button type="button" data-ra="share">Share</button>` : ""}<button type="button" data-ra="tape">Add to tape</button></div>`);
+});
+document.addEventListener("click", async e => {
+  const b = e.target.closest(".res-act button"); if (!b) return;
+  const sec = b.closest("section"), t = calcText(sec);
+  if (b.dataset.ra === "copy") copyText(t, "Copied. Paste it in a text.");
+  else if (b.dataset.ra === "share"){ try { await navigator.share({title: sec.querySelector("h2").textContent, text: t}); } catch(err){} }
+  else { TAPE.unshift({t: Date.now(), text: t}); TAPE = TAPE.slice(0, 30); store.set("jpb-tape", TAPE); tapeDraw(); if (window.homeDraw) homeDraw(); toast("On the tape: <b>Mine → Tape</b>.", 2200); }
+});
+$("tape-list").addEventListener("click", e => {
+  const c = e.target.closest("[data-tc]"), r = e.target.closest("[data-td]");
+  if (c) copyText(TAPE[+c.dataset.tc].text);
+  if (r){ TAPE.splice(+r.dataset.td, 1); store.set("jpb-tape", TAPE); tapeDraw(); }
+});
+$("tape-copy").addEventListener("click", () => TAPE.length && copyText(TAPE.map(x => x.text).join("\n\n"), "Whole tape copied."));
+$("tape-clear").addEventListener("click", () => { if (!TAPE.length || !confirm("Clear the whole tape?")) return; TAPE = []; store.set("jpb-tape", TAPE); tapeDraw(); });
+tapeDraw();
+
+/* ---------- test log: start a test, come back, log it with the leak-or-cold verdict ---------- */
+{ let run = store.get("jpb-tl-run", null), log = (a => Array.isArray(a) ? a.slice(0, 40) : [])(store.get("jpb-tl", []));
+  const when = t => new Date(t).toLocaleString([], {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
+  const span = ms => { const m = Math.round(ms / 60000); return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`; };
+  const text = x => [`${x.type}${x.where ? " · " + x.where : ""}`, `Start ${x.start ? when(x.start) : "—"}: ${x.p} psi, pipe ${x.t1}°F`,
+    `End ${when(x.end)}${x.start ? ` (${span(x.end - x.start)})` : ""}: ${x.now} psi, pipe ${x.t2}°F`, `Cold alone would read ${x.exp}. ${x.verdict}`, "(Utah Plumbers Digital Handbook test log)"].join("\n");
+  const draw = () => {
+    $("tl-run").innerHTML = run ? `<b>Running:</b> ${esc(run.type)}${run.where ? " · " + esc(run.where) : ""}, started ${when(run.start)} at ${esc(String(run.p))} psi, ${esc(String(run.t1))}°F. Come back, enter the pipe temp now and the gauge, then <b>Stop &amp; log it</b>.` : "Tap <b>Start test now</b> when the gauge is set. Photo the gauge too.";
+    $("tl-list").innerHTML = log.length ? `<p class="card-h">Logged tests</p>` + log.map((x, i) => `<div class="tape-item"><pre>${esc(text(x))}</pre><div class="set-btns"><button type="button" class="btn ghost" data-lc="${i}">Copy</button>${navigator.share ? `<button type="button" class="btn ghost" data-ls="${i}">Share</button>` : ""}<button type="button" class="del" data-ld="${i}">Remove</button></div></div>`).join("") : "";
+  };
+  $("tl-start").addEventListener("click", () => {
+    run = {start: Date.now(), type: $("tl-type").value, where: $("tl-where").value.trim(), p: $("at-p").value, t1: $("at-t1").value};
+    store.set("jpb-tl-run", run); draw(); say("Test started");
+  });
+  $("tl-stop").addEventListener("click", () => {
+    if (!$("at-now").value.trim()){ toast("Enter what the gauge reads now first.", 2400); $("at-now").focus(); return; }
+    const x = Object.assign(run || {start: 0, type: $("tl-type").value, where: $("tl-where").value.trim(), p: $("at-p").value, t1: $("at-t1").value},
+      {end: Date.now(), now: $("at-now").value, t2: $("at-t2").value, exp: $("at-exp").innerText.split("\n")[0], verdict: "Verdict: " + $("at-verdict").innerText.trim().replace(/\s*\n\s*/g, ". ").replace(/\s+/g, " ")});
+    log.unshift(x); log = log.slice(0, 40); run = null; store.set("jpb-tl", log); store.set("jpb-tl-run", null); draw(); toast("Logged. Copy or share it below.", 2200);
+  });
+  $("tl-list").addEventListener("click", async e => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.lc) copyText(text(log[+b.dataset.lc]));
+    if (b.dataset.ls) try { await navigator.share({title: "Test log", text: text(log[+b.dataset.ls])}); } catch(err){}
+    if (b.dataset.ld){ log.splice(+b.dataset.ld, 1); store.set("jpb-tl", log); draw(); }
+  });
+  draw();
+}
+
+/* ---------- my notes on cards, and my shop's numbers over "typical" ---------- */
+let NOTES = (o => o && typeof o === "object" && !Array.isArray(o) ? o : {})(store.get("jpb-notes", {}));
+let SHOP = (o => o && typeof o === "object" && !Array.isArray(o) ? o : {})(store.get("jpb-shop", {}));
+const shopCells = sec => [...sec.querySelectorAll("tbody td")].filter(td => { const tb = td.closest("tbody"); return !td.closest(SKIP) && (!tb.id || /^(fact-|list-)/.test(tb.id)); });
+function noteDraw(sec){
+  sec.querySelectorAll(":scope > .card-note").forEach(n => n.remove());
+  const t = NOTES[sec.dataset.pid];
+  sec.dataset.note = t ? "1" : ""; sec.dataset.extra = t || "";
+  if (t) sec.querySelector(".sec-head").insertAdjacentHTML("afterend", `<p class="card-note"><b>My note</b> ${esc(t)}</p>`);
+}
+function shopDraw(sec){
+  const o = SHOP[sec.dataset.pid] || {}, cells = shopCells(sec);
+  cells.forEach((td, i) => {
+    if (td.dataset.orig == null) td.dataset.orig = td.innerHTML;
+    if (o[i] != null){ td.classList.add("shop-cell"); td.innerHTML = `<span class="badge shop">SHOP</span> ${esc(o[i])}<div class="sub">Typical: ${esc(td.dataset.origText || (td.dataset.origText = (() => { const x = document.createElement("div"); x.innerHTML = td.dataset.orig; return x.textContent.trim(); })()))}</div>`; }
+    else if (td.classList.contains("shop-cell")){ td.classList.remove("shop-cell"); td.innerHTML = td.dataset.orig; bindPn(td); }
+  });
+  sec.dataset.shop = Object.keys(o).length ? "1" : "";
+}
+SECTIONS.forEach(sec => { if (!sec.dataset.pid) return; if (NOTES[sec.dataset.pid]) noteDraw(sec); if (SHOP[sec.dataset.pid]) shopDraw(sec); });
+window.noteMenu = sec => (sec.dataset.pid ? `<button type="button" role="menuitem" data-c="note">${NOTES[sec.dataset.pid] ? "Edit my note" : "Add a note"}</button>` : "")
+  + (sec.dataset.pid && shopCells(sec).length ? `<button type="button" role="menuitem" data-c="shop">Edit for my shop</button>` : "");
+window.noteAct = (c, sec) => {
+  const pid = sec.dataset.pid;
+  if (c === "note"){
+    if (sec.querySelector(".note-edit")) return;
+    noteDraw(sec); const old = sec.querySelector(":scope > .card-note"); if (old) old.remove();
+    sec.querySelector(".sec-head").insertAdjacentHTML("afterend", `<div class="note-edit"><label class="sel">My note<textarea rows="3" maxlength="600" placeholder="Lehi inspector wants the test cap visible."></textarea></label><div class="set-btns"><button type="button" class="btn" data-n="save">Save note</button><button type="button" class="btn ghost" data-n="cancel">Cancel</button>${NOTES[pid] ? `<button type="button" class="del" data-n="del">Delete note</button>` : ""}</div></div>`);
+    const ed = sec.querySelector(".note-edit"), ta = ed.querySelector("textarea"); ta.value = NOTES[pid] || ""; ta.focus();
+    ed.addEventListener("click", e => { const b = e.target.closest("button[data-n]"); if (!b) return;
+      if (b.dataset.n === "save"){ const v = ta.value.trim(); if (v) NOTES[pid] = v; else delete NOTES[pid]; }
+      if (b.dataset.n === "del") delete NOTES[pid];
+      if (b.dataset.n !== "cancel"){ store.set("jpb-notes", NOTES); IDX = null; }
+      ed.remove(); noteDraw(sec); if (nav.group === "mine") apply(); });
+  }
+  if (c === "shop"){
+    if (sec.classList.contains("shop-edit")) return;
+    const o = SHOP[pid] || {}, cells = shopCells(sec);
+    sec.classList.add("shop-edit");
+    cells.forEach((td, i) => { if (td.dataset.orig == null) td.dataset.orig = td.innerHTML; td.contentEditable = "true"; td.textContent = o[i] != null ? o[i] : (() => { const x = document.createElement("div"); x.innerHTML = td.dataset.orig; return x.textContent.trim(); })(); });
+    sec.querySelector(".sec-head").insertAdjacentHTML("afterend", `<div class="shop-bar"><b>Editing for your shop.</b> Tap a cell and type. <div class="set-btns"><button type="button" class="btn" data-s="done">Done</button><button type="button" class="del" data-s="reset">Back to typical</button></div></div>`);
+    const bar = sec.querySelector(".shop-bar");
+    bar.addEventListener("click", e => { const b = e.target.closest("button[data-s]"); if (!b) return;
+      const next = {};
+      if (b.dataset.s === "done") cells.forEach((td, i) => { const x = document.createElement("div"); x.innerHTML = td.dataset.orig; const v = td.textContent.trim(); if (v && v !== x.textContent.trim()) next[i] = v; });
+      cells.forEach(td => { td.contentEditable = "false"; td.removeAttribute("contenteditable"); td.innerHTML = td.dataset.orig; td.classList.remove("shop-cell"); });
+      if (Object.keys(next).length) SHOP[pid] = next; else delete SHOP[pid];
+      store.set("jpb-shop", SHOP); sec.classList.remove("shop-edit"); bar.remove(); shopDraw(sec); bindPn(sec); IDX = null;
+      toast(Object.keys(next).length ? `Saved ${Object.keys(next).length} shop value${Object.keys(next).length > 1 ? "s" : ""}.` : "Back to typical.", 2000); });
+  }
+};
+$("shop-reset").addEventListener("click", () => { if (!Object.keys(SHOP).length || !confirm("Reset every shop edit back to typical?")) return; SHOP = {}; store.set("jpb-shop", SHOP); SECTIONS.forEach(s => { if (s.dataset.shop === "1") shopDraw(s); }); bindPn(); IDX = null; apply(); });
+
 /* ---------- Home: offline status, emergency, my city, pinned, recent ---------- */
 function offState(){
   if (window.claude) return {cls: "off-warn", t: `Online copy (claude.ai). <a href="${BOOK_URL}" target="_blank" rel="noopener">The GitHub book ↗</a> saves itself for no-signal use.`};
@@ -6875,6 +7081,7 @@ function homeDraw(){
     </div>
     ${c ? `<div class="home-city"><p class="card-h">My city · ${esc(c.n)} <button type="button" class="linkish" data-hg="contacts|emergency|My city">Change</button></p><table class="t wrap"><tbody><tr><th>Book inspections</th><td>${c.book}</td></tr><tr><th>Water / sewer trouble</th><td>${c.after || NOAFTER}</td></tr></tbody></table></div>`
         : `<p class="note"><button type="button" class="linkish" data-hg="contacts|emergency|My city">Set my city</button> for inspection booking, trouble lines, hardness and frost depth.</p>`}
+    ${TAPE.length ? `<p class="card-h">Last on the tape <button type="button" class="linkish" data-hg="mine|tape">All</button></p><pre class="tape-last">${esc(TAPE[0].text.split("\n").slice(0, 4).join("\n"))}</pre>` : ""}
     ${pins.length ? `<p class="card-h">Pinned</p><div class="chips home-chips">${pins.map(s => `<button type="button" data-see="${s.dataset.pid}">★ ${esc(s.querySelector("h2").textContent)}</button>`).join("")}</div>` : ""}
     ${places.length || RECENT.qs.length ? `<p class="card-h">Recent</p><div class="chips home-chips">${places.map(([g, s]) => `<button type="button" data-hg="${g}|${s}">${GNAME[g]} › ${esc(sub(g, s)[1])}</button>`).join("")}${RECENT.qs.map(q => `<button type="button" data-hq="${esc(q)}">🔍 ${esc(q)}</button>`).join("")}</div>` : ""}`;
   bindPn($("home-body"));
@@ -7456,7 +7663,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-10-31b";
+var BUILD = "handbook-2026-10-31c";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
