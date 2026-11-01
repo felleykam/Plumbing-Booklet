@@ -297,6 +297,22 @@ details.math li::marker{font-weight:700;color:var(--muted)}
 .t.pf input{min-width:3.1rem;padding:6px 5px}
 .t select{font-family:var(--mono);font-weight:600;font-size:17px;padding:6px 6px;min-height:52px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%;min-width:0}
 .t.pf th i{font-style:normal;text-transform:none;letter-spacing:0}
+.cut{margin:0;padding:10px 12px;border-top:1px solid var(--rule);background:var(--d-bg)}
+.cut svg{display:block;width:100%;max-width:440px;height:auto;margin:0 auto}
+.cut figcaption{max-width:440px;margin:6px auto 0;font-size:15px;color:var(--d-text)}
+.lang-bar{display:flex;justify-content:flex-end;padding:6px 12px 0}
+.lang-btn{min-height:44px;padding:6px 14px;border:var(--bw) solid var(--edge);border-radius:999px;background:var(--sheet);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.lang-btn[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.lang-warn{background:var(--hi);color:var(--hi-ink)}
+.ex{padding:0 12px 12px}
+.ex-q{font-size:19px;font-weight:700;margin:8px 0 12px}
+.ex-opts{display:grid;gap:8px}
+.ex-opts button{min-height:48px;padding:10px 12px;text-align:left;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);color:var(--ink);font:inherit;cursor:pointer}
+.ex-opts button.right{border-color:var(--ok);box-shadow:inset 6px 0 0 var(--ok);font-weight:700}
+.ex-opts button.wrong{border-color:var(--danger);box-shadow:inset 6px 0 0 var(--danger)}
+.ex-why{margin:10px 0;padding:10px 12px;border-left:6px solid var(--acc);background:var(--zebra)}
+.ex-review{margin:0 12px 12px;padding-left:20px}
+.ex-review li{margin:0 0 10px}
 .calc-svg{display:block;width:100%;max-width:560px;height:auto;margin:0 auto;background:var(--d-bg)}
 .ts-hint{border-top:0}
 #cl-rows .x-del,.t .x-del,.tk .x-del{appearance:none;width:48px;height:48px;border:var(--bw) solid var(--ctl);border-radius:var(--r);background:var(--sheet);color:var(--danger);font-size:18px;font-weight:800;cursor:pointer}
@@ -1229,6 +1245,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="sizing" data-kw="gas pipe size sizing cfh btu longest length schedule 40 black iron steel table appliance load furnace range dryer fireplace">
     <div class="sec-head"><h2>Gas line sizer</h2><small>Sch 40 steel · under 2 psi · 0.5" w.c. drop</small></div>
+    <p class="flag">Steel pipe only. <b>CSST</b> (the yellow or black jacketed flex) is sized from its maker's own tables, and each brand bonds differently: <a href="https://www.gastite.com/" target="_blank" rel="noopener">Gastite ↗</a> · <a href="https://www.omegaflex.com/" target="_blank" rel="noopener">TracPipe (OmegaFlex) ↗</a> · <a href="https://www.wardmfg.com/" target="_blank" rel="noopener">WardFlex ↗</a>.</p>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> adding an appliance or a tankless, or checking that a gas line is big enough.</p><p><b>The idea:</b> add the nameplate BTUs of everything on the line, divide by 1,000 to get cubic feet an hour (CFH), then read the code table at the <b>longest</b> run from the meter. That one length sizes every section (the longest-length method). Too small and appliances starve at full fire.</p></div></details>
     <div class="x"><table class="t">
       <thead><tr><th>Appliance</th><th>Nameplate BTU/h</th></tr></thead>
@@ -1478,7 +1495,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   
     </details>
   </section>
-  <section data-sec="plans" data-kw="plan take-off takeoff tally total pipe length footage estimate add up runs sticks how much pipe order material list scale measure plan feet waste">
+  <section data-sec="plans" data-kw="pick list material list order supply house fittings count straps hangers plan take-off takeoff tally total pipe length footage estimate add up runs sticks how much pipe order material list scale measure plan feet waste">
     <div class="sec-head"><h2>Plan take-off</h2><small>Add up runs off the plan</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you're estimating how much pipe a job needs from the plans.</p><p><b>The idea:</b> measure each run on paper, the app converts to real length, totals by pipe type, adds waste, and tells you how many sticks to order. Add the vertical stuff yourself: a floor plan never shows it.</p></div></details>
     <div class="mode" id="pt-kind" role="group" aria-label="How you measured it">
@@ -1502,6 +1519,16 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </div>
     <div class="x"><table class="t num"><thead><tr><th>Pipe</th><th>On plan</th><th>To order</th><th>Sticks</th></tr></thead><tbody id="pt-sum"></tbody></table></div>
     <p class="note"><span class="badge why">WHY</span> A floor plan only shows pipe running flat. Stacks, drops to fixtures and risers don't show up, so add them with <b>Real length</b> (a stack is about one story, 9–10 ft, per floor). Every cut leaves a scrap and offsets around framing add length the plan doesn't draw: that's what the waste allowance covers. An estimate for ordering, not a cut list: cut from field measurements.</p>
+      <p class="card-h">Fittings for the pick list</p>
+    <div class="calc">
+      <label for="pk-type">Fitting<select id="pk-type"><option>¼ bend (90)</option><option>⅛ bend (45)</option><option>Long-sweep ¼ bend</option><option>Sanitary tee</option><option>Wye</option><option>Combo (wye + ⅛)</option><option>Cleanout adapter + plug</option><option>Coupling</option><option>Reducer / bushing</option><option>P-trap</option><option>Closet flange</option><option>Test cap / plug</option><option>Tee</option><option>Elbow 90</option><option>Elbow 45</option><option>Drop-ear elbow</option><option>Stub-out / stop</option><option>Manifold port</option><option>Hanger / strap</option><option>Nail plate</option></select></label>
+      <label for="pk-size">Size<input id="pk-size" type="text" list="pt-pipes" autocomplete="off" maxlength="30" placeholder="2&quot; ABS"></label>
+      <label for="pk-n">How many<input id="pk-n" type="number" inputmode="numeric" min="1" max="999" step="1" value="1"></label>
+      <button type="button" class="btn" id="pk-add">+ Add fitting</button>
+    </div>
+    <div class="x"><table class="t"><tbody id="pk-rows"></tbody></table></div>
+    <div class="set-btns" style="padding:0 12px 12px"><button type="button" class="btn" id="pk-copy">Copy pick list</button><button type="button" class="btn ghost" id="pk-share">Share</button><button type="button" class="del" id="pk-clear">Clear fittings</button></div>
+    <p class="note">The pick list = pipe to order (sticks), these fittings, and a strap count from the support spacing (horizontal: PVC/ABS 4 ft, CPVC 3 ft, copper 6 ft up to 1¼", PEX 32"; IPC Table 308.5). Text it to the supply house.</p>
   </section>
   <section data-sec="plans" data-kw="plan abbreviation symbol blueprint drawing legend">
     <div class="sec-head"><h2>Plan abbreviations</h2><small>Reading plumbing plans</small></div>
@@ -1807,6 +1834,26 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Roof used by people</th><td>At least 7 ft above a roof used for recreation or gatherings.</td></tr>
         <tr><th><span class="badge ut">UT</span>Low dry vents</th><td>Houses (Utah IRC P3104.4): floor drains and floor sinks only, below grade, with a wall cleanout in the vertical vent. Utah IPC 905.4 also allows tubs.</td></tr>
       </tbody></table></div>
+  </section>
+  <section data-sec="vents" data-kw="vent size sizing calculator stack vent vent stack developed length dfu individual vent branch vent half the drain 40 feet table 906.1">
+    <div class="sec-head"><h2>Vent size</h2><small>2021 IPC Table 906.1 · 906.2</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Stack vents and vent stacks</b> are sized from the stack size, the DFU on it and how far the vent runs to open air (developed length). <b>Other vents</b> (individual, branch, circuit) are at least half the drain they serve, never under 1¼", and one size bigger if they run over 40 ft.</p></div></details>
+    <div class="calc">
+      <label for="vs-stack">Stack size<select id="vs-stack"><option value="1.25">1¼"</option><option value="1.5">1½"</option><option value="2">2"</option><option value="2.5">2½"</option><option value="3" selected>3"</option><option value="4">4"</option></select></label>
+      <label for="vs-dfu">DFU on the stack<input id="vs-dfu" type="number" inputmode="numeric" min="1" step="1" value="20"></label>
+      <label for="vs-len">Vent developed length (ft)<input id="vs-len" type="number" inputmode="decimal" min="1" step="any" value="40"></label>
+    </div>
+    <div class="x"><table class="t out"><tbody>
+      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Stack vent / vent stack</th><td id="vs-ans" class="big">—</td><td class="sub" id="vs-why">Table 906.1</td></tr>
+    </tbody></table></div>
+    <div class="calc">
+      <label for="vs-drain">Other vents: drain they serve<select id="vs-drain"><option value="1.25">1¼"</option><option value="1.5">1½"</option><option value="2" selected>2"</option><option value="3">3"</option><option value="4">4"</option></select></label>
+      <label for="vs-len2">That vent's developed length (ft)<input id="vs-len2" type="number" inputmode="decimal" min="0" step="any" value="20"></label>
+    </div>
+    <div class="x"><table class="t out"><tbody>
+      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Individual / branch vent</th><td id="vs-ans2" class="big">—</td><td class="sub">½ the drain, min 1¼", +1 size over 40 ft (906.2)</td></tr>
+    </tbody></table></div>
+    <p class="note">Houses are inspected to the IRC (P3113), which sizes vents the same way in most cases; check the table your inspector uses. Developed length is measured from the vent connection to open air. Don't size a vent smaller than the code allows for its own section, even if the table would.</p>
   </section>
   <section data-sec="vents" data-kw="radon pipe passive radon system soil gas vent label not a plumbing vent slab sub-slab mitigation riser">
     <div class="sec-head"><h2>Radon pipe isn't a plumbing vent</h2><small>Utah DEQ guidance</small></div>
@@ -2209,6 +2256,15 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <details class="math"><summary>Show the math</summary><ol id="wh-math"></ol></details>
     <p class="note">Plan on <b>40°F</b> incoming water in a Utah winter (Rheem's northern-state guidance). Tank sizing goes by <b>first-hour rating</b> (gallons it can deliver in the busiest hour, on the label), not just tank size. Tankless: add up the gpm of fixtures that run at the same time.</p>
   </section>
+  <section data-sec="heaters" data-kw="water heater size sizing first hour rating fhr peak hour demand how big tank tankless gpm showers family">
+    <div class="sec-head"><h2>Water heater size</h2><small>Peak-hour demand → first-hour rating</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> picking a tank. Count what the house does in its busiest hour (usually morning). The tank's <b>first hour rating</b> (top left of the yellow EnergyGuide label) should be at least that many gallons (U.S. DOE).</p></div></details>
+    <div class="x"><table class="t dfu"><thead><tr><th>In the busiest hour</th><th>Gal each</th><th>How many</th></tr></thead><tbody id="whs-rows"></tbody></table></div>
+    <div class="x"><table class="t out"><tbody>
+      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Peak-hour demand</th><td id="whs-ans" class="big">—</td><td class="sub">Pick a first hour rating at least this big.</td></tr>
+    </tbody></table></div>
+    <p class="note">Gallons per use from the U.S. DOE sizing worksheet. Tankless: add the gpm of everything that runs at once (DOE says plan on at least 3.25 gpm through the heater) at a 70°F rise (50°F in, 120°F out); <b>Service → Water heaters → Water heater output</b> checks a unit. Utah's cold winter water and altitude cut tankless output: check the derate.</p>
+  </section>
   <section data-sec="heaters" data-kw="hot water last how long shower run out tank minutes mixing valve 140 tempering hot share first hour recovery sizing big tub">
     <div class="sec-head"><h2>Hot water that lasts</h2><small>How long before the shower goes cold</small></div>
     <div class="calc">
@@ -2401,6 +2457,25 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note">Chart: Amtrol Therm-X-Trol, with the air charge set to house pressure. <b>Learn → How it works → Why an expansion tank</b> shows how fast pressure climbs without one.</p>
   </section>
+  <section data-sec="hotwater" data-kw="expansion tank size sizing calculator thermal expansion gallons acceptance precharge closed system relief">
+    <div class="sec-head"><h2>Expansion tank size</h2><small>Thermal expansion → tank volume</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> the house has a check valve, PRV or backflow device (a closed system) and you want to know if a 2-gallon tank is enough. Water grows as it heats; the tank's air cushion has to swallow that growth before pressure reaches the relief valve.</p></div></details>
+    <div class="calc">
+      <label for="et-gal">Heater size (gal)<input id="et-gal" type="number" inputmode="decimal" min="1" step="any" value="50"></label>
+      <label for="et-t1">Cold water in (°F)<input id="et-t1" type="number" inputmode="decimal" step="any" value="50"></label>
+      <label for="et-t2">Heater set (°F)<input id="et-t2" type="number" inputmode="decimal" step="any" value="140"></label>
+      <label for="et-p1">House pressure (psi)<input id="et-p1" type="number" inputmode="decimal" min="0" step="any" value="60"></label>
+      <label for="et-p2">Max allowed (psi)<input id="et-p2" type="number" inputmode="decimal" min="1" step="any" value="150"></label>
+      <label for="et-el">Elevation (ft)<input id="et-el" type="number" inputmode="numeric" min="0" step="any" value="4500"></label>
+    </div>
+    <div class="x"><table class="t out"><tbody>
+      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Minimum tank size</th><td id="et-ans" class="big">—</td><td class="sub" id="et-pick">—</td></tr>
+      <tr><th>Water growth</th><td id="et-exp" class="big">—</td><td class="sub">Cold to hot, for the tank's water.</td></tr>
+      <tr><th>Acceptance</th><td id="et-af" class="big">—</td><td class="sub">Share of the tank that can take water before max psi.</td></tr>
+    </tbody></table></div>
+    <details class="math"><summary>Show the math</summary><ol id="et-math"></ol></details>
+    <p class="note">Precharge the tank's air to the house pressure. Max allowed: usually the T&amp;P relief setting (150 psi); use a lower number to keep a margin. Water density by temperature from standard tables; method: tank = expansion ÷ (1 − P house ÷ P max), absolute pressures. Check the maker's sizing chart for the tank you buy.</p>
+  </section>
   <section data-sec="hotwater" data-kw="mixing valve thermostatic asse 1017 1016 1070 scald burn time 140 130 120 legionella tempering anti scald set point">
     <div class="sec-head"><h2>Hot enough, not too hot</h2><small>Scald vs. germs</small></div>
     <div class="x"><table class="t num">
@@ -2418,7 +2493,49 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Kids &amp; elders</th><td>Thin skin burns faster than the table. That's why the limit stop matters.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="mechfix" data-kw="troubleshooting mech room symptom no hot water lukewarm rotten egg smell sulfur popping rumbling t&amp;p dripping softener hard water salt not going down brine tank full of water low pressure resin beads tankless shutting off cold sandwich expansion tank">
+    <section data-sec="mechfix" data-kw="service call troubleshooting running toilet phantom flush ghost flush slow drain clog clogged snake auger plunger cleanout no hot water not enough hot water lukewarm low pressure low flow sewer smell sewer gas rotten egg noisy pipes banging ticking whistling rumbling">
+    <div class="sec-head"><h2>Service calls: first checks</h2><small>Symptom → what to check, in order</small></div>
+    <p class="note" style="border-top:0">Start with the cheap, likely thing. Every fold-out is in the order you'd check it on a call.</p>
+    <details class="more fold"><summary>Running toilet / phantom flush</summary>
+<ol class="steps"><li><b>Dye test:</b> a few drops of food coloring in the tank, wait 10 min. Color in the bowl = flapper or flush-valve seal leaking (EPA WaterSense). A fill valve that turns on by itself means the tank is losing water that way (Fluidmaster).</li><li><b>Water into the overflow?</b> Level is too high or the fill valve won't shut off. Set the water about ½" below the top of the overflow pipe with the float screw (Fluidmaster).</li><li><b>Chain:</b> about ½" of slack. Too tight holds the flapper open; too long catches under it.</li><li><b>Clean the flapper and seat.</b> Still leaking: new flapper or flush valve. Warped or chewed flapper + blue water = in-tank bleach tablets (Trim → Trim-out).</li><li><b>Refill tube:</b> clipped to the overflow pipe, not shoved down inside it, or it can siphon the tank.</li></ol>
+    </details>
+    <details class="more fold"><summary>Slow drain or clog</summary>
+<ol class="steps"><li><b>One fixture or many?</b> One slow fixture = its trap or branch. Several low fixtures (tub, floor drain, basement toilet) backing up = the building drain or sewer.</li><li><b>Lav or tub:</b> pull the stopper first; hair on the pop-up rod is the usual clog. Then the trap.</li><li><b>Plunger:</b> cup for sinks (plug the overflow or the other bowl), flange for toilets. Toilet that won't clear: closet auger, not a cable machine through the china.</li><li><b>Snake:</b> match the cable to the pipe (small cables for 1¼–2" lines, bigger cables for 3–4"; the machine maker's chart rules). Go in through a cleanout or the trap arm, not through a lav overflow.</li><li><b>Main line:</b> open the cleanout slowly and stand to the side. Sewage can be stacked up behind it.</li><li><b>Ask about drain cleaner first.</b> If they poured some in, gloves and eye protection before you open anything.</li><li><b>Comes back?</b> Camera it: bellies, roots, a broken hub or a flat section.</li></ol>
+    </details>
+    <details class="more fold"><summary>No hot water, or not enough</summary>
+<ol class="steps"><li><b>Gas tank:</b> read the status light first (Service → Error codes). Gas on? Pilot lit? Knob on, temperature not on vacation/low?</li><li><b>Electric tank:</b> breaker, then the high-limit (ECO) reset under the upper cover. No hot at all = upper element or upper thermostat; hot runs out fast = lower element (Bradford White service chart).</li><li><b>Not enough:</b> setting too low, sediment or lime on the elements, broken dip tube, or the hot and cold connections reversed (Bradford White).</li><li><b>Tankless:</b> read the code. Hard water: scale (flush with the isolation valves). Low flow at one fixture may be under the unit's minimum to fire.</li><li><b>Lukewarm at one fixture, fine elsewhere:</b> that valve's cartridge or anti-scald limit stop. Lukewarm everywhere with the heater fine: a crossover (Inspect → Tests checklist has the check).</li></ol>
+    </details>
+    <details class="more fold"><summary>Low pressure</summary>
+<ol class="steps"><li><b>One fixture or the whole house?</b> One fixture: aerator or showerhead screen, the cartridge, a half-closed stop.</li><li><b>Whole house:</b> gauge on a hose bibb. Low static: main valve partly closed, a failing PRV, or the city side. Good static but it drops hard with flow: undersized or restricted pipe, a clogged filter or softener.</li><li><b>Hot only:</b> heater inlet valve, sediment, a stuck check or mixing valve, or a recirc pump problem.</li><li><b>Right after work on the system:</b> debris in aerators and cartridges. Pull and flush them.</li></ol>
+    </details>
+    <details class="more fold"><summary>Sewer smell</summary>
+<ol class="steps"><li><b>Dry trap:</b> floor drains, unused showers and basement drains lose their seal. Run water in every drain; a trap primer or a floor-drain seal keeps it.</li><li><b>Toilet:</b> rocks or smells at the base = failed wax or a broken flange.</li><li><b>Vent:</b> a cracked or disconnected vent in the attic or wall, a stuck air admittance valve, a vent capped from rough, or one blocked by frost or a nest.</li><li><b>Only the hot water smells like rotten eggs:</b> sulfate bacteria react with the tank's anode. Fix with the maker's alternative anode or a powered anode, never by pulling the anode out: that voids the warranty (Water Technology).</li></ol>
+    </details>
+    <details class="more fold"><summary>Noisy pipes</summary>
+<ol class="steps"><li><b>Bang when a valve shuts:</b> water hammer. Check static pressure (over 80 psi needs a PRV) and add ASSE 1010 arresters (Service → Troubleshoot → Shutdowns, leaks, freezes &amp; hammer).</li><li><b>Ticking as hot water runs:</b> pipe expanding against framing or a tight strap. Oversize holes, isolators, looser straps on hot lines.</li><li><b>Whistle or hum:</b> a fill valve or a partly closed valve. Open it fully or replace it.</li><li><b>Rumble or pop from a gas tank:</b> sediment. Flush it; if it's bad, the tank may be near the end.</li></ol>
+    </details>
+    <p class="note">Sources: EPA WaterSense, Fluidmaster install sheets, Bradford White electric service chart, Water Technology (anodes). Your shop's process and the maker's manual win.</p>
+  </section>
+  <section data-sec="codes" data-kw="error code fault code navien e003 e012 e016 e030 e110 e515 e760 tankless blinking">
+    <div class="sec-head"><h2>Navien tankless codes</h2><small>NPE series · from the Navien manual</small></div>
+    <div class="x"><table class="t"><tbody><tr data-search="e003 ignition failure is the main gas valve open?"><th class="k">E003</th><td><b>Ignition failure</b><div class="sub">Is the main gas valve open?</div></td></tr><tr data-search="e004 false flame detection is the cord properly grounded?"><th class="k">E004</th><td><b>False flame detection</b><div class="sub">Is the cord properly grounded?</div></td></tr><tr data-search="e012 flame loss clean the intake air filter; check the ground."><th class="k">E012</th><td><b>Flame loss</b><div class="sub">Clean the intake air filter; check the ground.</div></td></tr><tr data-search="e016 heat exchanger overheating off 30 min, restart; clean the cold inlet filter; flush the heat exchanger."><th class="k">E016</th><td><b>Heat exchanger overheating</b><div class="sub">Off 30 min, restart; clean the cold inlet filter; flush the heat exchanger.</div></td></tr><tr data-search="e030 exhaust overheating (flue over 149°f) off 30 min, restart; clean the inlet filter; flush."><th class="k">E030</th><td><b>Exhaust overheating (flue over 149°F)</b><div class="sub">Off 30 min, restart; clean the inlet filter; flush.</div></td></tr><tr data-search="e046 limit control call navien tech support."><th class="k">E046</th><td><b>Limit control</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e047 exhaust thermostat call navien tech support."><th class="k">E047</th><td><b>Exhaust thermostat</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e109 fan motor clean the intake air filter."><th class="k">E109</th><td><b>Fan motor</b><div class="sub">Clean the intake air filter.</div></td></tr><tr data-search="e110 abnormal air pressure exhaust clear? clean the intake air filter."><th class="k">E110</th><td><b>Abnormal air pressure</b><div class="sub">Exhaust clear? Clean the intake air filter.</div></td></tr><tr data-search="e407 hot outlet thermistor open or short call navien tech support."><th class="k">E407</th><td><b>Hot outlet thermistor open or short</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e421 cold inlet thermistor open or short call navien tech support."><th class="k">E421</th><td><b>Cold inlet thermistor open or short</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e438 circulation pump external recirc: supply and return lines open? internal: check the 2-way valve direction."><th class="k">E438</th><td><b>Circulation pump</b><div class="sub">External recirc: supply and return lines open? Internal: check the 2-way valve direction.</div></td></tr><tr data-search="e439 flow sensor call navien tech support."><th class="k">E439</th><td><b>Flow sensor</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e515 pcb is the cord properly grounded?"><th class="k">E515</th><td><b>PCB</b><div class="sub">Is the cord properly grounded?</div></td></tr><tr data-search="e517 dip switch setting call navien tech support."><th class="k">E517</th><td><b>DIP switch setting</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e760 flushing / service alarm time to flush and service the unit."><th class="k">E760</th><td><b>Flushing / service alarm</b><div class="sub">Time to flush and service the unit.</div></td></tr></tbody></table></div>
+    <p class="note">Codes and first checks from the Navien NPE operation manual. Not listed or still there: Navien tech support <span class="pn">1-800-519-8794</span>. Other Navien series use some different codes: read the unit's own manual.</p>
+  </section>
+  <section data-sec="codes" data-kw="error code fault code rinnai 10 11 12 14 16 25 lc tankless diagnostic">
+    <div class="sec-head"><h2>Rinnai tankless codes</h2><small>From Rinnai's diagnostic code guide</small></div>
+    <div class="x"><table class="t"><tbody><tr data-search="05 bypass flow control fault measure the bypass device (44–52 ω); check the air filter and vent."><th class="k">05</th><td><b>Bypass flow control fault</b><div class="sub">Measure the bypass device (44–52 Ω); check the air filter and vent.</div></td></tr><tr data-search="10 air or vent restriction condensate draining? clean the inlet filter; inspect intake and exhaust."><th class="k">10</th><td><b>Air or vent restriction</b><div class="sub">Condensate draining? Clean the inlet filter; inspect intake and exhaust.</div></td></tr><tr data-search="11 no ignition gas on and inlet pressure, igniter spark, flame rod loose or fouled."><th class="k">11</th><td><b>No ignition</b><div class="sub">Gas on and inlet pressure, igniter spark, flame rod loose or fouled.</div></td></tr><tr data-search="12 flame failure (often exhaust being re-ingested) inlet gas pressure, vent clearances and length, electrode and rod tight."><th class="k">12</th><td><b>Flame failure (often exhaust being re-ingested)</b><div class="sub">Inlet gas pressure, vent clearances and length, electrode and rod tight.</div></td></tr><tr data-search="14 overheat / thermal fuse gas type matches the plate, the gas-solenoid dip switch off, clearances, overheat switch harness."><th class="k">14</th><td><b>Overheat / thermal fuse</b><div class="sub">Gas type matches the plate, the gas-solenoid DIP switch OFF, clearances, overheat switch harness.</div></td></tr><tr data-search="16 over-temperature / airflow at terminal or fan vent terminal airflow, fan, check valve behind the fan, heat exchanger blockage."><th class="k">16</th><td><b>Over-temperature / airflow at terminal or fan</b><div class="sub">Vent terminal airflow, fan, check valve behind the fan, heat exchanger blockage.</div></td></tr><tr data-search="19 electrical short (dc), no flame unplug components one at a time and cycle to find the short."><th class="k">19</th><td><b>Electrical short (DC), no flame</b><div class="sub">Unplug components one at a time and cycle to find the short.</div></td></tr><tr data-search="25 condensate float switch tripped pump power, drain clogged or frozen, wiring, air gap in the drain."><th class="k">25</th><td><b>Condensate float switch tripped</b><div class="sub">Pump power, drain clogged or frozen, wiring, air gap in the drain.</div></td></tr><tr data-search="32–34 thermistor / temperature sensor fault harness, scale on the sensor, resistance vs. the typical values. 34: also gas type, dip switches, manifold pressure."><th class="k">32–34</th><td><b>Thermistor / temperature sensor fault</b><div class="sub">Harness, scale on the sensor, resistance vs. the typical values. 34: also gas type, DIP switches, manifold pressure.</div></td></tr><tr data-search="47 recirc flow under 1.3 gpm valves open, filters clean, pump running."><th class="k">47</th><td><b>Recirc flow under 1.3 gpm</b><div class="sub">Valves open, filters clean, pump running.</div></td></tr><tr data-search="61 recirculation setup fault recirc dip switches for the system type; bypass plug and filter set up right; bleed air; valves open."><th class="k">61</th><td><b>Recirculation setup fault</b><div class="sub">Recirc DIP switches for the system type; bypass plug and filter set up right; bleed air; valves open.</div></td></tr><tr data-search="63 air or a leak in the recirc loop bleed air; look for leaks when the pump runs."><th class="k">63</th><td><b>Air or a leak in the recirc loop</b><div class="sub">Bleed air; look for leaks when the pump runs.</div></td></tr><tr data-search="71 solenoid valve fault (sv0–sv3) service procedure in the rinnai guide."><th class="k">71</th><td><b>Solenoid valve fault (SV0–SV3)</b><div class="sub">Service procedure in the Rinnai guide.</div></td></tr><tr data-search="lc# scale warning flush the heat exchanger; check hardness and consider treatment. confirm in the unit's manual."><th class="k">LC#</th><td><b>Scale warning</b><div class="sub">Flush the heat exchanger; check hardness and consider treatment. Confirm in the unit's manual.</div></td></tr></tbody></table></div>
+    <p class="note">From Rinnai's "Troubleshooting TWH Diagnostic Codes" guide; follow its full service steps and safety notes. Maker tech lines: <b>Contacts → Tech lines</b>.</p>
+  </section>
+  <section data-sec="codes" data-kw="bradford white icon gas valve status light flashes blinking led codes water heater">
+    <div class="sec-head"><h2>Bradford White ICON status light</h2><small>Atmospheric gas tanks · flashes, then a 3 s pause</small></div>
+    <div class="x"><table class="t"><tbody><tr data-search="no light pilot not lit"><th>No light</th><td>Pilot not lit</td></tr><tr data-search="1 flash, 3 s pause normal: pilot on, thermostat satisfied"><th>1 flash, 3 s pause</th><td>Normal: pilot on, thermostat satisfied</td></tr><tr data-search="2 quick flashes normal: calling for heat"><th>2 quick flashes</th><td>Normal: calling for heat</td></tr><tr data-search="light on steady knob is off: wait for the light to go out before relighting"><th>Light on steady</th><td>Knob is OFF: wait for the light to go out before relighting</td></tr><tr data-search="2 flashes, 3 s pause weak pilot signal: weak or unlit pilot, low thermopile output, loose valve wiring"><th>2 flashes, 3 s pause</th><td>Weak pilot signal: weak or unlit pilot, low thermopile output, loose valve wiring</td></tr><tr data-search="3 flashes no temperature rise in time: temperature probe or valve cover, or water flowing through"><th>3 flashes</th><td>No temperature rise in time: temperature probe or valve cover, or water flowing through</td></tr><tr data-search="4 flashes high tank temperature: probe, or the water really is too hot"><th>4 flashes</th><td>High tank temperature: probe, or the water really is too hot</td></tr><tr data-search="5 flashes thermostat sensor fault: probe"><th>5 flashes</th><td>Thermostat sensor fault: probe</td></tr><tr data-search="6 flashes leak detected by the accessory module (if one is installed)"><th>6 flashes</th><td>Leak detected by the accessory module (if one is installed)</td></tr><tr data-search="7 flashes gas valve fault: replace the valve"><th>7 flashes</th><td>Gas valve fault: replace the valve</td></tr><tr data-search="8 flashes pilot stays lit with the knob off: gas pressure or a failed valve"><th>8 flashes</th><td>Pilot stays lit with the knob OFF: gas pressure or a failed valve</td></tr></tbody></table></div>
+    <p class="note">From Bradford White's ICON quick service guide. Power-vent and other models use different controls.</p>
+  </section>
+  <section data-sec="codes" data-kw="a.o. smith ao smith state american rheem ruud richmond status light blinking codes gas valve">
+    <div class="sec-head"><h2>A.O. Smith, Rheem and others</h2><small>Read the label, not the internet</small></div>
+    <p class="note" style="border-top:0">These brands use several different gas controls, and the same flash count can mean different things on different valves. The flash chart is on a label on the gas valve or the jacket, and in the manual for that model number. <span class="badge why">WHY</span> A forum chart for the wrong valve sends you after the wrong part. Maker tech lines are in <b>Contacts → Tech lines</b>; have the model and serial ready (Service → Troubleshoot → Water heater age).</p>
+  </section>
+<section data-sec="mechfix" data-kw="troubleshooting mech room symptom no hot water lukewarm rotten egg smell sulfur popping rumbling t&amp;p dripping softener hard water salt not going down brine tank full of water low pressure resin beads tankless shutting off cold sandwich expansion tank">
     <div class="sec-head"><h2>Mech room trouble</h2><small>Symptom → likely cause</small></div>
     <div class="x"><table class="t cards">
       <thead><tr><th>Symptom</th><th>Likely cause</th><th>Check</th></tr></thead>
@@ -3051,7 +3168,8 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <section data-sec="emergency" data-kw="gas smell odor rotten egg leak 911 injury poison fumes power line">
     <div class="sec-head"><h2>Emergency</h2><small>Tap to call · hold to copy</small></div>
     <p class="note" style="border-top:0;border-bottom:1px solid var(--rule)">Maker tech-support lines (Moen, Rheem, Navien and about 40 more) are in <b>Contacts → Tech lines</b>.</p>
-    <div class="x"><table class="t">
+    <div class="lang-bar"><button type="button" class="lang-btn" aria-pressed="false">Español</button></div>
+    <div class="lang-en"><div class="x"><table class="t">
       <tbody>
         <tr><th>Emergency</th><td><span class="pn">911</span><div class="sub">Fire, injury, or a gas leak you can smell.</div></td></tr>
         <tr><th>Gas leak</th><td><span class="pn">1-800-767-1689</span><div class="sub">Enbridge Gas, 24/7. Smell gas? Get everyone out first, then call from outside. No switches, no lighters. Strong smell or fire: 911.</div></td></tr>
@@ -3060,7 +3178,18 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Serious injury at work</th><td><span class="pn">801-530-6901</span><div class="sub">UOSH (Utah OSHA). Report a death, hospital admission or serious injury <b>within 8 hours</b>. Your employer usually reports it.</div></td></tr>
         <tr><th>Unsafe job site</th><td><span class="pn">1-800-530-5090</span> <span class="pn">801-530-6901</span><div class="sub">UOSH, imminent danger. Federal OSHA <span class="pn">1-800-321-6742</span>; Utah runs its own plan, so UOSH comes first.</div></td></tr>
         <tr><th>Unpaid wages</th><td><span class="pn">801-530-6801</span><div class="sub">Utah Labor Commission, wage claims. M–F 8a–5p.</div></td></tr>
-      </tbody></table></div>
+      </tbody></table></div></div>
+    <div class="lang-es" lang="es" hidden><p class="note lang-warn" lang="es">Borrador en español: pídale a alguien que hable español con fluidez que lo revise. <span lang="en">Spanish draft: needs a check by a fluent speaker.</span></p><div class="x"><table class="t">
+      <tbody>
+        <tr><th>Emergencia</th><td><span class="pn">911</span><div class="sub">Incendio, lesión o una fuga de gas que se huele.</div></td></tr>
+        <tr><th>Fuga de gas</th><td><span class="pn">1-800-767-1689</span><div class="sub">Enbridge Gas, 24/7. ¿Huele a gas? Saque a todos primero y llame desde afuera. No prenda interruptores ni encendedores. Olor fuerte o fuego: 911.</div></td></tr>
+        <tr><th>Control de envenenamiento</th><td><span class="pn">1-800-222-1222</span><div class="sub">24/7. Salpicadura o vapores de primer, cemento, fundente o químicos.</div></td></tr>
+        <tr><th>Cable de luz caído</th><td><span class="pn">1-877-508-5088</span><div class="sub">Rocky Mountain Power, apagones y cables caídos, 24/7. O mande OUT al 759677.</div></td></tr>
+        <tr><th>Lesión grave en el trabajo</th><td><span class="pn">801-530-6901</span><div class="sub">UOSH (OSHA de Utah). Reporte una muerte, hospitalización o lesión grave <b>en menos de 8 horas</b>. Normalmente lo reporta el patrón.</div></td></tr>
+        <tr><th>Obra insegura</th><td><span class="pn">1-800-530-5090</span> <span class="pn">801-530-6901</span><div class="sub">UOSH, peligro inminente. OSHA federal <span class="pn">1-800-321-6742</span>; Utah tiene su propio plan, así que UOSH va primero.</div></td></tr>
+        <tr><th>Salario no pagado</th><td><span class="pn">801-530-6801</span><div class="sub">Comisión Laboral de Utah, reclamos de salario. L–V 8a–5p.</div></td></tr>
+      </tbody></table></div></div>
+
   </section>
 <section data-sec="emergency" data-kw="my city pick city inspection booking frost depth pi secondary water hardness phone building after hours water">
     <div class="sec-head mc-head"><h2>My city</h2><small>Pick once · saved on this phone</small></div>
@@ -3278,9 +3407,29 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   
     </details>
   </section>
-  <section data-sec="safety">
+    <section data-sec="safety" data-kw="heat illness heat stroke heat exhaustion hydrate water attic summer asbestos vermiculite zonolite old house trench cave in carbon monoxide spillage draft test gfci temporary power calor asbesto zanja">
+    <div class="sec-head"><h2>Heat, asbestos, spillage, power</h2><small>The ones that put people in the hospital</small></div>
+    <div class="lang-bar"><button type="button" class="lang-btn" aria-pressed="false">Español</button></div>
+    <div class="lang-en"><div class="x"><table class="t"><tbody>
+        <tr><th>Heat</th><td>About 1 liter of water an hour (a cup every 15 min), rest in shade or AC. New or back from time off: 20% of a full load day 1, add no more than 20% a day; it can take 14 days. <b>Heat exhaustion</b> (headache, nausea, dizzy, heavy sweat): out of the heat, cool water, cold cloths, don't leave them alone. <b>Heat stroke</b> (confused, collapses, seizure, may stop sweating): <b>call 911</b>, cool them fast with water and air (OSHA).</td></tr>
+        <tr><th>Asbestos</th><td>Older houses: pipe and boiler wrap, and gray-brown or silver-gold pebble vermiculite in the attic (Zonolite). <b>Assume it's asbestos.</b> Don't cut, sand, scrape or sweep it; stop and tell your lead. Removal is for trained, accredited crews only (EPA).</td></tr>
+        <tr><th>Trench</th><td>5 ft or deeper: shore, shield or slope. A ladder within 25 ft once it's 4 ft deep. Spoil 2 ft back from the edge (OSHA 1926.651–.652).</td></tr>
+        <tr><th>After gas heater work</th><td>Spillage test: doors and windows closed, exhaust fans on high, fireplace damper shut. Run the main burner 5 min, then hold a match, candle or smoke at the draft-hood opening. Pulled in = drafting. Pushed out = <b>spilling</b>: shut it down and fix the vent (IFGC Appendix D).</td></tr>
+        <tr><th>Temp power</th><td>120 V 15/20 A temporary outlets need GFCI protection (or the employer's assured grounding program). Test the GFCI before you plug in, especially in a wet crawlspace (OSHA 1926.404).</td></tr>
+      </tbody></table></div></div>
+    <div class="lang-es" lang="es" hidden><p class="note lang-warn" lang="es">Borrador en español: pídale a alguien que hable español con fluidez que lo revise. <span lang="en">Spanish draft: needs a check by a fluent speaker.</span></p><div class="x"><table class="t"><tbody>
+        <tr><th>Calor</th><td>Aproximadamente 1 litro de agua por hora (un vaso cada 15 min); descanse en sombra o con aire acondicionado. Si es nuevo o regresa después de un tiempo fuera: 20% de la carga normal el día 1 y no más de 20% adicional por día; puede tardar 14 días. <b>Agotamiento por calor</b> (dolor de cabeza, náusea, mareo, mucho sudor): sáquelo del calor, agua fresca, paños fríos, no lo deje solo. <b>Golpe de calor</b> (confusión, se desmaya, convulsiones, puede dejar de sudar): <b>llame al 911</b> y enfríelo rápido con agua y aire (OSHA).</td></tr>
+        <tr><th>Asbesto</th><td>Casas viejas: aislamiento de tubería o caldera, y vermiculita en el ático (piedritas gris-café o plata-dorado, marca Zonolite). <b>Asuma que es asbesto.</b> No lo corte, lije, raspe ni barra; pare y avísele a su jefe. Solo cuadrillas entrenadas y acreditadas lo quitan (EPA).</td></tr>
+        <tr><th>Zanja</th><td>5 pies o más: apuntalar, escudo o talud. Escalera a menos de 25 pies cuando tiene 4 pies de hondo. Tierra a 2 pies del borde (OSHA 1926.651–.652).</td></tr>
+        <tr><th>Después de trabajar en un calentador de gas</th><td>Prueba de derrame: puertas y ventanas cerradas, extractores al máximo, chimenea cerrada. Deje el quemador 5 min y ponga un cerillo, vela o humo en la abertura de la campana. Si lo jala = tira bien. Si lo empuja hacia afuera = <b>derrama</b>: apáguelo y arregle la ventilación (IFGC Apéndice D).</td></tr>
+        <tr><th>Corriente temporal</th><td>Los enchufes temporales de 120 V, 15/20 A necesitan protección GFCI (o el programa de tierra del patrón). Pruebe el GFCI antes de conectar, sobre todo en un sótano mojado (OSHA 1926.404).</td></tr>
+      </tbody></table></div></div>
+    <p class="note">Sources: OSHA heat illness guidance, EPA asbestos and vermiculite pages, OSHA 1926.404 and .651–.652, IFGC Appendix D.</p>
+  </section>
+<section data-sec="safety">
     <div class="sec-head"><h2>Jobsite safety</h2><small>OSHA 1926</small></div>
-    <div class="x"><table class="t">
+    <div class="lang-bar"><button type="button" class="lang-btn" aria-pressed="false">Español</button></div>
+    <div class="lang-en"><div class="x"><table class="t">
       <thead><tr><th>Hazard</th><th>Rule</th><th>§</th></tr></thead>
       <tbody>
         <tr><td>Trench 5 ft+</td><td>Shore, shield or slope (unless stable rock). Under 5 ft too if the competent person sees cave-in risk.</td><td class="k">.652</td></tr>
@@ -3292,16 +3441,38 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td>Torch</td><td>Clear or shield combustibles, extinguisher in reach, fire watch during and after (1 hr per NFPA 51B)</td><td class="k">.352</td></tr>
         <tr><td>Primer / cement</td><td>Very flammable vapor: ventilate, no flame, goggles, gloves</td><td class="k">SDS</td></tr>
               <tr><td>Silica cleanup</td><td>No dry sweeping or blowing concrete dust with air: HEPA vac or wet. Drill with shroud + dust collector: no respirator needed. Handheld saw indoors: respirator (APF 10) even with water</td><td class="k">.1153</td></tr>
-</tbody></table></div>
+</tbody></table></div></div>
+    <div class="lang-es" lang="es" hidden><p class="note lang-warn" lang="es">Borrador en español: pídale a alguien que hable español con fluidez que lo revise. <span lang="en">Spanish draft: needs a check by a fluent speaker.</span></p><div class="x"><table class="t">
+      <thead><tr><th>Peligro</th><th>Regla</th><th>§</th></tr></thead>
+      <tbody>
+        <tr><td>Zanja de 5 pies+</td><td>Apuntalar, escudo o talud (a menos que sea roca estable). Menos de 5 pies también, si la persona competente ve riesgo de derrumbe.</td><td class="k">.652</td></tr>
+        <tr><td>Zanja de 4 pies+</td><td>Escalera o rampa a menos de 25 pies</td><td class="k">.651(c)</td></tr>
+        <tr><td>Cualquier zanja</td><td>La persona competente la inspecciona cada día y después de lluvia</td><td class="k">.651(k)</td></tr>
+        <tr><td>Caída de 6 pies+</td><td>Barandal, red o arnés</td><td class="k">.501</td></tr>
+        <tr><td>Escalera</td><td>3 pies arriba del descanso o asegurada</td><td class="k">.1053</td></tr>
+        <tr><td>Polvo de concreto</td><td>Sierra: agua. Taladro: cubierta + HEPA. Barreno de núcleo: agua.</td><td class="k">.1153</td></tr>
+        <tr><td>Soplete</td><td>Quite o proteja lo que arde, extintor a la mano, vigilancia de fuego durante y después (1 hora según NFPA 51B)</td><td class="k">.352</td></tr>
+        <tr><td>Primer / cemento</td><td>Vapor muy inflamable: ventile, sin flama, gafas, guantes</td><td class="k">SDS</td></tr>
+        <tr><td>Limpieza de sílice</td><td>No barra en seco ni sople polvo de concreto con aire: aspiradora HEPA o mojado. Taladro con cubierta + colector: no necesita respirador. Sierra de mano adentro: respirador (APF 10) aunque use agua</td><td class="k">.1153</td></tr>
+      </tbody></table></div></div>
+
   </section>
   <section data-sec="safety" data-kw="your body hearing loss ear plugs noise 85 dba knees knee pads bursitis kneeling sewer germs tetanus hepatitis wash hands boots health">
     <div class="sec-head"><h2>Your body</h2><small>It has to last 40 years</small></div>
-    <div class="x"><table class="t">
+    <div class="lang-bar"><button type="button" class="lang-btn" aria-pressed="false">Español</button></div>
+    <div class="lang-en"><div class="x"><table class="t">
       <tbody>
         <tr><th>Ears</th><td>About <b>1 in 4</b> noise-exposed workers building new houses have hearing loss (CDC, 2025). NIOSH limit: 85 dBA for 8 hours, half the time for every 3 dB louder. Plug in for hammer drills, saws and the compressor. It doesn't grow back.</td></tr>
         <tr><th>Knees</th><td>Shaped pads that spread the load, not flat foam; a mat for long trim days. A swollen, squishy kneecap (bursitis) means change how you kneel now.</td></tr>
         <tr><th>Sewer work</th><td>Keep tetanus current. Wash before you eat, drink or smoke, cover cuts, change boots before the truck. Ask your doctor about hepatitis A and B (CDC).</td></tr>
-      </tbody></table></div>
+      </tbody></table></div></div>
+    <div class="lang-es" lang="es" hidden><p class="note lang-warn" lang="es">Borrador en español: pídale a alguien que hable español con fluidez que lo revise. <span lang="en">Spanish draft: needs a check by a fluent speaker.</span></p><div class="x"><table class="t">
+      <tbody>
+        <tr><th>Oídos</th><td>Aproximadamente <b>1 de cada 4</b> trabajadores expuestos a ruido en construcción de casas tiene pérdida de oído (CDC, 2025). Límite de NIOSH: 85 dBA por 8 horas, la mitad del tiempo por cada 3 dB más. Use tapones con rotomartillos, sierras y el compresor. El oído no se recupera.</td></tr>
+        <tr><th>Rodillas</th><td>Rodilleras con forma que reparten la carga, no espuma plana; un tapete para días largos de acabado. Una rótula hinchada y blanda (bursitis) significa que debe cambiar cómo se arrodilla ya.</td></tr>
+        <tr><th>Trabajo en drenaje</th><td>Mantenga al día la vacuna del tétanos. Lávese antes de comer, beber o fumar, cubra las cortadas, cámbiese las botas antes de subir a la troca. Pregúntele a su doctor por la hepatitis A y B (CDC).</td></tr>
+      </tbody></table></div></div>
+
   </section>
   
   <!-- ================= LEARN ================= -->
@@ -3346,6 +3517,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Oct 31, 2026 · new content</th><td><b>New:</b> Service calls: first checks (running toilet, clogs, no hot water, low pressure, sewer smell, noisy pipes) · Error codes for Navien and Rinnai tankless and the Bradford White status light · Heat, asbestos, CO and temp-power safety card · Vent size, Water heater size and Expansion tank size calculators · a CSST warning on the gas sizer · a fittings pick list in Plan take-off that you can text to the supply house · a timed Practice test from the flashcards · 8 cutaway drawings (trap seal, vent, PRV, T&amp;P, frost-free bibb, toilet, tankless, expansion tank) · Español on the Emergency and safety cards (a draft: needs a fluent check).</td></tr>
         <tr><th>Oct 31, 2026 · field tools</th><td><b>New:</b> a ⅛–⅞ fraction pad under every inch box (no tiny dropdowns) · the Offset calculator is a third as long, with multipliers in their own card · Copy, Share and Add to tape under every calculator answer (Mine → Tape) · Test log: start a test, come back, log it with the leak-or-cold verdict and share it · notes on any card (⋯ → Add a note), searchable · My shop: put your shop's numbers over "typical" (⋯ → Edit for my shop).</td></tr>
         <tr><th>Oct 31, 2026 · new layout</th><td><b>New:</b> a Home screen (Emergency, your city, pinned, recent, offline status) and a 3-question setup · tabs are now Home · Calc · Build · Service · Trim, with Inspect, Contacts, Jobsite, Learn and Mine under More · the phone's Back button steps back through tabs, searches and sheets · every card has a ⋯ menu: copy link, share, print · Contacts gathers every phone list · one Weather card · See also links between explainers and field cards · search knows synonyms (PRV, T&amp;P, sillcock) and code sections (P3005.2) and shows the best 8 with tab chips · code edition is a real setting and the DFU counter says which code it used · Sun/Night follows your phone. <b>Fixed:</b> searching "flush…" no longer clears the box · weather no longer says "updated 9 min ago" under an error. <b>Merged:</b> Callback killers into Habits, etiquette into Get kept, 3 number cards into Numbers to know, 3 plan-scale cards into one, 9 tool cards into 3 (now in Learn).</td></tr>
         <tr><th>Oct 31, 2026</th><td><b>Added:</b> Joint tricks (sweat, tape, no-hub torque) · Compression &amp; flare · Shutdowns, leaks, freezes &amp; hammer · grade-on-a-level trick · 16 "Tricks" flashcards (they show up as tips of the day too).</td></tr>
@@ -3360,6 +3532,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="how" data-kw="why vent trap siphon">
     <div class="sec-head"><h2>Why traps need vents</h2><small>The whole DWV idea</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Drain diagram: a trap and trap arm run to a vertical stack. Air comes down the vent from the roof while water goes down the drain, so the moving water does not suck the trap dry."><defs><marker id="ar-vt" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><path d="M270 0V230" fill="none" stroke="var(--d-pipe)" stroke-width="34" stroke-linejoin="round"/><path d="M270 0V230" fill="none" stroke="var(--d-bg)" stroke-width="24" stroke-linejoin="round"/><path d="M50 30V110A30 30 0 0 0 110 110V96H253" fill="none" stroke="var(--d-pipe)" stroke-width="34" stroke-linejoin="round"/><path d="M50 30V110A30 30 0 0 0 110 110V96H270" fill="none" stroke="var(--d-bg)" stroke-width="24" stroke-linejoin="round"/><path d="M50 104V110A30 30 0 0 0 110 110V104" fill="none" stroke="var(--d-cut)" stroke-width="24" stroke-linejoin="round"/>
+<path d="M270 14V60" stroke="var(--d-roll)" stroke-width="3" marker-end="url(#ar-vt)"/><path d="M270 140V200" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-vt)"/><path d="M120 96H215" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-vt)"/>
+<text x="292" y="40" font-size="13" fill="var(--d-text)" font-weight="700">Air in</text><text x="292" y="56" font-size="13" fill="var(--d-text)">from the roof</text><text x="292" y="172" font-size="13" fill="var(--d-text)">Water down</text><text x="10" y="176" font-size="13" fill="var(--d-text)">Draining water drags air.</text><text x="10" y="193" font-size="13" fill="var(--d-text)">The vent feeds it, so it isn't</text><text x="10" y="210" font-size="13" fill="var(--d-text)">pulled through the trap.</text><text x="122" y="140" font-size="13" fill="var(--d-text)">Trap</text></svg><figcaption>With no air from the vent, the falling water pulls a vacuum and siphons the trap.</figcaption></figure>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>The trap</th><td>Holds 2"–4" of water that blocks sewer gas from the house.</td></tr>
@@ -3371,6 +3546,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="how" data-kw="trap seal loss lose siphon self induced siphonage back pressure blowout evaporation capillary hair string wind momentum gurgle sewer smell trap primer">
     <div class="sec-head"><h2>Six ways a trap loses its seal</h2><small>Sewer smell? Start here</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Side view of a P-trap: water sits in the bend between the weir (the bottom of the outlet) and the dip (the top of the bend). That depth, the trap seal, is 2 to 4 inches."><defs><marker id="ar-tr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><path d="M80 10V120A50 50 0 0 0 180 120V92H370" fill="none" stroke="var(--d-pipe)" stroke-width="34" stroke-linejoin="round"/><path d="M80 10V120A50 50 0 0 0 180 120V92H370" fill="none" stroke="var(--d-bg)" stroke-width="24" stroke-linejoin="round"/><path d="M80 104V120A50 50 0 0 0 180 120V104" fill="none" stroke="var(--d-cut)" stroke-width="24" stroke-linejoin="round"/>
+<path d="M50 104H250M120 158H250" stroke="var(--d-dim)" stroke-width="1.5" stroke-dasharray="5 4"/><path d="M240 106V156" stroke="var(--d-rise)" stroke-width="2.5" marker-start="url(#ar-tr)" marker-end="url(#ar-tr)"/>
+<text x="250" y="128" font-size="13" fill="var(--d-text)" font-weight="700">Trap seal</text><text x="250" y="145" font-size="13" fill="var(--d-text)">2" to 4" deep</text><text x="256" y="66" font-size="13" fill="var(--d-text)">Trap arm → vent</text><text x="256" y="172" font-size="13" fill="var(--d-text)">Dip</text><text x="12" y="100" font-size="13" fill="var(--d-text)">Weir</text><text x="100" y="215" font-size="13" fill="var(--d-text)">Water left in the bend blocks sewer gas</text></svg><figcaption>The seal is the depth between the weir and the dip. Lose it and sewer gas walks in.</figcaption></figure>
     <div class="x"><table class="t">
       <thead><tr><th>How</th><th>What happens</th><th>Fix</th></tr></thead>
       <tbody>
@@ -3397,6 +3575,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="how" data-kw="toilet flush siphon jet trapway gulp gurgle weak flush fill valve refill tube rim holes hard water 1.28 1.6 gpf">
     <div class="sec-head"><h2>How a toilet flushes</h2><small>It's a siphon</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Toilet tank cross-section: the fill valve and float on the left, the overflow tube and flapper in the middle, water set half an inch below the top of the overflow. Lifting the flapper dumps the tank into the bowl."><defs><marker id="ar-to" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><rect x="40" y="20" width="240" height="140" rx="8" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><rect x="44" y="60" width="232" height="96" fill="var(--d-cut)" opacity=".25"/><path d="M44 60H276" stroke="var(--d-cut)" stroke-width="2"/>
+<path d="M80 156V40" stroke="var(--d-pipe)" stroke-width="10"/><rect x="66" y="40" width="40" height="18" fill="var(--d-fit)"/><path d="M200 156V48" stroke="var(--d-pipe)" stroke-width="10"/><path d="M168 150Q200 128 232 150" fill="none" stroke="var(--d-fit)" stroke-width="7"/><path d="M200 140V100" stroke="var(--d-dim)" stroke-width="2"/>
+<path d="M200 160V215" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-to)"/><text x="16" y="14" font-size="13" fill="var(--d-text)">Fill valve + float</text><text x="212" y="44" font-size="13" fill="var(--d-text)">Overflow</text><text x="290" y="64" font-size="13" fill="var(--d-text)">Water ½" below</text><text x="290" y="80" font-size="13" fill="var(--d-text)">the overflow</text><text x="244" y="182" font-size="13" fill="var(--d-text)">Flapper lifts:</text><text x="244" y="198" font-size="13" fill="var(--d-text)">tank dumps</text><text x="244" y="214" font-size="13" fill="var(--d-text)">into the bowl</text><text x="14" y="190" font-size="13" fill="var(--d-text)">The rush fills the</text><text x="14" y="206" font-size="13" fill="var(--d-text)">trapway and siphons</text><text x="14" y="222" font-size="13" fill="var(--d-text)">the bowl empty</text></svg><figcaption>Flapper up, tank dumps, the trapway siphons. Then the fill valve refills the tank and the bowl through the refill tube.</figcaption></figure>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>1 · Dump</th><td>The flapper lifts and the tank empties fast through the 2"–3" flush valve, out the rim holes and the siphon jet at the bottom of the bowl.</td></tr>
@@ -3409,6 +3590,11 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="how" data-kw="prv pressure reducing valve how works spring diaphragm adjust screw clockwise set 50 60 psi creep high pressure night bypass expansion">
     <div class="sec-head"><h2>How a PRV works</h2><small>A spring against a diaphragm</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Cross-section of a pressure reducing valve: a spring above a diaphragm pushes the valve open; outlet pressure under the diaphragm pushes it closed. An adjusting screw sets the spring."><defs><marker id="ar-pr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><rect x="40" y="130" width="320" height="60" rx="6" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><path d="M200 130V190" stroke="var(--d-pipe)" stroke-width="4"/>
+<rect x="150" y="30" width="100" height="80" rx="6" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><path d="M200 8V30" stroke="var(--d-fit)" stroke-width="6"/><path d="M200 40l-14 6 28 8-28 8 28 8-28 8 28 8-14 4" fill="none" stroke="var(--d-fit)" stroke-width="3"/>
+<path d="M150 100H250" stroke="var(--d-tru)" stroke-width="5"/><path d="M200 100V150" stroke="var(--d-pipe)" stroke-width="4"/><rect x="186" y="146" width="28" height="10" fill="var(--d-fit)"/>
+<path d="M50 160H120" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-pr)"/><path d="M280 160H350" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-pr)"/>
+<text x="210" y="20" font-size="13" fill="var(--d-text)">Adjusting screw</text><text x="262" y="62" font-size="13" fill="var(--d-text)">Spring pushes</text><text x="262" y="78" font-size="13" fill="var(--d-text)">the valve open</text><text x="262" y="104" font-size="13" fill="var(--d-text)">Diaphragm</text><text x="44" y="122" font-size="13" fill="var(--d-text)">Street pressure in</text><text x="260" y="122" font-size="13" fill="var(--d-text)">House pressure out</text><text x="40" y="215" font-size="13" fill="var(--d-text)">House pressure under the diaphragm pushes it closed.</text></svg><figcaption>Spring vs. outlet pressure: when they balance, the valve sits where it holds your set pressure.</figcaption></figure>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>The balance</th><td>A spring pushes the valve open. Downstream water pushes on a diaphragm to close it. Whatever pressure balances the spring is what the house gets.</td></tr>
@@ -3490,6 +3676,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="how" data-kw="expansion tank thermal prv why">
     <div class="sec-head"><h2>Why an expansion tank</h2><small>PRV = closed system</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Two expansion tanks side by side. Cold: a small amount of water under the diaphragm, air above it. Hot: heated water has grown and pushed the diaphragm up, squeezing the air."><defs><marker id="ar-et" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><defs><clipPath id="et-c1"><rect x="50" y="20" width="110" height="170" rx="50"/></clipPath><clipPath id="et-c2"><rect x="240" y="20" width="110" height="170" rx="50"/></clipPath></defs><g><rect x="50" y="20" width="110" height="170" rx="50" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><path d="M54 150H156" stroke="var(--d-tru)" stroke-width="4"/><rect x="50" y="152" width="110" height="40" fill="var(--d-cut)" opacity=".35" clip-path="url(#et-c1)"/><path d="M105 190V220" stroke="var(--d-pipe)" stroke-width="12"/></g>
+<g><rect x="240" y="20" width="110" height="170" rx="50" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><path d="M244 92Q295 70 346 92" fill="none" stroke="var(--d-tru)" stroke-width="4"/><path d="M240 96Q295 74 350 96V192H240Z" fill="var(--d-cut)" opacity=".35" clip-path="url(#et-c2)"/><path d="M295 190V220" stroke="var(--d-pipe)" stroke-width="12"/></g>
+<text x="66" y="80" font-size="13" fill="var(--d-text)">Air</text><text x="66" y="96" font-size="13" fill="var(--d-text)">(precharged)</text><text x="62" y="140" font-size="13" fill="var(--d-text)">Diaphragm</text><text x="60" y="14" font-size="13" fill="var(--d-text)" font-weight="700">Cold</text><text x="250" y="14" font-size="13" fill="var(--d-text)" font-weight="700">Hot</text><text x="256" y="140" font-size="13" fill="var(--d-text)">Grown water</text><text x="256" y="156" font-size="13" fill="var(--d-text)">pushes in</text><path d="M175 110H225" stroke="var(--d-text)" stroke-width="3" marker-end="url(#ar-et)"/></svg><figcaption>The air cushion takes the growth so pressure doesn't climb to the relief valve every time the heater runs.</figcaption></figure>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>What happens</th><td>Heated water expands. In an open system it pushes back to the street main.</td></tr>
@@ -3512,6 +3701,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="how" data-kw="how tankless works flow sensor burner heat exchanger modulate temperature rise gpm minimum flow cold water sandwich">
     <div class="sec-head"><h2>How tankless works</h2><small>Flow in, fire on</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Block diagram of a tankless heater: cold water passes a flow sensor; once flow is high enough the burner fires under the heat exchanger and turns up or down to hit the set temperature at the outlet sensor; exhaust goes out the vent."><defs><marker id="ar-tl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><rect x="20" y="150" width="80" height="44" rx="6" fill="none" stroke="var(--d-pipe)" stroke-width="3"/><rect x="140" y="60" width="120" height="134" rx="6" fill="none" stroke="var(--d-pipe)" stroke-width="3"/><rect x="300" y="150" width="80" height="44" rx="6" fill="none" stroke="var(--d-pipe)" stroke-width="3"/>
+<path d="M150 112q10-20 20 0t20 0 20 0 20 0 20 0" fill="none" stroke="var(--d-cut)" stroke-width="3"/><path d="M160 188q8-26 16 0q8-26 16 0q8-26 16 0q8-26 16 0q8-26 16 0" fill="none" stroke="var(--d-fit)" stroke-width="3"/>
+<path d="M100 172H138" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-tl)"/><path d="M262 172H298" stroke="var(--d-fit)" stroke-width="3" marker-end="url(#ar-tl)"/><path d="M200 58V18" stroke="var(--d-dim)" stroke-width="3" marker-end="url(#ar-tl)"/>
+<text x="26" y="140" font-size="13" fill="var(--d-text)">Flow sensor</text><text x="26" y="212" font-size="13" fill="var(--d-text)">Cold in</text><text x="150" y="80" font-size="13" fill="var(--d-text)">Heat exchanger</text><text x="150" y="140" font-size="13" fill="var(--d-text)">Burner (turns</text><text x="150" y="156" font-size="13" fill="var(--d-text)">up and down)</text><text x="306" y="140" font-size="13" fill="var(--d-text)">Outlet sensor</text><text x="306" y="212" font-size="13" fill="var(--d-text)">Hot out</text><text x="210" y="30" font-size="13" fill="var(--d-text)">Vent</text></svg><figcaption>No flow, no fire: the flow sensor has to see the minimum flow before the burner lights.</figcaption></figure>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Flow switch</th><td>Water moving past a flow sensor (about 0.5 gpm) tells the board to light the burner.</td></tr>
@@ -3533,6 +3726,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="how" data-kw="t&amp;p valve how works temperature pressure relief 150 psi 210 degrees probe element test lever drip">
     <div class="sec-head"><h2>How a T&amp;P valve works</h2><small>Two triggers, one outlet</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Water heater tank with a T and P valve near the top: a probe reaches into the hot water, a spring holds the valve shut, and a full-size discharge pipe runs down to end near the floor."><defs><marker id="ar-tp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><rect x="30" y="40" width="160" height="190" rx="10" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><rect x="34" y="70" width="152" height="156" fill="var(--d-cut)" opacity=".25"/>
+<path d="M190 70H250" stroke="var(--d-pipe)" stroke-width="16"/><path d="M190 70H110" stroke="var(--d-fit)" stroke-width="6"/><rect x="250" y="40" width="50" height="60" rx="4" fill="none" stroke="var(--d-pipe)" stroke-width="4"/>
+<path d="M275 44l-10 5 20 6-20 6 20 6-10 4" fill="none" stroke="var(--d-fit)" stroke-width="3"/><path d="M300 86H330V215" fill="none" stroke="var(--d-pipe)" stroke-width="14"/><path d="M330 150V205" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-tp)"/>
+<text x="56" y="100" font-size="13" fill="var(--d-text)">Probe in the hot</text><text x="56" y="116" font-size="13" fill="var(--d-text)">water at the top</text><text x="206" y="28" font-size="13" fill="var(--d-text)">Spring holds it shut</text><text x="200" y="130" font-size="13" fill="var(--d-text)">Opens at 150 psi</text><text x="200" y="146" font-size="13" fill="var(--d-text)">or 210°F</text><text x="200" y="185" font-size="13" fill="var(--d-text)">Full-size line,</text><text x="200" y="201" font-size="13" fill="var(--d-text)">ends 6" or less</text><text x="200" y="217" font-size="13" fill="var(--d-text)">above the floor</text></svg><figcaption>Heat or pressure beats the spring and the valve dumps hot water before the tank can fail.</figcaption></figure>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Pressure side</th><td>A spring holds the disc shut until tank pressure beats it: typically <b>150 psi</b> on a residential heater.</td></tr>
@@ -3543,6 +3740,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="how" data-kw="frost free hose bibb sillcock how works seat inside wall slope drain hose left on burst spring vacuum breaker">
     <div class="sec-head"><h2>How a frost-free hose bibb works</h2><small>The valve is inside the house</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Wall cross-section: a long hose bibb stem runs through the wall. The valve seat sits inside the warm house; the pipe pitches down to the outside so water drains out of the cold part when it is shut off."><defs><marker id="ar-bb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><rect x="150" y="20" width="60" height="190" fill="var(--d-grid)"/><path d="M60 100L330 118" stroke="var(--d-pipe)" stroke-width="22"/><path d="M60 100L330 118" stroke="var(--d-bg)" stroke-width="12"/><path d="M70 100L320 117" stroke="var(--d-fit)" stroke-width="3"/>
+<rect x="56" y="88" width="16" height="24" fill="var(--d-fit)"/><path d="M330 108V150" stroke="var(--d-pipe)" stroke-width="14"/><circle cx="342" cy="106" r="14" fill="none" stroke="var(--d-fit)" stroke-width="4"/>
+<path d="M240 160L300 166" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-bb)"/><text x="10" y="70" font-size="13" fill="var(--d-text)" font-weight="700">Inside (warm)</text><text x="10" y="140" font-size="13" fill="var(--d-text)">Seat is here,</text><text x="10" y="156" font-size="13" fill="var(--d-text)">out of the cold</text>
+<text x="246" y="30" font-size="13" fill="var(--d-text)" font-weight="700">Outside</text><text x="160" y="196" font-size="13" fill="var(--d-text)">Wall</text><text x="226" y="186" font-size="13" fill="var(--d-text)">Pitch down so it drains</text><text x="70" y="226" font-size="13" fill="var(--d-text)">A hose left on holds water in: take it off in winter.</text></svg><figcaption>Shut it off and the water past the seat drains out, so nothing is left to freeze in the wall.</figcaption></figure>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Long stem</th><td>The handle is outside, but the actual seat is 6"–12"+ back inside the heated wall, where it can't freeze.</td></tr>
@@ -3664,6 +3865,23 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <div class="fc-foot"><span>Score <b id="fc-score">0 / 0</b></span><select id="fc-filter" aria-label="Which cards"></select><button type="button" class="linkish" id="fc-reset">Reshuffle</button><button type="button" class="linkish" id="fc-wipe">Start over</button></div>
     </div>
     <p class="note"><span class="badge why">HOW</span> <b>Got it</b> moves a card up a box: it comes back tomorrow, then in 3, 7 and 14 days. <b>Missed it</b> drops it to box 1, and it comes back a few cards later. <b>Due now</b> deals what's due, then up to 15 new cards.</p>
+  </section>
+  <section data-sec="exam" data-kw="practice test exam quiz multiple choice journeyman test prep timed review">
+    <div class="sec-head"><h2>Practice test</h2><small>Multiple choice from the flashcards · timed</small></div>
+    <div class="calc">
+      <label for="ex-n">Questions<select id="ex-n"><option>10</option><option selected>25</option><option>50</option></select></label>
+      <label for="ex-topic">Topic<select id="ex-topic"></select></label>
+      <button type="button" class="btn" id="ex-go">Start test</button>
+    </div>
+    <div class="ex" id="ex-box" hidden>
+      <div class="fc-meta"><span id="ex-pos">—</span><span id="ex-clock" aria-live="off">—</span></div>
+      <p class="ex-q" id="ex-q">—</p>
+      <div class="ex-opts" id="ex-opts" role="group" aria-label="Answers"></div>
+      <p class="ex-why" id="ex-why" hidden></p>
+      <div class="set-btns"><button type="button" class="btn" id="ex-next" hidden>Next</button><button type="button" class="linkish" id="ex-quit">End test</button></div>
+    </div>
+    <div id="ex-done" aria-live="polite"></div>
+    <p class="note"><span class="badge why">HOW</span> Wrong answers come from the same topic, so they look right. The clock gives 2 minutes a question, about the pace of a licensing exam. Misses go to the flashcards' <b>★ Missed</b> pile. These are the book's own cards, not real exam questions.</p>
   </section>
   <section data-sec="words" data-kw="glossary dictionary terms words definition meaning what does mean vocabulary">
     <div class="sec-head"><h2>Glossary</h2><small id="gloss-n">Words on site</small></div>
@@ -4408,12 +4626,12 @@ const GROUPS = {
   home:    [["home","Home"]],
   calc:    [["layout","Layout"],["grade","Grade"],["sizing","Sizing"],["water","Flow"],["plans","Plans"],["units","Units"]],
   rough:   [["framing","Framing"],["drains","Drains"],["vents","Vents"],["supply","Water supply"],["fixtures","Fixtures"],["gas","Gas"],["materials","Materials"]],
-  mech:    [["mechfix","Troubleshoot"],["mechmap","Room map"],["heaters","Water heaters"],["treat","Treatment"],["hotwater","Hot water"]],
+  mech:    [["mechfix","Troubleshoot"],["codes","Error codes"],["mechmap","Room map"],["heaters","Water heaters"],["treat","Treatment"],["hotwater","Hot water"]],
   trim:    [["trim","Valves & trim"],["idhow","ID a part"],["threads","Threads & sizes"],["finders","Finders"]],
   inspect: [["phases","Tests"],["code","Which code"],["utah","Cities"]],
   contacts:[["emergency","Call"],["techlines","Tech lines"],["houses","Supply houses"]],
   site:    [["wxnow","Weather"],["safety","Safety"]],
-  learn:   [["start","Start here"],["how","How it works"],["facts","Fact file"],["study","Flashcards"],["words","Glossary"],["tools","Tools"],["career","License"]],
+  learn:   [["start","Start here"],["how","How it works"],["facts","Fact file"],["study","Flashcards"],["exam","Practice test"],["words","Glossary"],["tools","Tools"],["career","License"]],
   mine:    [["pins","Pinned"],["notes","Notes"],["tape","Tape"],["shop","My shop"],["mine","My files"]]
 };
 const GNAME = {home:"Home",calc:"Calc",rough:"Build",mech:"Service",trim:"Trim",inspect:"Inspect",contacts:"Contacts",site:"Jobsite",learn:"Learn",mine:"Mine"};
@@ -4480,7 +4698,7 @@ function apply(){
   document.body.classList.toggle("mixed", nav.group === "mine");
   press(subRow, b => b.dataset.sub === nav.sub);
   const toks = norm(term).trim().split(" ").filter(Boolean).map(t => t.length > 3 && !/\d/.test(t) ? t.replace(/(s|x|z|ch|sh)es$/, "$1").replace(/([^s])s$/, "$1") : t);
-  const res = toks.map(t => new RegExp("(?:^|[^a-z0-9.])(?:" + alts(t).map(reEsc).join("|") + ")"));
+  const res = toks.map(t => new RegExp("(?:^|[^a-z0-9.])(?:" + alts(t).map(x => x !== t && x.length <= 3 ? reEsc(x) + "(?![a-z])" : reEsc(x)).join("|") + ")"));
   if (term !== sLast){ sLast = term; sGroup = ""; sAll = false; }
   const has = (txt, list) => list.every(r => r.test(txt));
   let shown = 0; const hits = [];
@@ -4693,7 +4911,7 @@ function printCard(sec){
   addEventListener("afterprint", done); setTimeout(() => print(), 50);
 }
 /* See also: each explainer and fact sheet points at the field card it explains, and back */
-const SEE = [["Why traps need vents","Venting rules"],["Six ways a trap loses its seal","Drains, traps & trap arms"],["Why gas pressure is so small","Gas piping"],["Why gas pressure is so small","Gas line sizer"],
+const SEE = [["Vent size","Venting rules"],["Why an expansion tank","Expansion tank size"],["Water heater size","Water heater output"],["How tankless works","Navien tankless codes"],["Service calls: first checks","Mech room trouble"],["Why traps need vents","Venting rules"],["Six ways a trap loses its seal","Drains, traps & trap arms"],["Why gas pressure is so small","Gas piping"],["Why gas pressure is so small","Gas line sizer"],
   ["How a toilet flushes","Trim-out (finish): rest of the house"],["How a PRV works","Water supply"],["Why metals eat each other","Copper & solder"],["Why bigger drains get less slope","Slope & fall"],
   ["Why the pipe math works","Offset calculator"],["Why fittings face one way","Drains, traps & trap arms"],["Backflow devices","Backflow & cross-connection"],["Inside a tank water heater","Water heater install"],
   ["Why an expansion tank","Expansion tank"],["How a softener works","Softener install"],["How tankless works","Tankless setup"],["Static vs. flowing pressure","Pressure at the fixture"],
@@ -6908,7 +7126,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-10-31b";
+{ const NEWS = "2026-10-31d";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -6951,6 +7169,128 @@ function calcText(sec){
   sec.querySelectorAll(".out").forEach(t => { if (t.closest("details:not([open])")) return; t.querySelectorAll("tr").forEach(r => { if (r.hidden) return;
     const th = r.querySelector("th"), td = r.querySelector("td.big"); if (th && td && td.textContent.trim() && td.textContent.trim() !== "—") lines.push(`${th.textContent.trim()}: ${td.innerText.replace(/\s*\n\s*/g, " · ").trim()}`); }); });
   return lines.join("\n") + "\n(Utah Plumbers Digital Handbook)";
+}
+/* ---------- vent size: 2021 IPC Table 906.1 [stack, dfu, {vent: max ft}] + 906.2 ---------- */
+const VT = [[1.25,2,{1.25:30}],[1.5,8,{1.25:50,1.5:150}],[1.5,10,{1.25:30,1.5:100}],[2,12,{1.25:30,1.5:75,2:200}],[2,20,{1.25:26,1.5:50,2:150}],[2.5,42,{1.5:30,2:100,2.5:300}],
+  [3,10,{1.5:42,2:150,2.5:360,3:1040}],[3,21,{1.5:32,2:110,2.5:270,3:810}],[3,53,{1.5:27,2:94,2.5:230,3:680}],[3,102,{1.5:25,2:86,2.5:210,3:620}],
+  [4,43,{2:35,2.5:85,3:250,4:980}],[4,140,{2:27,2.5:65,3:200,4:750}],[4,320,{2:23,2.5:55,3:170,4:640}],[4,540,{2:21,2.5:50,3:150,4:580}]];
+const VSZ = [1.25,1.5,2,2.5,3,4], vIn = s => ({1.25:"1¼\"",1.5:"1½\"",2:"2\"",2.5:"2½\"",3:"3\"",4:"4\""})[s] || toFrac16(s);
+function vsCalc(){
+  const st = +$("vs-stack").value, n = val("vs-dfu"), L = val("vs-len");
+  if (!(n > 0) || !(L > 0)){ $("vs-ans").innerHTML = warn("Enter the DFU and the vent's length."); $("vs-why").textContent = "Table 906.1"; }
+  else {
+    const row = VT.find(r => r[0] === st && n <= r[1]);
+    if (!row){ const mx = Math.max(...VT.filter(r => r[0] === st).map(r => r[1])); $("vs-ans").innerHTML = warn(`Over ${mx} DFU: a ${vIn(st)} stack can't carry that.`); $("vs-why").textContent = "Go up a stack size."; }
+    else {
+      const v = Object.keys(row[2]).map(Number).sort((a,b) => a - b).find(s => row[2][s] >= L);
+      if (v === undefined){ $("vs-ans").innerHTML = warn(`Over ${row[2][row[0]]} ft: too long even full size.`); $("vs-why").textContent = "Shorten the run or check with the inspector."; }
+      else { $("vs-ans").innerHTML = `${vIn(v)}<small>good to ${row[2][v]} ft</small>`; $("vs-why").textContent = `${vIn(st)} stack, up to ${row[1]} DFU row, Table 906.1`; }
+    }
+  }
+  const dr = +$("vs-drain").value, L2 = val("vs-len2");
+  let v2 = VSZ.find(s => s >= Math.max(1.25, dr / 2) - 1e-9);
+  const up = L2 > 40; if (up) v2 = VSZ[Math.min(VSZ.length - 1, VSZ.indexOf(v2) + 1)];
+  $("vs-ans2").innerHTML = `${vIn(v2)}<small>${up ? "one size up: over 40 ft" : "half the drain, min 1¼\""}</small>`;
+}
+["vs-stack","vs-dfu","vs-len","vs-drain","vs-len2"].forEach(id => $(id).addEventListener("input", vsCalc)); vsCalc();
+
+/* ---------- water heater size: U.S. DOE peak-hour worksheet (gal per use) ---------- */
+const WHS = [["Shower",10,2],["Shaving",2,1],["Hand dishwashing / food prep",4,1],["Automatic dishwasher",6,0],["Clothes washer",7,1]];
+$("whs-rows").innerHTML = WHS.map(([n,g,c], i) => `<tr><td>${n}</td><td class="n">${g}</td><td><input type="number" inputmode="numeric" min="0" max="20" step="1" value="${c}" data-whs="${i}" aria-label="${n}: how many in the busiest hour"></td></tr>`).join("");
+function whsCalc(){
+  let t = 0; document.querySelectorAll("[data-whs]").forEach(x => { const k = Math.max(0, parseInt(x.value, 10) || 0); t += k * WHS[+x.dataset.whs][1]; });
+  $("whs-ans").innerHTML = t ? `${t} gal<small>first hour rating ≥ ${t}</small>` : "—";
+}
+$("whs-rows").addEventListener("input", whsCalc); whsCalc();
+
+/* ---------- expansion tank size: Vt = Vs·(ρc/ρh − 1) ÷ (1 − P1abs/P2abs) ---------- */
+const RHO = [[40,62.43],[50,62.41],[60,62.37],[70,62.30],[80,62.22],[90,62.11],[100,62.00],[110,61.86],[120,61.71],[130,61.55],[140,61.38],[150,61.20],[160,61.00],[170,60.80],[180,60.58]];
+function rho(f){ for (let i = 0; i < RHO.length - 1; i++){ const [a,ra] = RHO[i], [b,rb] = RHO[i+1]; if (f >= a && f <= b) return ra + (rb - ra) * (f - a) / (b - a); } return NaN; }
+function etCalc(){
+  const vs = val("et-gal"), t1 = val("et-t1"), t2 = val("et-t2"), p1 = val("et-p1"), p2 = val("et-p2"), el = val("et-el");
+  const rc = rho(t1), rh = rho(t2);
+  const bad = !(vs > 0) || !(el >= 0 && el <= 14000) || !(p1 >= 0) || !(p2 > p1) || isNaN(rc) || isNaN(rh) || !(t2 > t1);
+  if (bad){ $("et-ans").innerHTML = warn(isNaN(rc) || isNaN(rh) ? "Temps between 40 and 180°F, hot above cold." : !(p2 > p1) ? "Max psi has to be above house psi." : "Fill in every box."); ["et-exp","et-af"].forEach(id => $(id).textContent = "—"); $("et-pick").textContent = "—"; mathOut("et-math", []); return; }
+  const a = atmPsi(el), A1 = p1 + a, A2 = p2 + a, grow = vs * (rc / rh - 1), af = 1 - A1 / A2, vt = grow / af;
+  $("et-ans").innerHTML = `${nf(vt, 2)} gal<small>total tank volume</small>`;
+  $("et-pick").textContent = vt <= 2 ? "A 2-gal tank covers it." : vt <= 4.5 ? "Go to a 4.5-gal size tank." : "Bigger than 4.5 gal: size it from the maker's chart.";
+  $("et-exp").innerHTML = `${nf(grow, 2)} gal<small>${nf((rc / rh - 1) * 100, 2)}% of ${nf(vs, 0)} gal</small>`;
+  $("et-af").innerHTML = `${nf(af * 100, 1)}%<small>of the tank</small>`;
+  mathOut("et-math", [`Air pressure at ${fmtInt(el)} ft ≈ ${nf(a,2)} psi`, `Water weighs ${nf(rc,2)} lb/ft³ at ${t1}°F and ${nf(rh,2)} at ${t2}°F`,
+    `Growth = ${nf(vs,0)} × (${nf(rc,2)} ÷ ${nf(rh,2)} − 1) = ${nf(grow,3)} gal`, `Acceptance = 1 − (${nf(p1,0)} + ${nf(a,2)}) ÷ (${nf(p2,0)} + ${nf(a,2)}) = ${nf(af,3)}`, `Tank = ${nf(grow,3)} ÷ ${nf(af,3)} = <b>${nf(vt,2)} gal</b>`]);
+}
+["et-gal","et-t1","et-t2","et-p1","et-p2","et-el"].forEach(id => $(id).addEventListener("input", etCalc)); etCalc();
+
+/* ---------- pick list: fittings + pipe + straps (IPC Table 308.5 horizontal spacing) ---------- */
+let PK = (a => Array.isArray(a) ? a.filter(r => r && typeof r.t === "string" && r.n > 0).slice(0, 200).map(r => ({t: r.t.slice(0, 40), s: String(r.s || "").slice(0, 30), n: Math.min(999, +r.n | 0)})) : [])(store.get("jpb-pt-fit", []));
+function pkDraw(){
+  $("pk-rows").innerHTML = PK.length ? PK.map((r, i) => `<tr><td class="n">${r.n}×</td><td>${esc(r.t)}${r.s ? ` <span class="sub">${esc(r.s)}</span>` : ""}</td><td><button type="button" class="x-del" data-pk="${i}" aria-label="Remove ${esc(r.t)}">✕</button></td></tr>`).join("")
+    : `<tr><td colspan="3" class="sub">No fittings yet.</td></tr>`;
+}
+const strapIn = p => /cpvc/i.test(p) ? 36 : /pvc|abs|dwv|sewer/i.test(p) ? 48 : /pex|pe-rt/i.test(p) ? 32 : /cu|copper|type [lmk]/i.test(p) ? 72 : /gas|steel|black|galv/i.test(p) ? 144 : 0;
+function pkText(){
+  const w = +$("pt-waste").value, stick = +$("pt-stick").value, by = new Map();
+  PT.forEach(r => { const k = r.p.toLowerCase(); const g = by.get(k) || {p: r.p, t: 0, n: 0}; g.t += r.r; g.n++; by.set(k, g); });
+  const L = ["PICK LIST"]; if (by.size){ L.push("Pipe:"); by.forEach(g => L.push(`- ${g.p}: ${Math.ceil(g.t * (1 + w) / 12)} ft (${Math.ceil(g.t * (1 + w) / stick)} sticks)`)); }
+  if (PK.length){ L.push("Fittings:"); const m = new Map(); PK.forEach(r => { const k = (r.t + "|" + r.s).toLowerCase(); const x = m.get(k) || {t: r.t, s: r.s, n: 0}; x.n += r.n; m.set(k, x); }); m.forEach(x => L.push(`- ${x.n} × ${x.t}${x.s ? " " + x.s : ""}`)); }
+  const st = []; by.forEach(g => { const sp = strapIn(g.p); if (sp) st.push(`- ${g.p}: about ${Math.ceil(g.t / sp) + g.n} straps (every ${sp % 12 ? sp + "\"" : sp / 12 + " ft"}, horizontal)`); });
+  if (st.length) L.push("Straps / hangers:", ...st);
+  return L.length > 1 ? L.join("\n") + "\n(Utah Plumbers Digital Handbook)" : "";
+}
+$("pk-add").addEventListener("click", () => {
+  const n = Math.max(1, Math.min(999, parseInt($("pk-n").value, 10) || 1));
+  PK.push({t: $("pk-type").value, s: $("pk-size").value.trim().slice(0, 30), n}); store.set("jpb-pt-fit", PK); pkDraw(); say(`Added ${n} × ${$("pk-type").value}`);
+});
+$("pk-rows").addEventListener("click", e => { const b = e.target.closest("[data-pk]"); if (!b) return; PK.splice(+b.dataset.pk, 1); store.set("jpb-pt-fit", PK); pkDraw(); });
+$("pk-copy").addEventListener("click", () => { const t = pkText(); t ? copyText(t, "Pick list copied. Paste it in a text to the supply house.") : toast("Add runs or fittings first."); });
+if (!navigator.share) $("pk-share").hidden = true;
+$("pk-share").addEventListener("click", async () => { const t = pkText(); if (!t){ toast("Add runs or fittings first."); return; } try { await navigator.share({title: "Pick list", text: t}); } catch(err){} });
+$("pk-clear").addEventListener("click", () => { if (!PK.length || !confirm("Clear the fittings list?")) return; PK = []; store.set("jpb-pt-fit", PK); pkDraw(); });
+pkDraw();
+
+/* ---------- Español toggle (Emergency + safety cards) ---------- */
+function langSet(es){
+  document.querySelectorAll(".lang-btn").forEach(b => { b.setAttribute("aria-pressed", String(es)); b.textContent = es ? "English" : "Español"; });
+  document.querySelectorAll(".lang-en").forEach(x => x.hidden = es); document.querySelectorAll(".lang-es").forEach(x => x.hidden = !es);
+}
+document.addEventListener("click", e => { const b = e.target.closest(".lang-btn"); if (!b) return; const es = b.getAttribute("aria-pressed") !== "true"; store.set("jpb-lang", es ? "es" : "en"); langSet(es); });
+langSet(store.get("jpb-lang", "en") === "es");
+
+/* ---------- practice test (multiple choice from CARDS) ---------- */
+{ let Q = [], qi = 0, right = 0, wrong = [], tick = 0, end = 0;
+  const topics = ["All", ...new Set(CARDS.map(c => c[0]))];
+  $("ex-topic").innerHTML = topics.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join("");
+  const opts = c => { const same = shuffle(CARDS.filter(x => x[0] === c[0] && x[2] !== c[2]).map(x => x[2])), other = shuffle(CARDS.filter(x => x[0] !== c[0] && x[2] !== c[2]).map(x => x[2]));
+    return shuffle([c[2], ...[...new Set([...same, ...other])].slice(0, 3)]); };
+  const mmss = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  function clock(){ const s = Math.max(0, Math.round((end - Date.now()) / 1000)); $("ex-clock").textContent = `⏱ ${mmss(s)} left`; if (!s) finish("Time's up."); }
+  function show(){
+    const c = Q[qi]; $("ex-pos").textContent = `Question ${qi + 1} of ${Q.length} · ${c[0]}`; $("ex-q").textContent = c[1];
+    $("ex-opts").innerHTML = opts(c).map(o => `<button type="button" data-ok="${o === c[2] ? 1 : 0}">${esc(o)}</button>`).join("");
+    $("ex-why").hidden = true; $("ex-next").hidden = true;
+  }
+  function finish(head){
+    clearInterval(tick); tick = 0; $("ex-box").hidden = true; const n = Math.min(Q.length, qi + ($("ex-next").hidden ? 0 : 1)), pct = n ? Math.round(right / n * 100) : 0;
+    $("ex-done").innerHTML = `<p class="note" style="border-top:0"><b>${head ? head + " " : ""}${right} of ${n} right (${pct}%).</b> ${pct >= 70 ? "That's a passing pace for most licensing exams (70%)." : "Most licensing exams want 70%."} ${wrong.length ? `Your misses are in <b>Flashcards → ★ Missed</b>.` : ""}</p>`
+      + (wrong.length ? `<ol class="ex-review">${wrong.map(c => `<li><b>${esc(c[1])}</b><br>${esc(c[2])}${c[3] ? `<div class="sub">${esc(c[3])}</div>` : ""}</li>`).join("")}</ol>` : "");
+    Q = []; IDX = null;
+  }
+  $("ex-go").addEventListener("click", () => {
+    const t = $("ex-topic").value, pool = CARDS.filter(c => t === "All" || c[0] === t);
+    Q = shuffle(pool.slice()).slice(0, +$("ex-n").value); qi = 0; right = 0; wrong = [];
+    $("ex-done").innerHTML = ""; $("ex-box").hidden = false; end = Date.now() + Q.length * 120000; clearInterval(tick); tick = setInterval(clock, 1000); clock(); show(); $("ex-q").focus && $("ex-opts").querySelector("button").focus();
+  });
+  $("ex-opts").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b || !$("ex-next").hidden) return;
+    const c = Q[qi], ok = b.dataset.ok === "1";
+    $("ex-opts").querySelectorAll("button").forEach(x => { x.disabled = true; if (x.dataset.ok === "1") x.classList.add("right"); }); if (!ok) b.classList.add("wrong");
+    if (ok){ right++; missed.delete(c[1]); } else { wrong.push(c); missed.add(c[1]); }
+    store.set("jpb-fc-miss", [...missed]); fcTopics();
+    $("ex-why").innerHTML = `<b>${ok ? "Right." : "Answer: " + esc(c[2])}</b>${c[3] ? " " + esc(c[3]) : ""}`; $("ex-why").hidden = false;
+    $("ex-next").hidden = false; $("ex-next").textContent = qi + 1 < Q.length ? "Next" : "See score"; $("ex-next").focus();
+  });
+  $("ex-next").addEventListener("click", () => { if (qi + 1 < Q.length){ qi++; show(); $("ex-opts").querySelector("button").focus(); } else finish(""); });
+  $("ex-quit").addEventListener("click", () => finish("Ended early."));
 }
 let TAPE = (a => Array.isArray(a) ? a.filter(x => x && typeof x.text === "string").slice(0, 30) : [])(store.get("jpb-tape", []));
 function tapeDraw(){
@@ -7663,7 +8003,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-10-31c";
+var BUILD = "handbook-2026-10-31d";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
