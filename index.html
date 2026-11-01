@@ -3152,6 +3152,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="wx-hero" id="wx-hero"><div class="sub">Loading the forecast…</div></div>
     <p class="card-h">Next 24 hours · <span id="wx-freeze-sum">—</span></p>
     <svg id="wx-chart" viewBox="0 0 400 210" role="img" aria-label="Line chart of the next 24 hours of temperature with a 32°F freezing line, and bars for chance of rain."></svg>
+    <p class="card-h">Air quality · <span id="wx-air-age">—</span></p>
     <div class="x"><table class="t out"><tbody id="wx-air"><tr><td class="sub">Loading…</td></tr></tbody></table></div>
     <details class="more fold"><summary>Hour by hour</summary>
     <div class="x"><table class="t num"><thead><tr><th>Time</th><th>Temp</th><th>Feels</th><th>Rain</th><th>Wind</th><th>Sky</th></tr></thead><tbody id="wx-hours"></tbody></table></div>
@@ -3517,6 +3518,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 1, 2026</th><td><b>Fixed:</b> Jobsite → Weather: the air quality table now shows how old its reading is, and never shows a "-Infinity" peak when the hourly forecast is missing.</td></tr>
         <tr><th>Oct 31, 2026 · night</th><td><b>Fixed:</b> on iPhone the bottom bar could get stuck partway up the screen after the keyboard closed; it now stays on the bottom edge (it still follows you when you pinch-zoom) · a card link opened inside the book now goes to that card.</td></tr>
         <tr><th>Oct 31, 2026 · new content</th><td><b>New:</b> Service calls: first checks (running toilet, clogs, no hot water, low pressure, sewer smell, noisy pipes) · Error codes for Navien and Rinnai tankless and the Bradford White status light · Heat, asbestos, CO and temp-power safety card · Vent size, Water heater size and Expansion tank size calculators · a CSST warning on the gas sizer · a fittings pick list in Plan take-off that you can text to the supply house · a timed Practice test from the flashcards · 8 cutaway drawings (trap seal, vent, PRV, T&amp;P, frost-free bibb, toilet, tankless, expansion tank) · Español on the Emergency and safety cards (a draft: needs a fluent check).</td></tr>
         <tr><th>Oct 31, 2026 · field tools</th><td><b>New:</b> a ⅛–⅞ fraction pad under every inch box (no tiny dropdowns) · the Offset calculator is a third as long, with multipliers in their own card · Copy, Share and Add to tape under every calculator answer (Mine → Tape) · Test log: start a test, come back, log it with the leak-or-cold verdict and share it · notes on any card (⋯ → Add a note), searchable · My shop: put your shop's numbers over "typical" (⋯ → Edit for my shop).</td></tr>
@@ -7131,7 +7133,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-10-31e";
+{ const NEWS = "2026-11-01a";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -7857,9 +7859,9 @@ const WX = (() => {
     });
     part("air", () => {
       if (S.air && S.air.current){ const a = S.air.current, q = aqiTxt(a.us_aqi);
-        const peak = S.air.hourly ? Math.max(...S.air.hourly.us_aqi.filter(v => v != null)) : null;
+        const hrs = S.air.hourly ? S.air.hourly.us_aqi.filter(v => v != null) : [], peak = hrs.length ? Math.max(...hrs) : null;   /* no hourly values: no peak, not -Infinity */
         $("wx-air").innerHTML = `<tr class="hit"><th>US AQI</th><td class="big">${r0(a.us_aqi)}<small>${q.t}</small></td><td class="sub">${peak != null ? `Peak next 24 h: ${r0(peak)}` : ""}</td></tr><tr><th>PM2.5</th><td class="big">${(a.pm2_5 ?? 0).toFixed(1)}<small>µg/m³</small></td><td class="sub">Inversion smog and smoke</td></tr><tr><th>PM10 · ozone</th><td class="big">${r0(a.pm10)} · ${r0(a.ozone)}<small>µg/m³</small></td><td class="sub">Dust from cutting and digging adds to this on site</td></tr>`;
-        $("wx-air-age").textContent = "US AQI · " + ago(T.air); }
+        const age = $("wx-air-age"); age.dataset.ago = G.air; age.textContent = ago(G.air); }   /* G = last good answer; T jumps ahead after a failed retry */
       else if (err.air) $("wx-air").innerHTML = `<tr><td class="sub">Air quality not available right now.</td></tr>`;
     });
     part("hourly chart + table", () => {
@@ -7901,7 +7903,7 @@ const WX = (() => {
   /* every 10 s: clock, ages, countdowns, and fetch whatever is due */
   function tick(){
     $("wx-clock").textContent = (G.om ? "Data " + ago(G.om) : "Jobsite weather") + (navigator.onLine ? "" : " · no signal");
-    document.querySelectorAll("#wx-hero [data-ago]").forEach(e => e.textContent = ago(+e.dataset.ago));
+    document.querySelectorAll("#wx-hero [data-ago], #wx-air-age[data-ago]").forEach(e => e.textContent = ago(+e.dataset.ago));
     const next = Math.max(0, (T.om || 0) + EVERY.om - Date.now());
     const last = G.om ? `last good data ${fmtT(new Date(G.om))} (${ago(G.om)})` : "no saved data for this spot yet";
     $("wx-status").textContent = blocked() ? "Live data runs in the installed app." : !navigator.onLine ? `No signal: showing ${last}. It refreshes when you're back online.`
@@ -8012,7 +8014,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-10-31e";
+var BUILD = "handbook-2026-11-01a";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
