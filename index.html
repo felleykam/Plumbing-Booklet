@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="UT Handbook">
 <link rel="icon" href="icon-192.png">
 <title>Utah Plumbers Digital Handbook</title>
@@ -469,7 +469,11 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
 #toast.on{opacity:1;transform:translate(-50%,0)}
 #toast b{color:var(--hv)}
 @media (max-width:759px){#toast{bottom:calc(80px + env(safe-area-inset-bottom))}}
-.pwa .tb{padding-top:calc(8px + env(safe-area-inset-top))}.pwa .tools{top:0}
+.pwa .tb{padding-top:calc(8px + env(safe-area-inset-top))}
+/* home-screen app: the page runs full screen under a see-through status bar (black-translucent). The solid "black" style made
+   iOS misjudge the screen height by the status bar after the app sat in the background, and the bottom bar floated up.
+   This strip keeps the clock on black while the page scrolls under it; the toolbar sticks just below it. */
+.pwa body::before{content:"";position:fixed;z-index:30;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--k);pointer-events:none}
 #fx{position:fixed;inset:0;width:100%;height:100%;z-index:65;pointer-events:none}
 .tb .logo.wiggle{animation:wig .45s ease}
 @keyframes wig{25%{transform:rotate(-10deg)}60%{transform:rotate(7deg)}}
@@ -806,6 +810,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <p class="status" id="bk-status" role="status"></p>
       <div class="set-btns"><button type="button" class="del" data-reset="look">Reset look &amp; settings</button><button type="button" class="del" data-reset="pins">Clear pins</button><button type="button" class="del" data-reset="fc">Clear flashcard progress</button><button type="button" class="del" data-reset="all">Erase everything</button></div>
       <p class="sample" id="bk-size"></p>
+      <p class="sample">Bottom bar floating up off the edge? Tap <b>Screen check</b> while it's happening and screenshot the numbers for Deklan.</p>
+      <div class="set-btns"><button type="button" class="btn ghost" id="scr-check">Screen check</button></div>
+      <p class="status" id="scr-status" role="status" style="font-family:var(--mono);white-space:pre-line"></p>
     </div>
 
     <div class="set-grp" id="set-about"><h3>About</h3>
@@ -3685,6 +3692,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 1, 2026 · night</th><td><b>Fixed:</b> on the home-screen iPhone app the bottom bar could float up off the edge after the app sat in the background. The status bar is see-through again (the page runs full screen, with a black strip behind the clock). Still see it? <b>Settings → Backup &amp; reset → Screen check</b>, and screenshot the numbers.</td></tr>
         <tr><th>Nov 1, 2026 · new tools</th><td><b>New:</b> Standards decoder (what ASSE, ASTM, NSF, CSA and ANSI numbers on parts mean) · Electrical for plumbers (breaker and wire calculator, typical circuits, GFCI, bonding and safety) · Hydronic flow calculator, How hydronic heat works, and a Hydronics flashcard deck for the exam. <b>Fixed:</b> on the home-screen iPhone app, a gap could open under the bottom bar after using the keyboard; the bar now slides back down to the edge.</td></tr>
         <tr><th>Nov 1, 2026</th><td><b>Fixed:</b> Jobsite → Weather: the air quality table now shows how old its reading is, and never shows a "-Infinity" peak when the hourly forecast is missing.</td></tr>
         <tr><th>Oct 31, 2026 · night</th><td><b>Fixed:</b> on iPhone the bottom bar could get stuck partway up the screen after the keyboard closed; it now stays on the bottom edge (it still follows you when you pinch-zoom) · a card link opened inside the book now goes to that card.</td></tr>
@@ -5036,6 +5044,20 @@ $("q").addEventListener("input", () => {
   if (mq.addEventListener) mq.addEventListener("change", queue);
   queue();   /* next frame: running it mid-startup forced a layout of the whole book */
 }
+/* Screen check (Settings): the numbers that say why the bottom bar sits where it does, for a screenshot */
+$("scr-check").addEventListener("click", () => {
+  const vv = window.visualViewport, nav = document.querySelector("nav.tabs"), r = nav.getBoundingClientRect();
+  const pr = document.createElement("div"); pr.style.cssText = "position:fixed;visibility:hidden;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)";
+  document.body.appendChild(pr); const cs = getComputedStyle(pr), sa = [cs.paddingTop, cs.paddingBottom].map(parseFloat); pr.remove();
+  const f = x => Math.round(x * 10) / 10;
+  $("scr-status").textContent = [
+    `build ${BUILD} · ${document.documentElement.classList.contains("pwa") ? "home screen" : "browser"}`,
+    `window ${innerWidth}×${innerHeight} · page ${document.documentElement.clientHeight}`,
+    vv ? `visible ${f(vv.width)}×${f(vv.height)} · top ${f(vv.offsetTop)} · zoom ${f(vv.scale)}` : "visible: n/a",
+    `screen ${screen.width}×${screen.height} · safe top ${f(sa[0])} bottom ${f(sa[1])}`,
+    `bar ${f(r.top)}–${f(r.bottom)} · move ${nav.style.transform || "none"}`
+  ].join(String.fromCharCode(10));
+});
 drawSubs();
 apply();  /* early, so tabs work even if a calculator below hits an error */
 
@@ -7377,7 +7399,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-01b";
+{ const NEWS = "2026-11-01c";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8258,7 +8280,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-01b";
+var BUILD = "handbook-2026-11-01c";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
