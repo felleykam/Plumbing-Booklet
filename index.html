@@ -925,6 +925,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <button type="button" data-go="mech|treat|Softener sizer"><b>What size softener?</b><span>Service → Treatment → Softener sizer</span></button>
       <button type="button" data-go="calc|water|Pressure at the fixture"><b>Long run: will the far fixture have pressure?</b><span>Flow → Pressure at the fixture</span></button>
       <button type="button" data-go="inspect|phases|Test log"><b>Air test gauge dropped overnight</b><span>Inspect → Tests → Test log</span></button>
+      <button type="button" data-go="trim|idhow|Standards decoder"><b>What does ASSE 1016 or F1960 on this part mean?</b><span>Trim → ID a part → Standards decoder</span></button>
+      <button type="button" data-go="mech|heaters|Electrical for plumbers"><b>What breaker and wire for this water heater?</b><span>Service → Water heaters → Electrical for plumbers</span></button>
+      <button type="button" data-go="calc|water|Hydronic flow"><b>Sizing a boiler zone or radiant loop</b><span>Flow → Hydronic flow</span></button>
     </div>
     </details>
   </section>
@@ -1359,6 +1362,29 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </div>
     <details class="math"><summary>Show the math</summary><ol id="v-math"></ol></details>
     <p class="note">ft/s = gpm × 0.4085 ÷ ID². <span class="badge why">WHY</span> Fast water whistles, hammers and wears out copper from the inside, especially hot. Many design guides keep cold under about 8 ft/s and hot copper under about 5 ft/s; the pipe maker's limit wins.</p>
+  </section>
+  <section data-sec="water" data-kw="hydronic hydronics boiler radiant heat baseboard btu gpm delta t temperature drop 500 glycol loop zone circulator pump pipe size heating">
+    <div class="sec-head"><h2>Hydronic flow</h2><small>BTU → gpm → pipe size</small></div>
+    <div class="calc">
+      <label for="hy-btu">Heat load <i>(BTU/hr)</i><input id="hy-btu" type="number" inputmode="decimal" min="0" step="any" value="40000"></label>
+      <label for="hy-dt">ΔT <i>(°F supply − return)</i><input id="hy-dt" type="number" inputmode="decimal" min="0" step="any" value="20"></label>
+      <label for="hy-fl">Fluid<select id="hy-fl"><option value="500" selected>Water</option><option value="470">30% propylene glycol</option><option value="440">50% propylene glycol</option></select></label>
+      <div class="ans" id="hy-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <details class="math"><summary>Show the math</summary><ol id="hy-math"></ol></details>
+    <div class="x"><table class="t out">
+      <tbody id="hy-rows"></tbody></table></div>
+    <p class="note">Smallest pipe that keeps the water under about <b>4 ft/s</b> is highlighted: faster gets noisy in a quiet house. <b>ΔT:</b> baseboard is usually designed at 20°F, radiant floors at 10–15°F. Glycol carries less heat per gallon, so it needs more flow (factors are close; the glycol maker's chart wins). How the loop works: <b>Learn → How it works → How hydronic heat works</b>.</p>
+    <p class="card-h">Supply water temperature</p>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Radiant slab</th><td class="n">90–120°F</td></tr>
+        <tr><th>Radiant under a wood floor</th><td class="n">120–140°F</td></tr>
+        <tr><th>Panel radiators</th><td class="n">120–160°F</td></tr>
+        <tr><th>Cast iron radiators</th><td class="n">140–180°F</td></tr>
+        <tr><th>Fin-tube baseboard</th><td class="n">160–180°F</td></tr>
+        <tr><th>Condensing boiler</th><td>Only condenses with return water under about <b>130°F</b>. Hot returns waste its efficiency.</td></tr>
+      </tbody></table></div>
   </section>
   <section data-sec="water" data-kw="thermal expansion growth pex cpvc pvc abs copper long run hot loop offset">
     <div class="sec-head"><h2>Pipe expansion</h2><small>How much a run grows</small></div>
@@ -2297,6 +2323,56 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Altitude</th><td>Some plates or labels show a high-altitude setup or derate.</td></tr>
       </tbody></table></div>
   </section>
+  <section data-sec="heaters" data-kw="electrical electric electrician breaker wire size gauge awg amps amperage volts watts kw 240 208 120 romex nm thhn circuit continuous load 125 percent disconnect gfci bonding grounding ground jumper electrode disposer dishwasher tankless electric heat pump whirlpool hydromassage sump csst bond shock dry fire element">
+    <div class="sec-head"><h2>Electrical for plumbers</h2><small>Breakers, wire, GFCI, bonding</small></div>
+    <div class="calc">
+      <label for="el-w">Watts <i>(from the label)</i><input id="el-w" type="number" inputmode="decimal" min="0" step="any" value="4500"></label>
+      <label for="el-v">Volts<select id="el-v"><option value="240" selected>240 V</option><option value="208">208 V</option><option value="120">120 V</option></select></label>
+      <label for="el-load" class="wide">Load<select id="el-load"><option value="tank" selected>Tank water heater ×125%</option><option value="cont">Runs 3 h+ ×125%</option><option value="other">Short runs (disposer)</option></select></label>
+      <div class="ans" id="el-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <details class="math"><summary>Show the math</summary><ol id="el-math"></ol></details>
+    <p class="note">For talking it over with the electrician, not for pulling wire. The label, the maker's manual and the NEC as Utah adopts it have the final word. Electric <b>tankless</b>: use the maker's breaker and wire chart (they often split into 2–4 circuits).</p>
+    <p class="card-h">Typical circuits</p>
+    <div class="x"><table class="t cards wrap">
+      <thead><tr><th>Equipment</th><th>Typical circuit</th><th>Watch for</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Equipment"><b>Electric tank</b><br><span class="sub">4500 or 5500 W, 240 V</span></td><td data-label="Typical circuit" class="n">30 A 2-pole · 10 AWG Cu</td><td data-label="Watch for">Elements usually take turns, so size on the bigger one. If the label says <b>simultaneous</b>, add them. Needs a disconnect in sight or a lockable breaker (NEC 422.31).</td></tr>
+        <tr><td data-label="Equipment"><b>Heat pump water heater</b></td><td data-label="Typical circuit" class="n">240 V: 30 A · 10 AWG<br>120 V: per label</td><td data-label="Watch for">240 V models keep a 4500 W backup element. New 120 V plug-in models want their own circuit: read the label before you plug into what's there.</td></tr>
+        <tr><td data-label="Equipment"><b>Electric tankless</b><br><span class="sub">whole house, 18–36 kW</span></td><td data-label="Typical circuit" class="n">2–4 × 40–60 A 2-pole</td><td data-label="Watch for">27 kW pulls 112 A at 240 V. Often needs a 200 A service with room left. Check before you sell it.</td></tr>
+        <tr><td data-label="Equipment"><b>Gas tankless · power vent</b></td><td data-label="Typical circuit" class="n">120 V · 15 A</td><td data-label="Watch for">Receptacle within cord reach. Outdoor units: GFCI, weatherproof cover.</td></tr>
+        <tr><td data-label="Equipment"><b>Disposer</b></td><td data-label="Typical circuit" class="n">120 V · 15–20 A</td><td data-label="Watch for">Cord 18"–36" long (NEC 422.16(B)(1)). Switch-controlled receptacle under the sink.</td></tr>
+        <tr><td data-label="Equipment"><b>Dishwasher</b></td><td data-label="Typical circuit" class="n">120 V · 15–20 A</td><td data-label="Watch for">Cord 3'–6½' (NEC 422.16(B)(2)), receptacle in the cabinet next to it, GFCI protected (NEC 210.8(D)).</td></tr>
+        <tr><td data-label="Equipment"><b>Whirlpool tub</b></td><td data-label="Typical circuit" class="n">Own circuit · GFCI</td><td data-label="Watch for">Pump reachable through an access panel. Bond the pump motor and metal pipe with 8 AWG solid copper (NEC 680.71, 680.74).</td></tr>
+        <tr><td data-label="Equipment"><b>Sump · ejector</b></td><td data-label="Typical circuit" class="n">120 V · own circuit is smart</td><td data-label="Watch for">Basement receptacles are GFCI (NEC 210.8(A)), so a trip can kill the pump: add a battery high-water alarm.</td></tr>
+        <tr><td data-label="Equipment"><b>Recirc pump · hot tap</b></td><td data-label="Typical circuit" class="n">120 V plug</td><td data-label="Watch for">Under-sink receptacles near water: GFCI. Recirc on a timer or aquastat.</td></tr>
+      </tbody></table></div>
+    <p class="card-h">Wire vs. breaker (copper)</p>
+    <div class="x"><table class="t num">
+      <thead><tr><th>Wire</th><th>NM cable (Romex)</th><th>THHN in conduit, 75°C ends</th></tr></thead>
+      <tbody>
+        <tr><td>14 AWG</td><td>15 A</td><td>15 A</td></tr>
+        <tr><td>12 AWG</td><td>20 A</td><td>20 A</td></tr>
+        <tr><td>10 AWG</td><td>30 A</td><td>30 A</td></tr>
+        <tr><td>8 AWG</td><td>40 A</td><td>50 A</td></tr>
+        <tr><td>6 AWG</td><td>55 A</td><td>65 A</td></tr>
+        <tr><td>4 AWG</td><td>70 A</td><td>85 A</td></tr>
+      </tbody></table></div>
+    <p class="note">NEC 310.16 and 240.4(D). NM cable is held to the 60°C column (NEC 334.80). Aluminum is bigger for the same amps.</p>
+    <p class="card-h">Bonding, grounding &amp; safety</p>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Before you cut metal pipe</th><td>Clamp a jumper across where you'll cut, <b>first</b>. Metal water pipe can carry current from a bad neutral or a fault somewhere else, and it bites when the pipe parts.</td></tr>
+        <tr><th>Repipe or plastic service</th><td>10 ft or more of metal water pipe in the ground is a grounding electrode (NEC 250.52(A)(1)). Swap it for PEX or PVC and that ground is gone: tell the owner it needs an electrician to check the grounding.</td></tr>
+        <tr><th>Meter, softener, filter</th><td>The ground path can't depend on them (NEC 250.53(D)(1)). Leave the jumper, or add one around them with clamps and bare copper.</td></tr>
+        <tr><th>Water heater jumper</th><td>Dielectric unions break the pipe's bond. Many inspectors want a hot-to-cold jumper at the heater so the metal piping stays bonded (NEC 250.104(A)). Ask yours.</td></tr>
+        <tr><th>CSST gas</th><td>Bond it: 6 AWG copper or bigger, 75 ft or shorter, to the electrical service grounding (IFGC 310.1.1), plus anything the maker adds. Black arc-resistant CSST: maker's instructions rule.</td></tr>
+        <tr><th>Lock it out</th><td>Kill the breaker, then test dead <b>at the heater</b>: each leg to ground and leg to leg. Panels are mislabeled more often than not.</td></tr>
+        <tr><th>Dry fire</th><td>Never turn on an electric heater until the tank is full and air is out of a hot faucet. An element in air burns out in seconds.</td></tr>
+        <tr><th>208 V buildings</th><td>A 240 V element on 208 V makes 75% of its watts: 4500 W → 3,380 W. Slower recovery, not a bad element.</td></tr>
+        <tr><th>Who does what</th><td>New circuits, panel work and service upgrades are an electrician's job and permit.</td></tr>
+      </tbody></table></div>
+  </section>
   <section data-sec="heaters" data-kw="altitude elevation tankless navien rinnai dip switch high altitude setting 4500 menu 1.2.14 v65 derate gas water heater">
     <div class="sec-head"><h2>Altitude settings</h2><small>Utah County ≈ 4,500 ft</small></div>
     <div class="x"><table class="t">
@@ -2716,6 +2792,97 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Gas appliance</th><td>Rating plate inside the burner door or near the gas valve: input, gas type, altitude setup.</td></tr>
       </tbody></table></div>
     <p class="note">Kohler serial numbers are usually 9 characters, often starting with "S", with no dashes.</p>
+  </section>
+  <section data-sec="idhow" data-kw="standards decoder standard number what does it mean listing mark asse astm nsf csa asme ansi ul iapmo upc cupc lead free lf pw dwv 1001 1002 1003 1010 1011 1012 1013 1015 1016 1017 1019 1020 1022 1024 1050 1051 1052 1056 1060 1061 1062 1070 1079 f876 f877 f1807 f2159 f1960 f2080 d2846 f441 f493 d1785 d2241 d2466 d2665 d3034 d2729 f891 d2564 f656 d2661 d2235 d3138 b88 b306 b32 b813 b828 b16.22 b16.18 b16.51 a53 a888 a74 c564 c1277 cispi 310 61 372 14 42 53 58 44 55 b125 b137 a112 z21.10 z21.22 z21.24 z21.69 z21.80 lc1 csst ul 174">
+    <div class="sec-head"><h2>Standards decoder</h2><small>What the number on the part means</small></div>
+    <p class="note" style="border-top:0">Search any number (like <b>1016</b> or <b>F1960</b>) to land here. The standard says how a part is built and tested; the <b>code</b> says where you have to use it. A part needs the right mark <b>and</b> a listing (UPC, CSA, NSF) to pass.</p>
+    <p class="card-h">Read the print</p>
+    <div class="x"><table class="t cards wrap">
+      <thead><tr><th>Mark</th><th>Means</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Mark" class="n">ASSE 1016 / ASME A112.1016 / CSA B125.16</td><td data-label="Means">One standard, three names. Since 2017 ASSE, ASME and CSA publish many plumbing standards together, so you'll see all three on newer boxes.</td></tr>
+        <tr><td data-label="Mark" class="n">UPC · cUPC</td><td data-label="Means">IAPMO listing: tested to the standards printed beside it. The small c means it's also listed for Canada.</td></tr>
+        <tr><td data-label="Mark" class="n">NSF-pw · NSF-dwv</td><td data-label="Means">NSF 14 plastics marks: <b>pw</b> = potable water OK; <b>dwv</b> = drain, waste and vent only. Never put dwv pipe on supply.</td></tr>
+        <tr><td data-label="Mark" class="n">NSF 61 · NSF 372 · LF</td><td data-label="Means">Safe for drinking water (61) and lead-free, 0.25% or less lead on wetted surfaces (372). <b>LF</b> on brass means the same. Federal law since 2014 for anything carrying drinking water.</td></tr>
+        <tr><td data-label="Mark" class="n">CSA · cCSAus · UL</td><td data-label="Means">Listed by CSA or UL, mostly gas parts, water heaters and anything electric.</td></tr>
+      </tbody></table></div>
+    <p class="card-h">Valves, backflow &amp; venting (ASSE)</p>
+    <div class="x"><table class="t cards wrap">
+      <thead><tr><th>Number</th><th>What it is</th><th>Where you'll see it</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Number" class="n">ASSE 1001</td><td data-label="What it is">Atmospheric vacuum breaker (AVB)</td><td data-label="Where">Irrigation zones, pipe-applied. No shutoff downstream, 6" above the highest outlet. Not testable.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1002</td><td data-label="What it is">Anti-siphon toilet fill valve</td><td data-label="Where">Every toilet fill valve. Critical level mark sits at least 1" above the overflow tube.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1003</td><td data-label="What it is">Pressure reducing valve (PRV)</td><td data-label="Where">Main line, required over 80 psi static.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1010</td><td data-label="What it is">Water hammer arrester</td><td data-label="Where">Washer boxes, dishwashers, quick-closing valves.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1011</td><td data-label="What it is">Hose connection vacuum breaker (HBVB)</td><td data-label="Where">The screw-on cap on a hose bibb. Set screw breaks off so it stays on.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1012</td><td data-label="What it is">Dual check with atmospheric vent</td><td data-label="Where">Boiler fill with no chemicals (IRC P2902.5.2). Water out the vent means a check is leaking back.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1013</td><td data-label="What it is">Reduced pressure principle assembly (RP)</td><td data-label="Where">High hazard: irrigation with chemicals, boilers with glycol or treatment. Testable. Needs a drain for its relief port.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1015</td><td data-label="What it is">Double check valve assembly (DC)</td><td data-label="Where">Low hazard. Testable, with test cocks and shutoffs.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1016</td><td data-label="What it is">Shower and tub/shower valve: pressure balance, thermostatic or both</td><td data-label="Where">Every shower valve (IRC P2708.4). Limit stop set to 120°F max.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1017</td><td data-label="What it is">Master mixing valve at the heater</td><td data-label="Where">Water heater set hot to fight Legionella, mixed down for the house. <b>Not</b> a substitute for 1016 or 1070 at the fixture.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1019</td><td data-label="What it is">Freezeless wall hydrant with backflow protection</td><td data-label="Where">Self-draining frost-free hose bibbs.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1020</td><td data-label="What it is">Pressure vacuum breaker (PVB)</td><td data-label="Where">Irrigation mains, 12" above the highest head. Testable. Spits when it closes, so keep it outdoors.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1022</td><td data-label="What it is">Backflow preventer for beverage dispensers</td><td data-label="Where">Coffee makers and soda machines on a water line.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1024</td><td data-label="What it is">Dual check valve</td><td data-label="Where">At many water meters. Not testable, and it closes the system (expansion tank).</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1050 · 1051</td><td data-label="What it is">Air admittance valve: stack (1050), individual or branch (1051)</td><td data-label="Where">AAVs. Accessible, 4" above the trap arm, still needs a vent to open air somewhere.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1052</td><td data-label="What it is">Hose connection backflow preventer</td><td data-label="Where">Testable, non-removable hose-thread backflow (dual check with vent).</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1056</td><td data-label="What it is">Spill-resistant vacuum breaker (SVB)</td><td data-label="Where">Like a PVB that doesn't spit. OK indoors.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1060</td><td data-label="What it is">Outdoor enclosure for backflow assemblies</td><td data-label="Where">The insulated box over a PVB or RP.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1061</td><td data-label="What it is">Push-fit fittings</td><td data-label="Where">SharkBite-type. Check depth mark and that the tube is deburred.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1062</td><td data-label="What it is">Temperature-actuated flow reduction (TAFR)</td><td data-label="Where">Anti-scald showerheads and spouts that cut to a trickle when water gets too hot.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1070</td><td data-label="What it is">Temperature limiting device at the fixture</td><td data-label="Where">Tub fillers and whirlpools (IRC P2713.3, 120°F max), public lavs. Under-sink thermostatic mixers.</td></tr>
+        <tr><td data-label="Number" class="n">ASSE 1079</td><td data-label="What it is">Dielectric union or fitting</td><td data-label="Where">Copper to steel, often at the water heater.</td></tr>
+      </tbody></table></div>
+    <p class="card-h">Pipe, fittings &amp; glue (ASTM, ASME)</p>
+    <div class="x"><table class="t cards wrap">
+      <thead><tr><th>Number</th><th>What it is</th><th>Where you'll see it</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Number" class="n">F876 · F877</td><td data-label="What it is">PEX tube (F876), PEX hot and cold systems (F877)</td><td data-label="Where">All PEX. The print lists which fitting standards it's good with.</td></tr>
+        <tr><td data-label="Number" class="n">F1960</td><td data-label="What it is">Cold expansion fittings with PEX rings</td><td data-label="Where">Uponor ProPEX style. Mostly PEX-A.</td></tr>
+        <tr><td data-label="Number" class="n">F1807 · F2159</td><td data-label="What it is">Crimp or clamp fittings: metal insert (F1807), plastic insert (F2159)</td><td data-label="Where">Copper rings or stainless cinch clamps. Mostly PEX-B.</td></tr>
+        <tr><td data-label="Number" class="n">F2080</td><td data-label="What it is">Cold expansion with a metal compression sleeve</td><td data-label="Where">Sleeve-over-PEX systems (REHAU style).</td></tr>
+        <tr><td data-label="Number" class="n">D2846 · F441</td><td data-label="What it is">CPVC: copper-tube sizes (D2846), Schedule 40/80 (F441)</td><td data-label="Where">Tan CTS CPVC is D2846. Cement F493.</td></tr>
+        <tr><td data-label="Number" class="n">D1785 · D2241</td><td data-label="What it is">PVC pressure pipe: Schedule 40/80 (D1785), SDR / Class (D2241)</td><td data-label="Where">Water service, irrigation mains. Cold water only.</td></tr>
+        <tr><td data-label="Number" class="n">D2665</td><td data-label="What it is">PVC DWV pipe and fittings</td><td data-label="Where">Inside drains and vents. Primer F656 (purple) + cement D2564.</td></tr>
+        <tr><td data-label="Number" class="n">F891</td><td data-label="What it is">PVC cellular-core pipe (foam core)</td><td data-label="Where">Lighter DWV pipe. Same fittings as D2665.</td></tr>
+        <tr><td data-label="Number" class="n">D3034</td><td data-label="What it is">PVC sewer pipe, SDR 35 (green)</td><td data-label="Where">Building sewer outside the house.</td></tr>
+        <tr><td data-label="Number" class="n">D2729</td><td data-label="What it is">Thin-wall PVC sewer and drain</td><td data-label="Where">Perforated footing and yard drains. <b>Not</b> a building sewer.</td></tr>
+        <tr><td data-label="Number" class="n">D2661 · D2235</td><td data-label="What it is">ABS DWV (D2661), ABS cement (D2235)</td><td data-label="Where">Black drain pipe. ABS to PVC: transition cement D3138 (green) only at the drain-to-sewer joint, otherwise a listed transition coupling.</td></tr>
+        <tr><td data-label="Number" class="n">B88</td><td data-label="What it is">Copper water tube: K green, L blue, M red</td><td data-label="Where">All copper supply. K for underground, L most common, M thinnest.</td></tr>
+        <tr><td data-label="Number" class="n">B306</td><td data-label="What it is">Copper DWV tube (yellow print)</td><td data-label="Where">Drain and vent only, never pressure.</td></tr>
+        <tr><td data-label="Number" class="n">B32 · B813 · B828</td><td data-label="What it is">Solder alloys (B32), water-soluble flux (B813), how to solder (B828)</td><td data-label="Where">Potable joints: lead-free solder, 0.2% lead or less.</td></tr>
+        <tr><td data-label="Number" class="n">ASME B16.22 · B16.18</td><td data-label="What it is">Copper fittings: wrought (B16.22), cast (B16.18)</td><td data-label="Where">Sweat fittings. Wrought is the thin smooth kind; cast is heavier brass-look.</td></tr>
+        <tr><td data-label="Number" class="n">ASME B16.51</td><td data-label="What it is">Copper press fittings</td><td data-label="Where">ProPress and similar.</td></tr>
+        <tr><td data-label="Number" class="n">A53</td><td data-label="What it is">Steel pipe, black or galvanized</td><td data-label="Where">Black for gas. Galvanized in old houses.</td></tr>
+        <tr><td data-label="Number" class="n">A888 · A74</td><td data-label="What it is">Cast iron soil pipe: hubless (A888), hub and spigot (A74)</td><td data-label="Where">Quiet stacks. Hub gaskets are C564.</td></tr>
+        <tr><td data-label="Number" class="n">CISPI 310 · C1277 · C1540</td><td data-label="What it is">No-hub couplings: standard (CISPI 310, C1277), heavy-duty (C1540)</td><td data-label="Where">Cast iron to cast iron. 60 in-lb standard, 80 in-lb heavy-duty.</td></tr>
+        <tr><td data-label="Number" class="n">C1460 · C1461</td><td data-label="What it is">Shielded transition couplings (C1460), mechanical couplings for plastic DWV (C1461)</td><td data-label="Where">Cast iron to PVC/ABS, and plastic-to-plastic repair couplings.</td></tr>
+      </tbody></table></div>
+    <p class="card-h">Water quality &amp; treatment (NSF/ANSI)</p>
+    <div class="x"><table class="t cards wrap">
+      <thead><tr><th>Number</th><th>What it is</th><th>Where you'll see it</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Number" class="n">NSF 42</td><td data-label="What it is">Filters for taste and odor (chlorine)</td><td data-label="Where">Carbon filters, fridge filters. Not for health claims.</td></tr>
+        <tr><td data-label="Number" class="n">NSF 53</td><td data-label="What it is">Filters for health contaminants (lead, cysts, VOCs)</td><td data-label="Where">Check the box for the exact contaminant it's certified for.</td></tr>
+        <tr><td data-label="Number" class="n">NSF 58</td><td data-label="What it is">Reverse osmosis</td><td data-label="Where">Under-sink RO. Needs an air gap faucet or listed air gap on the drain.</td></tr>
+        <tr><td data-label="Number" class="n">NSF 44</td><td data-label="What it is">Water softeners</td><td data-label="Where">Certified capacity and salt efficiency.</td></tr>
+        <tr><td data-label="Number" class="n">NSF 55</td><td data-label="What it is">UV disinfection</td><td data-label="Where">Class A treats wells for bacteria; Class B is only a polish.</td></tr>
+      </tbody></table></div>
+    <p class="card-h">Fixtures, faucets &amp; gas (ASME, CSA, ANSI)</p>
+    <div class="x"><table class="t cards wrap">
+      <thead><tr><th>Number</th><th>What it is</th><th>Where you'll see it</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Number" class="n">ASME A112.18.1 / CSA B125.1</td><td data-label="What it is">Faucets and showerheads</td><td data-label="Where">Every faucet box.</td></tr>
+        <tr><td data-label="Number" class="n">ASME A112.18.6</td><td data-label="What it is">Flexible water connectors</td><td data-label="Where">Braided supply lines.</td></tr>
+        <tr><td data-label="Number" class="n">ASME A112.19.2</td><td data-label="What it is">Vitreous china fixtures</td><td data-label="Where">Toilets, china lavs, urinals.</td></tr>
+        <tr><td data-label="Number" class="n">ANSI Z21.10.1 · Z21.10.3</td><td data-label="What it is">Gas water heaters: tank 75,000 BTU or less (Z21.10.1), larger and tankless (Z21.10.3)</td><td data-label="Where">The rating plate.</td></tr>
+        <tr><td data-label="Number" class="n">ANSI Z21.22</td><td data-label="What it is">Relief valves, including T&amp;P</td><td data-label="Where">The T&amp;P tag: 150 psi / 210°F, and its BTU rating has to cover the heater.</td></tr>
+        <tr><td data-label="Number" class="n">ANSI Z21.24 · Z21.69</td><td data-label="What it is">Gas appliance connectors: fixed (Z21.24), movable on casters (Z21.69)</td><td data-label="Where">Yellow flex connectors. Z21.69 on ranges and dryers that roll out.</td></tr>
+        <tr><td data-label="Number" class="n">ANSI Z21.80</td><td data-label="What it is">Line pressure regulators</td><td data-label="Where">2 psi systems, at the manifold. Vent limiter or vent to outside.</td></tr>
+        <tr><td data-label="Number" class="n">ANSI LC 1 / CSA 6.26</td><td data-label="What it is">CSST gas tubing</td><td data-label="Where">Yellow or black jacket. Bond it per the maker's instructions.</td></tr>
+        <tr><td data-label="Number" class="n">UL 174</td><td data-label="What it is">Electric tank water heaters</td><td data-label="Where">The rating plate.</td></tr>
+      </tbody></table></div>
+    <p class="note">Plumbing code and maker's instructions tell you which standard a job needs; this card tells you what the number means. Most numbers above show up again in <b>Build → Materials → Pipe markings</b> and <b>Learn → How it works → Backflow devices</b>.</p>
   </section>
   <section data-sec="threads" data-kw="copper pex pvc pipe od id outside inside diameter dimensions k l m sdr schedule 40">
     <div class="sec-head"><h2>Pipe sizes: OD &amp; ID</h2><small>Inches</small></div>
@@ -3518,6 +3685,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 1, 2026 · new tools</th><td><b>New:</b> Standards decoder (what ASSE, ASTM, NSF, CSA and ANSI numbers on parts mean) · Electrical for plumbers (breaker and wire calculator, typical circuits, GFCI, bonding and safety) · Hydronic flow calculator, How hydronic heat works, and a Hydronics flashcard deck for the exam.</td></tr>
         <tr><th>Nov 1, 2026</th><td><b>Fixed:</b> Jobsite → Weather: the air quality table now shows how old its reading is, and never shows a "-Infinity" peak when the hourly forecast is missing.</td></tr>
         <tr><th>Oct 31, 2026 · night</th><td><b>Fixed:</b> on iPhone the bottom bar could get stuck partway up the screen after the keyboard closed; it now stays on the bottom edge (it still follows you when you pinch-zoom) · a card link opened inside the book now goes to that card.</td></tr>
         <tr><th>Oct 31, 2026 · new content</th><td><b>New:</b> Service calls: first checks (running toilet, clogs, no hot water, low pressure, sewer smell, noisy pipes) · Error codes for Navien and Rinnai tankless and the Bradford White status light · Heat, asbestos, CO and temp-power safety card · Vent size, Water heater size and Expansion tank size calculators · a CSST warning on the gas sizer · a fittings pick list in Plan take-off that you can text to the supply house · a timed Practice test from the flashcards · 8 cutaway drawings (trap seal, vent, PRV, T&amp;P, frost-free bibb, toilet, tankless, expansion tank) · Español on the Emergency and safety cards (a draft: needs a fluent check).</td></tr>
@@ -3762,6 +3930,24 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Cause</th><td>A fast-closing valve stops moving water instantly. Its momentum turns into a pressure spike that slams through the pipe.</td></tr>
         <tr><th>Usual suspects</th><td>Washer and dishwasher solenoids, quick faucets, high pressure, loose pipe.</td></tr>
         <tr><th>Fix</th><td>Arrestors (ASSE 1010) at the quick-closing valves, solid pipe support, pressure under 80 psi.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="hydronic hydronics how boiler works radiant floor heat baseboard closed loop fill pressure 12 psi relief valve 30 psi expansion tank precharge circulator pump away point of no pressure change air separator purge primary secondary closely spaced tees mixing valve oxygen barrier evoh loop length manifold indirect water heater glycol snowmelt exam">
+    <div class="sec-head"><h2>How hydronic heat works</h2><small>Boilers, loops &amp; radiant</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The loop</th><td>Closed loop: the boiler heats water, a circulator pushes it through baseboard, radiators or floor tubing, and the same water comes back. You fill it once; nobody drinks it.</td></tr>
+        <tr><th>Fill pressure</th><td>About <b>12 psi</b> cold for most 1–2 story homes. The rule: 0.433 psi per foot up to the highest emitter, plus about 5 psi at the top so the air vents can work.</td></tr>
+        <tr><th>Relief valve</th><td>Boilers carry an ASME relief valve, usually <b>30 psi</b>. Drips when the system is hot? Check the expansion tank charge and the fill valve before you blame the relief.</td></tr>
+        <tr><th>Expansion tank</th><td>Hot water grows and has nowhere to go. A diaphragm tank takes it. Precharge = fill pressure (12 psi), set with the water side isolated and drained. Tap it: a waterlogged tank sounds solid all the way up.</td></tr>
+        <tr><th>Pump away</th><td>Put the circulator <b>after</b> the point where the expansion tank connects (the "point of no pressure change"). Then the pump adds pressure to the system instead of pulling it below atmosphere, where vents suck in air and the pump cavitates.</td></tr>
+        <tr><th>Air</th><td>Air comes out of water where it's hottest and lowest pressure: an air separator at the boiler outlet, auto vents at high points, and purge each zone on startup. Gurgling baseboard = air.</td></tr>
+        <tr><th>Primary-secondary</th><td>Two tees no more than <b>4 pipe diameters</b> apart (or a hydraulic separator) let a boiler pump and zone pumps run without fighting each other.</td></tr>
+        <tr><th>Radiant floors</th><td>A slab can't take boiler-hot water. A mixing valve or injection pump keeps supply around 90–120°F so the floor surface stays at or under about <b>85°F</b>.</td></tr>
+        <tr><th>Radiant tubing</th><td>Oxygen-barrier PEX (EVOH layer) whenever the loop has any iron or steel. Typical loop max: ⅜" 200 ft · ½" 300 ft · ⅝" 400 ft (Uponor). Keep loops on a manifold close in length so they balance.</td></tr>
+        <tr><th>Indirect water heater</th><td>A tank heated by a boiler zone through a coil. Usually set as the priority zone so hot water recovers fast. Still needs its own T&amp;P and the usual fixture temperature limits.</td></tr>
+        <tr><th>Glycol</th><td><b>Propylene</b> glycol only, never automotive ethylene. Any additive means the fill needs an RP (ASSE 1013) or an air gap; plain water gets an ASSE 1012 (IRC P2902.5.2). Snowmelt and garages: mix it for the coldest night.</td></tr>
+        <tr><th><span class="badge ut">UT</span>On the exam</th><td>Hydronics is a scored theory section on the Utah plumbing exam and the weak spot statewide. Practice it: <b>Learn → Flashcards → Hydronics</b>.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="how" data-kw="manifold home run trunk branch pex layout">
@@ -6335,6 +6521,43 @@ function velCalc(){
 }
 $("v-pipe").addEventListener("change", velCalc); $("v-gpm").addEventListener("input", velCalc); velCalc();
 
+/* electrical: watts → amps → breaker and copper wire (NEC 210.19/422.13 continuous ×125%, 240.6 sizes, 310.16 ampacity) */
+const BRK = [15,20,30,40,50,60];   /* the sizes on the truck and at the counter; NEC 240.6 also lists 25, 35 and 45 */
+const WIRE = [["14",15,15],["12",20,20],["10",30,30],["8",40,50],["6",55,65],["4",70,85],["3",85,100],["2",95,115],["1",110,130]];   /* AWG, NM 60°C, THHN 75°C */
+function elCalc(){
+  const w = val("el-w"), v = +$("el-v").value, load = $("el-load").value, el = $("el-ans");
+  if (!(w > 0)){ el.innerHTML = warn("Enter the watts from the label."); mathOut("el-math", []); return; }
+  const a = w / v, k = load === "other" ? 1 : 1.25, need = a * k, brk = BRK.find(b => b >= need);
+  if (!brk){ el.innerHTML = `${nf(a,1)} A draw<small>${warn(`Over 60 A${k > 1 ? ` (${nf(need,0)} A at 125%)` : ""}: the maker splits this across several breakers. Use their chart, and check the service has room.`)}</small>`; mathOut("el-math", [`Amps = watts ÷ volts = ${nf(w,0)} ÷ ${v} = <b>${nf(a,1)} A</b>`, `Whole-house electric tankless is the usual case: 27 kW at 240 V is 112 A, fed as 3 × 40 A circuits.`]); return; }
+  const nm = WIRE.find(x => x[1] >= brk), th = WIRE.find(x => x[2] >= brk);
+  el.innerHTML = `${brk} A ${v === 120 ? "1-pole" : "2-pole"}<small>${nf(a,1)} A draw${k > 1 ? ` · ×125% = ${nf(need,1)} A` : ""} · ${nm ? `${nm[0]} AWG Cu NM` : "bigger than NM"}${th && (!nm || th[0] !== nm[0]) ? ` · ${th[0]} AWG THHN` : ""}</small>`;
+  const steps = [`Amps = watts ÷ volts = ${nf(w,0)} ÷ ${v} = <b>${nf(a,2)} A</b>`];
+  if (k > 1) steps.push(`Continuous load: size for 125% = ${nf(a,2)} × 1.25 = <b>${nf(need,2)} A</b> (NEC 422.13 for tank water heaters, 210.19)`);
+  steps.push(`Next standard breaker at or above ${nf(need,1)} A: <b>${brk} A</b> (NEC 240.6)`);
+  steps.push(`Copper rated for ${brk} A or more: ${nm ? `<b>${nm[0]} AWG</b> NM cable (60°C, ${nm[1]} A)` : "no NM size here"}${th ? ` · <b>${th[0]} AWG</b> THHN in conduit with 75°C terminals (${th[2]} A)` : ""}`);
+  if (v === 208) steps.push(`On 208 V, an element rated at 240 V only makes (208 ÷ 240)² = 75% of its label watts. Enter the 208 V watts if the label lists them.`);
+  steps.push(`Rough sizing only: long runs, conduit fill and hot attics change the wire. The label and the electrician decide.`);
+  mathOut("el-math", steps);
+}
+["el-w"].forEach(id => $(id).addEventListener("input", elCalc)); ["el-v","el-load"].forEach(id => $(id).addEventListener("change", elCalc)); elCalc();
+
+/* hydronic flow: gpm = BTU/hr ÷ (500 × ΔT); 500 = 8.33 lb/gal × 60 min × 1 BTU/lb·°F. Pipe at ≤ 4 ft/s. */
+const HY_PIPES = [["Cu L ½\"",0.545],["Cu L ¾\"",0.785],["Cu L 1\"",1.025],["Cu L 1¼\"",1.265],["Cu L 1½\"",1.505],["Cu L 2\"",1.985],["PEX ½\"",0.475],["PEX ¾\"",0.671],["PEX 1\"",0.862]];
+function hydCalc(){
+  const btu = val("hy-btu"), dt = val("hy-dt"), f = +$("hy-fl").value, el = $("hy-ans");
+  if (!(btu > 0) || !(dt > 0)){ el.innerHTML = warn("Enter a heat load and a ΔT above 0."); $("hy-rows").innerHTML = ""; mathOut("hy-math", []); return; }
+  const gpm = btu / (f * dt), maxQ = id => 4 * id * id / 0.4085;
+  const fits = HY_PIPES.filter(([, id]) => maxQ(id) >= gpm), cu = fits.find(p => p[0].startsWith("Cu")), px = fits.find(p => p[0].startsWith("PEX"));
+  $("hy-rows").innerHTML = HY_PIPES.map(([n, id]) => { const v = gpm * 0.4085 / (id * id);
+    return `<tr${n === (cu && cu[0]) || n === (px && px[0]) ? ' class="hit"' : ""}><th>${n}</th><td class="big">${nf(maxQ(id), 1)} gpm<small>max at 4 ft/s</small></td><td class="sub">${nf(v, 1)} ft/s at your flow${v > 4 ? ": too fast, noisy" : ""}</td></tr>`; }).join("");
+  el.innerHTML = `${nf(gpm, 2)} gpm<small>${cu ? cu[0] : "Over 2\" copper"}${px ? ` or ${px[0]}` : ""} at 4 ft/s or less</small>`;
+  mathOut("hy-math", [`gpm = BTU/hr ÷ (${f} × ΔT) = ${nf(btu,0)} ÷ (${f} × ${nf(dt,1)}) = <b>${nf(gpm,2)} gpm</b>`,
+    `500 comes from water: 8.33 lb per gallon × 60 minutes × 1 BTU per lb per °F.${f !== 500 ? ` Glycol holds less heat and weighs a little more, so the factor drops to about ${f}.` : ""}`,
+    `Shortcut: 1 gpm at a 20°F ΔT carries about 10,000 BTU/hr.`,
+    `Max gpm for a pipe at 4 ft/s = 4 × ID² ÷ 0.4085 (same math as Flow velocity).`]);
+}
+["hy-btu","hy-dt"].forEach(id => $(id).addEventListener("input", hydCalc)); $("hy-fl").addEventListener("change", hydCalc); hydCalc();
+
 /* thermal expansion: in/in/°F; PEX from Uponor's 1.1" per 100 ft per 10°F */
 const EXP = [["PEX",1.1/12000],["CPVC",3.4e-5],["PVC",3.0e-5],["ABS",5.5e-5],["Copper",9.4e-6],["Steel",6.5e-6]];
 $("te-mat").innerHTML = EXP.map(([n],i) => `<option value="${i}">${n}</option>`).join("");
@@ -6928,7 +7151,23 @@ const CARDS = [
   ["2021 IPC","2021 IPC: how high does a dry vent rise before going horizontal (905.4)?","6\" above the flood rim of the highest fixture it serves","Lower than that, a backed-up fixture fills the vent and it clogs."],
   ["2021 IPC","2021 IPC: vent end within 10 ft of a window or door (903.5)?","At least 3 ft above the top of the opening (IRC: 2 ft)","Sewer gas rises. Height keeps it out of open windows."],
   ["2021 IPC","2021 IPC: trap seal depth (1002.4)?","2\" minimum, 4\" maximum","Too shallow evaporates or siphons. Too deep holds solids."],
-  ["2021 IPC","2021 IPC: slope for drains 2½\" and smaller (Table 704.1)?","¼\" per ft (3\"–6\": ⅛\")","Small pipe needs the steeper slope to keep water deep enough to carry solids."]
+  ["2021 IPC","2021 IPC: slope for drains 2½\" and smaller (Table 704.1)?","¼\" per ft (3\"–6\": ⅛\")","Small pipe needs the steeper slope to keep water deep enough to carry solids."],
+  ["Hydronics","How many gpm does a hydronic load need?","BTU/hr ÷ (500 × ΔT)","500 = 8.33 lb/gal × 60 min. 40,000 BTU/hr at a 20°F ΔT = 4 gpm."],
+  ["Hydronics","1 gpm at a 20°F ΔT carries about how much heat?","10,000 BTU/hr","500 × 20 = 10,000. Handy for checking a zone in your head."],
+  ["Hydronics","Typical cold fill pressure for a 1–2 story house?","12 psi","0.433 psi per foot to the highest emitter, plus about 5 psi at the top so the air vents work."],
+  ["Hydronics","Usual relief valve setting on a residential boiler?","30 psi (ASME)","Dripping when hot? Check the expansion tank charge and the fill valve first."],
+  ["Hydronics","What should a hydronic expansion tank be precharged to?","The fill pressure, usually 12 psi","Set it with the tank isolated and drained on the water side."],
+  ["Hydronics","Where does the circulator go compared to the expansion tank?","After it: pump away from the point of no pressure change","Then the pump adds pressure instead of pulling the system below atmosphere and sucking in air."],
+  ["Hydronics","Primary-secondary tees: how far apart, max?","4 pipe diameters","Close tees have almost no pressure drop between them, so the pumps don't fight."],
+  ["Hydronics","Why does radiant PEX need an oxygen barrier?","Oxygen through plain PEX rusts iron and steel parts in the loop","EVOH-layer PEX, when the loop has any ferrous parts (DIN 4726)."],
+  ["Hydronics","Max comfortable floor surface temperature with radiant?","About 85°F","That's why a slab gets 90–120°F supply through a mixing valve."],
+  ["Hydronics","Typical max loop length for ½\" radiant PEX?","About 300 ft","⅜\" about 200 ft, ⅝\" about 400 ft. Longer loops lose too much head (Uponor)."],
+  ["Hydronics","When does a condensing boiler actually condense?","Return water under about 130°F","That's the flue-gas dew point for natural gas. Hot returns throw away the extra efficiency."],
+  ["Hydronics","Which glycol goes in a heating system, and what fill protection?","Propylene glycol, with an RP or air gap on the fill","Never automotive ethylene. Additives mean ASSE 1013 or an air gap (IRC P2902.5.2)."],
+  ["Hydronics","Backflow on a plain-water boiler fill?","ASSE 1012: dual check with an atmospheric vent","IRC P2902.5.2. Add chemicals or glycol and it becomes an RP."],
+  ["Hydronics","Where does the air separator go?","At the boiler outlet","Air comes out of water where it's hottest and lowest pressure."],
+  ["Hydronics","Supply water temperature for fin-tube baseboard?","About 160–180°F","Radiant slabs run 90–120°F; panel radiators sit in between."],
+  ["Hydronics","What's an indirect water heater?","A tank heated by a boiler loop through a coil","Usually the priority zone so hot water recovers fast. Still gets its own T&P."]
 ];
 /* Smarter flashcards (Leitner boxes). New → Got it puts a card in box 2 (back tomorrow); each Got it moves it up a box:
    back in 1, 3, 7, then 14 days. Missed it drops it to box 1: due again today, and it comes back a few cards later this round. */
@@ -7133,7 +7372,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-01a";
+{ const NEWS = "2026-11-01b";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8014,7 +8253,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-01a";
+var BUILD = "handbook-2026-11-01b";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
