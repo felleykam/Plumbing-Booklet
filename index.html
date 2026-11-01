@@ -3685,7 +3685,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 1, 2026 · new tools</th><td><b>New:</b> Standards decoder (what ASSE, ASTM, NSF, CSA and ANSI numbers on parts mean) · Electrical for plumbers (breaker and wire calculator, typical circuits, GFCI, bonding and safety) · Hydronic flow calculator, How hydronic heat works, and a Hydronics flashcard deck for the exam.</td></tr>
+        <tr><th>Nov 1, 2026 · new tools</th><td><b>New:</b> Standards decoder (what ASSE, ASTM, NSF, CSA and ANSI numbers on parts mean) · Electrical for plumbers (breaker and wire calculator, typical circuits, GFCI, bonding and safety) · Hydronic flow calculator, How hydronic heat works, and a Hydronics flashcard deck for the exam. <b>Fixed:</b> on the home-screen iPhone app, a gap could open under the bottom bar after using the keyboard; the bar now slides back down to the edge.</td></tr>
         <tr><th>Nov 1, 2026</th><td><b>Fixed:</b> Jobsite → Weather: the air quality table now shows how old its reading is, and never shows a "-Infinity" peak when the hourly forecast is missing.</td></tr>
         <tr><th>Oct 31, 2026 · night</th><td><b>Fixed:</b> on iPhone the bottom bar could get stuck partway up the screen after the keyboard closed; it now stays on the bottom edge (it still follows you when you pinch-zoom) · a card link opened inside the book now goes to that card.</td></tr>
         <tr><th>Oct 31, 2026 · new content</th><td><b>New:</b> Service calls: first checks (running toilet, clogs, no hot water, low pressure, sewer smell, noisy pipes) · Error codes for Navien and Rinnai tankless and the Bradford White status light · Heat, asbestos, CO and temp-power safety card · Vent size, Water heater size and Expansion tank size calculators · a CSST warning on the gas sizer · a fittings pick list in Plan take-off that you can text to the supply house · a timed Practice test from the flashcards · 8 cutaway drawings (trap seal, vent, PRV, T&amp;P, frost-free bibb, toilet, tankless, expansion tank) · Español on the Emergency and safety cards (a draft: needs a fluent check).</td></tr>
@@ -5016,8 +5016,12 @@ $("q").addEventListener("input", () => {
     document.body.classList.toggle("kb-open", typing() && vv.height < innerHeight - 120);
     /* Only move the bar for pinch-zoom. At normal zoom, position:fixed already sits on the bottom edge; moving it by the
        keyboard's height stranded it mid-screen when iOS didn't report the keyboard closing. */
-    const s = vv.scale || 1;
-    if (s > 1.01){ const dx = vv.offsetLeft, dy = vv.offsetTop + vv.height - innerHeight; navEl.style.transform = `translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px) scale(${(1 / s).toFixed(4)})`; }
+    const s = vv.scale || 1, dy = vv.offsetTop + vv.height - innerHeight;
+    if (s > 1.01){ const dx = vv.offsetLeft; navEl.style.transform = `translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px) scale(${(1 / s).toFixed(4)})`; }
+    /* Home-screen iPhone app: after the keyboard has been up, iOS can leave what you see shifted below the layout viewport,
+       and a gap of page shows under the bar. Close it, but only ever move the bar DOWN and never far: moving it up is what
+       stranded it mid-screen before. Skipped while typing, when the bar is hidden anyway. */
+    else if (dy > 0.5 && dy < 200 && !typing()) navEl.style.transform = `translate3d(0,${dy.toFixed(1)}px,0)`;
     else navEl.style.transform = "translateZ(0)";
   };
   const queue = () => { if (!raf) raf = requestAnimationFrame(glue); };
@@ -5028,6 +5032,7 @@ $("q").addEventListener("input", () => {
   document.addEventListener("focusin", queue);
   document.addEventListener("focusout", () => { [100, 400, 900].forEach(t => setTimeout(queue, t)); setTimeout(() => { if (!typing()) scrollTo(scrollX, scrollY); }, 300); });   /* re-seat after the keyboard closes; iOS reports it late */
   addEventListener("pageshow", queue); document.addEventListener("visibilitychange", queue);   /* re-seat after the keyboard closes */
+  document.addEventListener("touchend", queue, {passive: true});   /* iOS doesn't always fire a viewport event when it shifts: re-check on every tap */
   if (mq.addEventListener) mq.addEventListener("change", queue);
   queue();   /* next frame: running it mid-startup forced a layout of the whole book */
 }
