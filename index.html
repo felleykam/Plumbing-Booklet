@@ -935,7 +935,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <button type="button" data-go="trim|idhow|Standards decoder"><b>What does ASSE 1016 or F1960 on this part mean?</b><span>Trim → ID a part → Standards decoder</span></button>
       <button type="button" data-go="mech|heaters|Electrical for plumbers"><b>What breaker and wire for this water heater?</b><span>Service → Water heaters → Electrical for plumbers</span></button>
       <button type="button" data-go="calc|water|Hydronic flow"><b>Sizing a boiler zone or radiant loop</b><span>Flow → Hydronic flow</span></button>
-      <button type="button" data-go="calc|units|Typical fitting take-offs"><b>Take-off for a PVC fitting I didn't measure</b><span>Units → Typical fitting take-offs</span></button>
+      <button type="button" data-go="calc|units|Typical fitting take-offs"><b>Take-off for an ABS or PVC fitting I didn't measure</b><span>Units → Typical fitting take-offs</span></button>
     </div>
     </details>
   </section>
@@ -1664,19 +1664,20 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 </tbody></table></div>
     <p class="note"><span class="badge why">WHY</span> Run the trick before you trust a calculator: if the screen says 34" and your head says 17", a digit slipped. Exact answers live in the calculators.</p>
   </section>
-  <section data-sec="units" data-kw="typical take-off takeoff take off fitting allowance center to hub bottom socket dwv pvc abs charlotte quarter 1/4 bend sanitary 90 long sweep eighth 1/8 bend 45 sixteenth 1/16 22 sanitary tee wye combo combination street ell hub depth cut length">
-    <div class="sec-head"><h2>Typical fitting take-offs</h2><small>PVC DWV · Charlotte Pipe catalog</small></div>
+  <section data-sec="units" data-kw="typical take-off takeoff take off fitting allowance center to hub bottom socket dwv abs pvc black foam core charlotte quarter 1/4 bend sanitary 90 long sweep eighth 1/8 bend 45 sixteenth 1/16 22 sanitary tee wye combo combination street ell hub depth cut length">
+    <div class="sec-head"><h2>Typical fitting take-offs</h2><small>ABS &amp; PVC DWV · Charlotte Pipe catalog</small></div>
+    <div class="seg" id="to-mat" role="group" aria-label="Material"><button type="button" data-m="0" aria-pressed="true">ABS</button><button type="button" data-m="1">PVC</button></div>
     <div class="seg" id="to-size" role="group" aria-label="Pipe size"><button type="button" data-s="0">1½"</button><button type="button" data-s="1" aria-pressed="true">2"</button><button type="button" data-s="2">3"</button><button type="button" data-s="3">4"</button></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Fitting</th><th>Take-off</th></tr></thead>
       <tbody id="to-rows"></tbody></table></div>
-    <p class="note"><b>Take-off</b> = fitting center to the bottom of the hub, where the pipe stops. Cut = center-to-center − both take-offs. <b>Street fittings:</b> the spigot end is center-to-end; push it into a hub and that side's take-off is that number minus the hub depth. From Charlotte Pipe's <i>Plastic DWV Pipe and Fitting Dimensions</i> (DC-DWV, Apr 2026), PVC; Charlotte ABS runs within about ⅛" (2" ABS 1/16 bend: ½"). <b>Other brands differ:</b> check one fitting from the box with a tape before you trust a chart. Copper isn't here yet: no maker publishes take-offs we could verify, so measure and save yours below.</p>
+    <p class="note"><b>Take-off</b> = fitting center to the bottom of the hub, where the pipe stops. Cut = center-to-center − both take-offs. <b>Street fittings:</b> the spigot end is center-to-end; push it into a hub and that side's take-off is that number minus the hub depth. From Charlotte Pipe's <i>Plastic DWV Pipe and Fitting Dimensions</i> (DC-DWV, Apr 2026). ABS and PVC fittings mostly match; where Charlotte lists them separately, the toggle shows each. Foam-core or solid pipe doesn't change it: the take-off is the fitting's. <b>Other brands differ:</b> check one fitting from the box with a tape before you trust a chart. Copper isn't here yet: no maker publishes take-offs we could verify, so measure and save yours below.</p>
   </section>
   <section data-sec="units" data-kw="take-off takeoff take off fitting center to end dwv abs pvc copper 45 90 elbow quarter eighth bend measure my">
     <div class="sec-head"><h2>My take-offs</h2><small>Measure once · saved on this device</small></div>
     <div id="tk-list"></div>
     <div class="calc"><button type="button" class="btn2" id="tk-add">+ Add a fitting</button></div>
-    <p class="note"><span class="badge why">WHY</span> Take-off (fitting center to where the pipe bottoms out in the hub) changes by brand and pattern, so every chart is only a starting point (Charlotte PVC numbers are in the card above). Measure the fittings on your truck: <b>center-to-end of the fitting minus the hub depth</b>. Saved take-offs show up as one-tap buttons in the offset calculator.</p>
+    <p class="note"><span class="badge why">WHY</span> Take-off (fitting center to where the pipe bottoms out in the hub) changes by brand and pattern, so every chart is only a starting point (Charlotte ABS and PVC numbers are in the card above). Measure the fittings on your truck: <b>center-to-end of the fitting minus the hub depth</b>. Saved take-offs show up as one-tap buttons in the offset calculator.</p>
   </section>
     
   <!-- ================= ROUGH ================= -->
@@ -3701,7 +3702,8 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 1, 2026 · take-offs</th><td><b>New:</b> Calc → Units → Typical fitting take-offs: center-to-hub-bottom for PVC DWV 1/4, long sweep, 1/8 and 1/16 bends, sanitary tee, wye, combo and street fittings in 1½–4", from Charlotte Pipe's 2026 dimension catalog. Pick a size; check your brand with a tape.</td></tr>
+        <tr><th>Nov 1, 2026 · ABS</th><td><b>New:</b> Typical fitting take-offs now has ABS, and opens on ABS. Tap PVC for the white stuff.</td></tr>
+        <tr><th>Nov 1, 2026 · take-offs</th><td><b>New:</b> Calc → Units → Typical fitting take-offs: center-to-hub-bottom for ABS and PVC DWV 1/4, long sweep, 1/8 and 1/16 bends, sanitary tee, wye, combo and street fittings in 1½–4", from Charlotte Pipe's 2026 dimension catalog. Pick a size; check your brand with a tape.</td></tr>
         <tr><th>Nov 1, 2026 · night</th><td><b>Fixed:</b> on the home-screen iPhone app the bottom bar could float up off the edge after the app sat in the background. The status bar is see-through again (the page runs full screen, with a black strip behind the clock). Still see it? <b>Settings → Backup &amp; reset → Screen check</b>, and screenshot the numbers.</td></tr>
         <tr><th>Nov 1, 2026 · new tools</th><td><b>New:</b> Standards decoder (what ASSE, ASTM, NSF, CSA and ANSI numbers on parts mean) · Electrical for plumbers (breaker and wire calculator, typical circuits, GFCI, bonding and safety) · Hydronic flow calculator, How hydronic heat works, and a Hydronics flashcard deck for the exam. <b>Fixed:</b> on the home-screen iPhone app, a gap could open under the bottom bar after using the keyboard; the bar now slides back down to the edge.</td></tr>
         <tr><th>Nov 1, 2026</th><td><b>Fixed:</b> Jobsite → Weather: the air quality table now shows how old its reading is, and never shows a "-Infinity" peak when the hourly forecast is missing.</td></tr>
@@ -5906,28 +5908,30 @@ $("tk-list").addEventListener("click", e => {
 });
 $("tk-add").addEventListener("click", () => { TK.push(["",""]); store.set("jpb-takeoffs", TK); tkDraw(); const ins = $("tk-list").querySelectorAll('input[data-f="0"]'); ins[ins.length-1]?.focus(); });
 
-/* typical DWV take-offs: Charlotte Pipe DC-DWV (Apr 2026), PVC, center to hub bottom. Columns: 1½", 2", 3", 4". */
+/* typical DWV take-offs: Charlotte Pipe DC-DWV (Apr 2026), center to hub bottom. Each size is [ABS, PVC]; Charlotte
+   prints one number where both match. Columns: 1½", 2", 3", 4". ABS first: that's what this book's plumber runs. */
 const TO_ROWS = [
-  ["1/4 bend (san 90)", "each end", ["1¾", "2 5⁄16", "3 1⁄16", "3⅞"]],
-  ["Long sweep 1/4 bend", "each end", ["2¾", "3¼", "4 1⁄16", "4 15⁄16"]],
-  ["1/8 bend (45)", "each end", ["1⅛", "1½", "1¾", "2 3⁄16"]],
-  ["1/16 bend (22½)", "each end", ["½", "11⁄16", "13⁄16", "1"]],
-  ["Sanitary tee", "branch center → bottom hub", ["1¾", "2 5⁄16", "3 1⁄16", "3⅞"]],
-  ["Sanitary tee", "branch center → top hub", ["1", "1⅜", "1 13⁄16", "2¼"]],
-  ["Wye", "where centers cross → bottom hub", ["1⅛", "1⅜", "1⅝", "1⅞"]],
-  ["Wye", "where centers cross → branch hub (same to top hub)", ["2⅞", "3⅝", "5", "6⅜"]],
-  ["Combo (wye & 1/8)", "branch center → bottom hub", ["3 15⁄16", "5⅛", "7 9⁄16", "10"]],
-  ["Combo (wye & 1/8)", "run center → branch hub", ["3 15⁄16", "5⅛", "7 9⁄16", "10"]],
-  ["Street 1/4 bend", "hub end · spigot end (C-E)", ["1¾ · 2½", "2 5⁄16 · 3 3⁄16", "3 1⁄16 · 4 9⁄16", "3⅞ · 5⅝"]],
-  ["Street 1/8 bend", "hub end · spigot end (C-E)", ["1⅛ · 1⅞", "1½ · 2 3⁄16", "1¾ · 3¼", "2 3⁄16 · 3 15⁄16"]],
-  ["Hub depth", "pipe goes in this far", ["23⁄32", "¾", "1½", "1¾"]]
+  ["1/4 bend (san 90)", "each end", [["1¾","1¾"], ["2¼","2 5⁄16"], ["3 1⁄16","3 1⁄16"], ["3⅞","3⅞"]]],
+  ["Long sweep 1/4 bend", "each end", [["2¾","2¾"], ["3¼","3¼"], ["4","4 1⁄16"], ["4 15⁄16","4 15⁄16"]]],
+  ["1/8 bend (45)", "each end", [["1⅛","1⅛"], ["1½","1½"], ["1¾","1¾"], ["2 3⁄16","2 3⁄16"]]],
+  ["1/16 bend (22½)", "each end", [["½","½"], ["½","11⁄16"], ["13⁄16","13⁄16"], ["1","1"]]],
+  ["Sanitary tee", "branch center → bottom hub", [["1 23⁄32","1¾"], ["2 5⁄16","2 5⁄16"], ["3 1⁄32","3 1⁄16"], ["3⅞","3⅞"]]],
+  ["Sanitary tee", "branch center → top hub", [["15⁄16","1"], ["1 9⁄32","1⅜"], ["1 25⁄32","1 13⁄16"], ["2¼","2¼"]]],
+  ["Wye", "where centers cross → bottom hub", [["1⅛","1⅛"], ["1⅜","1⅜"], ["1⅝","1⅝"], ["1¾","1⅞"]]],
+  ["Wye", "where centers cross → branch hub (top hub about the same)", [["2 15⁄16","2⅞"], ["3⅝","3⅝"], ["5","5"], ["6 5⁄16","6⅜"]]],
+  ["Combo (wye & 1/8)", "branch center → bottom hub", [["3 13⁄16","3 15⁄16"], ["5","5⅛"], ["7 7⁄16","7 9⁄16"], ["9 27⁄32","10"]]],
+  ["Combo (wye & 1/8)", "run center → branch hub", [["3⅞","3 15⁄16"], ["5 5⁄32","5⅛"], ["7 17⁄32","7 9⁄16"], ["9 31⁄32","10"]]],
+  ["Street 1/4 bend", "hub end · spigot end (C-E)", [["1¾ · 2½","1¾ · 2½"], ["2 5⁄16 · 3 3⁄16","2 5⁄16 · 3 3⁄16"], ["3 1⁄16 · 4 9⁄16","3 1⁄16 · 4 9⁄16"], ["3⅞ · 5⅝","3⅞ · 5⅝"]]],
+  ["Street 1/8 bend", "hub end · spigot end (C-E)", [["1 1⁄16 · 1⅞","1⅛ · 1⅞"], ["1 15⁄32 · 2⅛","1½ · 2 3⁄16"], ["1¾ · 3¼","1¾ · 3¼"], ["2 3⁄16 · 3 15⁄16","2 3⁄16 · 3 15⁄16"]]],
+  ["Hub depth", "pipe goes in this far", [["¾","23⁄32"], ["27⁄32","¾"], ["1½","1½"], ["1¾","1¾"]]]
 ];
 function toDraw(){
-  const s = Math.min(3, Math.max(0, +store.get("jpb-to-size", 1) || 0));
-  press($("to-size"), b => +b.dataset.s === s);
-  $("to-rows").innerHTML = TO_ROWS.map(([f, where, v]) => `<tr><td>${f}<div class="sub">${where}</div></td><td>${v[s]}"</td></tr>`).join("");
+  const s = Math.min(3, Math.max(0, +store.get("jpb-to-size", 1) || 0)), m = store.get("jpb-to-mat", "abs") === "pvc" ? 1 : 0;
+  press($("to-size"), b => +b.dataset.s === s); press($("to-mat"), b => +b.dataset.m === m);
+  $("to-rows").innerHTML = TO_ROWS.map(([f, where, v]) => `<tr><td>${f}<div class="sub">${where}</div></td><td>${v[s][m]}"</td></tr>`).join("");
 }
 $("to-size").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; store.set("jpb-to-size", +b.dataset.s); toDraw(); });
+$("to-mat").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; store.set("jpb-to-mat", b.dataset.m === "1" ? "pvc" : "abs"); toDraw(); });
 toDraw();
 $("ro-tk-chips").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; writeIn("ro-to", +b.dataset.v); roCalc(); say("Take-off set to " + toFrac16(+b.dataset.v)); });
 tkDraw(); tkChips();
@@ -7433,7 +7437,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-01d";
+{ const NEWS = "2026-11-01e";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8314,7 +8318,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-01d";
+var BUILD = "handbook-2026-11-01e";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
