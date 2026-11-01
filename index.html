@@ -3517,6 +3517,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Oct 31, 2026 · night</th><td><b>Fixed:</b> on iPhone the bottom bar could get stuck partway up the screen after the keyboard closed; it now stays on the bottom edge (it still follows you when you pinch-zoom) · a card link opened inside the book now goes to that card.</td></tr>
         <tr><th>Oct 31, 2026 · new content</th><td><b>New:</b> Service calls: first checks (running toilet, clogs, no hot water, low pressure, sewer smell, noisy pipes) · Error codes for Navien and Rinnai tankless and the Bradford White status light · Heat, asbestos, CO and temp-power safety card · Vent size, Water heater size and Expansion tank size calculators · a CSST warning on the gas sizer · a fittings pick list in Plan take-off that you can text to the supply house · a timed Practice test from the flashcards · 8 cutaway drawings (trap seal, vent, PRV, T&amp;P, frost-free bibb, toilet, tankless, expansion tank) · Español on the Emergency and safety cards (a draft: needs a fluent check).</td></tr>
         <tr><th>Oct 31, 2026 · field tools</th><td><b>New:</b> a ⅛–⅞ fraction pad under every inch box (no tiny dropdowns) · the Offset calculator is a third as long, with multipliers in their own card · Copy, Share and Add to tape under every calculator answer (Mine → Tape) · Test log: start a test, come back, log it with the leak-or-cold verdict and share it · notes on any card (⋯ → Add a note), searchable · My shop: put your shop's numbers over "typical" (⋯ → Edit for my shop).</td></tr>
         <tr><th>Oct 31, 2026 · new layout</th><td><b>New:</b> a Home screen (Emergency, your city, pinned, recent, offline status) and a 3-question setup · tabs are now Home · Calc · Build · Service · Trim, with Inspect, Contacts, Jobsite, Learn and Mine under More · the phone's Back button steps back through tabs, searches and sheets · every card has a ⋯ menu: copy link, share, print · Contacts gathers every phone list · one Weather card · See also links between explainers and field cards · search knows synonyms (PRV, T&amp;P, sillcock) and code sections (P3005.2) and shows the best 8 with tab chips · code edition is a real setting and the DFU counter says which code it used · Sun/Night follows your phone. <b>Fixed:</b> searching "flush…" no longer clears the box · weather no longer says "updated 9 min ago" under an error. <b>Merged:</b> Callback killers into Habits, etiquette into Get kept, 3 number cards into Numbers to know, 3 plan-scale cards into one, 9 tool cards into 3 (now in Learn).</td></tr>
@@ -4825,8 +4826,11 @@ $("q").addEventListener("input", () => {
     raf = 0;
     if (!vv || !mq.matches){ navEl.style.transform = ""; document.body.classList.remove("kb-open"); return; }
     document.body.classList.toggle("kb-open", typing() && vv.height < innerHeight - 120);
-    const s = vv.scale || 1, dx = vv.offsetLeft, dy = vv.offsetTop + vv.height - innerHeight;
-    navEl.style.transform = Math.abs(dy) > 0.5 || Math.abs(dx) > 0.5 || Math.abs(s - 1) > 0.01 ? `translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px) scale(${(1 / s).toFixed(4)})` : "translateZ(0)";
+    /* Only move the bar for pinch-zoom. At normal zoom, position:fixed already sits on the bottom edge; moving it by the
+       keyboard's height stranded it mid-screen when iOS didn't report the keyboard closing. */
+    const s = vv.scale || 1;
+    if (s > 1.01){ const dx = vv.offsetLeft, dy = vv.offsetTop + vv.height - innerHeight; navEl.style.transform = `translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px) scale(${(1 / s).toFixed(4)})`; }
+    else navEl.style.transform = "translateZ(0)";
   };
   const queue = () => { if (!raf) raf = requestAnimationFrame(glue); };
   window.navGlue = queue;
@@ -4834,7 +4838,8 @@ $("q").addEventListener("input", () => {
   addEventListener("scroll", queue, {passive: true});
   addEventListener("orientationchange", () => setTimeout(queue, 350));
   document.addEventListener("focusin", queue);
-  document.addEventListener("focusout", () => setTimeout(() => { queue(); if (!typing()) scrollTo(scrollX, scrollY); }, 300));   /* re-seat after the keyboard closes */
+  document.addEventListener("focusout", () => { [100, 400, 900].forEach(t => setTimeout(queue, t)); setTimeout(() => { if (!typing()) scrollTo(scrollX, scrollY); }, 300); });   /* re-seat after the keyboard closes; iOS reports it late */
+  addEventListener("pageshow", queue); document.addEventListener("visibilitychange", queue);   /* re-seat after the keyboard closes */
   if (mq.addEventListener) mq.addEventListener("change", queue);
   queue();   /* next frame: running it mid-startup forced a layout of the whole book */
 }
@@ -7126,7 +7131,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-10-31d";
+{ const NEWS = "2026-10-31e";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -7458,7 +7463,11 @@ $("setup-open").addEventListener("click", () => sheet("setup", true));
   }
   try { history.replaceState({g: nav.group, s: nav.sub, q: ""}, "", location.pathname + location.search + navHash()); } catch(e){ histOk = false; }
   addEventListener("popstate", e => {
-    const st = e.state || {}; restoring = true;
+    let st = e.state || {}; restoring = true;
+    if (!e.state){   /* a card link pasted or tapped in the same tab: no saved step, so read the address */
+      const h = location.hash.match(/^#([a-z]+)\/([a-z0-9]+)(?:\/([a-z0-9-]+))?$/);
+      if (h && GROUPS[h[1]] && GROUPS[h[1]].some(([k]) => k === h[2])){ st = {g: h[1], s: h[2], q: "", card: h[3] ? h[2] + ":" + h[3] : null}; try { history.replaceState(st, ""); } catch(err){} }
+    }
     ["look","more","setup"].forEach(n => { if (n !== st.sheet && sheetOn(n)) SHEETS[n](false); });
     if (st.sheet && SHEETS[st.sheet] && !sheetOn(st.sheet)) SHEETS[st.sheet](true);
     if (st.g && GROUPS[st.g] && GROUPS[st.g].some(([k]) => k === st.s)){ nav = {group: st.g, sub: st.s}; saveNav(); drawSubs(); }
@@ -8003,7 +8012,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-10-31d";
+var BUILD = "handbook-2026-10-31e";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
