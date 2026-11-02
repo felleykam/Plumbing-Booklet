@@ -11,6 +11,18 @@
 <meta name="apple-mobile-web-app-title" content="UT Handbook">
 <link rel="icon" href="icon-192.png">
 <title>Utah Plumbers Digital Handbook</title>
+<!-- link previews when the book is texted or shared -->
+<meta name="description" content="Free field handbook for Utah residential plumbers: offsets, grade, take-offs, code, water heaters, trim, city inspections. Works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Utah Plumbers Digital Handbook">
+<meta property="og:title" content="Utah Plumbers Digital Handbook">
+<meta property="og:description" content="Field math, code, mech room, trim and Utah city info for residential plumbers. Add it to your home screen; it works with no signal.">
+<meta property="og:url" content="https://felleykam.github.io/Plumbing-Booklet/">
+<meta property="og:image" content="https://felleykam.github.io/Plumbing-Booklet/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="Utah outline with a water drop">
+<meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@700;800&family=Barlow:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap">
@@ -3733,7 +3745,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Nov 1, 2026 · new</th><td><b>New:</b> Typical fitting take-offs, ABS and PVC (Calc → Units) · Standards decoder for the numbers printed on parts (Trim → ID a part) · Electrical for plumbers with a breaker and wire calculator (Service → Water heaters) · Hydronic flow calculator, How hydronic heat works, and a Hydronics flashcard deck · Settings: Tabs, Gloves on, Round answers to, My drain pipe, Remember my searches, and Share the book (QR code, also under More) · Search fixes typos, skips filler words and finds Navien codes by number.</td></tr>
-        <tr><th>Nov 1, 2026 · fixed</th><td><b>Fixed:</b> home-screen iPhone app: the bottom bar could float up off the edge (status bar is see-through again; if it still happens, Settings → Backup &amp; reset → Screen check and screenshot the numbers) · Weather: air quality shows how old its reading is, and never a "-Infinity" peak.</td></tr>
+        <tr><th>Nov 1, 2026 · fixed</th><td><b>Fixed:</b> home-screen iPhone app: the bottom bar could float up off the edge (status bar is see-through again; if it still happens, Settings → Backup &amp; reset → Screen check and screenshot the numbers) · Weather: air quality shows how old its reading is, and never a "-Infinity" peak · dead links updated (LP I-joists → Pacific Woodtech, InSinkErator, OSHA) · a texted link now shows the book's name and icon.</td></tr>
         <tr><th>Oct 31, 2026 · night</th><td><b>Fixed:</b> on iPhone the bottom bar could get stuck partway up the screen after the keyboard closed; it now stays on the bottom edge (it still follows you when you pinch-zoom) · a card link opened inside the book now goes to that card.</td></tr>
         <tr><th>Oct 31, 2026 · new content</th><td><b>New:</b> Service calls: first checks (running toilet, clogs, no hot water, low pressure, sewer smell, noisy pipes) · Error codes for Navien and Rinnai tankless and the Bradford White status light · Heat, asbestos, CO and temp-power safety card · Vent size, Water heater size and Expansion tank size calculators · a CSST warning on the gas sizer · a fittings pick list in Plan take-off that you can text to the supply house · a timed Practice test from the flashcards · 8 cutaway drawings (trap seal, vent, PRV, T&amp;P, frost-free bibb, toilet, tankless, expansion tank) · Español on the Emergency and safety cards (a draft: needs a fluent check).</td></tr>
         <tr><th>Oct 31, 2026 · field tools</th><td><b>New:</b> a ⅛–⅞ fraction pad under every inch box (no tiny dropdowns) · the Offset calculator is a third as long, with multipliers in their own card · Copy, Share and Add to tape under every calculator answer (Mine → Tape) · Test log: start a test, come back, log it with the leak-or-cold verdict and share it · notes on any card (⋯ → Add a note), searchable · My shop: put your shop's numbers over "typical" (⋯ → Edit for my shop).</td></tr>
@@ -4240,12 +4252,12 @@ const LIB = {
     ["TJ-4000","TJI Specifier's Guide","Allowable holes, p. 9","https://www.weyerhaeuser.com/woodproducts/document-library/document_library_detail/TJ-4000/"],
     ["TJ-9001","TJI Installation Guide","Field hole table, TJI 110–560","https://www.weyerhaeuser.com/woodproducts/document-library/document_library_detail/TJ-9001/"],
     ["TB-817","TJI hole too close to bearing","Repair detail","https://www.techsupport.weyerhaeuser.com/hc/en-us/articles/201758810-Repair-detail-for-TJI-joists-with-holes-too-close-to-bearing"],
-    ["LPI US","LP SolidStart I-Joist Tech Guide","Round holes p. 14, rectangular p. 15","https://lpcorp.com/resources/product-literature/technical-guides/lpi-residential-technical-guide"],
+    ["PWT","Pacific Woodtech guides (ex-LP SolidStart)","LP's I-joists are Pacific Woodtech now: current hole charts and tech guides","https://pwtewp.com/resources"],
     ["bc.com","Boise Cascade EWP library","Install guides, tech notes (pick West/US)","https://www.bc.com/framers/"],
     ["MTP-7050","Boise fire design & install","Fire-rated floors with BCI","https://cdn.mediavalet.com/usva/boisecascade/KdXGgwINOUuCin6X1-N1KQ/eKmyU1SRvEqBCPchReNFLw/Large/MTP-7050%20US%20Fire%20Design%20%26%20Install%20guide.pdf"],
-    ["LP inst.","LP SolidStart installation","I-joist, LVL, LSL details","https://lpcorp.com/resources/product-literature/installation-instructions/ewp-installation-instructions"],
+    ["PWT I-joist","Pacific Woodtech I-joists","Product page: installation and details","https://pwtewp.com/products/i-joists"],
     ["ESR-1153","ICC-ES report: TJI","What inspectors reference","https://www.icc-es.org/wp-content/uploads/report-directory/ESR-1153.pdf"],
-    ["ESR-1305","ICC-ES report: LP I-joists","2021 issue; LP I-joists are now Pacific Woodtech, so confirm the current report at icc-es.org","https://lpcorp.com/resources/product-literature/code-reports-certificates/esr-1305"]
+    ["ESR-1305","ICC-ES report: LP I-joists","Current report on icc-es.org (LP's I-joists are now Pacific Woodtech)","https://www.icc-es.org/wp-content/uploads/report-directory/ESR-1305.pdf"]
   ],
   code: [
     ["IRC 2021","International Residential Code","Houses: plumbing, gas, framing","https://codes.iccsafe.org/content/IRC2021P2"],
@@ -4700,7 +4712,7 @@ const FSRC = {
   moen: ["Moen Posi-Temp instructions", "https://fwwebbimage.fwwebb.com/ProductInfo/ins2166a.pdf"],
   fluid: ["Fluidmaster instructions", "https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00046.pdf"],
   aym: ["A.Y. McDonald sillcock instructions", "https://aymcdonald.com/Image/GetDocument/en/149"],
-  ise: ["InSinkErator installation manual", "https://insinkerator.emerson.com/documents/installation-care-use-manual-ez-connect-en-us-9249312.pdf"],
+  ise: ["InSinkErator support: manuals by model", "https://www.insinkerator.com/en-us/support"],
   bosh: ["Boshart: cold-expansion PEX", "https://accelerator.boshart.com/wp-content/uploads/2023/09/Stainless-Steel-Cold-Expansion-PEX-Cheat-Sheet.pdf"],
   harris: ["95/5 solder spec sheet", "https://cdn.shopify.com/s/files/1/2778/4524/files/95-5Spec.pdf"],
   vdh: ["Virginia DOH: Reduction of Lead in Drinking Water Act", "https://www.vdh.virginia.gov/drinking-water/reduction-of-lead-in-drinking-water-act/"],
@@ -4710,7 +4722,7 @@ const FSRC = {
   spk: ["IRC P2904 text (Seattle)", "https://seattle.gov/documents/departments/sdci/codes/seattleresidentialcode/2018srcchapter29.pdf"],
   trench: ["OSHA trenching fact sheet", "https://www.montana.edu/ltap/documents/2_osha_trench_factsheet.pdf"],
   ladder: ["EC&M: OSHA ladder rules", "https://www.ecmag.com/magazine/articles/article-detail/proper-ladder-use-the-following-requirements-will-help-avoid-citations-and-violations"],
-  h2s: ["OSHA: hydrogen sulfide", "https://obis.osha.gov/OshDoc/data_Hurricane_Facts/hydrogen_sulfide_fact.html"],
+  h2s: ["OSHA: hydrogen sulfide", "https://www.osha.gov/hydrogen-sulfide"],
   sds: ["Oatey PVC cement SDS", "https://employees.delta.edu/facilities/_safety-data-sheets/pvc-cement-oatey.pdf"],
   rain: ["Utah Division of Water Resources FAQ", "https://conservewater.utah.gov/faq/"],
   grey: ["Utah Admin. Code R317-401-1", "https://www.law.cornell.edu/regulations/utah/Utah-Admin-Code-R317-401-1"],
@@ -7555,7 +7567,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-01g";
+{ const NEWS = "2026-11-01h";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8436,7 +8448,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-01g";
+var BUILD = "handbook-2026-11-01h";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
