@@ -156,8 +156,11 @@ section{break-inside:avoid;display:block;background:var(--sheet);border:var(--bw
 .sec-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:2px 6px;padding:8px 4px 7px 14px;background:var(--bar);color:var(--bar-ink);border-left:10px solid var(--acc);border-bottom:var(--bw) solid var(--edge);box-shadow:inset 3px 0 0 var(--sheet);position:relative}
 .sec-head h2{font-family:var(--display);font-weight:800;font-size:21px;text-wrap:balance;line-height:1.1;text-transform:uppercase;letter-spacing:.04em;margin:0;grid-column:1}
 .sec-head small{font-size:14px;font-weight:700;grid-column:1}
-body.searching section[data-where] .sec-head::after,body.mixed section[data-where] .sec-head::after{content:attr(data-where);grid-column:1 / -1;font-family:var(--display);font-size:13.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.where-go{display:none}
+body.searching .where-go,body.mixed .where-go{display:block;grid-column:1 / -1;justify-self:start;font-family:var(--display);font-size:13.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:none;border:0;padding:2px 0;margin:0;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-align:left}
 .note{font-size:15px;color:var(--muted);padding:8px 12px;margin:0;border-top:1px solid var(--rule)}
+.ftecho{display:block;font-size:14px;font-weight:700;color:var(--danger);margin-top:4px}
+.ftecho b{color:var(--ink)}
 .note b{color:var(--ink)}
 .flag{margin:0;padding:9px 12px 9px 14px;font-size:15.5px;font-weight:700;background:var(--danger-soft);border-top:1px solid var(--rule);border-left:8px solid var(--danger)}
 
@@ -1042,7 +1045,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tbody id="ro-steps">
         <tr><td class="n">1</td><td><span class="sw rise"></span><b id="ro-step1">Rise:</b> <span id="ro-step1-txt">measure how far Run 2 sits above or below Run 1, centerline to centerline.</span></td></tr>
         <tr class="ro-roll-step"><td class="n">2</td><td><span class="sw roll"></span><b>Roll:</b> measure how far Run 2 also sits off to the side of Run 1, centerline to centerline.</td></tr>
-        <tr><td class="n">3</td><td><span class="sw fit"></span><b>Fittings + take-off:</b> pick the pair (two 45s is usual). Take-off = fitting center to where the pipe bottoms out. Measure your actual fitting; it varies by brand and size. Save yours in <b>Calc → Units → My take-offs</b> and they show up as buttons under the inputs.</td></tr>
+        <tr><td class="n">3</td><td><span class="sw fit"></span><b>Fittings + take-off:</b> pick the pair (two 45s is usual). Take-off = fitting center to where the pipe bottoms out. Measure your actual fitting; it varies by brand and size. Save yours in <b>Calc → Layout → My take-offs</b> and they show up as buttons under the inputs.</td></tr>
         <tr><td class="n">4</td><td><span class="sw run"></span><b>Set fitting 2</b> one <b>run (setback)</b> farther along the pipe than fitting 1, center to center (the dots in the drawing).</td></tr>
         <tr><td class="n">5</td><td><span class="sw cut"></span><b>Cut the blue piece</b> to cut length. <span class="ro-roll-step">Roll both fittings the same amount, the <b>Turn fittings</b> angle off plumb, so it points straight at Run 2.</span> Dry-fit, then glue or solder.</td></tr>
       </tbody></table></div>
@@ -1102,7 +1105,22 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <button type="button" class="btn2" id="cl-clear">Clear list</button>
     </div>
     <div class="x"><table class="t"><tbody id="cl-plan"></tbody></table></div>
-    <p class="note"><b>Fitting center:</b> you measured to the middle of a fitting, so subtract its take-off. <b>Hub face:</b> you measured to the edge of a hub or socket the pipe slides into, so add the socket depth. <b>Pipe end:</b> you measured to the end of a pipe or to a wall. Save take-offs in <b>Calc → Units → My take-offs</b>; they show up as buttons here.</p>
+    <p class="note"><b>Fitting center:</b> you measured to the middle of a fitting, so subtract its take-off. <b>Hub face:</b> you measured to the edge of a hub or socket the pipe slides into, so add the socket depth. <b>Pipe end:</b> you measured to the end of a pipe or to a wall. Save take-offs in <b>Calc → Layout → My take-offs</b>; they show up as buttons here.</p>
+  </section>
+  <section data-sec="layout" data-kw="typical take-off takeoff take off fitting allowance center to hub bottom socket dwv abs pvc black foam core charlotte quarter 1/4 bend sanitary 90 long sweep eighth 1/8 bend 45 sixteenth 1/16 22 sanitary tee wye combo combination street ell hub depth cut length">
+    <div class="sec-head"><h2>Typical fitting take-offs</h2><small>ABS &amp; PVC DWV · Charlotte Pipe catalog</small></div>
+    <div class="seg" id="to-mat" role="group" aria-label="Material"><button type="button" data-m="0" aria-pressed="true">ABS</button><button type="button" data-m="1">PVC</button></div>
+    <div class="seg" id="to-size" role="group" aria-label="Pipe size"><button type="button" data-s="0">1½"</button><button type="button" data-s="1" aria-pressed="true">2"</button><button type="button" data-s="2">3"</button><button type="button" data-s="3">4"</button></div>
+    <div class="x"><table class="t num">
+      <thead><tr><th>Fitting</th><th>Take-off</th></tr></thead>
+      <tbody id="to-rows"></tbody></table></div>
+    <p class="note"><b>Take-off</b> = fitting center to the bottom of the hub, where the pipe stops. Cut = center-to-center − both take-offs. <b>Street fittings:</b> the spigot end is center-to-end; push it into a hub and that side's take-off is that number minus the hub depth. From Charlotte Pipe's <i>Plastic DWV Pipe and Fitting Dimensions</i> (DC-DWV, Apr 2026). ABS and PVC fittings mostly match; where Charlotte lists them separately, the toggle shows each. Foam-core or solid pipe doesn't change it: the take-off is the fitting's. <b>Other brands differ:</b> check one fitting from the box with a tape before you trust a chart. Copper isn't here yet: no maker publishes take-offs we could verify, so measure and save yours below.</p>
+  </section>
+  <section data-sec="layout" data-kw="take-off takeoff take off fitting center to end dwv abs pvc copper 45 90 elbow quarter eighth bend measure my">
+    <div class="sec-head"><h2>My take-offs</h2><small>Measure once · saved on this device</small></div>
+    <div id="tk-list"></div>
+    <div class="calc"><button type="button" class="btn2" id="tk-add">+ Add a fitting</button></div>
+    <p class="note"><span class="badge why">WHY</span> Take-off (fitting center to where the pipe bottoms out in the hub) changes by brand and pattern, so every chart is only a starting point (Charlotte ABS and PVC numbers are in the card above). Measure the fittings on your truck: <b>center-to-end of the fitting minus the hub depth</b>. Saved take-offs show up as one-tap buttons in the offset calculator.</p>
   </section>
   <section data-sec="layout" data-kw="parallel offset multiple pipes together spacing setback advance 45 bank of pipes hot cold rack turn equal spacing several lines">
     <div class="sec-head"><h2>Parallel offsets</h2><small>Several pipes turning together</small></div>
@@ -1121,14 +1139,14 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <section data-sec="layout" data-kw="jump it jumper offset over around obstacle duct beam pipe in the way clearance hop double offset go over go around setback">
     <div class="sec-head"><h2>Jump it</h2><small>Over or around a duct, beam or pipe</small></div>
     <div class="calc">
-      <label for="ju-h">Obstacle reaches past the pipe's centerline<input id="ju-h" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="6"></label>
+      <label for="ju-h">H: obstacle reaches past the pipe's centerline<input id="ju-h" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="6"></label>
       <label for="ju-w">Obstacle width <i>(along the run)</i><input id="ju-w" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10"></label>
       <label for="ju-c">Clearance <i>(gap you want)</i><input id="ju-c" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="1/2"></label>
       <label for="ju-od">Pipe or hub OD<select id="ju-od">
         <option value="0.625">½" copper / PEX · 0.625"</option><option value="0.875" selected>¾" copper / PEX · 0.875"</option><option value="1.125">1" copper / PEX · 1.125"</option>
         <option value="1.9">1½" DWV pipe · 1.9"</option><option value="2.375">2" DWV pipe · 2.375"</option><option value="3.5">3" DWV pipe · 3.5"</option><option value="2.4">1½" DWV hub · ≈2.4"</option><option value="2.9">2" DWV hub · ≈2.9"</option><option value="4.1">3" DWV hub · ≈4.1"</option></select></label>
       <label for="ju-ang">Fittings<select id="ju-ang"><option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="22.5">22½°</option></select></label>
-      <label for="ju-to">Take-off <i>(each)</i><input id="ju-to" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="0"></label>
+      <label for="ju-to">Take-off <i>(each · Typical fitting take-offs, above)</i><input id="ju-to" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="0"></label>
     </div>
     <div class="x"><table class="t out"><tbody id="ju-out"></tbody></table></div>
     <svg id="ju-svg" class="calc-svg" viewBox="0 0 400 210" role="img" aria-label="Side view: the pipe rises at the fitting angle, runs past the obstacle with the clearance gap, and drops back down. Dimensions show where the first fitting goes relative to the obstacle's edge."></svg>
@@ -1224,7 +1242,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <button type="button" data-sl="grade" aria-pressed="false">Check grade</button>
     </div>
     <div class="calc">
-      <label for="sl-run">Run <i>(30' or 360)</i><input id="sl-run" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="30'"></label>
+      <label for="sl-run">Run <i>(30' or 360")</i><input id="sl-run" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="30'"></label>
       <label for="sl-pitch" id="sl-pitch-l">Slope<select id="sl-pitch">
         <option value="0.0625">¹⁄₁₆" / ft</option><option value="0.125">⅛" / ft</option>
         <option value="0.25" selected>¼" / ft</option><option value="0.5">½" / ft</option></select></label>
@@ -1240,7 +1258,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td>¼" / ft</td><td>2.08</td><td>2½"</td><td>12½"</td></tr>
         <tr><td>½" / ft</td><td>4.17</td><td>5"</td><td>25"</td></tr>
       </tbody></table></div>
-    <p class="note">Code minimums: <b>¼"/ft</b> for 2½" and smaller, <b>⅛"/ft</b> for 3"–6". Laser rods read decimal feet: <b>Laser rod targets</b> below does the readings for you.</p>
+    <p class="note">Code minimums: <b>¼"/ft</b> for 2½" and smaller, <b>⅛"/ft</b> for 3"–6". Laser rods read decimal feet: <b>Calc → Grade → Laser rod targets</b> does the readings for you.</p>
   </section>
   <section data-sec="grade" data-kw="laser rod grade target reading builder level transit elevation decimal feet hundredths fall pipe invert story pole grade rod">
     <div class="sec-head"><h2>Laser rod targets</h2><small>What the rod should read down the run</small></div>
@@ -1248,7 +1266,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="calc">
       <label for="lr-start">Rod at the start <i>(ft, like 4.52)</i><input id="lr-start" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="4.52"></label>
       <label for="lr-slope">Slope<select id="lr-slope"><option value="0.0625">¹⁄₁₆" / ft</option><option value="0.125">⅛" / ft</option><option value="0.25" selected>¼" / ft</option><option value="0.5">½" / ft</option></select></label>
-      <label for="lr-dist">Distance <i>(25' or 300)</i><input id="lr-dist" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="25'"></label>
+      <label for="lr-dist">Distance <i>(25' or 300")</i><input id="lr-dist" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="25'"></label>
       <label for="lr-step">Table every<select id="lr-step"><option value="1">1 ft</option><option value="2">2 ft</option><option value="5" selected>5 ft</option><option value="10">10 ft</option></select></label>
       <div class="ans" id="lr-ans" role="status" aria-atomic="true"></div>
     </div>
@@ -1297,7 +1315,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </tbody></table></div>
     <div class="x"><table class="t num"><thead><tr><th>Pipe</th><th>ft/s</th><th>psi / 100 ft</th><th>Under 8 ft/s?</th></tr></thead><tbody id="ws-pipes"></tbody></table></div>
     <details class="math"><summary>Show the math</summary><ol id="ws-math"></ol></details>
-    <p class="note"><b>Count a group or its parts, never both</b>: a full bath group already includes its toilet, lav and tub. Values: IRC Table P2903.6 (private use), demand from the flush-tank conversion table (P2903.6(1)), checked against Phoenix and Louisville, CO sizing sheets. The 8 ft/s line is common copper guidance, not code; PEX makers publish their own limits. A learning tool: code sizing for the water service is IRC P2903.7 / Appendix P; then check the far fixture in <b>Pressure at the fixture</b>. <button type="button" class="linkish" id="ws-clear">Clear counts</button></p>
+    <p class="note"><b>Count a group or its parts, never both</b>: a full bath group already includes its toilet, lav and tub. Values: IRC Table P2903.6 (private use), demand from the flush-tank conversion table (P2903.6(1)), checked against Phoenix and Louisville, CO sizing sheets. The 8 ft/s line is common copper guidance, not code; PEX makers publish their own limits. A learning tool: code sizing for the water service is IRC P2903.7 / Appendix P; then check the far fixture in <b>Calc → Flow → Pressure at the fixture</b>. <button type="button" class="linkish" id="ws-clear">Clear counts</button></p>
   </section>
   <section data-sec="sizing" data-kw="gas pipe size sizing cfh btu longest length schedule 40 black iron steel table appliance load furnace range dryer fireplace">
     <div class="sec-head"><h2>Gas line sizer</h2><small>Sch 40 steel · under 2 psi · 0.5" w.c. drop</small></div>
@@ -1307,7 +1325,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <thead><tr><th>Appliance</th><th>Nameplate BTU/h</th></tr></thead>
       <tbody id="gl-rows"></tbody></table></div>
     <div class="calc">
-      <label for="gl-len">Longest run <i>meter to the farthest appliance (60' or 720)</i><input id="gl-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="60'"></label>
+      <label for="gl-len">Longest run <i>meter to the farthest appliance (60' or 720")</i><input id="gl-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="60'"></label>
       <button type="button" class="btn2" id="gl-reset">Reset list</button>
     </div>
     <div class="x"><table class="t out">
@@ -1363,7 +1381,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <section data-sec="water">
     <div class="sec-head"><h2>Pressure vs. height</h2><small>1 ft = 0.433 psi · 1 psi = 2.31 ft</small></div>
     <div class="calc">
-      <label for="h-ft">Height <i>(20' or 240)</i><input id="h-ft" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="20'"></label>
+      <label for="h-ft">Height <i>(20' or 240")</i><input id="h-ft" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="20'"></label>
       <div class="ans" id="h-ans" role="status" aria-atomic="true"></div>
     </div>
     <svg id="psi-chart" viewBox="0 0 400 190" role="img" aria-label="Line chart: static water pressure lost rises 0.433 psi per foot of height, from 0 psi at 0 feet to 43.3 psi at 100 feet."></svg>
@@ -1397,7 +1415,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>Water in the pipe</h2><small>From actual ID</small></div>
     <div class="calc">
       <label for="p-size">Pipe<select id="p-size"></select></label>
-      <label for="p-len">Length <i>(50' or 600)</i><input id="p-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="50'"></label>
+      <label for="p-len">Length <i>(50' or 600")</i><input id="p-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="50'"></label>
       <label for="p-gpm">Faucet flow (gpm) <i>for hot-water wait</i><input id="p-gpm" type="number" inputmode="decimal" min="0" step="any" value="1.5"></label>
       <div class="ans" id="p-ans" role="status" aria-atomic="true"></div>
     </div>
@@ -1443,7 +1461,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>Pipe expansion</h2><small>How much a run grows</small></div>
     <div class="calc">
       <label for="te-mat">Pipe<select id="te-mat"></select></label>
-      <label for="te-len">Run <i>(50' or 600)</i><input id="te-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="50'"></label>
+      <label for="te-len">Run <i>(50' or 600")</i><input id="te-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="50'"></label>
       <label for="te-dt">Temp change (°F)<input id="te-dt" type="number" inputmode="decimal" step="any" value="80"></label>
       <div class="ans" id="te-ans" role="status" aria-atomic="true"></div>
     </div>
@@ -1568,7 +1586,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Both directions</th><td>Copies can stretch more one way than the other. In <b>Scale a plan → Calibrate</b>, fill in the optional 2nd dimension running the other way: it tells you if the copy stretched.</td></tr>
         <tr><th>Which line?</th><td>Plans dimension to the stud face, foundation face or centerline: the note or the dimension's end ticks say which. Fixture rough-ins count from the <b>finished</b> wall.</td></tr>
         <tr><th>PDF on a phone</th><td>Zoom has no scale. In a measuring PDF app (Bluebeam: Measure → Calibrate), trace a known dimension, enter its length, then check a second one before you trust it.</td></tr>
-        <tr><th>Site plans</th><td>Engineer's scale (1" = 20', 30'…) for the sewer lateral and water service. Use the invert elevations (IE) for your fall budget: <b>Calc → Grade → Slope &amp; fall</b> and <b>Laser rod targets</b>.</td></tr>
+        <tr><th>Site plans</th><td>Engineer's scale (1" = 20', 30'…) for the sewer lateral and water service. Use the invert elevations (IE) for your fall budget: <b>Calc → Grade → Slope &amp; fall</b> and <b>Calc → Grade → Laser rod targets</b>.</td></tr>
         <tr><th>Your own sketch</th><td>Use <b>Real → paper</b> above to draw an iso or a take-off to scale on graph paper.</td></tr>
       </tbody></table></div>
   
@@ -1692,7 +1710,6 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td><b>Cold air test</b></td><td>At 80 psi the gauge drops ≈1.8 psi per 10°F the pipe cools (call it 2)</td><td class="n">60→30°F ≈ −5½ psi</td></tr>
               <tr><td><b>45° with a framing square</b></td><td>12" on each leg reads <b>17"</b> across. Travel = offset ÷ 12 × 17</td><td class="n">24" → 2 × 17 = 34" (true 33.94")</td></tr>
         <tr><td><b>Offset from a 45 travel</b></td><td>Travel × 0.7, plus a hair (× 0.707)</td><td class="n">17" → 11.9 ≈ 12"</td></tr>
-        <tr><td><b>22½° closer</b></td><td>Offset × 2⅝ (true 2.613)</td><td class="n">8" → 16 + 5 = 21"</td></tr>
         <tr><td><b>22½° run</b></td><td>Room it takes down the line: offset × 2.4</td><td class="n">10" → 24" (true 24.1")</td></tr>
         <tr><td><b>60° (⅙ bend)</b></td><td>Travel = offset + 15% · run = offset × 0.58</td><td class="n">10" → 11½" travel, 5¾" run</td></tr>
         <tr><td><b>11¼° travel</b></td><td>Offset × 5⅛ (true 5.126, near exact)</td><td class="n">4" → 20½"</td></tr>
@@ -1708,21 +1725,6 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td><b>Friction, bigger or faster</b></td><td>Double the gpm → ≈ 3½× the friction. One size up (¾ → 1") → about ¼ the friction</td><td class="n">4 psi at 5 gpm → ≈ 14 psi at 10</td></tr>
 </tbody></table></div>
     <p class="note"><span class="badge why">WHY</span> Run the trick before you trust a calculator: if the screen says 34" and your head says 17", a digit slipped. Exact answers live in the calculators.</p>
-  </section>
-  <section data-sec="units" data-kw="typical take-off takeoff take off fitting allowance center to hub bottom socket dwv abs pvc black foam core charlotte quarter 1/4 bend sanitary 90 long sweep eighth 1/8 bend 45 sixteenth 1/16 22 sanitary tee wye combo combination street ell hub depth cut length">
-    <div class="sec-head"><h2>Typical fitting take-offs</h2><small>ABS &amp; PVC DWV · Charlotte Pipe catalog</small></div>
-    <div class="seg" id="to-mat" role="group" aria-label="Material"><button type="button" data-m="0" aria-pressed="true">ABS</button><button type="button" data-m="1">PVC</button></div>
-    <div class="seg" id="to-size" role="group" aria-label="Pipe size"><button type="button" data-s="0">1½"</button><button type="button" data-s="1" aria-pressed="true">2"</button><button type="button" data-s="2">3"</button><button type="button" data-s="3">4"</button></div>
-    <div class="x"><table class="t num">
-      <thead><tr><th>Fitting</th><th>Take-off</th></tr></thead>
-      <tbody id="to-rows"></tbody></table></div>
-    <p class="note"><b>Take-off</b> = fitting center to the bottom of the hub, where the pipe stops. Cut = center-to-center − both take-offs. <b>Street fittings:</b> the spigot end is center-to-end; push it into a hub and that side's take-off is that number minus the hub depth. From Charlotte Pipe's <i>Plastic DWV Pipe and Fitting Dimensions</i> (DC-DWV, Apr 2026). ABS and PVC fittings mostly match; where Charlotte lists them separately, the toggle shows each. Foam-core or solid pipe doesn't change it: the take-off is the fitting's. <b>Other brands differ:</b> check one fitting from the box with a tape before you trust a chart. Copper isn't here yet: no maker publishes take-offs we could verify, so measure and save yours below.</p>
-  </section>
-  <section data-sec="units" data-kw="take-off takeoff take off fitting center to end dwv abs pvc copper 45 90 elbow quarter eighth bend measure my">
-    <div class="sec-head"><h2>My take-offs</h2><small>Measure once · saved on this device</small></div>
-    <div id="tk-list"></div>
-    <div class="calc"><button type="button" class="btn2" id="tk-add">+ Add a fitting</button></div>
-    <p class="note"><span class="badge why">WHY</span> Take-off (fitting center to where the pipe bottoms out in the hub) changes by brand and pattern, so every chart is only a starting point (Charlotte ABS and PVC numbers are in the card above). Measure the fittings on your truck: <b>center-to-end of the fitting minus the hub depth</b>. Saved take-offs show up as one-tap buttons in the offset calculator.</p>
   </section>
     
   <!-- ================= ROUGH ================= -->
@@ -1799,10 +1801,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Water + sewer</th><td>5 ft apart, or in the same trench with the water line on a solid shelf at least 12" above the top of the sewer (IPC 603.2).</td></tr>
         <tr><th>Through the foundation</th><td>Sleeve two pipe sizes bigger, or a relieving arch, so the wall can settle without crushing the pipe.</td></tr>
         <tr><th>Bedding &amp; backfill</th><td>Pipe on firm, continuous bedding: no bricks or blocks under it. No rocks or construction debris against the pipe; tamp backfill in layers.</td></tr>
-        <tr><th>Under the slab</th><td>PEX water lines: one continuous run, no fittings under the slab, sleeved where they leave the concrete (Build → Materials → PEX install).</td></tr>
+        <tr><th>Under the slab</th><td>PEX water lines: one continuous run, no fittings under the slab, sleeved where they leave the concrete (<b>Build → Materials → PEX install</b>).</td></tr>
         <tr><th>Before cover</th><td>Under test and inspected before backfill or the pour. Flag stub-ups so the finisher doesn't bury or bend them.</td></tr>
       </tbody></table></div>
-    <p class="note">Before digging: <b>Blue Stakes 811</b> (Contacts → Call → Utilities &amp; state lines). Trench 5 ft or deeper: shore, shield or slope (Jobsite → Safety).</p>
+    <p class="note">Before digging: <b>Blue Stakes 811</b> (<b>Contacts → Call → Utilities &amp; state lines</b>). Trench 5 ft or deeper: shore, shield or slope (<b>Jobsite → Safety</b>).</p>
   </section>
 <section data-sec="drains" data-kw="frost depth 30 ground soil collapsible settlement groundwater water table utah lake vineyard radon climate design temperature elevation">
     <div class="sec-head"><h2>Ground &amp; climate</h2><small>Utah County</small></div>
@@ -2024,7 +2026,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Hose bibb</th><td>About 18"–24" above finished grade.</td></tr>
         <tr><th>Ice maker box</th><td>Per the builder's sheet, behind the fridge. Recessed box so the fridge can push back flat.</td></tr>
       </tbody></table></div>
-    <p class="note">AFF = above finished floor. Builders often have their own standard sheet: get it once, save it in My files.</p>
+    <p class="note">AFF = above finished floor. Builders often have their own standard sheet: get it once and keep a photo on your phone, or put the numbers in a note (⋯ → Add a note).</p>
   </section>
   <section data-sec="fixtures" data-kw="fixture clearance toilet 15 21 30 inches center side wall shower 900 square inches 30 circle 22 door access panel">
     <div class="sec-head"><h2>Fixture clearances</h2><small>IRC P2705 · P2708 · IPC 405</small></div>
@@ -2272,7 +2274,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Garage</th><td>Burner and ignition ≥ <b>18"</b> above the floor unless the heater is FVIR-listed (IRC G2408.2). Out of a car's path or behind a bollard (G2408.3).</td></tr>
         <tr><th>Location</th><td>Gas heater not in a bedroom, bathroom or a closet off them unless it's direct-vent or in a sealed closet (IRC G2406.2).</td></tr>
         <tr><th>Venting</th><td>Natural-draft connector slopes up ≥ ¼"/ft toward the vent. Power-vent and direct-vent: the maker's pipe, lengths and terminations.</td></tr>
-        <tr><th>Tankless</th><td>Isolation (service) valves, condensate neutralizer to a drain on condensing units, gas line sized for full input (often 199k BTU/h: run the <b>Gas line sizer</b>), metal pipe at the unit if the maker says so. Set the <b>altitude</b> (Service → Water heaters → Altitude settings).</td></tr>
+        <tr><th>Tankless</th><td>Isolation (service) valves, condensate neutralizer to a drain on condensing units, gas line sized for full input (often 199k BTU/h: run the <b>Calc → Sizing → Gas line sizer</b>), metal pipe at the unit if the maker says so. Set the <b>altitude</b> (<b>Service → Water heaters → Altitude settings</b>).</td></tr>
               <tr><th>Start-up</th><td>Open a hot faucet, fill the tank, and wait for steady flow with no air <b>before</b> the breaker or gas goes on. <span class="badge why">WHY</span> An element that fires in air burns out (maker's manual).</td></tr>
         <tr><th>No torch on the nipples</th><td>Sweat copper to the adapters on the bench, let them cool, then thread them on. <span class="badge why">WHY</span> The ports are plastic-lined with heat traps; flame ruins them for good (GE, heat-trap nipple sheets).</td></tr>
         <tr><th>Draft check</th><td>Natural-draft swap-outs: doors shut, range hood and bath fans on high, burner on 5 min, then smoke or a match at the draft hood. It should pull in (IFGC App. D). Pushing out = CO in the house.</td></tr>
@@ -2292,7 +2294,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td data-label="Type"><b>Electric</b></td><td data-label="Air &amp; vent">No vent. Two elements.</td><td data-label="Needs">240V circuit (often 30A). Slow recovery.</td></tr>
         <tr><td data-label="Type"><b>Heat pump</b></td><td data-label="Air &amp; vent">Pulls heat from room air. See <b>Service → Water heaters → Heat pump water heaters</b>.</td><td data-label="Needs">Air space, condensate drain, 240V (or 120V plug-in).</td></tr>
       </tbody></table></div>
-    <p class="note">Sizing: by <b>first-hour rating</b> on the label, not tank size: <b>Service → Water heaters → Water heater output</b>. Swapping one for another (atmospheric → power vent) changes the vent, power and air: it's not a like-for-like.</p>
+    <p class="note">Sizing: by <b>first-hour rating</b> on the label, not tank size: <b>Service → Water heaters → Water heater size</b>. Swapping one for another (atmospheric → power vent) changes the vent, power and air: it's not a like-for-like.</p>
   </section>
   <section data-sec="heaters" data-kw="tankless setup install isolation valve kit service ports relief valve gas line 199000 condensate neutralizer vent pvc minimum flow 0.5 gpm cold water sandwich buffer tank recirc navien rinnai noritz scale flush inlet filter freeze">
     <div class="sec-head"><h2>Tankless setup</h2><small>What goes on the wall with it</small></div>
@@ -2351,7 +2353,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="x"><table class="t out"><tbody>
       <tr class="hit" aria-live="polite" aria-atomic="true"><th>Peak-hour demand</th><td id="whs-ans" class="big">—</td><td class="sub">Pick a first hour rating at least this big.</td></tr>
     </tbody></table></div>
-    <p class="note">Gallons per use from the U.S. DOE sizing worksheet. Tankless: add the gpm of everything that runs at once (DOE says plan on at least 3.25 gpm through the heater) at a 70°F rise (50°F in, 120°F out); <b>Service → Water heaters → Water heater output</b> checks a unit. Utah's cold winter water and altitude cut tankless output: check the derate.</p>
+    <p class="note">Gallons per use from the U.S. DOE sizing worksheet. Tankless: add the gpm of everything that runs at once (DOE says plan on at least 3.25 gpm through the heater) at a 70°F rise (DOE's 50°F in, 120°F out; a Utah winter is closer to 40°F in, an 80°F rise); <b>Service → Water heaters → Water heater output</b> checks a unit. Utah's cold winter water and altitude cut tankless output: check the derate.</p>
   </section>
   <section data-sec="heaters" data-kw="hot water last how long shower run out tank minutes mixing valve 140 tempering hot share first hour recovery sizing big tub">
     <div class="sec-head"><h2>Hot water that lasts</h2><small>How long before the shower goes cold</small></div>
@@ -2525,29 +2527,8 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
               <tr><th>Hot in the cold line</th><td>After an under-sink "instant hot" crossover goes in, warm water showing up in the cold taps is a classic callback. One fixture: suspect its cartridge. The whole house: suspect the crossover valve or a mixing valve. <span class="sub">Trade practice.</span></td></tr>
 </tbody></table></div>
   </section>
-  <section data-sec="hotwater" data-kw="expansion tank size sizing chart st-5 st-12 2 gallon 4.4 gallon air charge precharge failed bladder waterlogged test tap schrader support">
-    <div class="sec-head"><h2>Expansion tank</h2><small>Size · charge · is it dead?</small></div>
-    <div class="x"><table class="t num">
-      <thead><tr><th>Heater</th><th>House up to 60 psi</th><th>61–80 psi</th></tr></thead>
-      <tbody>
-        <tr><td>40 gal at 140°F</td><td>2 gal (ST-5)</td><td>2 gal (ST-5)</td></tr>
-        <tr><td>50 gal at 140°F</td><td>2 gal (ST-5)</td><td>2 gal (ST-5)</td></tr>
-        <tr><td>40 gal at 160°F</td><td>2 gal (ST-5)</td><td>4.4 gal (ST-12)</td></tr>
-        <tr><td>50 gal at 160°F</td><td>4.4 gal (ST-12)</td><td>4.4 gal (ST-12)</td></tr>
-        <tr><td>Hotter or bigger</td><td colspan="2">Use the maker's chart or app</td></tr>
-        <tr><td>Over 80 psi</td><td colspan="2">Fix the PRV first</td></tr>
-      </tbody></table></div>
-    <div class="x"><table class="t">
-      <tbody>
-        <tr><th>Air charge</th><td>Set to <b>house static pressure</b> with a tire gauge and pump, water <b>off</b> and pressure bled. They ship around 40–50 psi; on a 70 psi house that's wrong.</td></tr>
-        <tr><th>Dead tank?</th><td>Tap it: a good tank sounds hollow on top. Press the Schrader valve: water out = bladder's broken. Heavy and full all the way = waterlogged.</td></tr>
-        <tr><th>Mount</th><td>A waterlogged ST-12 holds 4.4 gal: about 37 lb of water. Strap or bracket it; don't hang it off a long ½" nipple.</td></tr>
-        <tr><th>Max</th><td>Typical rating 150 psi working pressure.</td></tr>
-      </tbody></table></div>
-    <p class="note">Chart: Amtrol Therm-X-Trol, with the air charge set to house pressure. <b>Learn → How it works → Why an expansion tank</b> shows how fast pressure climbs without one.</p>
-  </section>
-  <section data-sec="hotwater" data-kw="expansion tank size sizing calculator thermal expansion gallons acceptance precharge closed system relief">
-    <div class="sec-head"><h2>Expansion tank size</h2><small>Thermal expansion → tank volume</small></div>
+  <section data-sec="hotwater" data-kw="expansion tank size sizing calculator thermal expansion gallons acceptance precharge closed system relief chart st-5 st-12 2 gallon 4.4 gallon air charge failed bladder waterlogged test tap schrader support">
+    <div class="sec-head"><h2>Expansion tank size</h2><small>Size it · charge it · is it dead?</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> the house has a check valve, PRV or backflow device (a closed system) and you want to know if a 2-gallon tank is enough. Water grows as it heats; the tank's air cushion has to swallow that growth before pressure reaches the relief valve.</p></div></details>
     <div class="calc">
       <label for="et-gal">Heater size (gal)<input id="et-gal" type="number" inputmode="decimal" min="1" step="any" value="50"></label>
@@ -2564,6 +2545,27 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </tbody></table></div>
     <details class="math"><summary>Show the math</summary><ol id="et-math"></ol></details>
     <p class="note">Precharge the tank's air to the house pressure. Max allowed: usually the T&amp;P relief setting (150 psi); use a lower number to keep a margin. Water density by temperature from standard tables; method: tank = expansion ÷ (1 − P house ÷ P max), absolute pressures. Check the maker's sizing chart for the tank you buy.</p>
+      <p class="card-h">Charge it · is it dead?</p>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Air charge</th><td>Set to <b>house static pressure</b> with a tire gauge and pump, water <b>off</b> and pressure bled. Factory charge varies by brand (often 20–40 psi): read the label. On a 70 psi house it's wrong until you set it.</td></tr>
+        <tr><th>Dead tank?</th><td>Tap it: a good tank sounds hollow on top. Press the Schrader valve: water out = bladder's broken. Heavy and full all the way = waterlogged.</td></tr>
+        <tr><th>Mount</th><td>A waterlogged ST-12 holds 4.4 gal: about 37 lb of water. Strap or bracket it; don't hang it off a long ½" nipple.</td></tr>
+        <tr><th>Max</th><td>Typical rating 150 psi working pressure.</td></tr>
+      </tbody></table></div>
+    <details class="more fold"><summary>Quick chart, no math (Amtrol)</summary>
+    <div class="x"><table class="t num">
+      <thead><tr><th>Heater</th><th>House up to 60 psi</th><th>61–80 psi</th></tr></thead>
+      <tbody>
+        <tr><td>40 gal at 140°F</td><td>2 gal (ST-5)</td><td>2 gal (ST-5)</td></tr>
+        <tr><td>50 gal at 140°F</td><td>2 gal (ST-5)</td><td>2 gal (ST-5)</td></tr>
+        <tr><td>40 gal at 160°F</td><td>2 gal (ST-5)</td><td>4.4 gal (ST-12)</td></tr>
+        <tr><td>50 gal at 160°F</td><td>4.4 gal (ST-12)</td><td>4.4 gal (ST-12)</td></tr>
+        <tr><td>Hotter or bigger</td><td colspan="2">Use the maker's chart or app</td></tr>
+        <tr><td>Over 80 psi</td><td colspan="2">Fix the PRV first</td></tr>
+      </tbody></table></div>
+    <p class="note">Chart: Amtrol Therm-X-Trol, with the air charge set to house pressure. <b>Learn → How it works → Why an expansion tank</b> shows how fast pressure climbs without one.</p>
+    </details>
   </section>
   <section data-sec="hotwater" data-kw="mixing valve thermostatic asse 1017 1016 1070 scald burn time 140 130 120 legionella tempering anti scald set point">
     <div class="sec-head"><h2>Hot enough, not too hot</h2><small>Scald vs. germs</small></div>
@@ -2586,27 +2588,28 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>Service calls: first checks</h2><small>Symptom → what to check, in order</small></div>
     <p class="note" style="border-top:0">Start with the cheap, likely thing. Every fold-out is in the order you'd check it on a call.</p>
     <details class="more fold"><summary>Running toilet / phantom flush</summary>
-<ol class="steps"><li><b>Dye test:</b> a few drops of food coloring in the tank, wait 10 min. Color in the bowl = flapper or flush-valve seal leaking (EPA WaterSense). A fill valve that turns on by itself means the tank is losing water that way (Fluidmaster).</li><li><b>Water into the overflow?</b> Level is too high or the fill valve won't shut off. Set the water about ½" below the top of the overflow pipe with the float screw (Fluidmaster).</li><li><b>Chain:</b> about ½" of slack. Too tight holds the flapper open; too long catches under it.</li><li><b>Clean the flapper and seat.</b> Still leaking: new flapper or flush valve. Warped or chewed flapper + blue water = in-tank bleach tablets (Trim → Trim-out).</li><li><b>Refill tube:</b> clipped to the overflow pipe, not shoved down inside it, or it can siphon the tank.</li></ol>
+<ol class="steps"><li><b>Dye test:</b> a few drops of food coloring in the tank, wait 10 min. Color in the bowl = flapper or flush-valve seal leaking (EPA WaterSense). A fill valve that turns on by itself means the tank is losing water that way (Fluidmaster).</li><li><b>Water into the overflow?</b> Level is too high or the fill valve won't shut off. Set the water about ½" below the top of the overflow pipe with the float screw (Fluidmaster).</li><li><b>Chain:</b> about ½" of slack. Too tight holds the flapper open; too long catches under it.</li><li><b>Clean the flapper and seat.</b> Still leaking: new flapper or flush valve. Warped or chewed flapper + blue water = in-tank bleach tablets (<b>Trim → Valves &amp; trim → Trim-out</b>).</li><li><b>Refill tube:</b> clipped to the overflow pipe, not shoved down inside it, or it can siphon the tank.</li></ol>
     </details>
     <details class="more fold"><summary>Slow drain or clog</summary>
 <ol class="steps"><li><b>One fixture or many?</b> One slow fixture = its trap or branch. Several low fixtures (tub, floor drain, basement toilet) backing up = the building drain or sewer.</li><li><b>Lav or tub:</b> pull the stopper first; hair on the pop-up rod is the usual clog. Then the trap.</li><li><b>Plunger:</b> cup for sinks (plug the overflow or the other bowl), flange for toilets. Toilet that won't clear: closet auger, not a cable machine through the china.</li><li><b>Snake:</b> match the cable to the pipe (small cables for 1¼–2" lines, bigger cables for 3–4"; the machine maker's chart rules). Go in through a cleanout or the trap arm, not through a lav overflow.</li><li><b>Main line:</b> open the cleanout slowly and stand to the side. Sewage can be stacked up behind it.</li><li><b>Ask about drain cleaner first.</b> If they poured some in, gloves and eye protection before you open anything.</li><li><b>Comes back?</b> Camera it: bellies, roots, a broken hub or a flat section.</li></ol>
     </details>
     <details class="more fold"><summary>No hot water, or not enough</summary>
-<ol class="steps"><li><b>Gas tank:</b> read the status light first (Service → Error codes). Gas on? Pilot lit? Knob on, temperature not on vacation/low?</li><li><b>Electric tank:</b> breaker, then the high-limit (ECO) reset under the upper cover. No hot at all = upper element or upper thermostat; hot runs out fast = lower element (Bradford White service chart).</li><li><b>Not enough:</b> setting too low, sediment or lime on the elements, broken dip tube, or the hot and cold connections reversed (Bradford White).</li><li><b>Tankless:</b> read the code. Hard water: scale (flush with the isolation valves). Low flow at one fixture may be under the unit's minimum to fire.</li><li><b>Lukewarm at one fixture, fine elsewhere:</b> that valve's cartridge or anti-scald limit stop. Lukewarm everywhere with the heater fine: a crossover (Inspect → Tests checklist has the check).</li></ol>
+<ol class="steps"><li><b>Gas tank:</b> read the status light first (<b>Service → Error codes</b>). Gas on? Pilot lit? Knob on, temperature not on vacation/low?</li><li><b>Electric tank:</b> breaker, then the high-limit (ECO) reset under the upper cover. No hot at all = upper element or upper thermostat; hot runs out fast = lower element (Bradford White service chart).</li><li><b>Not enough:</b> setting too low, sediment or lime on the elements, broken dip tube, or the hot and cold connections reversed (Bradford White).</li><li><b>Tankless:</b> read the code. Hard water: scale (flush with the isolation valves). Low flow at one fixture may be under the unit's minimum to fire.</li><li><b>Lukewarm at one fixture, fine elsewhere:</b> that valve's cartridge or anti-scald limit stop. Lukewarm everywhere with the heater fine: a crossover (the check is in <b>Inspect → Tests → Before you call it in</b>).</li></ol>
     </details>
     <details class="more fold"><summary>Low pressure</summary>
 <ol class="steps"><li><b>One fixture or the whole house?</b> One fixture: aerator or showerhead screen, the cartridge, a half-closed stop.</li><li><b>Whole house:</b> gauge on a hose bibb. Low static: main valve partly closed, a failing PRV, or the city side. Good static but it drops hard with flow: undersized or restricted pipe, a clogged filter or softener.</li><li><b>Hot only:</b> heater inlet valve, sediment, a stuck check or mixing valve, or a recirc pump problem.</li><li><b>Right after work on the system:</b> debris in aerators and cartridges. Pull and flush them.</li></ol>
     </details>
     <details class="more fold"><summary>Sewer smell</summary>
-<ol class="steps"><li><b>Dry trap:</b> floor drains, unused showers and basement drains lose their seal. Run water in every drain; a trap primer or a floor-drain seal keeps it.</li><li><b>Toilet:</b> rocks or smells at the base = failed wax or a broken flange.</li><li><b>Vent:</b> a cracked or disconnected vent in the attic or wall, a stuck air admittance valve, a vent capped from rough, or one blocked by frost or a nest.</li><li><b>Only the hot water smells like rotten eggs:</b> sulfate bacteria react with the tank's anode. Fix with the maker's alternative anode or a powered anode, never by pulling the anode out: that voids the warranty (Water Technology).</li></ol>
+<ol class="steps"><li><b>Dry trap:</b> floor drains, unused showers and basement drains lose their seal. Run water in every drain; a trap primer or a floor-drain seal keeps it.</li><li><b>Toilet:</b> rocks or smells at the base = failed wax or a broken flange.</li><li><b>Vent:</b> a cracked or disconnected vent in the attic or wall, a stuck air admittance valve, a vent capped from rough, or one blocked by frost or a nest.</li><li><b>Only the hot water smells like rotten eggs:</b> sulfate bacteria react with the tank's anode. Fix with the maker's alternative anode or a powered anode, never by pulling the anode out: that voids the warranty (Water Technology). More: <b>Service → Troubleshoot → Mech room trouble</b>.</li></ol>
     </details>
     <details class="more fold"><summary>Noisy pipes</summary>
-<ol class="steps"><li><b>Bang when a valve shuts:</b> water hammer. Check static pressure (over 80 psi needs a PRV) and add ASSE 1010 arresters (Service → Troubleshoot → Shutdowns, leaks, freezes &amp; hammer).</li><li><b>Ticking as hot water runs:</b> pipe expanding against framing or a tight strap. Oversize holes, isolators, looser straps on hot lines.</li><li><b>Whistle or hum:</b> a fill valve or a partly closed valve. Open it fully or replace it.</li><li><b>Rumble or pop from a gas tank:</b> sediment. Flush it; if it's bad, the tank may be near the end.</li></ol>
+<ol class="steps"><li><b>Bang when a valve shuts:</b> water hammer. Check static pressure (over 80 psi needs a PRV) and add ASSE 1010 arresters (<b>Service → Troubleshoot → Shutdowns, leaks, freezes &amp; hammer</b>).</li><li><b>Ticking as hot water runs:</b> pipe expanding against framing or a tight strap. Oversize holes, isolators, looser straps on hot lines.</li><li><b>Whistle or hum:</b> a fill valve or a partly closed valve. Open it fully or replace it.</li><li><b>Rumble or pop from a gas tank:</b> sediment. Flush it; if it's bad, the tank may be near the end.</li></ol>
     </details>
     <p class="note">Sources: EPA WaterSense, Fluidmaster install sheets, Bradford White electric service chart, Water Technology (anodes). Your shop's process and the maker's manual win.</p>
   </section>
   <section data-sec="codes" data-kw="error code fault code navien e003 e012 e016 e030 e110 e515 e760 tankless blinking">
     <div class="sec-head"><h2>Navien tankless codes</h2><small>NPE series · from the Navien manual</small></div>
+    <div class="chips code-brands" role="group" aria-label="Jump to a brand"><button type="button" data-go="mech|codes|Rinnai tankless codes">Rinnai</button><button type="button" data-go="mech|codes|Bradford White ICON status light">Bradford White</button><button type="button" data-go="mech|codes|A.O. Smith, Rheem and others">A.O. Smith · Rheem · others</button></div>
     <div class="x"><table class="t"><tbody><tr data-search="e003 ignition failure is the main gas valve open?"><th class="k">E003</th><td><b>Ignition failure</b><div class="sub">Is the main gas valve open?</div></td></tr><tr data-search="e004 false flame detection is the cord properly grounded?"><th class="k">E004</th><td><b>False flame detection</b><div class="sub">Is the cord properly grounded?</div></td></tr><tr data-search="e012 flame loss clean the intake air filter; check the ground."><th class="k">E012</th><td><b>Flame loss</b><div class="sub">Clean the intake air filter; check the ground.</div></td></tr><tr data-search="e016 heat exchanger overheating off 30 min, restart; clean the cold inlet filter; flush the heat exchanger."><th class="k">E016</th><td><b>Heat exchanger overheating</b><div class="sub">Off 30 min, restart; clean the cold inlet filter; flush the heat exchanger.</div></td></tr><tr data-search="e030 exhaust overheating (flue over 149°f) off 30 min, restart; clean the inlet filter; flush."><th class="k">E030</th><td><b>Exhaust overheating (flue over 149°F)</b><div class="sub">Off 30 min, restart; clean the inlet filter; flush.</div></td></tr><tr data-search="e046 limit control call navien tech support."><th class="k">E046</th><td><b>Limit control</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e047 exhaust thermostat call navien tech support."><th class="k">E047</th><td><b>Exhaust thermostat</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e109 fan motor clean the intake air filter."><th class="k">E109</th><td><b>Fan motor</b><div class="sub">Clean the intake air filter.</div></td></tr><tr data-search="e110 abnormal air pressure exhaust clear? clean the intake air filter."><th class="k">E110</th><td><b>Abnormal air pressure</b><div class="sub">Exhaust clear? Clean the intake air filter.</div></td></tr><tr data-search="e407 hot outlet thermistor open or short call navien tech support."><th class="k">E407</th><td><b>Hot outlet thermistor open or short</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e421 cold inlet thermistor open or short call navien tech support."><th class="k">E421</th><td><b>Cold inlet thermistor open or short</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e438 circulation pump external recirc: supply and return lines open? internal: check the 2-way valve direction."><th class="k">E438</th><td><b>Circulation pump</b><div class="sub">External recirc: supply and return lines open? Internal: check the 2-way valve direction.</div></td></tr><tr data-search="e439 flow sensor call navien tech support."><th class="k">E439</th><td><b>Flow sensor</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e515 pcb is the cord properly grounded?"><th class="k">E515</th><td><b>PCB</b><div class="sub">Is the cord properly grounded?</div></td></tr><tr data-search="e517 dip switch setting call navien tech support."><th class="k">E517</th><td><b>DIP switch setting</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e760 flushing / service alarm time to flush and service the unit."><th class="k">E760</th><td><b>Flushing / service alarm</b><div class="sub">Time to flush and service the unit.</div></td></tr></tbody></table></div>
     <p class="note">Codes and first checks from the Navien NPE operation manual. Not listed or still there: Navien tech support <span class="pn">1-800-519-8794</span>. Other Navien series use some different codes: read the unit's own manual.</p>
   </section>
@@ -2622,7 +2625,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="codes" data-kw="a.o. smith ao smith state american rheem ruud richmond status light blinking codes gas valve">
     <div class="sec-head"><h2>A.O. Smith, Rheem and others</h2><small>Read the label, not the internet</small></div>
-    <p class="note" style="border-top:0">These brands use several different gas controls, and the same flash count can mean different things on different valves. The flash chart is on a label on the gas valve or the jacket, and in the manual for that model number. <span class="badge why">WHY</span> A forum chart for the wrong valve sends you after the wrong part. Maker tech lines are in <b>Contacts → Tech lines</b>; have the model and serial ready (Service → Troubleshoot → Water heater age).</p>
+    <p class="note" style="border-top:0">These brands use several different gas controls, and the same flash count can mean different things on different valves. The flash chart is on a label on the gas valve or the jacket, and in the manual for that model number. <span class="badge why">WHY</span> A forum chart for the wrong valve sends you after the wrong part. Maker tech lines are in <b>Contacts → Tech lines</b>; have the model and serial ready (<b>Service → Troubleshoot → Water heater age</b>).</p>
   </section>
 <section data-sec="mechfix" data-kw="troubleshooting mech room symptom no hot water lukewarm rotten egg smell sulfur popping rumbling t&amp;p dripping softener hard water salt not going down brine tank full of water low pressure resin beads tankless shutting off cold sandwich expansion tank">
     <div class="sec-head"><h2>Mech room trouble</h2><small>Symptom → likely cause</small></div>
@@ -2648,7 +2651,6 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tbody>
         <tr><th>Water back on</th><td>Open the main <b>slowly</b>. First run a big cold faucet with no aerator (tub spout, utility sink, hose bibb) until it's clear, 5–10 min. Then the other cold faucets, flush each toilet, and hold off on hot until the cold runs clear. Clean the aerators. <span class="badge why">WHY</span> Pressure all at once bangs the pipes, and the crud ends up in aerators and cartridges.</td></tr>
         <tr><th>Is there a leak?</th><td>Read the meter, use no water for <b>2 hours</b>, read it again. Any change means a leak (EPA WaterSense).</td></tr>
-        <tr><th>Toilet running?</th><td>A few drops of food coloring in the tank, wait <b>10 min</b>. Color in the bowl: the flapper leaks (EPA WaterSense). Flush right after so it doesn't stain.</td></tr>
         <tr><th>Frozen pipe</th><td>Open the faucet, then gentle heat on the frozen spot: hair dryer, heating pad, hot towels or a space heater. Keep going until full pressure. Heaters 2 ft from anything that burns. <b>No torch or open flame</b> (Red Cross). Burst: shut the main.</td></tr>
         <tr><th>Water hammer</th><td>Use an ASSE 1010 arrester, not a capped stub: an air chamber waterlogs and quits. AA size on hot and cold at the washer, dishwasher and ice maker. On a branch, put it at the end between the last two fixtures. Over 20 ft, add another. Over 55 psi, go one size up (PDI-WH201). <span class="badge why">WHY</span> A valve that snaps shut stops the water all at once, and that pressure spike is the bang.</td></tr>
       </tbody>
@@ -2691,7 +2693,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td data-label="Era"><b>1990s</b></td><td data-label="Typical Utah mech room">90% furnaces vent in PVC and leave the water heater alone in the chimney. Federal heater efficiency rules since 1990. Metered softeners show up.</td><td data-label="Watch for">The <b>orphaned heater</b>: a small heater can't warm a big cold chimney, so it spills and condenses. Fix with a liner or a different vent; check draft.</td></tr>
         <tr><td data-label="Era"><b>2000s</b></td><td data-label="Typical Utah mech room">PEX and manifolds. Power-vent tanks in new builds. First tankless units (stainless vent). Expansion tanks become normal with PRVs.</td><td data-label="Watch for"><b>Kitec</b> (orange hot, blue cold PEX-AL-PEX with brass fittings, roughly 1995–2007): the fittings corrode and fail. Replace, don't repair. <b>FVIR</b> gas tanks since July 2003: sealed burner door, flame arrestor; a plugged arrestor screen chokes the burner. New federal efficiency numbers in 2004.</td></tr>
         <tr><td data-label="Era"><b>2010s</b></td><td data-label="Typical Utah mech room">Condensing tankless on PVC. Softener loops in most new homes. Recirc pumps. Lead-free brass (2014).</td><td data-label="Watch for"><b>April 2015</b> rule: tanks got 1–2" taller and 2"+ wider. A replacement may not fit the old closet. Over 55 gal: condensing gas or heat pump.</td></tr>
-        <tr><td data-label="Era"><b>2018 → now</b></td><td data-label="Typical Utah mech room"><span class="badge ut">UT</span> Ultra-low NOx gas heaters statewide from July 1, 2018; since Aug 2025, only in nonattainment areas (Wasatch Front, Uinta Basin). Smart leak shutoffs. Heat-pump-ready rough-ins.</td><td data-label="Watch for">Check the NOx number on the label. Electric tanks 20–55 gal go heat pump in <b>2029</b>.</td></tr>
+        <tr><td data-label="Era"><b>2018 → now</b></td><td data-label="Typical Utah mech room"><span class="badge ut">UT</span> Ultra-low NOx gas heaters statewide from July 1, 2018; since Aug 2025, only in nonattainment areas (Wasatch Front, Uinta Basin). Smart leak shutoffs. Heat-pump-ready rough-ins.</td><td data-label="Watch for">Check the NOx number on the label. Electric tanks over 35 gal go heat pump in <b>2029</b> (<b>Service → Water heaters → Heat pump water heaters</b>).</td></tr>
       </tbody></table></div>
     <p class="note">How old is it? <b>Service → Troubleshoot → Water heater age</b> decodes serial numbers. Rule of thumb: a tank heater lasts about 8–12 years; hard water, no expansion tank and no anode checks shorten it.</p>
   </section>
@@ -2786,7 +2788,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <li><span><b>Search the maker's part finder</b> by model, or call their tech line with the photos, model and serial (<b>Contacts → Tech lines</b>).</span></li>
       <li><span><b>Take the old part to the counter.</b> Matching side by side beats any description. Ask for their cartridge or stem identifier book.</span></li>
     </ol>
-    <p class="note">New construction shortcut: the builder's <b>fixture selection sheet</b> lists every model in the house. Get it once per subdivision and save it in My files.</p>
+    <p class="note">New construction shortcut: the builder's <b>fixture selection sheet</b> lists every model in the house. Get it once per subdivision and keep a photo on your phone.</p>
   </section>
   <section data-sec="idhow" data-kw="where model number serial number located toilet tank faucet spout shower valve water heater rating plate disposer label prv backflow hose bibb stamp">
     <div class="sec-head"><h2>Where the number lives</h2><small>Look here first</small></div>
@@ -3102,6 +3104,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <label for="tl-type">Test<select id="tl-type"><option>DWV water test</option><option>DWV air test</option><option>DWV vacuum test</option><option>Water supply test</option><option>Gas test</option><option>Shower pan flood test</option></select></label>
       <label for="tl-where" class="wide">Job / area <i>(optional)</i><input id="tl-where" type="text" autocomplete="off" placeholder="Lot 12 · upstairs baths"></label>
     </div>
+    <p class="note tl-spec" id="tl-spec" aria-live="polite"></p>
     <div class="calc">
       <label for="at-p">Test started at (psi)<input id="at-p" type="number" inputmode="decimal" min="0" step="any" value="80"></label>
       <label for="at-t1">Pipe temp then (°F)<input id="at-t1" type="number" inputmode="decimal" step="any" value="60"></label>
@@ -3158,10 +3161,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>PEX expansion (F1960)</th><td>Square cut. Ring to the stop. Insert <b>right after</b> the last expansion; you should feel resistance (none = over-expanded). After it shrinks, a gap over <b>¹⁄₁₆"</b> at the shoulder: cut 2–3" back and redo with a new ring. Under 40°F use fewer expansions and keep rings and fittings in your pocket. Never on PEX-b or C (Uponor).</td></tr>
         <tr><th>PEX crimp</th><td>Ring ⅛"–¼" from the pipe end, tool square to the pipe, jaws fully closed, go/no-go gauge on <b>every</b> crimp. Test-crimp at the start of each job: worn tools crimp loose.</td></tr>
         <tr><th>Freeze</th><td>Warm side of the insulation, air leaks sealed. <span class="badge why">WHY</span> Insulation only slows heat loss; with no heat source the pipe still freezes (ICC).</td></tr>
-        <tr><th>Pressure</th><td>Expansion tank precharge = static house pressure (factory is about 40 psi). Gauging and PRV: <b>Service → Treatment → Utah water</b>.</td></tr>
+        <tr><th>Pressure</th><td>Expansion tank precharge = static house pressure (factory charge varies by brand, often 20–40 psi: read the label). Gauging and PRV: <b>Service → Treatment → Utah water</b>.</td></tr>
         <tr><th>Sewer bellies</th><td>Compacted bedding, haunch to the pipe's midline, backfill in 6" lifts, keep equipment off the trench; pea gravel won't compact (ASTM D2321). Ball or camera it before backfill and again before the slab. <span class="badge ut">UT</span> Utah County soils can collapse when they get wet, so an underground leak can settle a foundation.</td></tr>
         <tr><th>Shower valves</th><td>Confirm tile + backer thickness with the super, then set depth to the plaster-guard range. Strap the valve solid. Flood-test pans and tubs before tile.</td></tr>
-        <tr><th>Tankless</th><td>Altitude setting (Service → Water heaters → Altitude settings), isolation/flush valves for our hard water, on-demand recirc instead of a continuous loop (a continuous loop cuts Rinnai's warranty to 3 yr).</td></tr>
+        <tr><th>Tankless</th><td>Altitude setting (<b>Service → Water heaters → Altitude settings</b>), isolation/flush valves for our hard water, on-demand recirc instead of a continuous loop (a continuous loop cuts Rinnai's warranty to 3 yr).</td></tr>
       
       </tbody></table></div>
     <p class="note">Sources: Delta R10000 and Moen INS2153D rough sheets, Cherne test-plug catalog, Weld-On, Oatey, InterNACHI inspector forums, HeatingHelp, Fine Homebuilding, the BC open plumbing-apprentice text, Beehive Plumbing (Utah). Your shop's standard wins. Also: Builder Magazine, Copper Development Assn., Uponor and Boshart install guides, ICC, Plumbing &amp; Mechanical (2025), Rinnai warranty. Your shop's standard wins.</p>
@@ -3546,7 +3549,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>RIDGID power tools</th><td><b>Lifetime Service Agreement</b>: register within <b>90 days</b> of buying at The Home Depot, with serials (batteries and chargers too). Free service, parts and replacement batteries for the original buyer.</td></tr>
         <tr><th>Milwaukee</th><td>Most cordless tools <b>5 years</b>; many lithium packs <b>3 years</b>, some 2. Hand tools marked lifetime are covered for life. Receipt helps; no registration needed.</td></tr>
         <tr><th>Hand tools</th><td>Many brands back hand tools for life (pipe wrenches, pliers, sockets). Store-brand lines often swap at the counter.</td></tr>
-        <tr><th>Keep receipts</th><td>Photo every receipt and serial: into <b>Mine → My files</b> (works in the online version of the book) or an album on your phone. A warranty with no proof is a coin toss.</td></tr>
+        <tr><th>Keep receipts</th><td>Photo every receipt and serial: into an album on your phone. A warranty with no proof is a coin toss.</td></tr>
         <tr><th>Before you toss it</th><td>Worn jaws, broken hooks, cutter wheels and blades are cheap parts. A pipe wrench is rebuildable forever.</td></tr>
       </tbody></table></div>
   
@@ -3876,8 +3879,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 8, 2026 · board</th><td><b>New:</b> Jobsite → Electrical: electricity in plain words, getting power on site, an extension cord chart, generators, test before you touch, power lines, and what to do if someone gets shocked · Electrical flashcards and glossary words. <b>Fixed:</b> Back returns to where you were · a plain number in a feet box (gas sizer, slope, laser) now says it was read as inches, with a one-tap fix · search shows which tab each card is in, and "rinnai 11" or "E-003" finds the one row · tabs remember the last page you were on · tape entries list their inputs and read cleanly · card links keep the card · scald time and the 2029 heat pump rule agree everywhere · one expansion tank card · fitting take-offs moved next to Cut length, with a Save button · "go here" pointers are all tappable · Test log shows what the test must hold · brand buttons on Error codes · My files is gone from the GitHub copy, where it never worked. Pins and notes on moved cards come along.</td></tr>
         <tr><th>Nov 8, 2026 · Utah</th><td><b>Updated:</b> Home shows a countdown to the Nov 30 license renewal · License: renewal fee, late fee and where to renew · Rebates: the toilet rebate closed Nov 1; added Enbridge boiler and combi rebates. Checked: Utah's code law changes again Jan 1, 2027, but only the wildfire code; houses stay on the 2021 IRC and everything else on the 2024 codes.</td></tr>
-        <tr><th>Nov 1, 2026 · new</th><td><b>New:</b> Typical fitting take-offs, ABS and PVC (Calc → Units) · Standards decoder for the numbers printed on parts (Trim → ID a part) · Electrical for plumbers with a breaker and wire calculator (now Jobsite → Electrical) · Hydronic flow calculator, How hydronic heat works, and a Hydronics flashcard deck · Settings: Tabs, Gloves on, Round answers to, My drain pipe, Remember my searches, and Share the book (QR code, also under More) · Search fixes typos, skips filler words and finds Navien codes by number.</td></tr>
+        <tr><th>Nov 1, 2026 · new</th><td><b>New:</b> Typical fitting take-offs, ABS and PVC (now Calc → Layout) · Standards decoder for the numbers printed on parts (Trim → ID a part) · Electrical for plumbers with a breaker and wire calculator (now Jobsite → Electrical) · Hydronic flow calculator, How hydronic heat works, and a Hydronics flashcard deck · Settings: Tabs, Gloves on, Round answers to, My drain pipe, Remember my searches, and Share the book (QR code, also under More) · Search fixes typos, skips filler words and finds Navien codes by number.</td></tr>
         <tr><th>Nov 1, 2026 · fixed</th><td><b>Fixed:</b> home-screen iPhone app: the bottom bar could float up off the edge (status bar is see-through again; if it still happens, Settings → Backup &amp; reset → Screen check and screenshot the numbers) · Weather: air quality shows how old its reading is, and never a "-Infinity" peak · dead links updated (LP I-joists → Pacific Woodtech, InSinkErator, OSHA) · a texted link now shows the book's name and icon.</td></tr>
         <tr><th>Oct 31, 2026 · night</th><td><b>Fixed:</b> on iPhone the bottom bar could get stuck partway up the screen after the keyboard closed; it now stays on the bottom edge (it still follows you when you pinch-zoom) · a card link opened inside the book now goes to that card.</td></tr>
         <tr><th>Oct 31, 2026 · new content</th><td><b>New:</b> Service calls: first checks (running toilet, clogs, no hot water, low pressure, sewer smell, noisy pipes) · Error codes for Navien and Rinnai tankless and the Bradford White status light · Heat, asbestos, CO and temp-power safety card · Vent size, Water heater size and Expansion tank size calculators · a CSST warning on the gas sizer · a fittings pick list in Plan take-off that you can text to the supply house · a timed Practice test from the flashcards · 8 cutaway drawings (trap seal, vent, PRV, T&amp;P, frost-free bibb, toilet, tankless, expansion tank) · Español on the Emergency and safety cards (a draft: needs a fluent check).</td></tr>
@@ -4024,7 +4028,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td><b>Double check</b> (DC)</td><td>Same idea plus shutoffs and test cocks, so it can be tested.</td><td>Fire lines, low-hazard</td></tr>
         <tr><td><b>RPZ</b></td><td>Relief valve between the two checks keeps that zone at lower pressure. If a check leaks, water <b>dumps out the relief port</b> instead of flowing back.</td><td>Irrigation, boilers, high hazard</td></tr>
       </tbody></table></div>
-    <p class="note"><span class="badge why">WHY</span> Every device after the air gap is a stand-in for one. Moving parts can stick or leak, so higher hazards get devices that can be tested, or that dump water where you can see it. A dripping RPZ is doing its job: a check needs service. Utah testing rules: Build → Water supply.</p>
+    <p class="note"><span class="badge why">WHY</span> Every device after the air gap is a stand-in for one. Moving parts can stick or leak, so higher hazards get devices that can be tested, or that dump water where you can see it. A dripping RPZ is doing its job: a check needs service. Utah testing rules: <b>Build → Water supply</b>.</p>
   </section>
   <section data-sec="how" data-kw="water heater parts anode dip tube expansion">
     <div class="sec-head"><h2>Inside a tank water heater</h2><small>Know the parts</small></div>
@@ -4287,7 +4291,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>MTECH</th><td>4 yr, 8 semesters, 576 hr. Test-out after semester 4A (6,000 hr) fits the <b>residential</b> path. Confirm which license you're testing for.</td></tr>
         <tr><th>3 · Exams</th><td>Written (remote OK) + Utah Plumber Practical in person. Pass, then apply.</td></tr>
         <tr><th>Exam reality</th><td>Statewide pass rates, Jun 2025–Jun 2026: theory 69%, residential theory 56%, practical 55%. The practical is a PVC project and a copper project, 37 points each; the average was 26.2 on PVC and <b>25.2 on copper</b>, so practice copper. MTECH beat the state: theory 85%, practical 60%. Weak spot statewide: hydronics (DOPL bulletin, May 2026).</td></tr>
-        <tr><th>4 · Renew</th><td>Every 2 yr, Nov 30 of even years: <b>2026 is a renewal year</b>. 12 CE hr, 8 core. $68 renewal fee, $20 more if late. Renew online in <a href="https://utahdoc.mylicenseone.com/" target="_blank" rel="noopener">My License One</a> (UtahID login, easier on a computer); DOPL emails a notice 90 days ahead. Working on an expired license is unlawful, even if you renew later.</td></tr>
+        <tr id="renew-row" tabindex="-1"><th>4 · Renew</th><td>Every 2 yr, Nov 30 of even years: <b>2026 is a renewal year</b>. 12 CE hr, 8 core. $68 renewal fee, $20 more if late. Renew online in <a href="https://utahdoc.mylicenseone.com/" target="_blank" rel="noopener">My License One</a> (UtahID login, easier on a computer); DOPL emails a notice 90 days ahead. Working on an expired license is unlawful, even if you renew later.</td></tr>
         <tr><th>Upgrade</th><td>Residential → journeyman: 2,000 hr non-residential + 4th-year class (144 hr).</td></tr>
       </tbody></table></div>
     <div class="x"><table class="t"><tbody id="list-career"></tbody></table></div>
@@ -4337,6 +4341,21 @@ const LEN_RE = /^(?:(\d*\.?\d+)\s*')?\s*(?:(\d*\.?\d+)(?:\s+(\d+)\s*\/\s*(\d+))?
 /* tape-style length boxes: a plain number is inches, ' marks feet ("30'", "366", "30' 6 1/2"). A leading minus is allowed. */
 const tapeIn = raw => { raw = String(raw ?? "").trim(); const neg = /^[-−–]/.test(raw); const v = parseLen(raw.replace(/^[-−–]\s*/, "")); return isFinite(v) ? (neg ? -v : v) : NaN; };
 const tapeFt = id => tapeIn($(id).value) / 12;
+/* boxes asking for feet: a bare number is read as inches (tape style), so say so right under the box and offer the fix.
+   "60" in the gas sizer's Longest run is 5 ft and sizes the pipe a size too small. */
+const FT_BOXES = ["sl-run","lr-dist","gl-len","h-ft","p-len","te-len"];
+function ftEcho(inp){
+  let e = inp.parentElement.querySelector(".ftecho");
+  if (!e){ e = document.createElement("span"); e.className = "ftecho"; inp.insertAdjacentElement("afterend", e); }
+  const raw = inp.value.trim(), bare = /^\d*\.?\d+$/.test(raw), v = tapeIn(raw);
+  if (!bare || !(v > 0)){ e.hidden = true; return; }
+  e.hidden = false;
+  e.innerHTML = `Plain number = inches: read as <b>${esc(fmtFtIn(v))}</b>. <button type="button" class="linkish" data-ft="${esc(raw)}">Use ${esc(raw)} ft</button>`;
+}
+document.addEventListener("click", e => { const b = e.target.closest(".ftecho button[data-ft]"); if (!b) return;
+  e.preventDefault(); const inp = b.closest("label").querySelector("input"); inp.value = b.dataset.ft + "'"; inp.dispatchEvent(new Event("input", {bubbles: true})); inp.focus(); });
+{ const ftInit = () => FT_BOXES.forEach(id => { const i = $(id); if (!i) return; i.addEventListener("input", () => ftEcho(i)); ftEcho(i); });
+  document.readyState === "loading" ? addEventListener("DOMContentLoaded", ftInit) : ftInit(); }
 const ftInTxt = ft => fmtFtIn(Math.round(ft * 12 * 16) / 16);
 const nf = (x, d=3) => isFinite(x) ? Math.abs(x) >= 1e9 ? x.toExponential(3) : (x !== 0 && Math.abs(x) < 0.01 ? (+x.toPrecision(4)).toString() : Math.abs(x) >= 1000 ? x.toLocaleString(undefined,{maximumFractionDigits:1}) : (+x.toFixed(d)).toString()) : "—";
 /* CSS variables for drawings, cached per look: reading computed style 40 times a redraw forced style passes. The cache resets when theme, skin, vest or text size changes. */
@@ -4790,6 +4809,14 @@ const GLOSS = [
   ["gpm · gph · gpf","supply","Gallons per minute · per hour · per flush."],
   ["Upstream / downstream","supply","Toward the water or gas source / toward the fixture or appliance."],
   ["Blue Stakes","code","Utah's 811 call-before-you-dig service. Marks utility lines before excavation."],
+  ["TDH","dwv","Total dynamic head: everything a pump lifts against, in feet. Static lift (low water to the high point) plus friction in the pipe and fittings."],
+  ["ΔT (delta T)","heat","Temperature difference: supply minus return on a boiler loop, or outlet minus inlet on a heater. A 20°F ΔT is typical for hydronic heat."],
+  ["Hydronic","heat","Heating with water (or glycol) pumped through pipe: boilers, baseboard, radiant floors, fan coils."],
+  ["Setback","tools","In an offset, the run: how far down the line the second fitting lands while the pipe moves over. Jump it uses it to tell you where to start before an obstacle."],
+  ["OD / ID","fit","Outside diameter / inside diameter. Fittings and hole saws go by OD; flow goes by ID. Nominal size (the name, like ¾\") is neither."],
+  ["Thermopile","heat","Stack of thermocouples that makes a few hundred millivolts from the pilot flame to run a gas valve with no outside power."],
+  ["Thermistor","heat","Temperature sensor whose resistance changes with heat. Tankless and power-vent controls read them; a bad one throws a temperature code."],
+  ["Hazen-Williams","supply","Friction-loss formula for water in pipe. Pressure at the fixture uses it to figure how many psi a run eats."],
   ["Volt (V)","elec","Electrical pressure. Houses run 120 V and 240 V."],
   ["Amp (A)","elec","Electrical flow. Wire, breakers and cords are sized by amps."],
   ["Watt (W)","elec","Work done: volts × amps. 4,500 W at 240 V = 18.75 A."],
@@ -4959,7 +4986,7 @@ const FACTS = [
   ["wh","Descale","Tankless: at least yearly. Circulate vinegar or descaler 45+ min, then rinse 10+ min.","navien"],
   ["wh","Heat pump","A room under 700 ft³ needs louvers (18 in² top and bottom) or a louvered door. Runs 40–120°F, best 50–90°F; about 10% less efficient per 10°F colder.","rheem"],
   ["wh","Expansion tank air charge","Watts PLT-5: 2.1 gal, ships at 20 psi. Set its air to house pressure before it fills.","watts"],
-  ["wh","Scald times","120°F ≈ 5 min, 130°F ≈ 30 s, 140°F ≈ 6 s. An ASSE 1017 valve at the heater isn't scald protection; an ASSE 1070 at the fixture caps at 120°F.","pm"],
+  ["wh","Scald times","120°F ≈ 5 min, 130°F ≈ 30 s, 140°F ≈ 5 s. An ASSE 1017 valve at the heater isn't scald protection; an ASSE 1070 at the fixture caps at 120°F.","pm"],
   ["trim","Posi-Temp heights","Tub/shower: valve 32\" above the tub floor, spout 6\"–11\" below the valve. Shower only: valve 45\"–48\". Arm 78\".","moen"],
   ["trim","Posi-Temp rough","Slip-fit tub spout needs copper with no threaded adapter. Flush the body with the cartridge out before you set it.","moen"],
   ["trim","Fill valve","CL mark at least 1\" above the overflow. Clip the refill tube above the overflow, never down inside it: that siphons the tank and the valve keeps cycling.","fluid"],
@@ -5040,6 +5067,8 @@ const GNAME = {home:"Home",calc:"Calc",rough:"Build",mech:"Service",trim:"Trim",
 let MORE_G = ["inspect","contacts","site","learn","mine"];   /* phones: these live behind More (Settings → Tabs can change it) */
 const BOOK_URL = "https://felleykam.github.io/Plumbing-Booklet/";   /* card links point at the installable copy */
 const groupOf = sec => Object.keys(GROUPS).find(g => GROUPS[g].some(([s]) => s === sec));
+/* My files only works in the claude.ai copy: everywhere else it's a dead end, so it leaves the book (its elements stay for the code) */
+if (!window.claude){ GROUPS.mine = GROUPS.mine.filter(([k]) => k !== "mine"); const mf = document.querySelector('.book > section[data-sec="mine"]'); if (mf){ mf.hidden = true; document.body.appendChild(mf); } }
 const SECTIONS = [...document.querySelectorAll(".book > section[data-sec]")];
 const book = document.querySelector(".book");
 let lastOrder = SECTIONS.slice(), hiddenRows = [];   /* cards start in book order; rows the last search hid */
@@ -5055,7 +5084,10 @@ const savePrefs = () => store.set("jpb-prefs", PREFS);
 { const s = store.get("jpb-nav", null);
   if (PREFS.start !== "last" && GROUPS[PREFS.start]) nav = {group: PREFS.start, sub: GROUPS[PREFS.start][0][0]};
   else if (s && GROUPS[s.group] && GROUPS[s.group].some(([k]) => k === s.sub)) nav = s; }
-const saveNav = () => store.set("jpb-nav", nav);
+/* each tab remembers the page you left it on: Service → Error codes, off to Calc, back to Service lands on Error codes */
+const LASTSUB = (o => o && typeof o === "object" && !Array.isArray(o) ? o : {})(store.get("jpb-last-sub", {}));
+const lastSub = g => GROUPS[g].some(([k]) => k === LASTSUB[g]) ? LASTSUB[g] : GROUPS[g][0][0];
+const saveNav = () => { store.set("jpb-nav", nav); if (LASTSUB[nav.group] !== nav.sub){ LASTSUB[nav.group] = nav.sub; store.set("jpb-last-sub", LASTSUB); } };
 const subRow = document.querySelector(".subtabs"), tools = document.querySelector(".tools");
 function drawSubs(){
   const list = GROUPS[nav.group];
@@ -5096,7 +5128,7 @@ function inView(sec){
 }
 let roWasShown = false, roReady = false;
 function apply(){
-  const raw = $("q").value.trim(), term = sFix && sFix.from === raw ? sFix.to : raw;
+  const raw = $("q").value.trim().replace(/\b([a-z])-(\d)/gi, "$1$2"), term = sFix && sFix.from === raw ? sFix.to : raw;   /* E-003 → E003 */
   press("nav.tabs", b => !term && (b.dataset.group === nav.group || (b.id === "more-btn" && MORE_G.includes(nav.group))));
   document.body.classList.toggle("mixed", nav.group === "mine");
   press(subRow, b => b.dataset.sub === nav.sub);
@@ -5118,7 +5150,7 @@ function apply(){
     let any = false;
     if (!rem.length){
       /* the card matched on its keywords, not its title: show just the rows that match, when some do (Saratoga → that city's row) */
-      const m = res.every(r => r.test(h2)) ? null : rows.map(([, txt]) => has(txt, res));
+      const rr = res.filter(r => !r.test(h2)), m = rr.length ? rows.map(([, txt]) => has(txt, rr)) : null;
       if (m && m.some(Boolean)) rows.forEach(([r], i) => { if (!m[i]) hideRow(r); });
       any = true;
     }
@@ -5189,7 +5221,7 @@ function edits(a, b, max){   /* optimal string alignment distance, quitting once
 function fuzzyFix(t){
   const V = vocab(), words = [...V.keys()];
   return t.toLowerCase().split(/\s+/).filter(Boolean).map(w => {
-    if (w.length < 4 || /\d/.test(w) || STOP.has(w) || words.some(x => x.startsWith(w))) return w;
+    if (w.length < 3 || /\d/.test(w) || STOP.has(w) || words.some(x => x.startsWith(w))) return w;
     const max = w.length >= 7 ? 2 : 1; let best = w, bd = max + 1, bn = 0;
     for (const x of words){ if (Math.abs(x.length - w.length) > max) continue; const d = edits(w, x, max); if (d <= max && (d < bd || (d === bd && V.get(x) > bn))){ best = x; bd = d; bn = V.get(x); } }
     return best;
@@ -5218,21 +5250,23 @@ function qRemember(term, shown){
 }
 /* history: every view is a step Back can return to (tabs, pages, searches, jumps, sheets) */
 let restoring = false, histOk = true;
+try { history.scrollRestoration = "manual"; } catch(e){}   /* Back restores the y this book saved; the browser's own restore would put it back at the top */
 const navHash = slug => "#" + nav.group + "/" + nav.sub + (slug ? "/" + slug : "");
-function histMark(){ try { history.replaceState(Object.assign({}, history.state || {}, {y: scrollY}), ""); } catch(e){ histOk = false; } }
-function histPush(extra, slug){
+function histMark(y){ try { history.replaceState(Object.assign({}, history.state || {}, {y: y ?? scrollY}), ""); } catch(e){ histOk = false; } }
+function histPush(extra, slug, y){   /* y: where the old view was scrolled before it changed */
   if (restoring || !histOk) return;
-  histMark();
+  histMark(y);
   try { history.pushState(Object.assign({g: nav.group, s: nav.sub, q: $("q").value}, extra || {}), "", navHash(slug)); } catch(e){ histOk = false; }
 }
 function go(group, sub){
-  nav = {group, sub: sub || (nav.group === group ? nav.sub : GROUPS[group][0][0])};
-  $("q").value = ""; saveNav(); drawSubs(); apply(); scrollTo({top:0}); placeRemember(); histPush();
+  const y = scrollY;
+  nav = {group, sub: sub || (nav.group === group ? nav.sub : lastSub(group))};
+  $("q").value = ""; saveNav(); drawSubs(); apply(); scrollTo({top:0}); placeRemember(); histPush(null, "", y);
 }
 document.querySelectorAll("nav.tabs button[data-group]").forEach(b => b.addEventListener("click", () => go(b.dataset.group)));
 subRow.addEventListener("click", e => {
   const b = e.target.closest("button[data-sub]"); if (!b) return;
-  nav.sub = b.dataset.sub; $("q").value = ""; saveNav(); apply(); scrollTo({top:0}); placeRemember(); histPush();
+  const y = scrollY; nav.sub = b.dataset.sub; $("q").value = ""; saveNav(); apply(); scrollTo({top:0}); placeRemember(); histPush(null, "", y);
 });
 $("res-bar").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
@@ -5326,7 +5360,12 @@ apply();  /* early, so tabs work even if a calculator below hits an error */
 
 /* pins: a star on each card's header puts it in Mine → Pinned. Keyed by the card's heading. */
 const slug = s => s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-let PINS = new Set((a => Array.isArray(a) ? a : [])(store.get("jpb-pins", [])));
+/* cards that moved page or merged: old id → new id, so pins, notes and shop edits keep working (and old card links still open) */
+const PID_MOVED = {"heaters:electrical-for-plumbers": "power:electrical-for-plumbers", "hotwater:expansion-tank": "hotwater:expansion-tank-size",
+  "units:typical-fitting-take-offs": "layout:typical-fitting-take-offs", "units:my-take-offs": "layout:my-take-offs"};
+const pidMove = (o, merge) => { let ch = false; for (const [a, b] of Object.entries(PID_MOVED)) if (a in o){ if (!(b in o)) o[b] = o[a]; else if (merge) o[b] = merge(o[b], o[a]); delete o[a]; ch = true; } return ch; };
+let PINS = new Set((a => Array.isArray(a) ? a.map(x => PID_MOVED[x] || x) : [])(store.get("jpb-pins", [])));
+store.set("jpb-pins", [...PINS]);
 function pinNote(){
   const n = SECTIONS.filter(s => s.dataset.pin === "1").length;
   $("pins-note").innerHTML = n ? `<b>${n}</b> pinned. Tap a gold <b>★</b> to unpin. Pins are saved on this device.` : `Tap the <b>☆</b> on any card's header to pin it here. Good for the cards you open every day: your city, the offset calculator, rough-in heights.`;
@@ -5337,6 +5376,8 @@ SECTIONS.forEach(sec => {
   sec.dataset.pid = id; if (PINS.has(id)) sec.dataset.pin = "1";
   head.insertAdjacentHTML("beforeend", `<button type="button" class="pin" aria-pressed="${PINS.has(id)}" aria-label="Pin ${t} to Mine">${PINS.has(id) ? "★" : "☆"}</button><button type="button" class="cmenu" aria-haspopup="menu" aria-label="${t}: link, share, print">⋯</button>`);
 });
+SECTIONS.forEach(sec => { if (sec.dataset.pid) sec.querySelector(".sec-head").insertAdjacentHTML("beforeend", `<button type="button" class="where-go" aria-label="Open ${esc(sec.dataset.where)}">${esc(sec.dataset.where)} ›</button>`); });
+document.addEventListener("click", e => { const b = e.target.closest(".where-go"); if (b) jumpToSec(b.closest("section")); });
 document.addEventListener("click", e => {
   const b = e.target.closest(".sec-head .pin"); if (!b) return;
   const sec = b.closest("section"), id = sec.dataset.pid, on = !PINS.has(id);
@@ -5394,15 +5435,15 @@ function printCard(sec){
   addEventListener("afterprint", done); setTimeout(() => print(), 50);
 }
 /* See also: each explainer and fact sheet points at the field card it explains, and back */
-const SEE = [["Water heater install","Electrical for plumbers"],["Electricity in plain words","Test before you touch"],["Get power on site","Extension cords"],["Get power on site","Heat, asbestos, spillage, power"],["Water and power","Electrical for plumbers"],["If someone gets shocked","Emergency"],["Vent size","Venting rules"],["Why an expansion tank","Expansion tank size"],["Water heater size","Water heater output"],["How tankless works","Navien tankless codes"],["Service calls: first checks","Mech room trouble"],["Why traps need vents","Venting rules"],["Six ways a trap loses its seal","Drains, traps & trap arms"],["Why gas pressure is so small","Gas piping"],["Why gas pressure is so small","Gas line sizer"],
+const SEE = [["Water heater install","Electrical for plumbers"],["Water heater install","Expansion tank size"],["Water heater install","Gas line sizer"],["Water heater install","Water heater age"],["Rough-in heights","Fixture DFU & trap size"],["Rough-in heights","Fixture supply size"],["Electricity in plain words","Test before you touch"],["Get power on site","Extension cords"],["Get power on site","Heat, asbestos, spillage, power"],["Water and power","Electrical for plumbers"],["If someone gets shocked","Emergency"],["Vent size","Venting rules"],["Why an expansion tank","Expansion tank size"],["Water heater size","Water heater output"],["How tankless works","Navien tankless codes"],["Service calls: first checks","Mech room trouble"],["Why traps need vents","Venting rules"],["Six ways a trap loses its seal","Drains, traps & trap arms"],["Why gas pressure is so small","Gas piping"],["Why gas pressure is so small","Gas line sizer"],
   ["How a toilet flushes","Trim-out (finish): rest of the house"],["How a PRV works","Water supply"],["Why metals eat each other","Copper & solder"],["Why bigger drains get less slope","Slope & fall"],
   ["Why the pipe math works","Offset calculator"],["Why fittings face one way","Drains, traps & trap arms"],["Backflow devices","Backflow & cross-connection"],["Inside a tank water heater","Water heater install"],
-  ["Why an expansion tank","Expansion tank"],["How a softener works","Softener install"],["How tankless works","Tankless setup"],["Static vs. flowing pressure","Pressure at the fixture"],
+  ["How a softener works","Softener install"],["How tankless works","Tankless setup"],["Static vs. flowing pressure","Pressure at the fixture"],
   ["How a T&P valve works","Water heater install"],["How a frost-free hose bibb works","Freeze protection"],["Why water hammer happens","Shutdowns, leaks, freezes & hammer"],
   ["Manifold vs trunk-and-branch","Water supply"],["Freeze protection","Shutdowns, leaks, freezes & hammer"],["Altitude: what changes up here","Altitude derate"],["Altitude: what changes up here","Altitude settings"],
   ["Altitude derate","Altitude settings"],["Drains, vents & cleanouts","Venting rules"],["Tests & inspections","Test log"],["Utah's IRC amendments","2021 IPC quick reference"],["Gas piping & venting","Gas piping"],
   ["Water heaters","Water heater install"],["Mech room","Mech room map"],["Fixture & trim installs","Trim-out (finish): rest of the house"],["Pipe, fittings & joints","Joint tricks"],["Safety facts","Jobsite safety"],
-  ["Utah water rules & more","Utah water"],["Compression & flare","Thread types"],["Expansion tank","Mech room trouble"]];
+  ["Utah water rules & more","Utah water"],["Compression & flare","Thread types"],["Expansion tank size","Mech room trouble"]];
 { const byT = t => SECTIONS.find(s => s.querySelector("h2").textContent.trim() === t), links = new Map();
   SEE.forEach(([a, b]) => { const A = byT(a), B = byT(b); if (!A || !B) return; [[A, B], [B, A]].forEach(([x, y]) => { if (!links.has(x)) links.set(x, []); if (!links.get(x).includes(y)) links.get(x).push(y); }); });
   links.forEach((ys, x) => x.insertAdjacentHTML("beforeend", `<p class="note see-also"><b class="see-k">See also</b> ${ys.map(y => `<button type="button" class="linkish" data-see="${y.dataset.pid}">${esc(y.querySelector("h2").textContent)} <span aria-hidden="true">›</span></button>`).join(" ")}</p>`));
@@ -6209,11 +6250,21 @@ const TO_ROWS = [
 function toDraw(){
   const s = Math.min(3, Math.max(0, +store.get("jpb-to-size", 1) || 0)), m = PREFS.pipe === "pvc" ? 1 : 0;
   press($("to-size"), b => +b.dataset.s === s); press($("to-mat"), b => +b.dataset.m === m);
-  $("to-rows").innerHTML = TO_ROWS.map(([f, where, v]) => `<tr><td>${f}<div class="sub">${where}</div></td><td>${v[s][m]}"</td></tr>`).join("");
+  $("to-rows").innerHTML = TO_ROWS.map(([f, where, v], i) => `<tr><td>${f}<div class="sub">${where}</div></td><td>${v[s][m]}"${/·/.test(v[s][m]) || f === "Hub depth" ? "" : ` <button type="button" class="linkish to-save" data-i="${i}" aria-label="Save ${esc(f)} to My take-offs">Save</button>`}</td></tr>`).join("");
 }
 $("to-size").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; store.set("jpb-to-size", +b.dataset.s); toDraw(); });
 $("to-mat").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; PREFS.pipe = b.dataset.m === "1" ? "pvc" : "abs"; savePrefs(); toDraw(); });   /* same setting as Settings → My drain pipe */
 toDraw();
+/* Save: the typical number goes into My take-offs (fills a blank or same-named row first), so it shows up as a button in Offset and Cut length */
+const tapeStr = t => t.replace(/[½¼¾⅛⅜⅝⅞]/g, c => " " + {"½":"1/2","¼":"1/4","¾":"3/4","⅛":"1/8","⅜":"3/8","⅝":"5/8","⅞":"7/8"}[c]).replace(/⁄/g, "/").replace(/\s+/g, " ").trim();
+$("to-rows").addEventListener("click", e => {
+  const b = e.target.closest(".to-save"); if (!b) return;
+  const s = Math.min(3, Math.max(0, +store.get("jpb-to-size", 1) || 0)), m = PREFS.pipe === "pvc" ? 1 : 0, [f, where, v] = TO_ROWS[+b.dataset.i];
+  const name = `${['1½"','2"','3"','4"'][s]} ${m ? "PVC" : "ABS"} ${f}${/top hub|branch hub|run center/.test(where) ? " (" + where.split(" (")[0] + ")" : ""}`, val = tapeStr(v[s][m]);
+  const k = TK.findIndex(([n]) => n === name), blank = TK.findIndex(([n, x]) => !n.trim() && !x.trim());
+  if (k >= 0) TK[k][1] = val; else if (blank >= 0) TK[blank] = [name, val]; else TK.push([name, val]);
+  store.set("jpb-takeoffs", TK); tkDraw(); tkChips(); IDX = null; toast(`Saved to My take-offs: <b>${esc(name)}</b> · ${esc(v[s][m])}"`, 2400);
+});
 $("ro-tk-chips").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; writeIn("ro-to", +b.dataset.v); roCalc(); say("Take-off set to " + toFrac16(+b.dataset.v)); });
 tkDraw(); tkChips();
 
@@ -6789,11 +6840,12 @@ function jumpTo(group, sub, title, focusId){
   jumpToSec(sec, focusId);
 }
 function jumpToSec(sec, focusId, noPush){
-  if (!noPush){ nav = {group: sec.dataset.g, sub: sec.dataset.sec}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrollTo({top:0}); placeRemember(); histPush({card: sec.dataset.pid}, (sec.dataset.pid || "").split(":")[1]); }
+  if (!noPush){ const y = scrollY; nav = {group: sec.dataset.g, sub: sec.dataset.sec}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrollTo({top:0}); placeRemember(); histPush({card: sec.dataset.pid}, (sec.dataset.pid || "").split(":")[1], y); }
   requestAnimationFrame(() => {
     sec.scrollIntoView({block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
     const f = focusId && $(focusId); const h = sec.querySelector("h2");
-    if (f){ for (let p = f.parentElement; p; p = p.parentElement) if (p.tagName === "DETAILS") p.open = true; setTimeout(() => f.focus({preventScroll: true}), 350); }
+    if (f){ for (let p = f.parentElement; p; p = p.parentElement) if (p.tagName === "DETAILS") p.open = true;
+      setTimeout(() => { f.focus({preventScroll: true}); const r = f.getBoundingClientRect(); if (r.top < 0 || r.bottom > innerHeight - 90) f.scrollIntoView({block: "center"}); }, 350); }
     else { h.tabIndex = -1; h.focus({preventScroll: true}); }
     sec.classList.add("flash"); setTimeout(() => sec.classList.remove("flash"), 1200);
   });
@@ -7207,7 +7259,17 @@ function drawCity(){
   const all = $("mc-all"); if (all) all.addEventListener("click", () => go("inspect", "utah"));
 }
 /* My city also picks the elevation in Calc → Sizing → Altitude derate */
-function elevFromCity(){ const c = cityById(myCity), e = c && ELEV.find(([n]) => n === c.n); if (e){ $("g-elev").value = String(e[1]); gasCalc(); } }
+function elevFromCity(){ const c = cityById(myCity), e = c && ELEV.find(([n]) => n === c.n); if (e){ $("g-elev").value = String(e[1]); gasCalc(); $("at-el").value = String(e[1]); $("at-el").dispatchEvent(new Event("input", {bubbles: true})); } }
+/* Test log: what the picked test must hold and for how long (same values as the Test values fold-out); air tests fill the start pressure */
+const TL_SPEC = {"DWV water test": ["10 ft of head (≈4.3 psi at the bottom), hold 15 min.", null],
+  "DWV air test": ["5 psi, hold 15 min. UT plastic: only if water can't be used or would freeze, ≤6 psi, ≤15 min.", 5],
+  "DWV vacuum test": ["−5 psi (−10\" Hg), hold 15 min. In the 2021 IRC (houses) and 2024 IPC.", null],
+  "Water supply test": ["Water at working pressure or more, until inspected. UT air on plastic: 50–80 psi, ≤15 min, inspector's OK first on a house.", null],
+  "Gas test": ["1.5× working pressure and at least 3 psi, 10 min. Many Utah cities want 5 psi for 15 min.", 5],
+  "Shower pan flood test": ["2\" of water at the threshold, hold 15 min.", null]};
+function tlSpec(fill){ const x = TL_SPEC[$("tl-type").value]; if (!x) return; $("tl-spec").innerHTML = `<b>Must hold:</b> ${esc(x[0])}`;
+  if (fill && x[1] != null){ $("at-p").value = String(x[1]); $("at-p").dispatchEvent(new Event("input", {bubbles: true})); } }
+$("tl-type").addEventListener("change", () => tlSpec(true)); tlSpec(false);
 $("mc-pick").addEventListener("change", e => { myCity = e.target.value; store.set("jpb-city", myCity); drawCity(); elevFromCity(); });
 drawCity(); elevFromCity();
 
@@ -7276,7 +7338,7 @@ const CARDS = [
   ["Mech room","4 people, 75 gal each, 12 gpg. Grains a day?","3,600 grains","4 × 75 = 300 gal × 12 gpg = 3,600. A week is 25,200 grains."],
   ["Mech room","Box says 32,000 grains. What does it hold set to save salt (6 lb/ft³)?","About 20,000","The box number is at max salt. At 6 lb/ft³ resin holds ≈ 20k per ft³: about two thirds."],
   ["Mech room","Where does the expansion tank go?","Cold line between the heater and the PRV/check, with no valve isolating it from the heater","The heater makes the expansion; the tank has to be able to take it."],
-  ["Mech room","Expansion tank air charge: set to what, and how?","House static pressure, with the water off and bled","Factory charge (≈40–50 psi) on a 70 psi house means the bladder starts half squashed."],
+  ["Mech room","Expansion tank air charge: set to what, and how?","House static pressure, with the water off and bled","Factory charge (often 20–40 psi, varies by brand) on a 70 psi house means the bladder starts half squashed."],
   ["Mech room","Press the expansion tank's Schrader valve and water comes out. Meaning?","The bladder's broken: replace the tank","Air side should only ever have air."],
   ["Mech room","A 199k tankless at 95%, 40°F in, 120°F out. Max gpm?","About 4.7 gpm","199,900 × 0.95 ÷ (500 × 80) ≈ 4.75. The box's 5.6 gpm is at a 67°F rise."],
   ["Mech room","Tankless shuts off at a trickle. Why?","Below minimum flow (≈0.5 gpm)","The flow sensor has to see enough water before it'll fire."],
@@ -7464,7 +7526,7 @@ const CARDS = [
   ["Safety","Extension ladder rules?","3 ft above the landing; base out ¼ of the working length; 3 points of contact","The 1:4 angle keeps it from kicking out or tipping back."],
   ["Safety","H₂S: why can't you trust your nose?","Smell fades fast at high levels; 100 ppm is immediately dangerous","Sewer gas can knock you out in a manhole before you notice it."],
   ["Utah","Utah rainwater: how much without registering?","2 covered containers, 100 gal each; up to 2,500 gal registered (free)","Utah water belongs to water-rights holders, so bigger catchment has to be registered."],
-  ["Heaters","Scald time at 130°F?","About 30 seconds (120°F ≈ 5 min, 140°F ≈ 6 s)","Each 10°F makes it much faster. That's why 120°F is the house target."],
+  ["Heaters","Scald time at 130°F?","About 30 seconds (120°F ≈ 5 min, 140°F ≈ 5 s)","Each 10°F makes it much faster. That's why 120°F is the house target."],
   ["Heaters","Heat pump water heater: room size with no extra ventilation?","700 ft³","It pulls heat from room air. A small room gets cold and the unit falls back on its electric element."],
   ["How it works","Six ways a trap loses its seal?","Self-siphonage, induced siphonage, back pressure, evaporation, capillary action, wind or momentum","A seal is only 0.07–0.14 psi of water. Suck on it, push on it, dry it out or wick it, and it's gone. Vents and primers fight all six."],
   ["How it works","Guest shower drain smells like sewer, nothing's broken. Likely cause?","Evaporation: nobody runs water in it","An unused trap dries out in weeks. Run water in it, or add a trap primer or deep-seal trap on a drain that's always dry."],
@@ -7728,7 +7790,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-08";
+{ const NEWS = "2026-11-08b";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -7755,21 +7817,33 @@ gaugeDraw();
   const sp = $("ro-space-d"); if (sp && $("ro-space").value) sp.open = true; }
 
 /* ---------- copy / share / tape for every calculator answer ---------- */
+/* an answer's parts (big number, small note, sub-line) joined with " · " so "40 min" and "at 2 gpm" don't run together */
+const flatText = el => { const c = el.cloneNode(true); c.querySelectorAll("[hidden],.fpad").forEach(x => x.remove()); c.querySelectorAll("small,div,p,br,li,.sub").forEach(x => x.before(" · "));
+  return c.textContent.replace(/\s+/g, " ").replace(/(\s*·\s*)+/g, " · ").replace(/^\s*·\s*|\s*·\s*$/g, "").trim(); };
 function calcText(sec){
-  const lines = [sec.querySelector("h2").textContent.toUpperCase()];
-  sec.querySelectorAll(".calc label").forEach(l => {
-    if (l.closest("[hidden]") || l.closest("details:not([open])")) return;
-    const c = l.cloneNode(true); c.querySelectorAll("input,select,.fpad,i").forEach(x => x.remove());
+  const lines = [sec.querySelector("h2").textContent.toUpperCase()], seen = new Set(), names = {};
+  const add = (name, v) => { names[name] = (names[name] || 0) + 1; lines.push(`${name}${names[name] > 1 ? " " + names[name] : ""}: ${v}`); };
+  const value = inp => inp.tagName === "SELECT" ? ((inp.selectedOptions[0] || {}).textContent || "").trim() : inp.value.trim();
+  const hid = el => { for (let p = el; p && p !== sec; p = p.parentElement) if (p.hidden || (p.tagName === "DETAILS" && !p.open && p !== el)) return true; return false; };   /* hidden inside the card, not the card itself */
+  sec.querySelectorAll("label").forEach(l => {
+    if (hid(l) || l.closest(".tk")) return;
+    const inp = l.querySelector("input:not([type=checkbox]):not([type=radio]),select:not(.f16)") || (l.htmlFor ? document.getElementById(l.htmlFor) : null);
+    if (!inp || !sec.contains(inp) || inp.type === "checkbox" || inp.type === "radio" || hid(inp)) return;
+    const c = l.cloneNode(true); c.querySelectorAll("input,select,.fpad,i,.ftecho").forEach(x => x.remove());
     const name = c.textContent.replace(/\s+/g, " ").trim(); if (!name) return;
-    const inp = l.querySelector("input:not([type=checkbox]),select:not(.f16)"); if (!inp) return;
-    let v = inp.tagName === "SELECT" ? (inp.selectedOptions[0] || {}).textContent || "" : inp.value.trim();
-    const f = l.querySelector("select.f16"); if (f && +f.value) v = (v || "0") + " " + f.selectedOptions[0].textContent.replace("+", "") + '"';
-    if (v) lines.push(`${name}: ${v}`);
+    seen.add(inp);
+    let v = value(inp);
+    const f = l.querySelector("select.f16") || (inp.parentElement && inp.parentElement.querySelector("select.f16")); if (f && +f.value) v = (v || "0") + " " + f.selectedOptions[0].textContent.replace("+", "") + '"';
+    if (v) add(name, v);
+  });
+  sec.querySelectorAll("input[aria-label]:not([type=checkbox]):not([type=radio]), select[aria-label]:not(.f16)").forEach(inp => {
+    if (seen.has(inp) || hid(inp) || inp.closest(".tk") || inp.closest(".sec-head")) return;
+    const v = value(inp); if (v) add(inp.getAttribute("aria-label"), v);
   });
   lines.push("—");
-  const ans = sec.querySelector(".ans"); if (ans) lines.push(ans.innerText.replace(/\s*\n\s*/g, " · ").trim());
+  const ans = sec.querySelector(".ans"); if (ans) lines.push(flatText(ans));
   sec.querySelectorAll(".out").forEach(t => { if (t.closest("details:not([open])")) return; t.querySelectorAll("tr").forEach(r => { if (r.hidden) return;
-    const th = r.querySelector("th"), td = r.querySelector("td.big"); if (th && td && td.textContent.trim() && td.textContent.trim() !== "—") lines.push(`${th.textContent.trim()}: ${td.innerText.replace(/\s*\n\s*/g, " · ").trim()}`); }); });
+    const th = r.querySelector("th"), td = r.querySelector("td.big"); if (th && td && td.textContent.trim() && td.textContent.trim() !== "—") lines.push(`${th.textContent.trim()}: ${flatText(td)}`); }); });
   return lines.join("\n") + "\n(Utah Plumbers Digital Handbook)";
 }
 /* ---------- vent size: 2021 IPC Table 906.1 [stack, dfu, {vent: max ft}] + 906.2 ---------- */
@@ -7953,6 +8027,9 @@ tapeDraw();
 /* ---------- my notes on cards, and my shop's numbers over "typical" ---------- */
 let NOTES = (o => o && typeof o === "object" && !Array.isArray(o) ? o : {})(store.get("jpb-notes", {}));
 let SHOP = (o => o && typeof o === "object" && !Array.isArray(o) ? o : {})(store.get("jpb-shop", {}));
+if (pidMove(NOTES, (a, b) => a + "\n" + b)) store.set("jpb-notes", NOTES);
+if ("hotwater:expansion-tank" in SHOP) delete SHOP["hotwater:expansion-tank"];   /* merged card: its old cells no longer line up */
+if (pidMove(SHOP)) store.set("jpb-shop", SHOP);
 const shopCells = sec => [...sec.querySelectorAll("tbody td")].filter(td => { const tb = td.closest("tbody"); return !td.closest(SKIP) && (!tb.id || /^(fact-|list-)/.test(tb.id)); });
 function noteDraw(sec){
   sec.querySelectorAll(":scope > .card-note").forEach(n => n.remove());
@@ -8016,7 +8093,7 @@ function homeDraw(){
   const places = RECENT.places.map(k => k.split("|")).filter(([g, s]) => sub(g, s));
   const now = new Date(), due = new Date(now.getFullYear(), 10, 30), days = Math.ceil((due - now) / 864e5);
   const renew = now.getFullYear() % 2 === 0 && now.getMonth() >= 8 && days >= 0   /* plumbing licenses expire Nov 30 of even years */
-    ? `<button type="button" class="renew-line" data-hg="learn|career|Path to a license"><b>License renewal due Nov 30</b> · ${days ? days + (days === 1 ? " day" : " days") + " left" : "today"} · 12 CE hr, 8 core ›</button>` : "";
+    ? `<button type="button" class="renew-line" data-hg="learn|career|Path to a license|renew-row"><b>License renewal due Nov 30</b> · ${days ? days + (days === 1 ? " day" : " days") + " left" : "today"} · 12 CE hr, 8 core ›</button>` : "";
   $("home-body").innerHTML = `<p class="off-badge ${off.cls}">${off.t}</p>${renew}
     <div class="home-go">
       <button type="button" class="hg-em" data-hg="contacts|emergency"><b>Emergency</b><span>Gas, 911, water main</span></button>
@@ -8034,7 +8111,7 @@ function homeDraw(){
 $("home-body").addEventListener("click", e => {
   const b = e.target.closest("[data-hg],[data-hq]"); if (!b) return;
   if (b.dataset.hq){ $("q").value = b.dataset.hq; $("q").dispatchEvent(new Event("input")); return; }
-  const [g, s, t] = b.dataset.hg.split("|"); t ? jumpTo(g, s, t) : go(g, s);
+  const [g, s, t, f] = b.dataset.hg.split("|"); t ? jumpTo(g, s, t, f) : go(g, s);
 });
 homeDraw();
 if ("serviceWorker" in navigator) navigator.serviceWorker.addEventListener("controllerchange", homeDraw);
@@ -8055,13 +8132,14 @@ $("setup-skip").addEventListener("click", () => { store.set("jpb-setup", 1); she
 $("setup-open").addEventListener("click", () => sheet("setup", true));
 
 /* ---------- open at a card link (#tab/page/card), set the first history step, Back from there ---------- */
-{ const m = location.hash.match(/^#([a-z]+)\/([a-z0-9]+)(?:\/([a-z0-9-]+))?$/);
+{ const m = location.hash.match(/^#([a-z]+)\/([a-z0-9]+)(?:\/([a-z0-9-]+))?$/); let card0 = null;
   if (m && GROUPS[m[1]] && GROUPS[m[1]].some(([k]) => k === m[2])){
     nav = {group: m[1], sub: m[2]}; drawSubs(); apply();
-    const sec = m[3] && SECTIONS.find(s => s.dataset.pid === m[2] + ":" + m[3]);
-    if (sec) jumpToSec(sec, null, true);
+    const pid = m[3] ? PID_MOVED[m[2] + ":" + m[3]] || m[2] + ":" + m[3] : "";
+    card0 = (pid && SECTIONS.find(s => s.dataset.pid === pid)) || null;
+    if (card0){ if (card0.dataset.sec !== nav.sub){ nav = {group: card0.dataset.g, sub: card0.dataset.sec}; drawSubs(); apply(); } jumpToSec(card0, null, true); }
   }
-  try { history.replaceState({g: nav.group, s: nav.sub, q: ""}, "", location.pathname + location.search + navHash()); } catch(e){ histOk = false; }
+  try { history.replaceState(Object.assign({g: nav.group, s: nav.sub, q: ""}, card0 ? {card: card0.dataset.pid} : {}), "", location.pathname + location.search + navHash(card0 ? card0.dataset.pid.split(":")[1] : "")); } catch(e){ histOk = false; }
   addEventListener("popstate", e => {
     let st = e.state || {}; restoring = true;
     if (!e.state){   /* a card link pasted or tapped in the same tab: no saved step, so read the address */
@@ -8612,7 +8690,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-08";
+var BUILD = "handbook-2026-11-08b";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
