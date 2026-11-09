@@ -976,7 +976,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <button type="button" data-go="calc|water|Pressure at the fixture"><b>Long run: will the far fixture have pressure?</b><span>Flow → Pressure at the fixture</span></button>
       <button type="button" data-go="inspect|phases|Test log"><b>Air test gauge dropped overnight</b><span>Inspect → Tests → Test log</span></button>
       <button type="button" data-go="trim|idhow|Standards decoder"><b>What does ASSE 1016 or F1960 on this part mean?</b><span>Trim → ID a part → Standards decoder</span></button>
-      <button type="button" data-go="mech|heaters|Electrical for plumbers"><b>What breaker and wire for this water heater?</b><span>Service → Water heaters → Electrical for plumbers</span></button>
+      <button type="button" data-go="site|power|Electrical for plumbers"><b>What breaker and wire for this water heater?</b><span>Jobsite → Electrical → Electrical for plumbers</span></button>
+      <button type="button" data-go="site|power|Get power on site"><b>Need power on the job</b><span>Jobsite → Electrical: GFCI, temp pole, generator</span></button>
+      <button type="button" data-go="site|power|Extension cords"><b>Which extension cord for this tool?</b><span>Extension cords: gauge by amps and length</span></button>
       <button type="button" data-go="calc|water|Hydronic flow"><b>Sizing a boiler zone or radiant loop</b><span>Flow → Hydronic flow</span></button>
       <button type="button" data-go="calc|units|Typical fitting take-offs"><b>Take-off for an ABS or PVC fitting I didn't measure</b><span>Units → Typical fitting take-offs</span></button>
     </div>
@@ -2383,56 +2385,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Altitude</th><td>Some plates or labels show a high-altitude setup or derate.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="heaters" data-kw="electrical electric electrician breaker wire size gauge awg amps amperage volts watts kw 240 208 120 romex nm thhn circuit continuous load 125 percent disconnect gfci bonding grounding ground jumper electrode disposer dishwasher tankless electric heat pump whirlpool hydromassage sump csst bond shock dry fire element">
-    <div class="sec-head"><h2>Electrical for plumbers</h2><small>Breakers, wire, GFCI, bonding</small></div>
-    <div class="calc">
-      <label for="el-w">Watts <i>(from the label)</i><input id="el-w" type="number" inputmode="decimal" min="0" step="any" value="4500"></label>
-      <label for="el-v">Volts<select id="el-v"><option value="240" selected>240 V</option><option value="208">208 V</option><option value="120">120 V</option></select></label>
-      <label for="el-load" class="wide">Load<select id="el-load"><option value="tank" selected>Tank water heater ×125%</option><option value="cont">Runs 3 h+ ×125%</option><option value="other">Short runs (disposer)</option></select></label>
-      <div class="ans" id="el-ans" role="status" aria-atomic="true"></div>
-    </div>
-    <details class="math"><summary>Show the math</summary><ol id="el-math"></ol></details>
-    <p class="note">For talking it over with the electrician, not for pulling wire. The label, the maker's manual and the NEC as Utah adopts it have the final word. Electric <b>tankless</b>: use the maker's breaker and wire chart (they often split into 2–4 circuits).</p>
-    <p class="card-h">Typical circuits</p>
-    <div class="x"><table class="t cards wrap">
-      <thead><tr><th>Equipment</th><th>Typical circuit</th><th>Watch for</th></tr></thead>
-      <tbody>
-        <tr><td data-label="Equipment"><b>Electric tank</b><br><span class="sub">4500 or 5500 W, 240 V</span></td><td data-label="Typical circuit" class="n">30 A 2-pole · 10 AWG Cu</td><td data-label="Watch for">Elements usually take turns, so size on the bigger one. If the label says <b>simultaneous</b>, add them. Needs a disconnect in sight or a lockable breaker (NEC 422.31).</td></tr>
-        <tr><td data-label="Equipment"><b>Heat pump water heater</b></td><td data-label="Typical circuit" class="n">240 V: 30 A · 10 AWG<br>120 V: per label</td><td data-label="Watch for">240 V models keep a 4500 W backup element. New 120 V plug-in models want their own circuit: read the label before you plug into what's there.</td></tr>
-        <tr><td data-label="Equipment"><b>Electric tankless</b><br><span class="sub">whole house, 18–36 kW</span></td><td data-label="Typical circuit" class="n">2–4 × 40–60 A 2-pole</td><td data-label="Watch for">27 kW pulls 112 A at 240 V. Often needs a 200 A service with room left. Check before you sell it.</td></tr>
-        <tr><td data-label="Equipment"><b>Gas tankless · power vent</b></td><td data-label="Typical circuit" class="n">120 V · 15 A</td><td data-label="Watch for">Receptacle within cord reach. Outdoor units: GFCI, weatherproof cover.</td></tr>
-        <tr><td data-label="Equipment"><b>Disposer</b></td><td data-label="Typical circuit" class="n">120 V · 15–20 A</td><td data-label="Watch for">Cord 18"–36" long (NEC 422.16(B)(1)). Switch-controlled receptacle under the sink.</td></tr>
-        <tr><td data-label="Equipment"><b>Dishwasher</b></td><td data-label="Typical circuit" class="n">120 V · 15–20 A</td><td data-label="Watch for">Cord 3'–6½' (NEC 422.16(B)(2)), receptacle in the cabinet next to it, GFCI protected (NEC 210.8(D)).</td></tr>
-        <tr><td data-label="Equipment"><b>Whirlpool tub</b></td><td data-label="Typical circuit" class="n">Own circuit · GFCI</td><td data-label="Watch for">Pump reachable through an access panel. Bond the pump motor and metal pipe with 8 AWG solid copper (NEC 680.71, 680.74).</td></tr>
-        <tr><td data-label="Equipment"><b>Sump · ejector</b></td><td data-label="Typical circuit" class="n">120 V · own circuit is smart</td><td data-label="Watch for">Basement receptacles are GFCI (NEC 210.8(A)), so a trip can kill the pump: add a battery high-water alarm.</td></tr>
-        <tr><td data-label="Equipment"><b>Recirc pump · hot tap</b></td><td data-label="Typical circuit" class="n">120 V plug</td><td data-label="Watch for">Under-sink receptacles near water: GFCI. Recirc on a timer or aquastat.</td></tr>
-      </tbody></table></div>
-    <p class="card-h">Wire vs. breaker (copper)</p>
-    <div class="x"><table class="t num">
-      <thead><tr><th>Wire</th><th>NM cable (Romex)</th><th>THHN in conduit, 75°C ends</th></tr></thead>
-      <tbody>
-        <tr><td>14 AWG</td><td>15 A</td><td>15 A</td></tr>
-        <tr><td>12 AWG</td><td>20 A</td><td>20 A</td></tr>
-        <tr><td>10 AWG</td><td>30 A</td><td>30 A</td></tr>
-        <tr><td>8 AWG</td><td>40 A</td><td>50 A</td></tr>
-        <tr><td>6 AWG</td><td>55 A</td><td>65 A</td></tr>
-        <tr><td>4 AWG</td><td>70 A</td><td>85 A</td></tr>
-      </tbody></table></div>
-    <p class="note">NEC 310.16 and 240.4(D). NM cable is held to the 60°C column (NEC 334.80). Aluminum is bigger for the same amps.</p>
-    <p class="card-h">Bonding, grounding &amp; safety</p>
-    <div class="x"><table class="t">
-      <tbody>
-        <tr><th>Before you cut metal pipe</th><td>Clamp a jumper across where you'll cut, <b>first</b>. Metal water pipe can carry current from a bad neutral or a fault somewhere else, and it bites when the pipe parts.</td></tr>
-        <tr><th>Repipe or plastic service</th><td>10 ft or more of metal water pipe in the ground is a grounding electrode (NEC 250.52(A)(1)). Swap it for PEX or PVC and that ground is gone: tell the owner it needs an electrician to check the grounding.</td></tr>
-        <tr><th>Meter, softener, filter</th><td>The ground path can't depend on them (NEC 250.53(D)(1)). Leave the jumper, or add one around them with clamps and bare copper.</td></tr>
-        <tr><th>Water heater jumper</th><td>Dielectric unions break the pipe's bond. Many inspectors want a hot-to-cold jumper at the heater so the metal piping stays bonded (NEC 250.104(A)). Ask yours.</td></tr>
-        <tr><th>CSST gas</th><td>Bond it: 6 AWG copper or bigger, 75 ft or shorter, to the electrical service grounding (IFGC 310.1.1), plus anything the maker adds. Black arc-resistant CSST: maker's instructions rule.</td></tr>
-        <tr><th>Lock it out</th><td>Kill the breaker, then test dead <b>at the heater</b>: each leg to ground and leg to leg. Panels are mislabeled more often than not.</td></tr>
-        <tr><th>Dry fire</th><td>Never turn on an electric heater until the tank is full and air is out of a hot faucet. An element in air burns out in seconds.</td></tr>
-        <tr><th>208 V buildings</th><td>A 240 V element on 208 V makes 75% of its watts: 4500 W → 3,380 W. Slower recovery, not a bad element.</td></tr>
-        <tr><th>Who does what</th><td>New circuits, panel work and service upgrades are an electrician's job and permit.</td></tr>
-      </tbody></table></div>
-  </section>
+
   <section data-sec="heaters" data-kw="altitude elevation tankless navien rinnai dip switch high altitude setting 4500 menu 1.2.14 v65 derate gas water heater">
     <div class="sec-head"><h2>Altitude settings</h2><small>Utah County ≈ 4,500 ft</small></div>
     <div class="x"><table class="t">
@@ -3704,6 +3657,183 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 
   </section>
   
+  <section data-sec="power" data-kw="electricity basics volts amps watts ohms resistance current circuit hot neutral ground wire colors 120 240 single pole double pole how electricity works shock milliamps ma let go heart gfci why electricity kills water analogy">
+    <div class="sec-head"><h2>Electricity in plain words</h2><small>It works like your water system</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Volts (V)</th><td><b>Pressure.</b> Houses get 120 V (one hot to neutral) and 240 V (two hots). Apartments and shops are often 208 V; 277/480 V is commercial: leave it to electricians.</td></tr>
+        <tr><th>Amps (A)</th><td><b>Flow.</b> Wire and breakers are sized for amps, like pipe is sized for gpm. Every tool's label lists its amps.</td></tr>
+        <tr><th>Watts (W)</th><td><b>Work done.</b> Watts = volts × amps. A 1,500 W heater on 120 V pulls 12.5 A; a 4,500 W element on 240 V pulls 18.75 A.</td></tr>
+        <tr><th>Resistance</th><td><b>Friction loss.</b> A long, skinny cord is like a long ½" line: the tool gets less voltage at the end, runs hot and pulls more amps.</td></tr>
+        <tr><th>The circuit</th><td>Current goes out on the <b>hot</b> and comes back on the <b>neutral</b>, like supply and drain. The <b>ground</b> carries nothing until something goes wrong; then it gives the fault a path back so the breaker trips. Current that leaks out any other way, like through you, is a <b>ground fault</b>.</td></tr>
+        <tr><th>Breakers</th><td>Single-pole (one handle) = 120 V. Double-pole (two handles tied) = 240 V. A breaker protects the <b>wire</b> from overheating. It does not protect <b>you</b>.</td></tr>
+        <tr><th>Wire colors</th><td>Black or red = hot. White = neutral, but on a 240 V appliance run white can be a hot (it should be taped black or red). Green or bare = ground. Colors are a guess, not a test.</td></tr>
+      </tbody></table></div>
+    <p class="card-h">Why a little current kills</p>
+    <div class="x"><table class="t wrap">
+      <tbody>
+        <tr><th>About 1 mA</th><td>A tingle you barely feel.</td></tr>
+        <tr><th>About 10–20 mA</th><td>Your hand clamps on and you can't let go.</td></tr>
+        <tr><th>About 100 mA</th><td>Across the chest, enough to throw the heart out of rhythm. Often fatal.</td></tr>
+        <tr><th>15 A breaker</th><td>Trips at 15,000 mA. Hundreds of times what it takes to kill you.</td></tr>
+        <tr><th>GFCI</th><td>Trips at 4–6 mA in about 1/40 second. That's the device that protects people.</td></tr>
+      </tbody></table></div>
+    <p class="note">Body numbers are from OSHA training material and vary person to person. Wet skin, sweat and standing in water make every one of them worse. GFCI: UL 943 Class A.</p>
+  </section>
+  <section data-sec="power" data-kw="who can do electrical work license electrician plumber allowed minor electrical incidental utah 58-55-305 permit new circuit panel reconnect water heater whip">
+    <div class="sec-head"><h2>Plumber or electrician?</h2><small>Utah licensing</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The law</th><td>Utah exempts "minor electrical work incidental to a mechanical or service installation" from the electrician license (Utah Code 58-55-305(1)(n)). The statute doesn't define <b>minor</b>.</td></tr>
+        <tr><th>Usually yours</th><td>Shutting off, testing dead, and disconnecting and reconnecting the appliance you're working on at the circuit that's already there. Ask your inspector or shop where they draw the line.</td></tr>
+        <tr><th>Electrician's</th><td>New circuits, panel work, changing a breaker or wire size, service upgrades, temp power poles, generator transfer switches. These need an electrician and usually a permit.</td></tr>
+        <tr><th>Selling the job</th><td>Before you quote electric tankless or a heat pump heater, check the panel has room and the service can carry it. See <b>Jobsite → Electrical → Electrical for plumbers</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="power" data-kw="temporary power temp power pole construction power gfci jobsite outlet plug in where to plug rocky mountain power meter cordless battery tools pigtail portable gfci assured grounding">
+    <div class="sec-head"><h2>Get power on site</h2><small>Best to worst</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Battery</th><td>Press tools, cordless band saws, drills and lights: no cord, no shock path, nothing to trip over. First choice on wet jobs.</td></tr>
+        <tr><th>The building's outlets</th><td>Ask the GC or owner which ones you can use. On a construction site, temporary 120 V, 15 and 20 A outlets need <b>GFCI</b> protection (or the employer's assured grounding program), and so does a permanent outlet you're using for temp power (OSHA 1926.404(b)(1)). No GFCI there? Plug in through a portable GFCI cord or pigtail.</td></tr>
+        <tr><th>Temp power pole</th><td>New construction. The electrician builds it, the city inspects it, then Rocky Mountain Power sets the meter and connects it. Not your install, and not yours to move. Ask the GC whose account it's on.</td></tr>
+        <tr><th>Generator</th><td>When there's nothing else. Rules are in <b>Jobsite → Electrical → Generators</b>.</td></tr>
+        <tr><th>Every time</th><td>Push the GFCI's test button before you plug in: it should click off. Reset it. If it won't trip, don't use it.</td></tr>
+        <tr><th>Never</th><td>Cut off or bend back a ground pin. Use a two-prong cheater adapter on a tool. Open a panel to "borrow" power.</td></tr>
+      </tbody></table></div>
+    <p class="note">Rocky Mountain Power: <span class="pn">1-888-221-7070</span>. Call <b>811</b> before anyone trenches for temp power.</p>
+  </section>
+  <section data-sec="power" data-kw="extension cord gauge awg size length amps drop cord 12 gauge 10 gauge 14 gauge 16 gauge voltage drop cord reel splice damaged cord sjtw sjoow outdoor hard usage">
+    <div class="sec-head"><h2>Extension cords</h2><small>Gauge by amps and length</small></div>
+    <div class="x"><table class="t">
+      <thead><tr><th>Tool amps</th><th>25 ft</th><th>50 ft</th><th>100 ft</th></tr></thead>
+      <tbody>
+        <tr><th>Up to 10 A<div class="sub">drill, small recip saw</div></th><td>16</td><td>16</td><td>14</td></tr>
+        <tr><th>10–13 A<div class="sub">rotary hammer, big recip</div></th><td>16</td><td>14</td><td>12</td></tr>
+        <tr><th>13–15 A<div class="sub">core drill, threader, big vac</div></th><td>14</td><td>12</td><td>10</td></tr>
+      </tbody></table></div>
+    <p class="note">AWG: the smaller the number, the fatter the wire. A 12 AWG cord covers most plumbing tools out to 50 ft. Conservative, from voltage-drop charts; the tool's manual wins.</p>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Right cord</th><td>Three-prong, rated for hard or extra-hard use (the jacket says SJTW, SJOOW or similar), and marked <b>W</b> for outdoor use if it's outside (OSHA 1926.405).</td></tr>
+        <tr><th>Check it</th><td>Before each use: cuts, crushed spots, missing ground pin, taped repairs. Damaged cord = out of service. One piece only: no splices.</td></tr>
+        <tr><th>Run it</th><td>Uncoil it all the way under a big load (a coiled cord heats up). Keep plug-ins up off wet ground. Don't pinch it in doors or windows or run it where trucks drive. Don't plug cords into cords into power strips.</td></tr>
+        <tr><th>Trips a lot?</th><td>A long, thin cord drops voltage and makes the tool pull more amps. Go to a thicker or shorter cord, not a bigger breaker.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="power" data-kw="generator genny portable generator carbon monoxide co poisoning 20 feet backfeed suicide cord transfer switch interlock running watts starting watts surge size generator refuel">
+    <div class="sec-head"><h2>Generators</h2><small>CO and backfeed kill people</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Outside only</th><td>Never in a house, garage, basement or crawlspace, even with doors open. At least <b>20 ft</b> from doors, windows and vents, exhaust pointed away (CPSC). CO has no smell. Headache, dizzy or sick to your stomach: get to fresh air and call 911.</td></tr>
+        <tr><th>Never backfeed</th><td>A cord with plugs on both ends into a dryer or wall outlet (a "suicide cord") pushes power back out onto the street lines and can kill a lineworker. The only safe way to power a panel is a transfer switch or interlock an electrician installs.</td></tr>
+        <tr><th>Size it</th><td>Add the running watts of everything that runs at once, then add the biggest motor's starting surge (often 2–3× its running watts). Label amps × 120 = watts.</td></tr>
+        <tr><th>Plug in</th><td>Use the generator's GFCI outlets or a portable GFCI, and heavy cords from the chart above. Ground it the way its manual says.</td></tr>
+        <tr><th>Refuel</th><td>Shut it off and let it cool first. Gas on a hot muffler starts fires.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="power" data-kw="test before you touch live dead live non contact voltage tester ncv pen meter multimeter lockout tagout lock out tag out breaker lock mislabeled panel tripped breaker gfci won't reset dead outlet">
+    <div class="sec-head"><h2>Test before you touch</h2><small>Live · dead · live</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>1 · Shut it off</th><td>Find the breaker and turn it off. Panels are mislabeled more often than not, so this step proves nothing yet.</td></tr>
+        <tr><th>2 · Lock or tag it</th><td>A breaker lock, or tape and a note at the panel: "Plumber working. Do not turn on." plus your name. OSHA wants shut-off circuits made inoperative and tagged (1926.417).</td></tr>
+        <tr><th>3 · Live-dead-live</th><td>Check your tester on something you know is live. Test the thing you'll touch. Check the tester on the live one again. A dead tester battery reads "dead" too.</td></tr>
+        <tr><th>240 V</th><td>Test each hot to ground <b>and</b> hot to hot. One dead leg isn't a dead circuit.</td></tr>
+        <tr><th>Pen testers</th><td>A non-contact pen is a first check, not proof. It can miss a live wire and beep at nothing. Confirm with a meter or plug-in tester before your hands go in.</td></tr>
+      </tbody></table></div>
+    <p class="card-h">On a service call</p>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Breaker trips again</th><td>Don't keep resetting it. Tripping right away means a fault: find it (element, pump, cord) or call an electrician.</td></tr>
+        <tr><th>Dead outlet</th><td>Often fed through a GFCI somewhere else: garage, bath, outside, basement. Find the tripped one and reset it.</td></tr>
+        <tr><th>GFCI won't reset</th><td>Either it has no power, or something downstream is leaking current. Unplug everything on it and try again.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="power" data-kw="wet work flooded basement standing water shock tingle faucet tub shower current on pipe bad neutral bonding sump water heater flooded electricity and water">
+    <div class="sec-head"><h2>Water and power</h2><small>Floods, wet work, tingling pipes</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Flooded room</th><td>Don't step in if anything plugged in or wired could be under the water. Kill the main from a dry spot. If you'd have to stand in water to reach the panel, call Rocky Mountain Power to cut it at the meter.</td></tr>
+        <tr><th>Wet work</th><td>Battery tools, GFCI on every cord, plug-ins off the floor. Don't run a corded tool while standing in water.</td></tr>
+        <tr><th>Tingle at a faucet</th><td>Stop. Current is on the piping: a bad neutral, missing bonding, or a fault. Don't work on it. Tell the owner to get an electrician now; if the whole house is affected, call the power company.</td></tr>
+        <tr><th>Cutting metal pipe</th><td>Clamp a jumper across the cut first. Details in <b>Jobsite → Electrical → Electrical for plumbers</b>.</td></tr>
+        <tr><th>Flooded appliances</th><td>A heater, pump or furnace that sat in water stays off until it's checked or replaced. Controls and wiring that got wet can fail later.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="power" data-kw="power lines overhead lines 10 feet clearance ladder aluminum fiberglass service drop roof vent underground lines blue stakes 811 dig private lines">
+    <div class="sec-head"><h2>Power lines</h2><small>Overhead and underground</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>10 ft rule</th><td>Keep yourself, ladders, pipe and equipment at least <b>10 ft</b> from overhead lines up to 50,000 volts, farther for bigger lines (OSHA 1926.1408, .416). Treat every line as live and bare.</td></tr>
+        <tr><th>Long pipe</th><td>A 20 ft stick swung up on a roof near the service drop reaches the line faster than you think. Carry it low.</td></tr>
+        <tr><th>Ladders</th><td>Fiberglass near anything electrical. Aluminum conducts.</td></tr>
+        <tr><th>Digging</th><td>Call <b>811</b> (Blue Stakes) before you dig. It doesn't mark private lines (to a shop, hot tub, well pump or yard lights): ask the owner, and dig by hand near them.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="power" data-kw="shocked electrocuted electric shock first aid victim cpr aed 911 burn report">
+    <div class="sec-head"><h2>If someone gets shocked</h2><small>Don't become the second victim</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>1 · Don't touch</th><td>If they're still touching the source, you'll get it too.</td></tr>
+        <tr><th>2 · Kill it</th><td>Breaker off, or unplug. Can't? Push them free with something dry that doesn't conduct: a wood handle, a fiberglass ladder.</td></tr>
+        <tr><th>3 · Call 911</th><td>Check breathing. CPR and an AED if you're trained.</td></tr>
+        <tr><th>4 · Get checked</th><td>Even if they say they're fine. Burns inside the body and heart-rhythm problems can show up hours later.</td></tr>
+        <tr><th>5 · Report it</th><td>Tell your boss. A hospital admission goes to UOSH within 8 hours.</td></tr>
+      </tbody></table></div>
+    <p class="note">Sources for this tab: OSHA 1926 Subpart K (.404, .405, .416, .417), OSHA 1926.1408, CPSC generator safety, UL 943, Utah Code 58-55-305. Cord chart: conservative voltage-drop charts from cord makers.</p>
+  </section>
+  <section data-sec="power" data-kw="appliance circuits electrical electric electrician breaker wire size gauge awg amps amperage volts watts kw 240 208 120 romex nm thhn circuit continuous load 125 percent disconnect gfci bonding grounding ground jumper electrode disposer dishwasher tankless electric heat pump whirlpool hydromassage sump csst bond shock dry fire element">
+    <div class="sec-head"><h2>Electrical for plumbers</h2><small>Appliance circuits · wire · bonding</small></div>
+    <div class="calc">
+      <label for="el-w">Watts <i>(from the label)</i><input id="el-w" type="number" inputmode="decimal" min="0" step="any" value="4500"></label>
+      <label for="el-v">Volts<select id="el-v"><option value="240" selected>240 V</option><option value="208">208 V</option><option value="120">120 V</option></select></label>
+      <label for="el-load" class="wide">Load<select id="el-load"><option value="tank" selected>Tank water heater ×125%</option><option value="cont">Runs 3 h+ ×125%</option><option value="other">Short runs (disposer)</option></select></label>
+      <div class="ans" id="el-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <details class="math"><summary>Show the math</summary><ol id="el-math"></ol></details>
+    <p class="note">For talking it over with the electrician, not for pulling wire. The label, the maker's manual and the NEC as Utah adopts it have the final word. Electric <b>tankless</b>: use the maker's breaker and wire chart (they often split into 2–4 circuits).</p>
+    <p class="card-h">Typical circuits</p>
+    <div class="x"><table class="t cards wrap">
+      <thead><tr><th>Equipment</th><th>Typical circuit</th><th>Watch for</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Equipment"><b>Electric tank</b><br><span class="sub">4500 or 5500 W, 240 V</span></td><td data-label="Typical circuit" class="n">30 A 2-pole · 10 AWG Cu</td><td data-label="Watch for">Elements usually take turns, so size on the bigger one. If the label says <b>simultaneous</b>, add them. Needs a disconnect in sight or a lockable breaker (NEC 422.31).</td></tr>
+        <tr><td data-label="Equipment"><b>Heat pump water heater</b></td><td data-label="Typical circuit" class="n">240 V: 30 A · 10 AWG<br>120 V: per label</td><td data-label="Watch for">240 V models keep a 4500 W backup element. New 120 V plug-in models want their own circuit: read the label before you plug into what's there.</td></tr>
+        <tr><td data-label="Equipment"><b>Electric tankless</b><br><span class="sub">whole house, 18–36 kW</span></td><td data-label="Typical circuit" class="n">2–4 × 40–60 A 2-pole</td><td data-label="Watch for">27 kW pulls 112 A at 240 V. Often needs a 200 A service with room left. Check before you sell it.</td></tr>
+        <tr><td data-label="Equipment"><b>Gas tankless · power vent</b></td><td data-label="Typical circuit" class="n">120 V · 15 A</td><td data-label="Watch for">Receptacle within cord reach. Outdoor units: GFCI, weatherproof cover.</td></tr>
+        <tr><td data-label="Equipment"><b>Disposer</b></td><td data-label="Typical circuit" class="n">120 V · 15–20 A</td><td data-label="Watch for">Cord 18"–36" long (NEC 422.16(B)(1)). Switch-controlled receptacle under the sink.</td></tr>
+        <tr><td data-label="Equipment"><b>Dishwasher</b></td><td data-label="Typical circuit" class="n">120 V · 15–20 A</td><td data-label="Watch for">Cord 3'–6½' (NEC 422.16(B)(2)), receptacle in the cabinet next to it, GFCI protected (NEC 210.8(D)).</td></tr>
+        <tr><td data-label="Equipment"><b>Whirlpool tub</b></td><td data-label="Typical circuit" class="n">Own circuit · GFCI</td><td data-label="Watch for">Pump reachable through an access panel. Bond the pump motor and metal pipe with 8 AWG solid copper (NEC 680.71, 680.74).</td></tr>
+        <tr><td data-label="Equipment"><b>Sump · ejector</b></td><td data-label="Typical circuit" class="n">120 V · own circuit is smart</td><td data-label="Watch for">Basement receptacles are GFCI (NEC 210.8(A)), so a trip can kill the pump: add a battery high-water alarm.</td></tr>
+        <tr><td data-label="Equipment"><b>Recirc pump · hot tap</b></td><td data-label="Typical circuit" class="n">120 V plug</td><td data-label="Watch for">Under-sink receptacles near water: GFCI. Recirc on a timer or aquastat.</td></tr>
+      </tbody></table></div>
+    <p class="card-h">Wire vs. breaker (copper)</p>
+    <div class="x"><table class="t num">
+      <thead><tr><th>Wire</th><th>NM cable (Romex)</th><th>THHN in conduit, 75°C ends</th></tr></thead>
+      <tbody>
+        <tr><td>14 AWG</td><td>15 A</td><td>15 A</td></tr>
+        <tr><td>12 AWG</td><td>20 A</td><td>20 A</td></tr>
+        <tr><td>10 AWG</td><td>30 A</td><td>30 A</td></tr>
+        <tr><td>8 AWG</td><td>40 A</td><td>50 A</td></tr>
+        <tr><td>6 AWG</td><td>55 A</td><td>65 A</td></tr>
+        <tr><td>4 AWG</td><td>70 A</td><td>85 A</td></tr>
+      </tbody></table></div>
+    <p class="note">NEC 310.16 and 240.4(D). NM cable is held to the 60°C column (NEC 334.80). Aluminum is bigger for the same amps.</p>
+    <p class="card-h">Bonding, grounding &amp; safety</p>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Before you cut metal pipe</th><td>Clamp a jumper across where you'll cut, <b>first</b>. Metal water pipe can carry current from a bad neutral or a fault somewhere else, and it bites when the pipe parts.</td></tr>
+        <tr><th>Repipe or plastic service</th><td>10 ft or more of metal water pipe in the ground is a grounding electrode (NEC 250.52(A)(1)). Swap it for PEX or PVC and that ground is gone: tell the owner it needs an electrician to check the grounding.</td></tr>
+        <tr><th>Meter, softener, filter</th><td>The ground path can't depend on them (NEC 250.53(D)(1)). Leave the jumper, or add one around them with clamps and bare copper.</td></tr>
+        <tr><th>Water heater jumper</th><td>Dielectric unions break the pipe's bond. Many inspectors want a hot-to-cold jumper at the heater so the metal piping stays bonded (NEC 250.104(A)). Ask yours.</td></tr>
+        <tr><th>CSST gas</th><td>Bond it: 6 AWG copper or bigger, 75 ft or shorter, to the electrical service grounding (IFGC 310.1.1), plus anything the maker adds. Black arc-resistant CSST: maker's instructions rule.</td></tr>
+        <tr><th>Lock it out</th><td>Kill the breaker, then test dead <b>at the heater</b>: each leg to ground and leg to leg. Panels are mislabeled more often than not.</td></tr>
+        <tr><th>Dry fire</th><td>Never turn on an electric heater until the tank is full and air is out of a hot faucet. An element in air burns out in seconds.</td></tr>
+        <tr><th>208 V buildings</th><td>A 240 V element on 208 V makes 75% of its watts: 4500 W → 3,380 W. Slower recovery, not a bad element.</td></tr>
+        <tr><th>Who does what</th><td>New circuits, panel work and service upgrades are an electrician's job and permit.</td></tr>
+      </tbody></table></div>
+  </section>
+
   <!-- ================= LEARN ================= -->
   <section data-sec="start" data-kw="learning path study plan where to start order apprentice first year what to learn next back on track">
     <div class="sec-head"><h2>Learning path</h2><small>Start here · one step at a time</small></div>
@@ -3747,7 +3877,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Nov 8, 2026 · Utah</th><td><b>Updated:</b> Home shows a countdown to the Nov 30 license renewal · License: renewal fee, late fee and where to renew · Rebates: the toilet rebate closed Nov 1; added Enbridge boiler and combi rebates. Checked: Utah's code law changes again Jan 1, 2027, but only the wildfire code; houses stay on the 2021 IRC and everything else on the 2024 codes.</td></tr>
-        <tr><th>Nov 1, 2026 · new</th><td><b>New:</b> Typical fitting take-offs, ABS and PVC (Calc → Units) · Standards decoder for the numbers printed on parts (Trim → ID a part) · Electrical for plumbers with a breaker and wire calculator (Service → Water heaters) · Hydronic flow calculator, How hydronic heat works, and a Hydronics flashcard deck · Settings: Tabs, Gloves on, Round answers to, My drain pipe, Remember my searches, and Share the book (QR code, also under More) · Search fixes typos, skips filler words and finds Navien codes by number.</td></tr>
+        <tr><th>Nov 1, 2026 · new</th><td><b>New:</b> Typical fitting take-offs, ABS and PVC (Calc → Units) · Standards decoder for the numbers printed on parts (Trim → ID a part) · Electrical for plumbers with a breaker and wire calculator (now Jobsite → Electrical) · Hydronic flow calculator, How hydronic heat works, and a Hydronics flashcard deck · Settings: Tabs, Gloves on, Round answers to, My drain pipe, Remember my searches, and Share the book (QR code, also under More) · Search fixes typos, skips filler words and finds Navien codes by number.</td></tr>
         <tr><th>Nov 1, 2026 · fixed</th><td><b>Fixed:</b> home-screen iPhone app: the bottom bar could float up off the edge (status bar is see-through again; if it still happens, Settings → Backup &amp; reset → Screen check and screenshot the numbers) · Weather: air quality shows how old its reading is, and never a "-Infinity" peak · dead links updated (LP I-joists → Pacific Woodtech, InSinkErator, OSHA) · a texted link now shows the book's name and icon.</td></tr>
         <tr><th>Oct 31, 2026 · night</th><td><b>Fixed:</b> on iPhone the bottom bar could get stuck partway up the screen after the keyboard closed; it now stays on the bottom edge (it still follows you when you pinch-zoom) · a card link opened inside the book now goes to that card.</td></tr>
         <tr><th>Oct 31, 2026 · new content</th><td><b>New:</b> Service calls: first checks (running toilet, clogs, no hot water, low pressure, sewer smell, noisy pipes) · Error codes for Navien and Rinnai tankless and the Bradford White status light · Heat, asbestos, CO and temp-power safety card · Vent size, Water heater size and Expansion tank size calculators · a CSST warning on the gas sizer · a fittings pick list in Plan take-off that you can text to the supply house · a timed Practice test from the flashcards · 8 cutaway drawings (trap seal, vent, PRV, T&amp;P, frost-free bibb, toilet, tankless, expansion tank) · Español on the Emergency and safety cards (a draft: needs a fluent check).</td></tr>
@@ -4309,7 +4439,7 @@ const linkRow = ([doc,t,n,u]) => `<tr data-search="${esc((doc+" "+t+" "+n).toLow
 for (const k of Object.keys(LIB)){ const el = $("list-"+k); if (el) el.innerHTML = LIB[k].map(linkRow).join(""); }
 
 /* glossary: [term, topic, definition]. Topics: dwv, supply, gas, fit (pipe & fittings), fix (fixtures & trim), heat (water heaters), frame (framing & site), tools (tools & methods), code (code & paperwork) */
-const GLOSS_CATS = [["all","All"],["dwv","DWV"],["supply","Water"],["gas","Gas"],["fit","Pipe & fittings"],["fix","Fixtures & trim"],["heat","Heaters"],["frame","Framing & site"],["tools","Tools & methods"],["code","Code & paperwork"]];
+const GLOSS_CATS = [["all","All"],["dwv","DWV"],["supply","Water"],["gas","Gas"],["fit","Pipe & fittings"],["fix","Fixtures & trim"],["heat","Heaters"],["elec","Electrical"],["frame","Framing & site"],["tools","Tools & methods"],["code","Code & paperwork"]];
 const GLOSS = [
   ["Softener loop","supply","Main water line routed out and back in the mech room so a softener can be added later. Capped or bypassed until then."],
   ["Bypass valve","supply","Valve (or 3-valve set) that sends water around a softener or filter so the house keeps water during service."],
@@ -4659,7 +4789,25 @@ const GLOSS = [
   /* units & misc */
   ["gpm · gph · gpf","supply","Gallons per minute · per hour · per flush."],
   ["Upstream / downstream","supply","Toward the water or gas source / toward the fixture or appliance."],
-  ["Blue Stakes","code","Utah's 811 call-before-you-dig service. Marks utility lines before excavation."]
+  ["Blue Stakes","code","Utah's 811 call-before-you-dig service. Marks utility lines before excavation."],
+  ["Volt (V)","elec","Electrical pressure. Houses run 120 V and 240 V."],
+  ["Amp (A)","elec","Electrical flow. Wire, breakers and cords are sized by amps."],
+  ["Watt (W)","elec","Work done: volts × amps. 4,500 W at 240 V = 18.75 A."],
+  ["Milliamp (mA)","elec","One thousandth of an amp. About 10–20 mA through the hand and you can't let go."],
+  ["Hot","elec","The wire that carries power out from the breaker. Usually black or red."],
+  ["Neutral","elec","The wire current returns on. Usually white. A bad neutral can put current on metal piping."],
+  ["Ground (equipment ground)","elec","Green or bare wire that gives a fault a path back so the breaker trips. Carries nothing in normal use."],
+  ["Ground fault","elec","Current leaking out of the circuit some other way, like through metal pipe or a person."],
+  ["GFCI","elec","Ground-fault circuit interrupter. Trips at 4–6 mA to protect people. Required on construction-site temporary outlets."],
+  ["AFCI","elec","Arc-fault circuit interrupter. A breaker that trips on sparking wiring to prevent fires. Protects the house, not people from shock."],
+  ["Bonding","elec","Tying metal parts (water pipe, gas pipe, CSST) together and to the electrical ground so they can't sit at different voltages."],
+  ["Single-pole / double-pole breaker","elec","One handle = 120 V circuit. Two handles tied together = 240 V circuit."],
+  ["AWG","elec","American Wire Gauge. Smaller number, thicker wire: 10 AWG carries more than 14 AWG."],
+  ["Voltage drop","elec","Voltage lost along a long or thin wire. The tool at the end gets less, runs hot and pulls more amps."],
+  ["Live-dead-live","elec","Test your tester on a live source, test the circuit, then test the tester again. Proves dead really means dead."],
+  ["Lockout / tagout","elec","Locking or tagging a shut-off breaker so nobody turns it back on while you work."],
+  ["Backfeed","elec","Power pushed from a generator back into a panel and out onto the utility lines. Kills lineworkers. Use a transfer switch."],
+  ["Transfer switch","elec","Switch an electrician installs so a generator can power a panel without connecting to the utility at the same time."]
 ];
 GLOSS.sort((a,b) => a[0].localeCompare(b[0], undefined, {sensitivity:"base", numeric:true}));
 const GCAT = Object.fromEntries(GLOSS_CATS);
@@ -4884,7 +5032,7 @@ const GROUPS = {
   trim:    [["trim","Valves & trim"],["idhow","ID a part"],["threads","Threads & sizes"],["finders","Finders"]],
   inspect: [["phases","Tests"],["code","Which code"],["utah","Cities"]],
   contacts:[["emergency","Call"],["techlines","Tech lines"],["houses","Supply houses"]],
-  site:    [["wxnow","Weather"],["safety","Safety"]],
+  site:    [["wxnow","Weather"],["safety","Safety"],["power","Electrical"]],
   learn:   [["start","Start here"],["how","How it works"],["facts","Fact file"],["study","Flashcards"],["exam","Practice test"],["words","Glossary"],["tools","Tools"],["career","License"]],
   mine:    [["pins","Pinned"],["notes","Notes"],["tape","Tape"],["shop","My shop"],["mine","My files"]]
 };
@@ -5049,7 +5197,7 @@ function fuzzyFix(t){
 }
 const SYN = [["prv","pressure reducing","reducing valve"],["t&p","tp","relief valve","temperature and pressure"],["wh","water heater"],["dfu","drainage fixture unit"],["wsfu","water supply fixture unit","supply demand"],
   ["aav","air admittance"],["csst","corrugated stainless"],["sillcock","hose bibb","hose bib","spigot"],["wc","water closet","toilet"],["lav","lavatory"],["co","cleanout"],["rpz","reduced pressure"],["dcva","double check"],
-  ["pvb","pressure vacuum breaker"],["fip","female"],["mip","male"],["npt","pipe thread"],["tankless","on demand","on-demand"],["ejector","sewage pump"],["san tee","sanitary tee"],["hammer","arrester","arrestor"],["recirc","recirculation"],["dw","dishwasher"],["flue","vent","exhaust"],["galv","galvanized"],["light","pilot","ignite","ignition"]];
+  ["pvb","pressure vacuum breaker"],["fip","female"],["mip","male"],["npt","pipe thread"],["tankless","on demand","on-demand"],["ejector","sewage pump"],["san tee","sanitary tee"],["hammer","arrester","arrestor"],["recirc","recirculation"],["dw","dishwasher"],["gfci","gfi","ground fault"],["generator","genny"],["extension cord","drop cord","cord"],["breaker","circuit breaker"],["flue","vent","exhaust"],["galv","galvanized"],["light","pilot","ignite","ignition"]];
 function alts(t){
   const out = [t];
   if (/^\d{2,3}$/.test(t)){ out.push("e" + t); if (/^0/.test(t)) out.push("e" + t.replace(/^0+/, "")); }
@@ -5246,7 +5394,7 @@ function printCard(sec){
   addEventListener("afterprint", done); setTimeout(() => print(), 50);
 }
 /* See also: each explainer and fact sheet points at the field card it explains, and back */
-const SEE = [["Vent size","Venting rules"],["Why an expansion tank","Expansion tank size"],["Water heater size","Water heater output"],["How tankless works","Navien tankless codes"],["Service calls: first checks","Mech room trouble"],["Why traps need vents","Venting rules"],["Six ways a trap loses its seal","Drains, traps & trap arms"],["Why gas pressure is so small","Gas piping"],["Why gas pressure is so small","Gas line sizer"],
+const SEE = [["Water heater install","Electrical for plumbers"],["Electricity in plain words","Test before you touch"],["Get power on site","Extension cords"],["Get power on site","Heat, asbestos, spillage, power"],["Water and power","Electrical for plumbers"],["If someone gets shocked","Emergency"],["Vent size","Venting rules"],["Why an expansion tank","Expansion tank size"],["Water heater size","Water heater output"],["How tankless works","Navien tankless codes"],["Service calls: first checks","Mech room trouble"],["Why traps need vents","Venting rules"],["Six ways a trap loses its seal","Drains, traps & trap arms"],["Why gas pressure is so small","Gas piping"],["Why gas pressure is so small","Gas line sizer"],
   ["How a toilet flushes","Trim-out (finish): rest of the house"],["How a PRV works","Water supply"],["Why metals eat each other","Copper & solder"],["Why bigger drains get less slope","Slope & fall"],
   ["Why the pipe math works","Offset calculator"],["Why fittings face one way","Drains, traps & trap arms"],["Backflow devices","Backflow & cross-connection"],["Inside a tank water heater","Water heater install"],
   ["Why an expansion tank","Expansion tank"],["How a softener works","Softener install"],["How tankless works","Tankless setup"],["Static vs. flowing pressure","Pressure at the fixture"],
@@ -7084,6 +7232,16 @@ $("mn-rows").addEventListener("click", e => {
 drawNums();
 
 const CARDS = [
+  ["Electrical","Volts, amps, watts: which is pressure, which is flow?","Volts = pressure, amps = flow, watts = volts × amps","Same idea as psi and gpm. Wire and breakers are sized by amps, like pipe by gpm."],
+  ["Electrical","Does a 15 A breaker protect you from shock?","No. It protects the wire. A GFCI protects people (trips at 4–6 mA)","About 100 mA across the chest can kill. A 15 A breaker trips at 15,000 mA."],
+  ["Electrical","About how much current makes your hand lock on?","10–20 mA","The muscles clamp and you can't let go, so the shock keeps going. That's why GFCIs trip at 4–6 mA."],
+  ["Electrical","Temporary 120 V 15/20 A outlets on a jobsite need what?","GFCI protection (or an assured grounding program)","OSHA 1926.404(b)(1). Wet crawlspaces and metal pipe make ground faults common on plumbing jobs."],
+  ["Electrical","Live-dead-live means what?","Test the tester on a live source, test the circuit, test the tester again","A dead tester battery reads \"dead\" too. Panels are often mislabeled."],
+  ["Electrical","Testing a 240 V circuit dead: which readings?","Each hot to ground and hot to hot","One leg can be dead while the other is still live."],
+  ["Electrical","How far should a generator be from doors and windows?","At least 20 ft, outside only, exhaust pointed away","CPSC. CO has no smell, and open doors don't clear it."],
+  ["Electrical","Why is backfeeding a panel with a generator deadly?","It sends power out onto the utility lines","Lineworkers think the line is dead. Only a transfer switch or interlock is safe."],
+  ["Electrical","Overhead power lines up to 50 kV: minimum clearance?","10 ft for you, ladders, pipe and equipment","OSHA 1926.1408. Treat every overhead line as live and bare."],
+  ["Electrical","12 AWG vs 16 AWG cord: which carries more?","12 AWG. Smaller number, thicker wire","Use 12 AWG for most plumbing tools out to 50 ft. Long thin cords drop voltage and overheat tools."],
   ["Tricks","Sweating copper: where does the flame go?","On the base of the fitting cup, after warming the tube all around","Solder flows toward the heat. Heat the solder instead and it balls up on a cold joint."],
   ["Tricks","How do you know a sweat joint is full?","A bead shows up behind where you're feeding the solder","Start just off the bottom, up one side, back down and up the other (Copper Development Assn.)."],
   ["Tricks","Should you cool a fresh sweat joint with water?","No. Wipe the flux while it's warm and let it cool on its own","Quenching stresses the joint (Copper Development Assn.)."],
