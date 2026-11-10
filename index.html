@@ -4162,7 +4162,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tbody>
         <tr><th>Cause</th><td>A fast-closing valve stops moving water instantly. Its momentum turns into a pressure spike that slams through the pipe.</td></tr>
         <tr><th>Usual suspects</th><td>Washer and dishwasher solenoids, quick faucets, high pressure, loose pipe.</td></tr>
-        <tr><th>Fix</th><td>Arrestors (ASSE 1010) at the quick-closing valves, solid pipe support, pressure under 80 psi.</td></tr>
+        <tr><th>Fix</th><td>Arresters (ASSE 1010) at the quick-closing valves, solid pipe support, pressure under 80 psi.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="how" data-kw="backflow test testable tested rpz double check dual check air gap avb pvb vacuum breaker how works">
@@ -7515,7 +7515,7 @@ function elevFromCity(){ const c = cityById(myCity), e = c && ELEV.find(([n]) =>
 const TL_SPEC = {"DWV water test": ["10 ft of head (≈4.3 psi at the bottom), hold 15 min.", null],
   "DWV air test": ["5 psi, hold 15 min. UT plastic: only if water can't be used or would freeze, ≤6 psi, ≤15 min.", 5],
   "DWV vacuum test": ["−5 psi (−10\" Hg), hold 15 min. In the 2021 IRC (houses) and 2024 IPC.", null],
-  "Water supply test": ["Water at working pressure or more, until inspected. UT air on plastic: 50–80 psi, ≤15 min, inspector's OK first on a house.", null],
+  "Water supply test": ["Water at working pressure or more, until inspected. UT air on plastic: 50–80 psi, ≤15 min, inspector's OK first on a house.", 80],
   "Gas test": ["1.5× working pressure and at least 3 psi, 10 min. Many Utah cities want 5 psi for 15 min.", 5],
   "Shower pan flood test": ["2\" of water at the threshold, hold 15 min.", null]};
 function tlSpec(fill){ const x = TL_SPEC[$("tl-type").value]; if (!x) return; $("tl-spec").innerHTML = `<b>Must hold:</b> ${esc(x[0])}`;
@@ -8383,6 +8383,11 @@ $("setup-skip").addEventListener("click", () => { store.set("jpb-setup", 1); she
 $("setup-open").addEventListener("click", () => sheet("setup", true));
 
 /* ---------- open at a card link (#tab/page/card), set the first history step, Back from there ---------- */
+/* reopening the book lands where you were on the page, not at its top (an iPhone unloads a home-screen app in the background).
+   The spot is saved whenever the book is hidden, and used once at startup if it's the same page and less than 30 minutes old. */
+const posSave = () => { if (!$("q").value.trim()) store.set("jpb-pos", {k: nav.group + "/" + nav.sub, y: Math.round(scrollY), t: Date.now()}); };
+addEventListener("pagehide", posSave);
+document.addEventListener("visibilitychange", () => { if (document.hidden) posSave(); });
 /* a #tab/page/card address → where it points now. A card that moved resolves to its new page, even if its old page is gone. */
 function hashTarget(){
   const m = location.hash.match(/^#([a-z]+)\/([a-z0-9]+)(?:\/([a-z0-9-]+))?$/); if (!m) return null;
@@ -8393,6 +8398,8 @@ function hashTarget(){
 { const t0 = hashTarget(), card0 = t0 && t0.sec;
   if (t0){ nav = {group: t0.g, sub: t0.s}; drawSubs(); apply(); if (card0) jumpToSec(card0, null, true); }
   try { history.replaceState(Object.assign({g: nav.group, s: nav.sub, q: ""}, card0 ? {card: card0.dataset.pid} : {}), "", location.pathname + location.search + navHash(card0 ? card0.dataset.pid.split(":")[1] : "")); } catch(e){ histOk = false; }
+  { const pz = store.get("jpb-pos", null);
+    if (!card0 && pz && pz.k === nav.group + "/" + nav.sub && pz.y > 0 && Date.now() - pz.t < 18e5) setTimeout(() => scrollTo(0, pz.y), 60); }
   addEventListener("popstate", e => {
     let st = e.state || {}; restoring = true;
     if (!e.state){   /* a card link pasted or tapped in the same tab: no saved step, so read the address */
