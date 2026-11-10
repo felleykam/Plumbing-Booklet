@@ -237,7 +237,7 @@ input,select{font:inherit}
 
 /* answer tables (offset, DFU, gas…) */
 .out td.big{font-family:var(--mono);font-weight:700;font-size:20px;line-height:1.2;white-space:nowrap;font-variant-numeric:tabular-nums}
-.out td.big small{display:block;font-family:var(--mono);font-weight:600;font-size:14px;color:var(--muted)}
+.out td.big small{display:block;font-family:var(--mono);font-weight:600;font-size:14px;color:var(--muted);white-space:normal}
 .out tr.hit{background:var(--hi);color:var(--hi-ink)}
 .out tr.hit small,.out tr.hit .sub{color:var(--hi-ink)}
 .out tr.hit td.big{font-size:30px}
@@ -248,6 +248,9 @@ input,select{font:inherit}
   .out tr{display:grid;grid-template-columns:minmax(6.5rem,40%) 1fr;align-items:baseline}
   .out tr[hidden]{display:none}
   .out td.sub{grid-column:1 / -1;padding-top:0}
+  .out td{min-width:0}
+  .out td.big{white-space:normal}
+  .t .n,.t.num td:not(:first-child){white-space:normal}
 }
 .sw{display:inline-block;width:14px;height:14px;border-radius:2px;margin-right:6px;vertical-align:-1px;border:1px solid var(--edge)}
 .sw.rise{background:var(--d-rise)}.sw.roll{background:var(--d-roll)}.sw.fit{background:var(--d-fit)}.sw.cut{background:var(--d-cut)}.sw.tru{background:var(--d-tru)}.sw.run{background:repeating-linear-gradient(90deg,var(--d-run) 0 3px,transparent 3px 6px)}.sw.ctr{background:var(--d-bg);border:3px solid var(--d-fit);border-radius:50%}
@@ -313,6 +316,16 @@ details.math li::marker{font-weight:700;color:var(--muted)}
 .t.pf input{min-width:3.1rem;padding:6px 5px}
 .t select{font-family:var(--mono);font-weight:600;font-size:17px;padding:6px 6px;min-height:52px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%;min-width:0}
 .t.pf th i{font-style:normal;text-transform:none;letter-spacing:0}
+@media (max-width:480px){
+  /* Pressure at the fixture: all six columns of a section row fit a phone, remove button included */
+  .t.pf td,.t.pf th{padding-left:3px;padding-right:3px}
+  .t.pf td:first-child,.t.pf th:first-child{padding-left:8px;min-width:6.2rem}
+  .t.pf input{min-width:3rem;width:3rem;font-size:16px;padding:6px 3px}
+  .t.pf td:nth-child(4) input,.t.pf td:nth-child(5) input{min-width:2.1rem;width:2.1rem}
+  .t.pf .x-del{width:40px}
+  .t.pf th i{display:none}
+  .t.pf select{padding-left:4px;padding-right:0}
+}
 .cut{margin:0;padding:10px 12px;border-top:1px solid var(--rule);background:var(--d-bg)}
 .cut svg{display:block;width:100%;max-width:440px;height:auto;margin:0 auto}
 .cut figcaption{max-width:440px;margin:6px auto 0;font-size:15px;color:var(--d-text)}
@@ -1208,7 +1221,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <label for="ju-h">H: obstacle reaches past the pipe's centerline<input id="ju-h" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="6"></label>
       <label for="ju-w">Obstacle width <i>(along the run)</i><input id="ju-w" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10"></label>
       <label for="ju-c">Clearance <i>(gap you want)</i><input id="ju-c" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="1/2"></label>
-      <label for="ju-od">Pipe or hub OD<select id="ju-od">
+      <label for="ju-od" class="wide">Pipe or hub OD<select id="ju-od">
         <option value="0.625">½" copper / PEX · 0.625"</option><option value="0.875" selected>¾" copper / PEX · 0.875"</option><option value="1.125">1" copper / PEX · 1.125"</option>
         <option value="1.9">1½" DWV pipe · 1.9"</option><option value="2.375">2" DWV pipe · 2.375"</option><option value="3.5">3" DWV pipe · 3.5"</option><option value="2.4">1½" DWV hub · ≈2.4"</option><option value="2.9">2" DWV hub · ≈2.9"</option><option value="4.1">3" DWV hub · ≈4.1"</option></select></label>
       <label for="ju-ang">Fittings<select id="ju-ang"><option value="90">90°</option><option value="60">60°</option><option value="45" selected>45°</option><option value="22.5">22½°</option></select></label>
@@ -1351,8 +1364,8 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>Bore line</h2><small>Where each hole goes so the drain keeps grade</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> a drain runs through a row of studs or joists, and each hole has to sit a little lower than the last one to hold grade.</p><p><b>The idea:</b> the members are a set distance apart, so each hole drops by slope × spacing. You get the height of every hole center, and a warning if the hole is too big for that stud or joist.</p></div></details>
     <div class="calc">
-      <label for="bl-mem">Drilling through<select id="bl-mem"></select></label>
-      <label for="bl-pipe">Pipe<select id="bl-pipe"></select></label>
+      <label for="bl-mem" class="wide">Drilling through<select id="bl-mem"></select></label>
+      <label for="bl-pipe" class="wide">Pipe<select id="bl-pipe"></select></label>
       <label for="bl-slope">Slope<select id="bl-slope"><option value="0.125">⅛" / ft</option><option value="0.25" selected>¼" / ft</option><option value="0.5">½" / ft</option></select></label>
       <label for="bl-oc">Spacing<select id="bl-oc"><option value="12">12" o.c.</option><option value="16" selected>16" o.c.</option><option value="19.2">19.2" o.c.</option><option value="24">24" o.c.</option></select></label>
       <label for="bl-n">How many members<input id="bl-n" type="number" inputmode="numeric" min="2" max="60" step="1" value="8"></label>
@@ -1438,7 +1451,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> an appliance's input or gas sizing needs to account for Utah elevation.</p><p><b>The idea:</b> thin air has less oxygen, so a burner can't use as much gas cleanly. Above 2,000 ft many makers derate about 4% per 1,000 ft. Many newer appliances handle it with a setting instead: check the manual first.</p></div></details>
     <div class="calc">
       <label for="g-btu">Nameplate BTU/h<input id="g-btu" type="number" inputmode="numeric" min="0" step="any" value="40000"></label>
-      <label for="g-elev">Elevation<select id="g-elev"></select></label>
+      <label for="g-elev" class="wide">Elevation<select id="g-elev"></select></label>
       <label for="g-hv">Gas<select id="g-hv"><option value="1000" selected>Natural, 1,000 BTU/ft³</option><option value="2500">Propane, 2,500 BTU/ft³</option></select></label>
     </div>
     <div class="x"><table class="t out">
@@ -1470,7 +1483,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <label for="pf-start">Start pressure (psi) <i>static, after the PRV</i><input id="pf-start" type="number" inputmode="decimal" min="0" step="any" value="60"></label>
       <label for="pf-rise">Fixture is higher by <i>0 if level, minus if lower</i><input id="pf-rise" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10'"></label>
       <label for="pf-other">Other losses (psi) <i>meter, backflow, filter</i><input id="pf-other" type="number" inputmode="decimal" min="0" step="any" value="0"></label>
-      <label for="pf-need">Fixture needs<select id="pf-need"></select></label>
+      <label for="pf-need" class="wide">Fixture needs<select id="pf-need"></select></label>
     </div>
     <div class="x"><table class="t pf">
       <thead><tr><th>Pipe</th><th>Length ft</th><th>Flow gpm</th><th>90s</th><th>Tees <i>(branch)</i></th><th><span class="sr-only">Remove</span></th></tr></thead>
@@ -3093,7 +3106,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="techlines" data-kw="faucet cartridge leak drip valve stem toilet sink shower warranty parts">
     <div class="sec-head"><h2>Faucets &amp; fixtures</h2><small>Hours in Mountain Time</small></div>
-    <div class="x"><table class="t">
+    <div class="x"><table class="t cards">
       <thead><tr><th>Brand</th><th>Phone</th><th>Hours · notes</th></tr></thead>
       <tbody>
         <tr><td><b>Moen</b></td><td><span class="pn">1-800-289-6636</span><div class="sub">Pro: <span class="pn">1-877-663-6776</span></div></td><td class="sub">1-800-BUY-MOEN. M–F 6a–5p</td></tr>
@@ -3111,7 +3124,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="techlines" data-kw="water heater pilot won't light wont light no hot water igniter error code tankless warranty disposer garbage disposal">
     <div class="sec-head"><h2>Water heaters &amp; disposers</h2><small>Hours in Mountain Time</small></div>
-    <div class="x"><table class="t">
+    <div class="x"><table class="t cards">
       <thead><tr><th>Brand</th><th>Phone</th><th>Hours · notes</th></tr></thead>
       <tbody>
         <tr><td><b>Bradford White</b></td><td><span class="pn">1-800-334-3393</span><div class="sub">General: <span class="pn">1-800-523-2931</span></div><div class="sub">Warranty: <span class="pn">1-800-531-2111</span></div></td><td class="sub">Top number is the pro tech line, 24/7.</td></tr>
@@ -3125,7 +3138,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="techlines" data-kw="pex press fitting push fitting backflow prv valve joist framing hole">
     <div class="sec-head"><h2>Pipe, fittings, valves, framing</h2><small>Tech support</small></div>
-    <div class="x"><table class="t">
+    <div class="x"><table class="t cards">
       <thead><tr><th>Company</th><th>Phone</th><th>Notes · hours MT</th></tr></thead>
       <tbody>
         <tr><td><b>Uponor</b> PEX</td><td><span class="pn">1-888-594-7726</span></td><td class="sub">Tech and customer service</td></tr>
@@ -3145,7 +3158,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="techlines" data-kw="sump pump sewage ejector grinder zoeller liberty air admittance valve aav studor flush valve flushometer sloan fill valve fluidmaster csst tracpipe omegaflex yard hydrant frost free hose bibb woodford">
     <div class="sec-head"><h2>Pumps, vents, flush &amp; gas tubing</h2><small>Hours in Mountain Time</small></div>
-    <div class="x"><table class="t">
+    <div class="x"><table class="t cards">
       <thead><tr><th>Company</th><th>Phone</th><th>Notes · hours MT</th></tr></thead>
       <tbody>
         <tr><td><b>Zoeller</b> pumps</td><td><span class="pn">1-800-928-7867</span></td><td class="sub">Sump, sewage, grinder</td></tr>
@@ -4026,7 +4039,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "shower valve height") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Circuits, wire &amp; bonding. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow. <b>Reopening the book</b> lands where you were on the page, not at the top.</td></tr>
+        <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "shower valve height") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Circuits, wire &amp; bonding. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow. <b>Reopening the book</b> lands where you were on the page, not at the top. <b>Fits the phone:</b> calculator answers and the Pressure at the fixture rows no longer run off the right edge, long dropdowns get a full row, and tech line numbers stack instead of scrolling sideways.</td></tr>
         <tr><th>Nov 9, 2026 · organized</th><td><b>Which tool?</b> on Home now lists every calculator, grouped by the job it does · Trim → Finders is folded into <b>ID a part</b> · Water heater age sits beside Reading a rating plate (Service → Water heaters), and the heater calculators run size, output, then how long it lasts · How it works is grouped by system: drains, water, hot water, gas · the calculator on the Electrical page is now called <b>Circuits, wire &amp; bonding</b> · PEX install gained the crimp and expansion joint checks. <b>New card: Not the code, and not ours</b> (Inspect → Which code) says plainly that the IPC, IRC and other codes belong to the ICC and that this book is our own summary. <b>Removed:</b> My files, which never worked in this copy of the book. Pins, notes and old links follow every card that moved.</td></tr>
         <tr><th>Nov 8, 2026 · diagrams</th><td><b>New drawings:</b> water vs. electricity, how a GFCI catches a shock, live-dead-live (Jobsite → Electrical) · how a take-off makes a cut length (Calc → Layout) · slope and fall (Calc → Grade) · a rough-in heights ruler (Build → Fixtures) · inside a tank water heater, air gap vs. RPZ, manifold vs. trunk, a hydronic loop, a softener, static vs. flowing pressure, water hammer, galvanic corrosion and a gas manometer (Learn → How it works).</td></tr>
         <tr><th>Nov 8, 2026 · board</th><td><b>New:</b> Jobsite → Electrical: electricity in plain words, getting power on site, an extension cord chart, generators, test before you touch, power lines, and what to do if someone gets shocked · Electrical flashcards and glossary words. <b>Fixed:</b> Back returns to where you were · a plain number in a feet box (gas sizer, slope, laser) now says it was read as inches, with a one-tap fix · search shows which tab each card is in, and "rinnai 11" or "E-003" finds the one row · tabs remember the last page you were on · tape entries list their inputs and read cleanly · card links keep the card · scald time and the 2029 heat pump rule agree everywhere · one expansion tank card · fitting take-offs moved next to Cut length, with a Save button · "go here" pointers are all tappable · Test log shows what the test must hold · brand buttons on Error codes · My files is gone from the GitHub copy, where it never worked. Pins and notes on moved cards come along.</td></tr>
@@ -6744,7 +6757,7 @@ function poCalc(){
   if (!(S > 0) || S > 240){ el.innerHTML = warn("Type the spacing, like 4 or 3 1/2."); $("po-rows").innerHTML = ""; svg.innerHTML = ""; mathOut("po-math", []); return; }
   const half = deg / 2 * Math.PI / 180, tn = Math.tan(half), sb = S * tn;
   el.innerHTML = `${toFrac16(sb)}<small>setback, pipe to pipe · ${sb.toFixed(3)} in</small>`;
-  $("po-rows").innerHTML = Array.from({length: n}, (_, k) => `<tr><td>Pipe ${k+1}${k === 0 ? ' <span class="sub">inside of the 1st turn</span>' : ""}</td><td>${k === 0 ? "0 (starts first)" : "+ " + toFrac16(k * sb)}</td><td>${k === 0 ? "0 (also first)" : "+ " + toFrac16(k * sb)}</td></tr>`).join("");
+  $("po-rows").innerHTML = Array.from({length: n}, (_, k) => `<tr><td>Pipe ${k+1}${k === 0 ? ' <span class="sub">inside of the 1st turn</span>' : ""}</td><td>${k === 0 ? `0<br><span class="sub">starts first</span>` : "+ " + toFrac16(k * sb)}</td><td>${k === 0 ? `0<br><span class="sub">also first</span>` : "+ " + toFrac16(k * sb)}</td></tr>`).join("");
   mathOut("po-math", [`Half the fitting angle: ${nf(deg, 2)}° ÷ 2 = ${nf(deg/2, 3)}°`, `tan(${nf(deg/2, 3)}°) = ${tn.toFixed(4)}`,
     `Setback = spacing × tan = ${toFrac16(S)} × ${tn.toFixed(4)} = <b>${toFrac16(sb)}</b>`, `Pipe k sits (k − 1) × setback farther along than pipe 1, at both fittings. Travel and cut are the same for every pipe: get them from the <b>Offset calculator</b>.`]);
   /* plan view: pipe 1 on top (inside of a left turn), lines run left to right */
@@ -7122,7 +7135,7 @@ if (!Array.isArray(PF) || !PF.length) PF = [{p: 4, l: "40'", q: "6", e: "3", t: 
 { const ftOnly = s => /^\d+(\.\d+)?$/.test(String(s ?? "").trim());   /* saves from before tape-style input were plain feet */
   if (!store.get("jpb-pf-in", false) && Array.isArray(PF)){ PF.forEach(r => { if (r && ftOnly(r.l)) r.l = String(r.l).trim() + "'"; }); store.set("jpb-pf", PF); store.set("jpb-pf-in", true); } }
 PF = PF.slice(0, 8).map(r => ({p: Math.min(Math.max(0, +r.p || 0), PF_PIPES.length - 1), l: String(r.l ?? ""), q: String(r.q ?? ""), e: String(r.e ?? "0"), t: String(r.t ?? "0")}));
-$("pf-need").innerHTML = PF_NEED.map(([n, p], i) => `<option value="${p}"${i === 0 ? " selected" : ""}>${n}: ${p} psi</option>`).join("");
+$("pf-need").innerHTML = PF_NEED.map(([n, p], i) => `<option value="${p}"${i === 0 ? " selected" : ""}>${p} psi · ${n}</option>`).join("");
 function pfRows(){
   $("pf-rows").innerHTML = PF.map((r, i) => `<tr>
     <td><select data-i="${i}" data-f="p" aria-label="Section ${i+1} pipe">${PF_PIPES.map((p, j) => `<option value="${j}"${j === r.p ? " selected" : ""}>${p[0]}</option>`).join("")}</select></td>
