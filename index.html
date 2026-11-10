@@ -286,6 +286,7 @@ details.more{border-top:1px solid var(--rule)}
 @media (max-width:419px){.tb-in{gap:6px}.hbtn{padding:0 6px}}
 #which-d{border-top:0}
 .jump-list{display:grid;grid-template-columns:1fr;gap:6px;padding:0 12px 12px}
+.jump-list .card-h{padding:10px 0 2px;border-top:0}
 @media (min-width:560px){.jump-list{grid-template-columns:1fr 1fr}}
 .jump-list button{appearance:none;text-align:left;display:flex;flex-direction:column;gap:2px;padding:8px 12px;min-height:56px;border:var(--bw) solid var(--edge);border-left:8px solid var(--acc);border-radius:var(--r);background:var(--sheet);color:var(--ink);font:inherit;cursor:pointer}
 .jump-list b{font-size:16.5px;line-height:1.25}
@@ -991,34 +992,56 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <button type="button" class="news-line" id="news-go"><span class="dot" id="news-dot" hidden></span><b>What's new:</b> <span id="news-txt"></span> ›</button>
     <p class="note"><button type="button" class="linkish" id="setup-open">Set up: code, city, text size</button></p>
   </section>
-<section data-sec="home" data-kw="which tool situation help weird piping odd angle obstacle what calculator do i use">
-    <div class="sec-head"><h2>Which tool?</h2><small>Weird situation? Tap it</small></div>
+<section data-sec="home" data-kw="which tool situation help weird piping odd angle obstacle what calculator do i use all calculators list index">
+    <div class="sec-head"><h2>Which tool?</h2><small>Every calculator, by the job it does</small></div>
     <details class="more" id="which-d"><summary>Show situations</summary>
     <div class="jump-list" id="which">
+      <p class="card-h">Layout &amp; cuts</p>
       <button type="button" data-go="calc|layout|Offset calculator"><b>Pipe has to jump over, under or around</b><span>Offset calculator · rolling if it moves up <i>and</i> over</span></button>
       <button type="button" data-go="calc|layout|Offset calculator|ro-space"><b>Only so much room for the offset</b><span>Offset calculator → Space I have</span></button>
       <button type="button" data-go="calc|layout|Offset calculator|ro-ang"><b>Odd fitting angle or a bent pipe</b><span>Offset calculator → Other angle, or the Triangle solver</span></button>
       <button type="button" data-go="calc|layout|Cut length"><b>Measured to a hub or a pipe end, not a fitting</b><span>Cut length · build a cut list</span></button>
-      <button type="button" data-go="calc|layout|Jump it"><b>Duct, beam or pipe in the way</b><span>Jump it: over or around, with the setback</span></button>
-      <button type="button" data-go="calc|sizing|Ejector &amp; sump pump"><b>Picking or checking a sump or ejector pump</b><span>Ejector &amp; sump pump: cycle and head</span></button>
+      <button type="button" data-go="calc|layout|Typical fitting take-offs"><b>Take-off for an ABS or PVC fitting I didn't measure</b><span>Layout → Typical fitting take-offs</span></button>
       <button type="button" data-go="calc|layout|Parallel offsets"><b>Two or more pipes turn together</b><span>Parallel offsets</span></button>
+      <button type="button" data-go="calc|layout|Jump it"><b>Duct, beam or pipe in the way</b><span>Jump it: over or around, with the setback</span></button>
       <button type="button" data-go="calc|layout|Triangle solver"><b>Know two sides or an angle, need the rest</b><span>Triangle solver</span></button>
       <button type="button" data-go="calc|layout|Square it up"><b>Is this corner, form or room square?</b><span>Square it up · 3-4-5 or diagonals</span></button>
       <button type="button" data-go="calc|layout|Equal spacing"><b>Hangers, straps or stubs evenly spaced</b><span>Equal spacing</span></button>
-      <button type="button" data-go="calc|grade|Laser rod targets"><b>Shooting grade with a laser</b><span>Grade → Laser rod targets</span></button>
+      <button type="button" data-go="calc|layout|Feet-inch calculator"><b>Adding or subtracting tape measurements</b><span>Feet-inch calculator</span></button>
+      <p class="card-h">Grade &amp; framing</p>
       <button type="button" data-go="calc|grade|Slope &amp; fall"><b>Will this drain make grade?</b><span>Grade → Slope &amp; fall</span></button>
+      <button type="button" data-go="calc|grade|Laser rod targets"><b>Shooting grade with a laser</b><span>Grade → Laser rod targets</span></button>
+      <button type="button" data-go="calc|grade|Bore line"><b>Drilling a drain through studs or joists</b><span>Grade → Bore line</span></button>
+      <button type="button" data-go="rough|framing|Will it fit the stud?"><b>Will this hole fit the stud?</b><span>Build → Framing → Will it fit the stud?</span></button>
+      <p class="card-h">Sizing</p>
+      <button type="button" data-go="calc|sizing|DFU counter"><b>What size drain for these fixtures?</b><span>Sizing → DFU counter</span></button>
+      <button type="button" data-go="rough|vents|Vent size"><b>What size vent?</b><span>Build → Vents → Vent size</span></button>
+      <button type="button" data-go="calc|sizing|Supply demand (WSFU)"><b>What size water line for this house?</b><span>Sizing → Supply demand (WSFU)</span></button>
+      <button type="button" data-go="calc|sizing|Gas line sizer"><b>What size gas line?</b><span>Sizing → Gas line sizer</span></button>
+      <button type="button" data-go="calc|sizing|Altitude derate"><b>Gas appliance up at elevation</b><span>Sizing → Altitude derate</span></button>
+      <button type="button" data-go="calc|sizing|Ejector &amp; sump pump"><b>Picking or checking a sump or ejector pump</b><span>Sizing → Ejector &amp; sump pump</span></button>
+      <button type="button" data-go="calc|water|Hydronic flow"><b>Sizing a boiler zone or radiant loop</b><span>Flow → Hydronic flow</span></button>
+      <button type="button" data-go="mech|treat|Softener sizer"><b>What size softener?</b><span>Service → Treatment → Softener sizer</span></button>
+      <p class="card-h">Pressure &amp; water</p>
+      <button type="button" data-go="calc|water|Pressure at the fixture"><b>Long run: will the far fixture have pressure?</b><span>Flow → Pressure at the fixture</span></button>
+      <button type="button" data-go="calc|water|Pressure vs. height"><b>Pressure upstairs, or down the hill</b><span>Flow → Pressure vs. height</span></button>
+      <button type="button" data-go="calc|water|Flow velocity"><b>Pipe whistles or hammers: is it too fast?</b><span>Flow → Flow velocity</span></button>
+      <button type="button" data-go="calc|water|Water in the pipe"><b>How long until the hot water shows up?</b><span>Flow → Water in the pipe</span></button>
+      <button type="button" data-go="calc|water|Pipe expansion"><b>How much will this run grow when it heats up?</b><span>Flow → Pipe expansion</span></button>
+      <button type="button" data-go="calc|water|Tank &amp; tub volume"><b>How many gallons is this tub or tank?</b><span>Flow → Tank &amp; tub volume</span></button>
+      <p class="card-h">Water heaters</p>
+      <button type="button" data-go="mech|heaters|Water heater size"><b>What size water heater?</b><span>Service → Water heaters → Water heater size</span></button>
+      <button type="button" data-go="mech|heaters|Water heater output"><b>Will the water heater keep up?</b><span>Service → Water heaters → Water heater output</span></button>
+      <button type="button" data-go="mech|heaters|Hot water that lasts"><b>Shower goes cold too soon</b><span>Service → Water heaters → Hot water that lasts</span></button>
+      <button type="button" data-go="mech|hotwater|Expansion tank size"><b>What size expansion tank?</b><span>Service → Hot water → Expansion tank size</span></button>
+      <button type="button" data-go="site|power|Circuits, wire &amp; bonding"><b>What breaker and wire for this water heater?</b><span>Jobsite → Electrical → Circuits, wire &amp; bonding</span></button>
+      <p class="card-h">Plans, tests &amp; the jobsite</p>
       <button type="button" data-go="calc|plans|Scale a plan"><b>Measuring off a plan</b><span>Plans → Scale a plan</span></button>
       <button type="button" data-go="calc|plans|Plan take-off"><b>How much pipe is on this plan?</b><span>Plans → Plan take-off</span></button>
-      <button type="button" data-go="mech|heaters|Water heater output"><b>Will the water heater keep up?</b><span>Service → Water heaters → Water heater output</span></button>
-      <button type="button" data-go="mech|treat|Softener sizer"><b>What size softener?</b><span>Service → Treatment → Softener sizer</span></button>
-      <button type="button" data-go="calc|water|Pressure at the fixture"><b>Long run: will the far fixture have pressure?</b><span>Flow → Pressure at the fixture</span></button>
       <button type="button" data-go="inspect|phases|Test log"><b>Air test gauge dropped overnight</b><span>Inspect → Tests → Test log</span></button>
       <button type="button" data-go="trim|idhow|Standards decoder"><b>What does ASSE 1016 or F1960 on this part mean?</b><span>Trim → ID a part → Standards decoder</span></button>
-      <button type="button" data-go="site|power|Electrical for plumbers"><b>What breaker and wire for this water heater?</b><span>Jobsite → Electrical → Electrical for plumbers</span></button>
       <button type="button" data-go="site|power|Get power on site"><b>Need power on the job</b><span>Jobsite → Electrical: GFCI, temp pole, generator</span></button>
-      <button type="button" data-go="site|power|Extension cords"><b>Which extension cord for this tool?</b><span>Extension cords: gauge by amps and length</span></button>
-      <button type="button" data-go="calc|water|Hydronic flow"><b>Sizing a boiler zone or radiant loop</b><span>Flow → Hydronic flow</span></button>
-      <button type="button" data-go="calc|units|Typical fitting take-offs"><b>Take-off for an ABS or PVC fitting I didn't measure</b><span>Units → Typical fitting take-offs</span></button>
+      <button type="button" data-go="site|power|Extension cords"><b>Which extension cord for this tool?</b><span>Jobsite → Electrical → Extension cords</span></button>
     </div>
     </details>
   </section>
@@ -2390,6 +2413,15 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note">A heat-pump-ready spot = enough air (or a duct path), a drain within reach, and a 240V circuit. Cheap at rough-in, expensive later.</p>
   </section>
+  <section data-sec="heaters" data-kw="water heater size sizing first hour rating fhr peak hour demand how big tank tankless gpm showers family">
+    <div class="sec-head"><h2>Water heater size</h2><small>Peak-hour demand → first-hour rating</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> picking a tank. Count what the house does in its busiest hour (usually morning). The tank's <b>first hour rating</b> (top left of the yellow EnergyGuide label) should be at least that many gallons (U.S. DOE).</p></div></details>
+    <div class="x"><table class="t dfu"><thead><tr><th>In the busiest hour</th><th>Gal each</th><th>How many</th></tr></thead><tbody id="whs-rows"></tbody></table></div>
+    <div class="x"><table class="t out"><tbody>
+      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Peak-hour demand</th><td id="whs-ans" class="big">—</td><td class="sub">Pick a first hour rating at least this big.</td></tr>
+    </tbody></table></div>
+    <p class="note">Gallons per use from the U.S. DOE sizing worksheet. Tankless: add the gpm of everything that runs at once (DOE says plan on at least 3.25 gpm through the heater) at a 70°F rise (DOE's 50°F in, 120°F out; a Utah winter is closer to 40°F in, an 80°F rise); <b>Service → Water heaters → Water heater output</b> checks a unit. Utah's cold winter water and altitude cut tankless output: check the derate.</p>
+  </section>
   <section data-sec="heaters" data-kw="recovery tankless gpm gph first hour sizing water heater">
     <div class="sec-head"><h2>Water heater output</h2><small>Recovery · tankless flow</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> checking whether a heater can keep up: a tank's recovery, or how many gpm a tankless makes in winter.</p><p><b>The idea:</b> heating water takes a fixed amount of energy per degree (1 BTU per pound per °F). More rise (colder incoming water) means fewer gallons from the same burner. That's why tankless output drops in a Utah January.</p></div></details>
@@ -2410,15 +2442,6 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <details class="math"><summary>Show the math</summary><ol id="wh-math"></ol></details>
     <p class="note">Plan on <b>40°F</b> incoming water in a Utah winter (Rheem's northern-state guidance). Tank sizing goes by <b>first-hour rating</b> (gallons it can deliver in the busiest hour, on the label), not just tank size. Tankless: add up the gpm of fixtures that run at the same time.</p>
-  </section>
-  <section data-sec="heaters" data-kw="water heater size sizing first hour rating fhr peak hour demand how big tank tankless gpm showers family">
-    <div class="sec-head"><h2>Water heater size</h2><small>Peak-hour demand → first-hour rating</small></div>
-    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> picking a tank. Count what the house does in its busiest hour (usually morning). The tank's <b>first hour rating</b> (top left of the yellow EnergyGuide label) should be at least that many gallons (U.S. DOE).</p></div></details>
-    <div class="x"><table class="t dfu"><thead><tr><th>In the busiest hour</th><th>Gal each</th><th>How many</th></tr></thead><tbody id="whs-rows"></tbody></table></div>
-    <div class="x"><table class="t out"><tbody>
-      <tr class="hit" aria-live="polite" aria-atomic="true"><th>Peak-hour demand</th><td id="whs-ans" class="big">—</td><td class="sub">Pick a first hour rating at least this big.</td></tr>
-    </tbody></table></div>
-    <p class="note">Gallons per use from the U.S. DOE sizing worksheet. Tankless: add the gpm of everything that runs at once (DOE says plan on at least 3.25 gpm through the heater) at a 70°F rise (DOE's 50°F in, 120°F out; a Utah winter is closer to 40°F in, an 80°F rise); <b>Service → Water heaters → Water heater output</b> checks a unit. Utah's cold winter water and altitude cut tankless output: check the derate.</p>
   </section>
   <section data-sec="heaters" data-kw="hot water last how long shower run out tank minutes mixing valve 140 tempering hot share first hour recovery sizing big tub">
     <div class="sec-head"><h2>Hot water that lasts</h2><small>How long before the shower goes cold</small></div>
@@ -2452,6 +2475,29 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Max pressure</th><td>Working pressure rating (often 150 psi). The T&amp;P must match the plate.</td></tr>
         <tr><th>Altitude</th><td>Some plates or labels show a high-altitude setup or derate.</td></tr>
       </tbody></table></div>
+  </section>
+  <section data-sec="heaters" data-kw="water heater age how old serial number date code decode rheem ruud richmond bradford white ao smith a.o. smith state american tankless rating plate">
+    <div class="sec-head"><h2>Water heater age</h2><small>Read the serial number</small></div>
+    <div class="x"><table class="t cards">
+      <thead><tr><th>Brand</th><th>How to read it</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><b>Rheem · Ruud · Richmond</b></td><td>First 4 digits = <b>month, then year</b> (MMYY).</td><td class="n">0519… = May 2019</td></tr>
+        <tr><td><b>A.O. Smith · State · American</b><div class="sub">newer units</div></td><td>First 4 digits = <b>year, then week</b> (YYWW).</td><td class="n">1910… = 2019, week 10</td></tr>
+        <tr><td><b>Bradford White</b></td><td>1st letter = <b>year</b> on a 20-year cycle (A = 2004 or 2024). 2nd letter = <b>month</b>, A = Jan to M = Dec (no I). Year letters skip I, O, Q, R, U, V.</td><td class="n">SC… = Mar 2018</td></tr>
+        <tr><td><b>Tankless &amp; others</b></td><td>Many plates print the manufacture date. If not, call the maker with the serial.</td><td class="n">—</td></tr>
+      </tbody></table></div>
+    <details class="more"><summary>Bradford White year letters</summary>
+      <div class="x"><table class="t num"><tbody>
+        <tr><td>A 2004 / 2024</td><td>B 2005 / 2025</td><td>C 2006 / 2026</td></tr>
+        <tr><td>D 2007</td><td>E 2008</td><td>F 2009</td></tr>
+        <tr><td>G 2010</td><td>H 2011</td><td>J 2012</td></tr>
+        <tr><td>K 2013</td><td>L 2014</td><td>M 2015</td></tr>
+        <tr><td>N 2016</td><td>P 2017</td><td>S 2018</td></tr>
+        <tr><td>T 2019</td><td>W 2020</td><td>X 2021</td></tr>
+        <tr><td>Y 2022</td><td>Z 2023</td><td></td></tr>
+      </tbody></table></div>
+    </details>
+    <p class="note">Older units used other codes (older A.O. Smith: a month letter plus 2-digit year). <span class="badge why">WHY</span> Age decides repair vs. replace and whether the warranty still applies. Chart for more brands: <b>Contacts → Tech lines</b>.</p>
   </section>
 
   <section data-sec="heaters" data-kw="altitude elevation tankless navien rinnai dip switch high altitude setting 4500 menu 1.2.14 v65 derate gas water heater">
@@ -2691,7 +2737,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="codes" data-kw="a.o. smith ao smith state american rheem ruud richmond status light blinking codes gas valve">
     <div class="sec-head"><h2>A.O. Smith, Rheem and others</h2><small>Read the label, not the internet</small></div>
-    <p class="note" style="border-top:0">These brands use several different gas controls, and the same flash count can mean different things on different valves. The flash chart is on a label on the gas valve or the jacket, and in the manual for that model number. <span class="badge why">WHY</span> A forum chart for the wrong valve sends you after the wrong part. Maker tech lines are in <b>Contacts → Tech lines</b>; have the model and serial ready (<b>Service → Troubleshoot → Water heater age</b>).</p>
+    <p class="note" style="border-top:0">These brands use several different gas controls, and the same flash count can mean different things on different valves. The flash chart is on a label on the gas valve or the jacket, and in the manual for that model number. <span class="badge why">WHY</span> A forum chart for the wrong valve sends you after the wrong part. Maker tech lines are in <b>Contacts → Tech lines</b>; have the model and serial ready (<b>Service → Water heaters → Water heater age</b>).</p>
   </section>
 <section data-sec="mechfix" data-kw="troubleshooting mech room symptom no hot water lukewarm rotten egg smell sulfur popping rumbling t&amp;p dripping softener hard water salt not going down brine tank full of water low pressure resin beads tankless shutting off cold sandwich expansion tank">
     <div class="sec-head"><h2>Mech room trouble</h2><small>Symptom → likely cause</small></div>
@@ -2761,30 +2807,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td data-label="Era"><b>2010s</b></td><td data-label="Typical Utah mech room">Condensing tankless on PVC. Softener loops in most new homes. Recirc pumps. Lead-free brass (2014).</td><td data-label="Watch for"><b>April 2015</b> rule: tanks got 1–2" taller and 2"+ wider. A replacement may not fit the old closet. Over 55 gal: condensing gas or heat pump.</td></tr>
         <tr><td data-label="Era"><b>2018 → now</b></td><td data-label="Typical Utah mech room"><span class="badge ut">UT</span> Ultra-low NOx gas heaters statewide from July 1, 2018; since Aug 2025, only in nonattainment areas (Wasatch Front, Uinta Basin). Smart leak shutoffs. Heat-pump-ready rough-ins.</td><td data-label="Watch for">Check the NOx number on the label. Electric tanks over 35 gal go heat pump in <b>2029</b> (<b>Service → Water heaters → Heat pump water heaters</b>).</td></tr>
       </tbody></table></div>
-    <p class="note">How old is it? <b>Service → Troubleshoot → Water heater age</b> decodes serial numbers. Rule of thumb: a tank heater lasts about 8–12 years; hard water, no expansion tank and no anode checks shorten it.</p>
-  </section>
-  <section data-sec="mechfix" data-kw="water heater age how old serial number date code decode rheem ruud richmond bradford white ao smith a.o. smith state american tankless rating plate">
-    <div class="sec-head"><h2>Water heater age</h2><small>Read the serial number</small></div>
-    <div class="x"><table class="t cards">
-      <thead><tr><th>Brand</th><th>How to read it</th><th>Example</th></tr></thead>
-      <tbody>
-        <tr><td><b>Rheem · Ruud · Richmond</b></td><td>First 4 digits = <b>month, then year</b> (MMYY).</td><td class="n">0519… = May 2019</td></tr>
-        <tr><td><b>A.O. Smith · State · American</b><div class="sub">newer units</div></td><td>First 4 digits = <b>year, then week</b> (YYWW).</td><td class="n">1910… = 2019, week 10</td></tr>
-        <tr><td><b>Bradford White</b></td><td>1st letter = <b>year</b> on a 20-year cycle (A = 2004 or 2024). 2nd letter = <b>month</b>, A = Jan to M = Dec (no I). Year letters skip I, O, Q, R, U, V.</td><td class="n">SC… = Mar 2018</td></tr>
-        <tr><td><b>Tankless &amp; others</b></td><td>Many plates print the manufacture date. If not, call the maker with the serial.</td><td class="n">—</td></tr>
-      </tbody></table></div>
-    <details class="more"><summary>Bradford White year letters</summary>
-      <div class="x"><table class="t num"><tbody>
-        <tr><td>A 2004 / 2024</td><td>B 2005 / 2025</td><td>C 2006 / 2026</td></tr>
-        <tr><td>D 2007</td><td>E 2008</td><td>F 2009</td></tr>
-        <tr><td>G 2010</td><td>H 2011</td><td>J 2012</td></tr>
-        <tr><td>K 2013</td><td>L 2014</td><td>M 2015</td></tr>
-        <tr><td>N 2016</td><td>P 2017</td><td>S 2018</td></tr>
-        <tr><td>T 2019</td><td>W 2020</td><td>X 2021</td></tr>
-        <tr><td>Y 2022</td><td>Z 2023</td><td></td></tr>
-      </tbody></table></div>
-    </details>
-    <p class="note">Older units used other codes (older A.O. Smith: a month letter plus 2-digit year). <span class="badge why">WHY</span> Age decides repair vs. replace and whether the warranty still applies. Chart for more brands: <b>Contacts → Tech lines</b>.</p>
+    <p class="note">How old is it? <b>Service → Water heaters → Water heater age</b> decodes serial numbers. Rule of thumb: a tank heater lasts about 8–12 years; hard water, no expansion tank and no anode checks shorten it.</p>
   </section>
 
   <!-- ================= TRIM ================= -->
@@ -2873,6 +2896,15 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Gas appliance</th><td>Rating plate inside the burner door or near the gas valve: input, gas type, altitude setup.</td></tr>
       </tbody></table></div>
     <p class="note">Kohler serial numbers are usually 9 characters, often starting with "S", with no dashes.</p>
+  </section>
+  <section data-sec="idhow" data-kw="part finder links websites lookup identify model support help supply house ferguson winsupply fluidmaster korky water heater age chart internachi">
+    <div class="sec-head"><h2>ID help &amp; parts sources</h2><small>Official pages · supply houses</small></div>
+    <div class="x"><table class="t"><tbody id="list-parts"></tbody></table></div>
+    <p class="note">Calling instead? Maker tech lines are in <b>Contacts → Tech lines</b>. Have photos, model, serial and install date ready.</p>
+  </section>
+  <section data-sec="idhow" data-kw="install instructions guide pdf parts find model moen delta kohler pfister grohe">
+    <div class="sec-head"><h2>Install guides &amp; part finders</h2><small>Official links</small></div>
+    <div class="x"><table class="t"><tbody id="list-trim"></tbody></table></div>
   </section>
   <section data-sec="idhow" data-kw="standards decoder standard number what does it mean listing mark asse astm nsf csa asme ansi ul iapmo upc cupc lead free lf pw dwv 1001 1002 1003 1010 1011 1012 1013 1015 1016 1017 1019 1020 1022 1024 1050 1051 1052 1056 1060 1061 1062 1070 1079 f876 f877 f1807 f2159 f1960 f2080 d2846 f441 f493 d1785 d2241 d2466 d2665 d3034 d2729 f891 d2564 f656 d2661 d2235 d3138 b88 b306 b32 b813 b828 b16.22 b16.18 b16.51 a53 a888 a74 c564 c1277 cispi 310 61 372 14 42 53 58 44 55 b125 b137 a112 z21.10 z21.22 z21.24 z21.69 z21.80 lc1 csst ul 174">
     <div class="sec-head"><h2>Standards decoder</h2><small>What the number on the part means</small></div>
@@ -3061,15 +3093,6 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Frost-free bibb</th><td>Wall flange to the end of the tube inside (common 4"–14").</td></tr>
       </tbody></table></div>
     <p class="note">Calipers make this fast and exact. Tape measure: read across the widest point and round to the nearest ⅛".</p>
-  </section>
-  <section data-sec="finders" data-kw="install instructions guide pdf parts find model moen delta kohler pfister grohe">
-    <div class="sec-head"><h2>Install guides &amp; part finders</h2><small>Official links</small></div>
-    <div class="x"><table class="t"><tbody id="list-trim"></tbody></table></div>
-  </section>
-  <section data-sec="finders" data-kw="part finder links websites lookup identify model support help supply house ferguson winsupply fluidmaster korky water heater age chart internachi">
-    <div class="sec-head"><h2>ID help &amp; parts sources</h2><small>Official pages · supply houses</small></div>
-    <div class="x"><table class="t"><tbody id="list-parts"></tbody></table></div>
-    <p class="note">Calling instead? Maker tech lines are in <b>Contacts → Tech lines</b>. Have photos, model, serial and install date ready.</p>
   </section>
   <section data-sec="techlines" data-kw="faucet cartridge leak drip valve stem toilet sink shower warranty parts">
     <div class="sec-head"><h2>Faucets &amp; fixtures</h2><small>Hours in Mountain Time</small></div>
@@ -3779,7 +3802,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>The law</th><td>Utah exempts "minor electrical work incidental to a mechanical or service installation" from the electrician license (Utah Code 58-55-305(1)(n)). The statute doesn't define <b>minor</b>.</td></tr>
         <tr><th>Usually yours</th><td>Shutting off, testing dead, and disconnecting and reconnecting the appliance you're working on at the circuit that's already there. Ask your inspector or shop where they draw the line.</td></tr>
         <tr><th>Electrician's</th><td>New circuits, panel work, changing a breaker or wire size, service upgrades, temp power poles, generator transfer switches. These need an electrician and usually a permit.</td></tr>
-        <tr><th>Selling the job</th><td>Before you quote electric tankless or a heat pump heater, check the panel has room and the service can carry it. See <b>Jobsite → Electrical → Electrical for plumbers</b>.</td></tr>
+        <tr><th>Selling the job</th><td>Before you quote electric tankless or a heat pump heater, check the panel has room and the service can carry it. See <b>Jobsite → Electrical → Circuits, wire &amp; bonding</b>.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="power" data-kw="temporary power temp power pole construction power gfci jobsite outlet plug in where to plug rocky mountain power meter cordless battery tools pigtail portable gfci assured grounding">
@@ -3870,7 +3893,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Flooded room</th><td>Don't step in if anything plugged in or wired could be under the water. Kill the main from a dry spot. If you'd have to stand in water to reach the panel, call Rocky Mountain Power to cut it at the meter.</td></tr>
         <tr><th>Wet work</th><td>Battery tools, GFCI on every cord, plug-ins off the floor. Don't run a corded tool while standing in water.</td></tr>
         <tr><th>Tingle at a faucet</th><td>Stop. Current is on the piping: a bad neutral, missing bonding, or a fault. Don't work on it. Tell the owner to get an electrician now; if the whole house is affected, call the power company.</td></tr>
-        <tr><th>Cutting metal pipe</th><td>Clamp a jumper across the cut first. Details in <b>Jobsite → Electrical → Electrical for plumbers</b>.</td></tr>
+        <tr><th>Cutting metal pipe</th><td>Clamp a jumper across the cut first. Details in <b>Jobsite → Electrical → Circuits, wire &amp; bonding</b>.</td></tr>
         <tr><th>Flooded appliances</th><td>A heater, pump or furnace that sat in water stays off until it's checked or replaced. Controls and wiring that got wet can fail later.</td></tr>
       </tbody></table></div>
   </section>
@@ -3897,7 +3920,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note">Sources for this tab: OSHA 1926 Subpart K (.404, .405, .416, .417), OSHA 1926.1408, CPSC generator safety, UL 943, Utah Code 58-55-305. Cord chart: conservative voltage-drop charts from cord makers.</p>
   </section>
   <section data-sec="power" data-kw="appliance circuits electrical electric electrician breaker wire size gauge awg amps amperage volts watts kw 240 208 120 romex nm thhn circuit continuous load 125 percent disconnect gfci bonding grounding ground jumper electrode disposer dishwasher tankless electric heat pump whirlpool hydromassage sump csst bond shock dry fire element">
-    <div class="sec-head"><h2>Electrical for plumbers</h2><small>Appliance circuits · wire · bonding</small></div>
+    <div class="sec-head"><h2>Circuits, wire &amp; bonding</h2><small>Breaker and wire for what you install</small></div>
     <div class="calc">
       <label for="el-w">Watts <i>(from the label)</i><input id="el-w" type="number" inputmode="decimal" min="0" step="any" value="4500"></label>
       <label for="el-v">Volts<select id="el-v"><option value="240" selected>240 V</option><option value="208">208 V</option><option value="120">120 V</option></select></label>
@@ -3989,7 +4012,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "pex crimp") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Electrical for plumbers. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow.</td></tr>
+        <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "pex crimp") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Circuits, wire &amp; bonding. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow.</td></tr>
         <tr><th>Nov 8, 2026 · diagrams</th><td><b>New drawings:</b> water vs. electricity, how a GFCI catches a shock, live-dead-live (Jobsite → Electrical) · how a take-off makes a cut length (Calc → Layout) · slope and fall (Calc → Grade) · a rough-in heights ruler (Build → Fixtures) · inside a tank water heater, air gap vs. RPZ, manifold vs. trunk, a hydronic loop, a softener, static vs. flowing pressure, water hammer, galvanic corrosion and a gas manometer (Learn → How it works).</td></tr>
         <tr><th>Nov 8, 2026 · board</th><td><b>New:</b> Jobsite → Electrical: electricity in plain words, getting power on site, an extension cord chart, generators, test before you touch, power lines, and what to do if someone gets shocked · Electrical flashcards and glossary words. <b>Fixed:</b> Back returns to where you were · a plain number in a feet box (gas sizer, slope, laser) now says it was read as inches, with a one-tap fix · search shows which tab each card is in, and "rinnai 11" or "E-003" finds the one row · tabs remember the last page you were on · tape entries list their inputs and read cleanly · card links keep the card · scald time and the 2029 heat pump rule agree everywhere · one expansion tank card · fitting take-offs moved next to Cut length, with a Save button · "go here" pointers are all tappable · Test log shows what the test must hold · brand buttons on Error codes · My files is gone from the GitHub copy, where it never worked. Pins and notes on moved cards come along.</td></tr>
         <tr><th>Nov 8, 2026 · Utah</th><td><b>Updated:</b> Home shows a countdown to the Nov 30 license renewal · License: renewal fee, late fee and where to renew · Rebates: the toilet rebate closed Nov 1; added Enbridge boiler and combi rebates. Checked: Utah's code law changes again Jan 1, 2027, but only the wildfire code; houses stay on the 2021 IRC and everything else on the 2024 codes.</td></tr>
@@ -4040,23 +4063,23 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note"><span class="badge why">WHY</span> A trap seal is only 2"–4" of water: 0.07 to 0.14 psi. Any pressure swing bigger than that, either way, moves it. Vents exist to keep the swing smaller than the seal.</p>
   </section>
-  <section data-sec="how" data-kw="gas pressure inches water column w.c. manometer 7 inches 11 propane 2 psi system regulator why so low">
-    <div class="sec-head"><h2>Why gas pressure is so small</h2><small>Inches of water column</small></div>
-    <figure class="cut"><svg viewBox="0 0 400 196" role="img" aria-label="A U-tube manometer half full of water. Gas pushes the water down on one side and up the other; the difference, 7 inches, is the gas pressure in inches of water column, about a quarter psi."><defs><marker id="ar-mn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-dim)"/></marker></defs><g font-size="12" fill="var(--d-text)"><path d="M120 30V150Q120 170 140 170H180Q200 170 200 150V30" fill="none" stroke="var(--d-pipe)" stroke-width="16"/>
-<path d="M120 120V150Q120 170 140 170H180Q200 170 200 150V50" fill="none" stroke="var(--d-cut)" stroke-width="9"/>
-<path d="M120 30V16H40" fill="none" stroke="var(--d-fit)" stroke-width="6"/><text x="40" y="10" font-size="11">gas pushes here</text><text x="200" y="20" font-size="11" text-anchor="middle">open to air</text>
-<path d="M208 50H234M128 120H234" stroke="var(--d-dim)" stroke-width="1" stroke-dasharray="4 3"/>
-<path d="M228 53V117" stroke="var(--d-dim)" stroke-width="2" marker-start="url(#ar-mn)" marker-end="url(#ar-mn)"/>
-<text x="240" y="82" font-size="14" font-weight="700">7 inches</text><text x="240" y="98" font-size="11">of water ≈ ¼ psi</text>
-<text x="240" y="146" font-size="11">1 psi = 27.7" w.c.</text><text x="240" y="162" font-size="11">Propane: about 11" w.c.</text></g></svg><figcaption>House gas runs so low it's measured in inches of water a U-tube can hold up, written " w.c.</figcaption></figure>
+  <section data-sec="how" data-kw="slope why bigger pipe less fall scour">
+    <div class="sec-head"><h2>Why bigger drains get less slope</h2><small>¼" vs ⅛"</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>The unit</th><td>A manometer is a U-tube of water. Gas pushes one side down and the other up; the difference in inches is the pressure, written <b>" w.c.</b> (water column).</td></tr>
-        <tr><th>Conversion</th><td><b>1 psi = 27.7" w.c.</b> (because 1 psi holds up 2.31 ft of water, and 2.31 × 12 = 27.7).</td></tr>
-        <tr><th>A house</th><td>Natural gas runs about <b>7" w.c.</b>, roughly ¼ psi. Propane appliances run about <b>11" w.c.</b>. That's why a psi gauge can't read it: the whole system is under half a psi.</td></tr>
-        <tr><th>Sizing drop</th><td>The common tables allow <b>0.5" w.c.</b> of loss from meter to appliance, about 7% of 7". Undersize the pipe and the far appliance starves: lazy flame, soot, CO.</td></tr>
-        <tr><th>2 psi systems</th><td>2 psi is about 55" w.c. Eight times the pressure lets smaller pipe or CSST carry the same gas, with a regulator dropping it back to 7" before the appliances.</td></tr>
-        <tr><th><span class="badge why">WHY</span>Test pressure</th><td>The test (1.5× working, at least <b>3 psi</b>) is about 12 times what the pipe normally sees. A joint that holds that holds at 7" w.c. for good.</td></tr>
+        <tr><th>Goal</th><td>Water must move fast enough to carry solids, about <b>2 ft/s</b> (often called scouring speed).</td></tr>
+        <tr><th>Big pipe</th><td>Flows faster at the same slope: more water, less rubbing on the walls for its size. So 3" and up reach scouring speed at ⅛"/ft.</td></tr>
+        <tr><th>Small pipe</th><td>More friction for the water it holds, so it needs the extra push of ¼"/ft.</td></tr>
+        <tr><th>Too steep?</th><td>Code sets no maximum. You'll hear "water outruns solids"; the bigger real-world limit is your fall budget: every extra ⅛"/ft costs depth over a long run.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="san tee combo wye direction">
+    <div class="sec-head"><h2>Why fittings face one way</h2><small>San tee vs combo</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>San tee</th><td>Its short curved turn works when flow drops <b>from horizontal into a vertical</b> pipe: gravity pulls it straight down.</td></tr>
+        <tr><th>Combo / long sweep</th><td>Going <b>vertical to horizontal</b>, falling water hits the turn hard. A long, gradual turn keeps solids moving and stops backups, so use a combo (wye + ⅛ bend) or long sweep.</td></tr>
+        <tr><th>On its back</th><td>A san tee laid flat throws flow across into the other branch. Use a wye.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="how" data-kw="toilet flush siphon jet trapway gulp gurgle weak flush fill valve refill tube rim holes hard water 1.28 1.6 gpf">
@@ -4072,6 +4095,26 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>4 · Refill</th><td>The fill valve refills the tank, and its little refill tube tops up the bowl so the trap seal is back.</td></tr>
         <tr><th>Weak flush?</th><td>Tank water set low, rim holes and jet crusted with hard-water scale (common here), a partial clog in the trapway, or a flapper closing early.</td></tr>
         <tr><th><span class="badge why">WHY</span>Less water</th><td>Federal max is 1.6 gal per flush; WaterSense models use 1.28. They lean on a better siphon jet and glazed trapway, so they're pickier about drain slope and long, flat runs.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="static pressure flowing residual pressure dynamic friction drop flush shower drops gauge reads 70 psi">
+    <div class="sec-head"><h2>Static vs. flowing pressure</h2><small>Why the gauge lies a little</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 176" role="img" aria-label="Two gauges on the same pipe. With nothing running it reads 65 psi. With a shower running it reads 48 psi, because moving water loses pressure to friction."><defs><marker id="ar-sf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-cut)"/></marker></defs><g font-size="12" fill="var(--d-text)"><path d="M20 110H160V128" fill="none" stroke="var(--d-pipe)" stroke-width="8"/>
+<path d="M80 106V86" stroke="var(--d-pipe)" stroke-width="4"/><circle cx="80" cy="64" r="20" fill="var(--d-bg)" stroke="var(--d-text)" stroke-width="3"/>
+<path d="M80 64L93 49" stroke="var(--d-fit)" stroke-width="3" stroke-linecap="round"/><circle cx="80" cy="64" r="3" fill="var(--d-text)"/>
+<text x="108" y="62" font-size="15" font-weight="700">65 psi</text><path d="M220 110H360V128" fill="none" stroke="var(--d-pipe)" stroke-width="8"/>
+<path d="M280 106V86" stroke="var(--d-pipe)" stroke-width="4"/><circle cx="280" cy="64" r="20" fill="var(--d-bg)" stroke="var(--d-text)" stroke-width="3"/>
+<path d="M280 64L266 50" stroke="var(--d-fit)" stroke-width="3" stroke-linecap="round"/><circle cx="280" cy="64" r="3" fill="var(--d-text)"/>
+<text x="308" y="62" font-size="15" font-weight="700">48 psi</text><path d="M356 134v8M364 134v12M360 136v8" stroke="var(--d-cut)" stroke-width="2"/><path d="M234 98H260" stroke="var(--d-cut)" stroke-width="2.5" marker-end="url(#ar-sf)"/>
+<path d="M200 26V170" stroke="var(--d-grid)" stroke-width="1"/>
+<text x="100" y="20" font-size="13" font-weight="700" text-anchor="middle">STATIC</text><text x="300" y="20" font-size="13" font-weight="700" text-anchor="middle">FLOWING</text>
+<text x="100" y="164" font-size="11" text-anchor="middle">nothing running</text><text x="300" y="164" font-size="11" text-anchor="middle">shower running</text></g></svg><figcaption>Friction only steals pressure while water moves. Static shows the street; flowing shows what the pipe can deliver.</figcaption></figure>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Static</th><td>Pressure with nothing running. What a gauge on a hose bibb shows, and what the 80 psi PRV rule is about.</td></tr>
+        <tr><th>Flowing</th><td>Pressure while water moves. Always lower, because pipe walls and fittings steal some to friction.</td></tr>
+        <tr><th><span class="badge why">WHY</span>The aha</th><td>Friction grows faster than flow: double the gpm and the loss goes up about <b>3.6×</b> (Hazen-Williams uses flow to the 1.85 power). That's why one shower is fine and the shower plus a flush plus the washer isn't, and why a bigger trunk fixes it.</td></tr>
+        <tr><th>On the job</th><td>A house that reads 65 psi static but has weak showers usually has a friction problem (undersized line, long run, plugged filter or aerator), not a street problem.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="how" data-kw="prv pressure reducing valve how works spring diaphragm adjust screw clockwise set 50 60 psi creep high pressure night bypass expansion">
@@ -4090,57 +4133,20 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th><span class="badge why">WHY</span>Required</th><td>Over 80 psi static, code wants one. High pressure wears valves, heaters and supply lines and makes hammer worse.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="how" data-kw="galvanic corrosion dielectric union brass nipple copper steel galvanized dissimilar metals noble anode pinhole">
-    <div class="sec-head"><h2>Why metals eat each other</h2><small>Galvanic corrosion</small></div>
-    <figure class="cut"><svg viewBox="0 0 400 156" role="img" aria-label="Top: copper screwed straight into galvanized steel, with the steel threads corroding at the joint. Bottom: a dielectric union with a plastic break between the copper and the steel."><g font-size="12" fill="var(--d-text)"><text x="20" y="20" font-weight="700">Copper straight to steel</text>
-<rect x="20" y="34" width="170" height="20" fill="none" stroke="var(--d-fit)" stroke-width="3"/><text x="60" y="48" font-size="11">copper</text>
-<rect x="190" y="34" width="190" height="20" fill="none" stroke="var(--d-pipe)" stroke-width="3"/><text x="250" y="48" font-size="11">galvanized steel</text>
-<path d="M194 30l6 4-5 4 6 4-5 4 6 4-5 4 6 4" fill="none" stroke="var(--d-rise)" stroke-width="2.5"/><text x="204" y="74" font-size="11">steel threads corrode here</text>
-<text x="20" y="96" font-weight="700">With a dielectric union</text>
-<rect x="20" y="108" width="150" height="20" fill="none" stroke="var(--d-fit)" stroke-width="3"/><rect x="170" y="102" width="50" height="32" rx="4" fill="var(--d-bg)" stroke="var(--d-tru)" stroke-width="3"/>
-<rect x="190" y="102" width="10" height="32" fill="var(--d-tru)"/><rect x="220" y="108" width="160" height="20" fill="none" stroke="var(--d-pipe)" stroke-width="3"/>
-<text x="195" y="150" font-size="11" text-anchor="middle">plastic break: no current, no corrosion</text></g></svg><figcaption>Two metals plus water make a battery, and the steel is the side that gets eaten. A plastic break stops the current.</figcaption></figure>
+  <section data-sec="how" data-kw="water hammer bang arrestor">
+    <div class="sec-head"><h2>Why water hammer happens</h2><small>Bang!</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 150" role="img" aria-label="Water flows along a pipe toward a valve that slams shut. A pressure spike bounces back up the line. An arrester teed in near the valve cushions it."><defs><marker id="ar-wh" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-cut)"/></marker></defs><g font-size="12" fill="var(--d-text)"><path d="M20 80H330" stroke="var(--d-pipe)" stroke-width="12"/><rect x="330" y="62" width="26" height="36" rx="3" fill="var(--d-fit)"/>
+<path d="M40 60H100" stroke="var(--d-cut)" stroke-width="2.5" marker-end="url(#ar-wh)"/><text x="40" y="50" font-size="11">water moving</text>
+<text x="343" y="116" font-size="11" text-anchor="middle">valve shuts</text>
+<path d="M290 64q-9 16 0 32M262 64q-9 16 0 32M234 64q-9 16 0 32" fill="none" stroke="var(--d-rise)" stroke-width="3"/>
+<path d="M315 74V46" stroke="var(--d-pipe)" stroke-width="5"/><rect x="305" y="16" width="20" height="30" rx="4" fill="var(--d-bg)" stroke="var(--d-tru)" stroke-width="3"/>
+<text x="298" y="30" font-size="11" text-anchor="end">arrester (ASSE 1010)</text>
+<text x="180" y="138" font-size="11" text-anchor="middle">the spike runs back up the line: bang</text></g></svg><figcaption>Moving water has momentum. Stop it in a blink and it hits like a hammer; an arrester's air cushion soaks up the spike.</figcaption></figure>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>The battery</th><td>Two different metals touching, with water between them, make a weak battery. Current flows, and the less noble metal dissolves.</td></tr>
-        <tr><th>Who loses</th><td>Zinc (galvanizing) and steel lose to copper and brass. Copper screwed straight into galvanized eats the steel threads, then it leaks or clogs with rust.</td></tr>
-        <tr><th>The fix</th><td>A <b>dielectric</b> union or fitting (a plastic break between the metals), or a brass or bronze fitting between them, as code allows for copper to steel. Water heater nipples are often lined for the same reason.</td></tr>
-        <tr><th><span class="badge why">WHY</span>The anode</th><td>A water heater's anode rod is the same trick on purpose: a more active metal that corrodes so the tank doesn't. Galvanic corrosion, working for you.</td></tr>
-      </tbody></table></div>
-  </section>
-  <section data-sec="how" data-kw="slope why bigger pipe less fall scour">
-    <div class="sec-head"><h2>Why bigger drains get less slope</h2><small>¼" vs ⅛"</small></div>
-    <div class="x"><table class="t">
-      <tbody>
-        <tr><th>Goal</th><td>Water must move fast enough to carry solids, about <b>2 ft/s</b> (often called scouring speed).</td></tr>
-        <tr><th>Big pipe</th><td>Flows faster at the same slope: more water, less rubbing on the walls for its size. So 3" and up reach scouring speed at ⅛"/ft.</td></tr>
-        <tr><th>Small pipe</th><td>More friction for the water it holds, so it needs the extra push of ¼"/ft.</td></tr>
-        <tr><th>Too steep?</th><td>Code sets no maximum. You'll hear "water outruns solids"; the bigger real-world limit is your fall budget: every extra ⅛"/ft costs depth over a long run.</td></tr>
-      </tbody></table></div>
-  </section>
-  <section data-sec="how" data-kw="why math works 1.414 square diagonal sin tan travel run rolling offset two triangles take-off sweep radius bending gain area diameter squared friction mixing 0.4085 velocity">
-    <div class="sec-head"><h2>Why the pipe math works</h2><small>The aha behind the multipliers</small></div>
-    <div class="x"><table class="t">
-      <tbody>
-        <tr><th>Why 1.414</th><td>A 45° offset is half a square, and a square's diagonal is the side × √2 = 1.414. That's why a framing square's 12 and 12 read 17 across.</td></tr>
-        <tr><th>Small angle, long travel</th><td>Travel is the long side: offset ÷ sin(angle). Run is offset ÷ tan(angle). Shrink the angle and sin shrinks, so the multiplier grows and the fitting "lays down" farther.</td></tr>
-        <tr><th>Rolling = two triangles</th><td>The end view folds roll and set into one true offset, √(roll² + set²). After that it's a plain offset.</td></tr>
-        <tr><th>Take-off of a sweep</th><td>Centerlines meet at a virtual corner: take-off = bend radius × tan(angle ÷ 2). Bigger radius, bigger take-off.</td></tr>
-        <tr><th>Bending gain</th><td>A bend cuts the corner: the two legs to the corner are longer than the arc. That leftover (about 0.43 × radius on a 90) is why benders have a gain scale.</td></tr>
-        <tr><th>Area is diameter squared</th><td>Two 2" pipes don't make a 4": it takes four. Friction drops even faster (about diameter to the 4.87), so one size up cuts it to about a quarter.</td></tr>
-        <tr><th>Mixing is a seesaw</th><td>Hot gal × (tank° − mix°) = cold gal × (mix° − cold°). A hotter tank needs less hot per gallon, so a 140° tank behind a mixing valve gives more shower minutes.</td></tr>
-        <tr><th>Where 0.4085 comes from</th><td>gpm × 231 in³ ÷ 60 s ÷ (0.7854 × ID²) ÷ 12 = ft/s. The same chain gives gallons per foot = 0.0408 × ID², the "ID² × 4 per 100 ft" trick.</td></tr>
-        <tr><th>Top half carries air</th><td>Wet venting, circuit venting and combination waste-and-vent are one trick: the pipe is big enough that it never runs more than half full, so the top half stays an air path. That's why those pipes are upsized and slope-limited (ICC 2021 venting guide).</td></tr>
-        <tr><th>DFU vs WSFU</th><td>DFU = load on the drain; WSFU = demand on the supply. Neither is gallons: they're odds-weighted, because fixtures rarely all run at once. Don't mix the two tables.</td></tr>
-      </tbody></table></div>
-  </section>
-  <section data-sec="how" data-kw="san tee combo wye direction">
-    <div class="sec-head"><h2>Why fittings face one way</h2><small>San tee vs combo</small></div>
-    <div class="x"><table class="t">
-      <tbody>
-        <tr><th>San tee</th><td>Its short curved turn works when flow drops <b>from horizontal into a vertical</b> pipe: gravity pulls it straight down.</td></tr>
-        <tr><th>Combo / long sweep</th><td>Going <b>vertical to horizontal</b>, falling water hits the turn hard. A long, gradual turn keeps solids moving and stops backups, so use a combo (wye + ⅛ bend) or long sweep.</td></tr>
-        <tr><th>On its back</th><td>A san tee laid flat throws flow across into the other branch. Use a wye.</td></tr>
+        <tr><th>Cause</th><td>A fast-closing valve stops moving water instantly. Its momentum turns into a pressure spike that slams through the pipe.</td></tr>
+        <tr><th>Usual suspects</th><td>Washer and dishwasher solenoids, quick faucets, high pressure, loose pipe.</td></tr>
+        <tr><th>Fix</th><td>Arrestors (ASSE 1010) at the quick-closing valves, solid pipe support, pressure under 80 psi.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="how" data-kw="backflow test testable tested rpz double check dual check air gap avb pvb vacuum breaker how works">
@@ -4172,6 +4178,68 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note"><span class="badge why">WHY</span> Every device after the air gap is a stand-in for one. Moving parts can stick or leak, so higher hazards get devices that can be tested, or that dump water where you can see it. A dripping RPZ is doing its job: a check needs service. Utah testing rules: <b>Build → Water supply</b>.</p>
   </section>
+  <section data-sec="how" data-kw="manifold home run trunk branch pex layout">
+    <div class="sec-head"><h2>Manifold vs trunk-and-branch</h2><small>PEX layouts</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 170" role="img" aria-label="Left: a manifold sends a separate line to each of five fixtures. Right: one trunk line runs past the fixtures with a short branch teed off to each."><g font-size="12" fill="var(--d-text)"><text x="100" y="16" font-size="12" font-weight="700" text-anchor="middle">HOME-RUN MANIFOLD</text><text x="300" y="16" font-size="12" font-weight="700" text-anchor="middle">TRUNK &amp; BRANCH</text>
+<path d="M200 26V166" stroke="var(--d-grid)" stroke-width="1"/>
+<path d="M8 94H24" stroke="var(--d-pipe)" stroke-width="6"/><rect x="24" y="44" width="16" height="100" rx="3" fill="var(--d-bg)" stroke="var(--d-fit)" stroke-width="3"/><path d="M40 54C90 54 100 40 146 40" fill="none" stroke="var(--d-pipe)" stroke-width="2.5"/><circle cx="150" cy="40" r="5" fill="var(--d-fit)"/><path d="M40 74C90 74 100 66 146 66" fill="none" stroke="var(--d-pipe)" stroke-width="2.5"/><circle cx="150" cy="66" r="5" fill="var(--d-fit)"/><path d="M40 94C90 94 100 92 146 92" fill="none" stroke="var(--d-pipe)" stroke-width="2.5"/><circle cx="150" cy="92" r="5" fill="var(--d-fit)"/><path d="M40 114C90 114 100 118 146 118" fill="none" stroke="var(--d-pipe)" stroke-width="2.5"/><circle cx="150" cy="118" r="5" fill="var(--d-fit)"/><path d="M40 134C90 134 100 144 146 144" fill="none" stroke="var(--d-pipe)" stroke-width="2.5"/><circle cx="150" cy="144" r="5" fill="var(--d-fit)"/><text x="160" y="44" font-size="11">Kitchen</text><text x="160" y="70" font-size="11">Lav</text><text x="160" y="96" font-size="11">Tub</text><text x="160" y="122" font-size="11">Toilet</text><text x="160" y="148" font-size="11">Hose</text>
+<path d="M210 94H386" stroke="var(--d-pipe)" stroke-width="7"/><path d="M240 94V52M280 94V136M320 94V52M360 94V136" stroke="var(--d-pipe)" stroke-width="2.5"/>
+<circle cx="240" cy="50" r="5" fill="var(--d-fit)"/><circle cx="280" cy="138" r="5" fill="var(--d-fit)"/><circle cx="320" cy="50" r="5" fill="var(--d-fit)"/><circle cx="360" cy="138" r="5" fill="var(--d-fit)"/>
+<text x="240" y="40" font-size="11" text-anchor="middle">Kitchen</text><text x="280" y="158" font-size="11" text-anchor="middle">Lav</text><text x="320" y="40" font-size="11" text-anchor="middle">Tub</text><text x="360" y="158" font-size="11" text-anchor="middle">Toilet</text></g></svg><figcaption>Manifold: one line per fixture, steady pressure, a shutoff for each. Trunk &amp; branch: least pipe, but the fixtures share one line's flow.</figcaption></figure>
+    <div class="x"><table class="t">
+      <thead><tr><th></th><th>Home-run manifold</th><th>Trunk &amp; branch</th></tr></thead>
+      <tbody>
+        <tr><th>Layout</th><td>One line from the manifold to each fixture.</td><td>Big main line with tees off to fixtures.</td></tr>
+        <tr><th>Pros</th><td>Steady pressure when several run, a shutoff per fixture, small lines = faster hot water.</td><td>Least pipe, simple, familiar.</td></tr>
+        <tr><th>Cons</th><td>Most pipe and the most holes in framing.</td><td>Pressure drops when several run; no central shutoffs.</td></tr>
+      </tbody></table></div>
+    <p class="note">A hybrid (remote mini-manifolds off a trunk) sits in between.</p>
+  </section>
+  <section data-sec="how" data-kw="frost free hose bibb sillcock how works seat inside wall slope drain hose left on burst spring vacuum breaker">
+    <div class="sec-head"><h2>How a frost-free hose bibb works</h2><small>The valve is inside the house</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Wall cross-section: a long hose bibb stem runs through the wall. The valve seat sits inside the warm house; the pipe pitches down to the outside so water drains out of the cold part when it is shut off."><defs><marker id="ar-bb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><rect x="150" y="20" width="60" height="190" fill="var(--d-grid)"/><path d="M60 100L330 118" stroke="var(--d-pipe)" stroke-width="22"/><path d="M60 100L330 118" stroke="var(--d-bg)" stroke-width="12"/><path d="M70 100L320 117" stroke="var(--d-fit)" stroke-width="3"/>
+<rect x="56" y="88" width="16" height="24" fill="var(--d-fit)"/><path d="M330 108V150" stroke="var(--d-pipe)" stroke-width="14"/><circle cx="342" cy="106" r="14" fill="none" stroke="var(--d-fit)" stroke-width="4"/>
+<path d="M240 160L300 166" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-bb)"/><text x="10" y="70" font-size="13" fill="var(--d-text)" font-weight="700">Inside (warm)</text><text x="10" y="140" font-size="13" fill="var(--d-text)">Seat is here,</text><text x="10" y="156" font-size="13" fill="var(--d-text)">out of the cold</text>
+<text x="246" y="30" font-size="13" fill="var(--d-text)" font-weight="700">Outside</text><text x="160" y="196" font-size="13" fill="var(--d-text)">Wall</text><text x="226" y="186" font-size="13" fill="var(--d-text)">Pitch down so it drains</text><text x="70" y="226" font-size="13" fill="var(--d-text)">A hose left on holds water in: take it off in winter.</text></svg><figcaption>Shut it off and the water past the seat drains out, so nothing is left to freeze in the wall.</figcaption></figure>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Long stem</th><td>The handle is outside, but the actual seat is 6"–12"+ back inside the heated wall, where it can't freeze.</td></tr>
+        <tr><th>Drains itself</th><td>Shut it off and the barrel empties out the spout, so there's no water left in the cold part. That only works if it's <b>pitched down to the outside</b>.</td></tr>
+        <tr><th><span class="badge why">WHY</span>The aha</th><td>Leave a hose on in winter and the barrel can't drain: it freezes and splits <b>inside the wall</b>. Nobody knows until spring, when the first person turns it on and floods the basement.</td></tr>
+        <tr><th>Vacuum breaker</th><td>The cap keeps a hose lying in a bucket of weed killer from being sucked back into the house water.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="freeze frozen burst winter cold exterior wall attic garage hose bibb">
+    <div class="sec-head"><h2>Freeze protection</h2><small>Utah winters</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Code idea</th><td>Water and drain pipe can't be put where it will freeze unless it's protected (IPC 305.4).</td></tr>
+        <tr><th>Outside walls</th><td>Keep supply lines out of exterior walls, unheated attics and garages when you can. If you can't, the pipe goes on the <b>warm side</b> of the insulation.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Why pipes split</th><td>Ice takes about 9% more room. The split usually happens between the ice plug and a closed valve, where trapped water has nowhere to go.</td></tr>
+        <tr><th>Water service</th><td>6" below the frost line: about 36" along the Wasatch Front (30" frost). See <b>Build → Drains → Underground</b>.</td></tr>
+        <tr><th>Hose bibbs</th><td>Frost-free: the valve seat sits inside the warm wall and the barrel is pitched to drain outside. A hose left on holds water in the barrel and can split it inside the wall.</td></tr>
+        <tr><th>Vents</th><td>Frost closure: in very cold areas the roof vent goes up in size (see <b>Build → Vents → Vent sizing &amp; terminals</b>).</td></tr>
+        <tr><th>Winter tests</th><td>Water tests can freeze. Drain them right after inspection, or use the vacuum test (2021 IRC) or Utah's air-test options.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="galvanic corrosion dielectric union brass nipple copper steel galvanized dissimilar metals noble anode pinhole">
+    <div class="sec-head"><h2>Why metals eat each other</h2><small>Galvanic corrosion</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 156" role="img" aria-label="Top: copper screwed straight into galvanized steel, with the steel threads corroding at the joint. Bottom: a dielectric union with a plastic break between the copper and the steel."><g font-size="12" fill="var(--d-text)"><text x="20" y="20" font-weight="700">Copper straight to steel</text>
+<rect x="20" y="34" width="170" height="20" fill="none" stroke="var(--d-fit)" stroke-width="3"/><text x="60" y="48" font-size="11">copper</text>
+<rect x="190" y="34" width="190" height="20" fill="none" stroke="var(--d-pipe)" stroke-width="3"/><text x="250" y="48" font-size="11">galvanized steel</text>
+<path d="M194 30l6 4-5 4 6 4-5 4 6 4-5 4 6 4" fill="none" stroke="var(--d-rise)" stroke-width="2.5"/><text x="204" y="74" font-size="11">steel threads corrode here</text>
+<text x="20" y="96" font-weight="700">With a dielectric union</text>
+<rect x="20" y="108" width="150" height="20" fill="none" stroke="var(--d-fit)" stroke-width="3"/><rect x="170" y="102" width="50" height="32" rx="4" fill="var(--d-bg)" stroke="var(--d-tru)" stroke-width="3"/>
+<rect x="190" y="102" width="10" height="32" fill="var(--d-tru)"/><rect x="220" y="108" width="160" height="20" fill="none" stroke="var(--d-pipe)" stroke-width="3"/>
+<text x="195" y="150" font-size="11" text-anchor="middle">plastic break: no current, no corrosion</text></g></svg><figcaption>Two metals plus water make a battery, and the steel is the side that gets eaten. A plastic break stops the current.</figcaption></figure>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The battery</th><td>Two different metals touching, with water between them, make a weak battery. Current flows, and the less noble metal dissolves.</td></tr>
+        <tr><th>Who loses</th><td>Zinc (galvanizing) and steel lose to copper and brass. Copper screwed straight into galvanized eats the steel threads, then it leaks or clogs with rust.</td></tr>
+        <tr><th>The fix</th><td>A <b>dielectric</b> union or fitting (a plastic break between the metals), or a brass or bronze fitting between them, as code allows for copper to steel. Water heater nipples are often lined for the same reason.</td></tr>
+        <tr><th><span class="badge why">WHY</span>The anode</th><td>A water heater's anode rod is the same trick on purpose: a more active metal that corrodes so the tank doesn't. Galvanic corrosion, working for you.</td></tr>
+      </tbody></table></div>
+  </section>
   <section data-sec="how" data-kw="water heater parts anode dip tube expansion">
     <div class="sec-head"><h2>Inside a tank water heater</h2><small>Know the parts</small></div>
     <figure class="cut"><svg viewBox="0 0 400 270" role="img" aria-label="Cutaway of a gas tank water heater: cold water enters at the top and the dip tube carries it to the bottom; hot water leaves at the top. An anode rod hangs in the tank, a flue with a baffle runs up the middle over the burner, the gas valve and drain valve are on the front, and the T&P valve on the side has a discharge pipe that ends near the floor."><g font-size="12" fill="var(--d-text)"><rect x="125" y="34" width="120" height="196" rx="16" fill="none" stroke="var(--d-pipe)" stroke-width="4"/>
@@ -4198,6 +4266,20 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>T&amp;P valve</th><td>Opens on too much temperature or pressure. Last line of defense, not a pressure control.</td></tr>
       </tbody></table></div>
   </section>
+  <section data-sec="how" data-kw="t&amp;p valve how works temperature pressure relief 150 psi 210 degrees probe element test lever drip">
+    <div class="sec-head"><h2>How a T&amp;P valve works</h2><small>Two triggers, one outlet</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Water heater tank with a T and P valve near the top: a probe reaches into the hot water, a spring holds the valve shut, and a full-size discharge pipe runs down to end near the floor."><defs><marker id="ar-tp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><rect x="30" y="40" width="160" height="190" rx="10" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><rect x="34" y="70" width="152" height="156" fill="var(--d-cut)" opacity=".25"/>
+<path d="M190 70H250" stroke="var(--d-pipe)" stroke-width="16"/><path d="M190 70H110" stroke="var(--d-fit)" stroke-width="6"/><rect x="250" y="40" width="50" height="60" rx="4" fill="none" stroke="var(--d-pipe)" stroke-width="4"/>
+<path d="M275 44l-10 5 20 6-20 6 20 6-10 4" fill="none" stroke="var(--d-fit)" stroke-width="3"/><path d="M300 86H330V215" fill="none" stroke="var(--d-pipe)" stroke-width="14"/><path d="M330 150V205" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-tp)"/>
+<text x="56" y="100" font-size="13" fill="var(--d-text)">Probe in the hot</text><text x="56" y="116" font-size="13" fill="var(--d-text)">water at the top</text><text x="206" y="28" font-size="13" fill="var(--d-text)">Spring holds it shut</text><text x="200" y="130" font-size="13" fill="var(--d-text)">Opens at 150 psi</text><text x="200" y="146" font-size="13" fill="var(--d-text)">or 210°F</text><text x="200" y="185" font-size="13" fill="var(--d-text)">Full-size line,</text><text x="200" y="201" font-size="13" fill="var(--d-text)">ends 6" or less</text><text x="200" y="217" font-size="13" fill="var(--d-text)">above the floor</text></svg><figcaption>Heat or pressure beats the spring and the valve dumps hot water before the tank can fail.</figcaption></figure>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Pressure side</th><td>A spring holds the disc shut until tank pressure beats it: typically <b>150 psi</b> on a residential heater.</td></tr>
+        <tr><th>Temperature side</th><td>A probe reaching down into the hottest water expands and pushes the valve open at about <b>210°F</b>.</td></tr>
+        <tr><th><span class="badge why">WHY</span>The aha</th><td>Water above 212°F under pressure stays liquid, then flashes to steam the instant pressure drops: a split tank becomes a steam explosion. Dumping hot water early keeps the tank below boiling. That's why the probe must sit in the tank's top and why nothing (valve, plug, trap) can ever block the discharge line.</td></tr>
+        <tr><th>Dripping</th><td>Usually high pressure from thermal expansion, not a bad valve: <b>Service → Hot water → Expansion tank</b>. Test the lever yearly; if it won't reseat, replace it.</td></tr>
+      </tbody></table></div>
+  </section>
   <section data-sec="how" data-kw="expansion tank thermal prv why">
     <div class="sec-head"><h2>Why an expansion tank</h2><small>PRV = closed system</small></div>
     <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Two expansion tanks side by side. Cold: a small amount of water under the diaphragm, air above it. Hot: heated water has grown and pushed the diaphragm up, squeezing the air."><defs><marker id="ar-et" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><defs><clipPath id="et-c1"><rect x="50" y="20" width="110" height="170" rx="50"/></clipPath><clipPath id="et-c2"><rect x="240" y="20" width="110" height="170" rx="50"/></clipPath></defs><g><rect x="50" y="20" width="110" height="170" rx="50" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><path d="M54 150H156" stroke="var(--d-tru)" stroke-width="4"/><rect x="50" y="152" width="110" height="40" fill="var(--d-cut)" opacity=".35" clip-path="url(#et-c1)"/><path d="M105 190V220" stroke="var(--d-pipe)" stroke-width="12"/></g>
@@ -4210,27 +4292,6 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Symptoms</th><td>T&amp;P dripping after heating, banging, bulged or leaking tank, running toilets.</td></tr>
         <tr><th>Fix</th><td>An expansion tank sized for the system, with its air charge set to the house pressure.</td></tr>
         <tr><th><span class="badge why">WHY</span>The aha</th><td>Water barely compresses, so a cup of expansion has nowhere to go and pressure spikes. The tank's air cushion squeezes instead. Set the air charge with the water off, or the bladder starts out already full.</td></tr>
-      </tbody></table></div>
-  </section>
-  <section data-sec="how" data-kw="how a softener works ion exchange resin beads sodium calcium magnesium regeneration backwash brine draw rinse refill why salt">
-    <div class="sec-head"><h2>How a softener works</h2><small>It's a trade, not a filter</small></div>
-    <figure class="cut"><svg viewBox="0 0 400 190" role="img" aria-label="A softener: hard water enters the control valve on top of a resin tank full of beads and leaves soft. A brine tank with salt and water sits beside it, connected by a brine line used during regeneration, when rinse water goes to the drain."><defs><pattern id="pt-beads" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="2" fill="var(--d-grid)"/></pattern></defs><g font-size="12" fill="var(--d-text)"><rect x="70" y="50" width="70" height="122" rx="14" fill="url(#pt-beads)" stroke="var(--d-pipe)" stroke-width="3"/>
-<rect x="71" y="102" width="68" height="18" fill="var(--d-bg)"/><text x="105" y="115" font-size="11" text-anchor="middle">resin beads</text>
-<rect x="62" y="28" width="86" height="24" rx="4" fill="var(--d-bg)" stroke="var(--d-fit)" stroke-width="3"/><text x="105" y="44" font-size="11" text-anchor="middle">control valve</text>
-<path d="M12 40H62" stroke="var(--d-pipe)" stroke-width="5"/><text x="12" y="30" font-size="11">hard in</text>
-<path d="M148 40H200" stroke="var(--d-cut)" stroke-width="5"/><text x="156" y="30" font-size="11">soft out</text>
-<path d="M105 28V12H214" fill="none" stroke="var(--d-dim)" stroke-width="2"/><text x="220" y="16" font-size="11">drain (regen only)</text>
-<rect x="250" y="80" width="90" height="90" rx="6" fill="none" stroke="var(--d-pipe)" stroke-width="3"/><path d="M256 166L276 128 300 112 322 130 334 166Z" fill="var(--d-grid)"/>
-<path d="M252 140H338" stroke="var(--d-cut)" stroke-width="2"/>
-<path d="M290 112V68H162V46H148" fill="none" stroke="var(--d-cut)" stroke-width="2" stroke-dasharray="5 4"/><text x="214" y="62" font-size="11" text-anchor="middle">brine line (regen)</text>
-<text x="295" y="186" font-size="11" text-anchor="middle">brine tank: salt + water</text></g></svg><figcaption>Hard water trades its calcium for the beads' sodium on the way through. Regen floods the beads with brine to load them back up.</figcaption></figure>
-    <div class="x"><table class="t">
-      <tbody>
-        <tr><th>The beads</th><td>The tank is full of plastic resin beads, each covered in spots holding <b>sodium</b>.</td></tr>
-        <tr><th>The swap</th><td>Calcium and magnesium (the hardness) stick to those spots tighter than sodium does, so they bump the sodium off. Hard in, soft out, with a little sodium added.</td></tr>
-        <tr><th>Full up</th><td>Once every spot holds calcium, hardness slips through. Time to regenerate.</td></tr>
-        <tr><th>Regen</th><td><b>Backwash</b> (fluff and rinse the bed) → <b>brine draw</b> (salty water flows slow through the beads) → <b>rinse</b> → <b>refill</b> the brine tank for next time. Takes about 1–2 hours; the dirty water goes down the drain.</td></tr>
-        <tr><th><span class="badge why">WHY</span>The aha</th><td>Calcium wins one-on-one, but a flood of sodium wins by numbers: strong brine shoves the calcium back off and reloads the beads. <b>Salt isn't the softener; it's the recharge.</b> That's why more salt per regen buys more capacity, with diminishing returns.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="how" data-kw="how tankless works flow sensor burner heat exchanger modulate temperature rise gpm minimum flow cold water sandwich">
@@ -4246,70 +4307,6 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Heat exchanger</th><td>Water runs through a coil in the flame's path. Condensing units add a second exchanger that pulls heat out of the exhaust until it turns to water.</td></tr>
         <tr><th><span class="badge why">WHY</span>The aha</th><td>A tankless doesn't have a size in gallons, it has a <b>power limit</b>. gpm = BTU × eff ÷ (500 × rise). Colder incoming water means a bigger rise and fewer gpm: the same heater makes less hot water in a Utah January than in July.</td></tr>
         <tr><th>Scale</th><td>Hardness bakes onto the hot coil like a kettle. Less water to carry the heat → overheating codes. That's what flushing fixes.</td></tr>
-      </tbody></table></div>
-  </section>
-  <section data-sec="how" data-kw="static pressure flowing residual pressure dynamic friction drop flush shower drops gauge reads 70 psi">
-    <div class="sec-head"><h2>Static vs. flowing pressure</h2><small>Why the gauge lies a little</small></div>
-    <figure class="cut"><svg viewBox="0 0 400 176" role="img" aria-label="Two gauges on the same pipe. With nothing running it reads 65 psi. With a shower running it reads 48 psi, because moving water loses pressure to friction."><defs><marker id="ar-sf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-cut)"/></marker></defs><g font-size="12" fill="var(--d-text)"><path d="M20 110H160V128" fill="none" stroke="var(--d-pipe)" stroke-width="8"/>
-<path d="M80 106V86" stroke="var(--d-pipe)" stroke-width="4"/><circle cx="80" cy="64" r="20" fill="var(--d-bg)" stroke="var(--d-text)" stroke-width="3"/>
-<path d="M80 64L93 49" stroke="var(--d-fit)" stroke-width="3" stroke-linecap="round"/><circle cx="80" cy="64" r="3" fill="var(--d-text)"/>
-<text x="108" y="62" font-size="15" font-weight="700">65 psi</text><path d="M220 110H360V128" fill="none" stroke="var(--d-pipe)" stroke-width="8"/>
-<path d="M280 106V86" stroke="var(--d-pipe)" stroke-width="4"/><circle cx="280" cy="64" r="20" fill="var(--d-bg)" stroke="var(--d-text)" stroke-width="3"/>
-<path d="M280 64L266 50" stroke="var(--d-fit)" stroke-width="3" stroke-linecap="round"/><circle cx="280" cy="64" r="3" fill="var(--d-text)"/>
-<text x="308" y="62" font-size="15" font-weight="700">48 psi</text><path d="M356 134v8M364 134v12M360 136v8" stroke="var(--d-cut)" stroke-width="2"/><path d="M234 98H260" stroke="var(--d-cut)" stroke-width="2.5" marker-end="url(#ar-sf)"/>
-<path d="M200 26V170" stroke="var(--d-grid)" stroke-width="1"/>
-<text x="100" y="20" font-size="13" font-weight="700" text-anchor="middle">STATIC</text><text x="300" y="20" font-size="13" font-weight="700" text-anchor="middle">FLOWING</text>
-<text x="100" y="164" font-size="11" text-anchor="middle">nothing running</text><text x="300" y="164" font-size="11" text-anchor="middle">shower running</text></g></svg><figcaption>Friction only steals pressure while water moves. Static shows the street; flowing shows what the pipe can deliver.</figcaption></figure>
-    <div class="x"><table class="t">
-      <tbody>
-        <tr><th>Static</th><td>Pressure with nothing running. What a gauge on a hose bibb shows, and what the 80 psi PRV rule is about.</td></tr>
-        <tr><th>Flowing</th><td>Pressure while water moves. Always lower, because pipe walls and fittings steal some to friction.</td></tr>
-        <tr><th><span class="badge why">WHY</span>The aha</th><td>Friction grows faster than flow: double the gpm and the loss goes up about <b>3.6×</b> (Hazen-Williams uses flow to the 1.85 power). That's why one shower is fine and the shower plus a flush plus the washer isn't, and why a bigger trunk fixes it.</td></tr>
-        <tr><th>On the job</th><td>A house that reads 65 psi static but has weak showers usually has a friction problem (undersized line, long run, plugged filter or aerator), not a street problem.</td></tr>
-      </tbody></table></div>
-  </section>
-  <section data-sec="how" data-kw="t&amp;p valve how works temperature pressure relief 150 psi 210 degrees probe element test lever drip">
-    <div class="sec-head"><h2>How a T&amp;P valve works</h2><small>Two triggers, one outlet</small></div>
-    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Water heater tank with a T and P valve near the top: a probe reaches into the hot water, a spring holds the valve shut, and a full-size discharge pipe runs down to end near the floor."><defs><marker id="ar-tp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><rect x="30" y="40" width="160" height="190" rx="10" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><rect x="34" y="70" width="152" height="156" fill="var(--d-cut)" opacity=".25"/>
-<path d="M190 70H250" stroke="var(--d-pipe)" stroke-width="16"/><path d="M190 70H110" stroke="var(--d-fit)" stroke-width="6"/><rect x="250" y="40" width="50" height="60" rx="4" fill="none" stroke="var(--d-pipe)" stroke-width="4"/>
-<path d="M275 44l-10 5 20 6-20 6 20 6-10 4" fill="none" stroke="var(--d-fit)" stroke-width="3"/><path d="M300 86H330V215" fill="none" stroke="var(--d-pipe)" stroke-width="14"/><path d="M330 150V205" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-tp)"/>
-<text x="56" y="100" font-size="13" fill="var(--d-text)">Probe in the hot</text><text x="56" y="116" font-size="13" fill="var(--d-text)">water at the top</text><text x="206" y="28" font-size="13" fill="var(--d-text)">Spring holds it shut</text><text x="200" y="130" font-size="13" fill="var(--d-text)">Opens at 150 psi</text><text x="200" y="146" font-size="13" fill="var(--d-text)">or 210°F</text><text x="200" y="185" font-size="13" fill="var(--d-text)">Full-size line,</text><text x="200" y="201" font-size="13" fill="var(--d-text)">ends 6" or less</text><text x="200" y="217" font-size="13" fill="var(--d-text)">above the floor</text></svg><figcaption>Heat or pressure beats the spring and the valve dumps hot water before the tank can fail.</figcaption></figure>
-    <div class="x"><table class="t">
-      <tbody>
-        <tr><th>Pressure side</th><td>A spring holds the disc shut until tank pressure beats it: typically <b>150 psi</b> on a residential heater.</td></tr>
-        <tr><th>Temperature side</th><td>A probe reaching down into the hottest water expands and pushes the valve open at about <b>210°F</b>.</td></tr>
-        <tr><th><span class="badge why">WHY</span>The aha</th><td>Water above 212°F under pressure stays liquid, then flashes to steam the instant pressure drops: a split tank becomes a steam explosion. Dumping hot water early keeps the tank below boiling. That's why the probe must sit in the tank's top and why nothing (valve, plug, trap) can ever block the discharge line.</td></tr>
-        <tr><th>Dripping</th><td>Usually high pressure from thermal expansion, not a bad valve: <b>Service → Hot water → Expansion tank</b>. Test the lever yearly; if it won't reseat, replace it.</td></tr>
-      </tbody></table></div>
-  </section>
-  <section data-sec="how" data-kw="frost free hose bibb sillcock how works seat inside wall slope drain hose left on burst spring vacuum breaker">
-    <div class="sec-head"><h2>How a frost-free hose bibb works</h2><small>The valve is inside the house</small></div>
-    <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Wall cross-section: a long hose bibb stem runs through the wall. The valve seat sits inside the warm house; the pipe pitches down to the outside so water drains out of the cold part when it is shut off."><defs><marker id="ar-bb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><rect x="150" y="20" width="60" height="190" fill="var(--d-grid)"/><path d="M60 100L330 118" stroke="var(--d-pipe)" stroke-width="22"/><path d="M60 100L330 118" stroke="var(--d-bg)" stroke-width="12"/><path d="M70 100L320 117" stroke="var(--d-fit)" stroke-width="3"/>
-<rect x="56" y="88" width="16" height="24" fill="var(--d-fit)"/><path d="M330 108V150" stroke="var(--d-pipe)" stroke-width="14"/><circle cx="342" cy="106" r="14" fill="none" stroke="var(--d-fit)" stroke-width="4"/>
-<path d="M240 160L300 166" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-bb)"/><text x="10" y="70" font-size="13" fill="var(--d-text)" font-weight="700">Inside (warm)</text><text x="10" y="140" font-size="13" fill="var(--d-text)">Seat is here,</text><text x="10" y="156" font-size="13" fill="var(--d-text)">out of the cold</text>
-<text x="246" y="30" font-size="13" fill="var(--d-text)" font-weight="700">Outside</text><text x="160" y="196" font-size="13" fill="var(--d-text)">Wall</text><text x="226" y="186" font-size="13" fill="var(--d-text)">Pitch down so it drains</text><text x="70" y="226" font-size="13" fill="var(--d-text)">A hose left on holds water in: take it off in winter.</text></svg><figcaption>Shut it off and the water past the seat drains out, so nothing is left to freeze in the wall.</figcaption></figure>
-    <div class="x"><table class="t">
-      <tbody>
-        <tr><th>Long stem</th><td>The handle is outside, but the actual seat is 6"–12"+ back inside the heated wall, where it can't freeze.</td></tr>
-        <tr><th>Drains itself</th><td>Shut it off and the barrel empties out the spout, so there's no water left in the cold part. That only works if it's <b>pitched down to the outside</b>.</td></tr>
-        <tr><th><span class="badge why">WHY</span>The aha</th><td>Leave a hose on in winter and the barrel can't drain: it freezes and splits <b>inside the wall</b>. Nobody knows until spring, when the first person turns it on and floods the basement.</td></tr>
-        <tr><th>Vacuum breaker</th><td>The cap keeps a hose lying in a bucket of weed killer from being sucked back into the house water.</td></tr>
-      </tbody></table></div>
-  </section>
-  <section data-sec="how" data-kw="water hammer bang arrestor">
-    <div class="sec-head"><h2>Why water hammer happens</h2><small>Bang!</small></div>
-    <figure class="cut"><svg viewBox="0 0 400 150" role="img" aria-label="Water flows along a pipe toward a valve that slams shut. A pressure spike bounces back up the line. An arrester teed in near the valve cushions it."><defs><marker id="ar-wh" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-cut)"/></marker></defs><g font-size="12" fill="var(--d-text)"><path d="M20 80H330" stroke="var(--d-pipe)" stroke-width="12"/><rect x="330" y="62" width="26" height="36" rx="3" fill="var(--d-fit)"/>
-<path d="M40 60H100" stroke="var(--d-cut)" stroke-width="2.5" marker-end="url(#ar-wh)"/><text x="40" y="50" font-size="11">water moving</text>
-<text x="343" y="116" font-size="11" text-anchor="middle">valve shuts</text>
-<path d="M290 64q-9 16 0 32M262 64q-9 16 0 32M234 64q-9 16 0 32" fill="none" stroke="var(--d-rise)" stroke-width="3"/>
-<path d="M315 74V46" stroke="var(--d-pipe)" stroke-width="5"/><rect x="305" y="16" width="20" height="30" rx="4" fill="var(--d-bg)" stroke="var(--d-tru)" stroke-width="3"/>
-<text x="298" y="30" font-size="11" text-anchor="end">arrester (ASSE 1010)</text>
-<text x="180" y="138" font-size="11" text-anchor="middle">the spike runs back up the line: bang</text></g></svg><figcaption>Moving water has momentum. Stop it in a blink and it hits like a hammer; an arrester's air cushion soaks up the spike.</figcaption></figure>
-    <div class="x"><table class="t">
-      <tbody>
-        <tr><th>Cause</th><td>A fast-closing valve stops moving water instantly. Its momentum turns into a pressure spike that slams through the pipe.</td></tr>
-        <tr><th>Usual suspects</th><td>Washer and dishwasher solenoids, quick faucets, high pressure, loose pipe.</td></tr>
-        <tr><th>Fix</th><td>Arrestors (ASSE 1010) at the quick-closing valves, solid pipe support, pressure under 80 psi.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="how" data-kw="hydronic hydronics how boiler works radiant floor heat baseboard closed loop fill pressure 12 psi relief valve 30 psi expansion tank precharge circulator pump away point of no pressure change air separator purge primary secondary closely spaced tees mixing valve oxygen barrier evoh loop length manifold indirect water heater glycol snowmelt exam">
@@ -4340,34 +4337,44 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th><span class="badge ut">UT</span>On the exam</th><td>Hydronics is a scored theory section on the Utah plumbing exam and the weak spot statewide. Practice it: <b>Learn → Flashcards → Hydronics</b>.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="how" data-kw="manifold home run trunk branch pex layout">
-    <div class="sec-head"><h2>Manifold vs trunk-and-branch</h2><small>PEX layouts</small></div>
-    <figure class="cut"><svg viewBox="0 0 400 170" role="img" aria-label="Left: a manifold sends a separate line to each of five fixtures. Right: one trunk line runs past the fixtures with a short branch teed off to each."><g font-size="12" fill="var(--d-text)"><text x="100" y="16" font-size="12" font-weight="700" text-anchor="middle">HOME-RUN MANIFOLD</text><text x="300" y="16" font-size="12" font-weight="700" text-anchor="middle">TRUNK &amp; BRANCH</text>
-<path d="M200 26V166" stroke="var(--d-grid)" stroke-width="1"/>
-<path d="M8 94H24" stroke="var(--d-pipe)" stroke-width="6"/><rect x="24" y="44" width="16" height="100" rx="3" fill="var(--d-bg)" stroke="var(--d-fit)" stroke-width="3"/><path d="M40 54C90 54 100 40 146 40" fill="none" stroke="var(--d-pipe)" stroke-width="2.5"/><circle cx="150" cy="40" r="5" fill="var(--d-fit)"/><path d="M40 74C90 74 100 66 146 66" fill="none" stroke="var(--d-pipe)" stroke-width="2.5"/><circle cx="150" cy="66" r="5" fill="var(--d-fit)"/><path d="M40 94C90 94 100 92 146 92" fill="none" stroke="var(--d-pipe)" stroke-width="2.5"/><circle cx="150" cy="92" r="5" fill="var(--d-fit)"/><path d="M40 114C90 114 100 118 146 118" fill="none" stroke="var(--d-pipe)" stroke-width="2.5"/><circle cx="150" cy="118" r="5" fill="var(--d-fit)"/><path d="M40 134C90 134 100 144 146 144" fill="none" stroke="var(--d-pipe)" stroke-width="2.5"/><circle cx="150" cy="144" r="5" fill="var(--d-fit)"/><text x="160" y="44" font-size="11">Kitchen</text><text x="160" y="70" font-size="11">Lav</text><text x="160" y="96" font-size="11">Tub</text><text x="160" y="122" font-size="11">Toilet</text><text x="160" y="148" font-size="11">Hose</text>
-<path d="M210 94H386" stroke="var(--d-pipe)" stroke-width="7"/><path d="M240 94V52M280 94V136M320 94V52M360 94V136" stroke="var(--d-pipe)" stroke-width="2.5"/>
-<circle cx="240" cy="50" r="5" fill="var(--d-fit)"/><circle cx="280" cy="138" r="5" fill="var(--d-fit)"/><circle cx="320" cy="50" r="5" fill="var(--d-fit)"/><circle cx="360" cy="138" r="5" fill="var(--d-fit)"/>
-<text x="240" y="40" font-size="11" text-anchor="middle">Kitchen</text><text x="280" y="158" font-size="11" text-anchor="middle">Lav</text><text x="320" y="40" font-size="11" text-anchor="middle">Tub</text><text x="360" y="158" font-size="11" text-anchor="middle">Toilet</text></g></svg><figcaption>Manifold: one line per fixture, steady pressure, a shutoff for each. Trunk &amp; branch: least pipe, but the fixtures share one line's flow.</figcaption></figure>
+  <section data-sec="how" data-kw="how a softener works ion exchange resin beads sodium calcium magnesium regeneration backwash brine draw rinse refill why salt">
+    <div class="sec-head"><h2>How a softener works</h2><small>It's a trade, not a filter</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 190" role="img" aria-label="A softener: hard water enters the control valve on top of a resin tank full of beads and leaves soft. A brine tank with salt and water sits beside it, connected by a brine line used during regeneration, when rinse water goes to the drain."><defs><pattern id="pt-beads" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="2" fill="var(--d-grid)"/></pattern></defs><g font-size="12" fill="var(--d-text)"><rect x="70" y="50" width="70" height="122" rx="14" fill="url(#pt-beads)" stroke="var(--d-pipe)" stroke-width="3"/>
+<rect x="71" y="102" width="68" height="18" fill="var(--d-bg)"/><text x="105" y="115" font-size="11" text-anchor="middle">resin beads</text>
+<rect x="62" y="28" width="86" height="24" rx="4" fill="var(--d-bg)" stroke="var(--d-fit)" stroke-width="3"/><text x="105" y="44" font-size="11" text-anchor="middle">control valve</text>
+<path d="M12 40H62" stroke="var(--d-pipe)" stroke-width="5"/><text x="12" y="30" font-size="11">hard in</text>
+<path d="M148 40H200" stroke="var(--d-cut)" stroke-width="5"/><text x="156" y="30" font-size="11">soft out</text>
+<path d="M105 28V12H214" fill="none" stroke="var(--d-dim)" stroke-width="2"/><text x="220" y="16" font-size="11">drain (regen only)</text>
+<rect x="250" y="80" width="90" height="90" rx="6" fill="none" stroke="var(--d-pipe)" stroke-width="3"/><path d="M256 166L276 128 300 112 322 130 334 166Z" fill="var(--d-grid)"/>
+<path d="M252 140H338" stroke="var(--d-cut)" stroke-width="2"/>
+<path d="M290 112V68H162V46H148" fill="none" stroke="var(--d-cut)" stroke-width="2" stroke-dasharray="5 4"/><text x="214" y="62" font-size="11" text-anchor="middle">brine line (regen)</text>
+<text x="295" y="186" font-size="11" text-anchor="middle">brine tank: salt + water</text></g></svg><figcaption>Hard water trades its calcium for the beads' sodium on the way through. Regen floods the beads with brine to load them back up.</figcaption></figure>
     <div class="x"><table class="t">
-      <thead><tr><th></th><th>Home-run manifold</th><th>Trunk &amp; branch</th></tr></thead>
       <tbody>
-        <tr><th>Layout</th><td>One line from the manifold to each fixture.</td><td>Big main line with tees off to fixtures.</td></tr>
-        <tr><th>Pros</th><td>Steady pressure when several run, a shutoff per fixture, small lines = faster hot water.</td><td>Least pipe, simple, familiar.</td></tr>
-        <tr><th>Cons</th><td>Most pipe and the most holes in framing.</td><td>Pressure drops when several run; no central shutoffs.</td></tr>
+        <tr><th>The beads</th><td>The tank is full of plastic resin beads, each covered in spots holding <b>sodium</b>.</td></tr>
+        <tr><th>The swap</th><td>Calcium and magnesium (the hardness) stick to those spots tighter than sodium does, so they bump the sodium off. Hard in, soft out, with a little sodium added.</td></tr>
+        <tr><th>Full up</th><td>Once every spot holds calcium, hardness slips through. Time to regenerate.</td></tr>
+        <tr><th>Regen</th><td><b>Backwash</b> (fluff and rinse the bed) → <b>brine draw</b> (salty water flows slow through the beads) → <b>rinse</b> → <b>refill</b> the brine tank for next time. Takes about 1–2 hours; the dirty water goes down the drain.</td></tr>
+        <tr><th><span class="badge why">WHY</span>The aha</th><td>Calcium wins one-on-one, but a flood of sodium wins by numbers: strong brine shoves the calcium back off and reloads the beads. <b>Salt isn't the softener; it's the recharge.</b> That's why more salt per regen buys more capacity, with diminishing returns.</td></tr>
       </tbody></table></div>
-    <p class="note">A hybrid (remote mini-manifolds off a trunk) sits in between.</p>
   </section>
-  <section data-sec="how" data-kw="freeze frozen burst winter cold exterior wall attic garage hose bibb">
-    <div class="sec-head"><h2>Freeze protection</h2><small>Utah winters</small></div>
+  <section data-sec="how" data-kw="gas pressure inches water column w.c. manometer 7 inches 11 propane 2 psi system regulator why so low">
+    <div class="sec-head"><h2>Why gas pressure is so small</h2><small>Inches of water column</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 196" role="img" aria-label="A U-tube manometer half full of water. Gas pushes the water down on one side and up the other; the difference, 7 inches, is the gas pressure in inches of water column, about a quarter psi."><defs><marker id="ar-mn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-dim)"/></marker></defs><g font-size="12" fill="var(--d-text)"><path d="M120 30V150Q120 170 140 170H180Q200 170 200 150V30" fill="none" stroke="var(--d-pipe)" stroke-width="16"/>
+<path d="M120 120V150Q120 170 140 170H180Q200 170 200 150V50" fill="none" stroke="var(--d-cut)" stroke-width="9"/>
+<path d="M120 30V16H40" fill="none" stroke="var(--d-fit)" stroke-width="6"/><text x="40" y="10" font-size="11">gas pushes here</text><text x="200" y="20" font-size="11" text-anchor="middle">open to air</text>
+<path d="M208 50H234M128 120H234" stroke="var(--d-dim)" stroke-width="1" stroke-dasharray="4 3"/>
+<path d="M228 53V117" stroke="var(--d-dim)" stroke-width="2" marker-start="url(#ar-mn)" marker-end="url(#ar-mn)"/>
+<text x="240" y="82" font-size="14" font-weight="700">7 inches</text><text x="240" y="98" font-size="11">of water ≈ ¼ psi</text>
+<text x="240" y="146" font-size="11">1 psi = 27.7" w.c.</text><text x="240" y="162" font-size="11">Propane: about 11" w.c.</text></g></svg><figcaption>House gas runs so low it's measured in inches of water a U-tube can hold up, written " w.c.</figcaption></figure>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Code idea</th><td>Water and drain pipe can't be put where it will freeze unless it's protected (IPC 305.4).</td></tr>
-        <tr><th>Outside walls</th><td>Keep supply lines out of exterior walls, unheated attics and garages when you can. If you can't, the pipe goes on the <b>warm side</b> of the insulation.</td></tr>
-        <tr><th><span class="badge why">WHY</span>Why pipes split</th><td>Ice takes about 9% more room. The split usually happens between the ice plug and a closed valve, where trapped water has nowhere to go.</td></tr>
-        <tr><th>Water service</th><td>6" below the frost line: about 36" along the Wasatch Front (30" frost). See <b>Build → Drains → Underground</b>.</td></tr>
-        <tr><th>Hose bibbs</th><td>Frost-free: the valve seat sits inside the warm wall and the barrel is pitched to drain outside. A hose left on holds water in the barrel and can split it inside the wall.</td></tr>
-        <tr><th>Vents</th><td>Frost closure: in very cold areas the roof vent goes up in size (see <b>Build → Vents → Vent sizing &amp; terminals</b>).</td></tr>
-        <tr><th>Winter tests</th><td>Water tests can freeze. Drain them right after inspection, or use the vacuum test (2021 IRC) or Utah's air-test options.</td></tr>
+        <tr><th>The unit</th><td>A manometer is a U-tube of water. Gas pushes one side down and the other up; the difference in inches is the pressure, written <b>" w.c.</b> (water column).</td></tr>
+        <tr><th>Conversion</th><td><b>1 psi = 27.7" w.c.</b> (because 1 psi holds up 2.31 ft of water, and 2.31 × 12 = 27.7).</td></tr>
+        <tr><th>A house</th><td>Natural gas runs about <b>7" w.c.</b>, roughly ¼ psi. Propane appliances run about <b>11" w.c.</b>. That's why a psi gauge can't read it: the whole system is under half a psi.</td></tr>
+        <tr><th>Sizing drop</th><td>The common tables allow <b>0.5" w.c.</b> of loss from meter to appliance, about 7% of 7". Undersize the pipe and the far appliance starves: lazy flame, soot, CO.</td></tr>
+        <tr><th>2 psi systems</th><td>2 psi is about 55" w.c. Eight times the pressure lets smaller pipe or CSST carry the same gas, with a regulator dropping it back to 7" before the appliances.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Test pressure</th><td>The test (1.5× working, at least <b>3 psi</b>) is about 12 times what the pipe normally sees. A joint that holds that holds at 7" w.c. for good.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="how" data-kw="altitude elevation boiling point water heater t&amp;p steam flash pressure gauge atmospheric psi utah park city salt lake st george">
@@ -4388,6 +4395,22 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Hot water flashes</th><td>Inside a tank, pressure keeps water liquid well past boiling. Once it's out of the pipe, anything hotter than the local boiling point turns to steam. A runaway heater at 205°F in Salt Lake spits steam at faucets and the T&amp;P outlet. That's one reason the T&amp;P line ends low and in plain view.</td></tr>
         <tr><th>Test gauges</th><td>Gauges read <b>psig</b>: zero is your local air pressure, so a 5 psi test means the same thing anywhere. Temperature still moves the needle: <b>Inspect → Tests → Test log</b></td></tr>
         <tr><th>Gas</th><td>Thinner air, less oxygen: appliances derate about 4% per 1,000 ft above 2,000 ft (<b>Calc → Sizing → Altitude derate</b>). Tankless altitude settings: <b>Service → Water heaters → Altitude settings</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="why math works 1.414 square diagonal sin tan travel run rolling offset two triangles take-off sweep radius bending gain area diameter squared friction mixing 0.4085 velocity">
+    <div class="sec-head"><h2>Why the pipe math works</h2><small>The aha behind the multipliers</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Why 1.414</th><td>A 45° offset is half a square, and a square's diagonal is the side × √2 = 1.414. That's why a framing square's 12 and 12 read 17 across.</td></tr>
+        <tr><th>Small angle, long travel</th><td>Travel is the long side: offset ÷ sin(angle). Run is offset ÷ tan(angle). Shrink the angle and sin shrinks, so the multiplier grows and the fitting "lays down" farther.</td></tr>
+        <tr><th>Rolling = two triangles</th><td>The end view folds roll and set into one true offset, √(roll² + set²). After that it's a plain offset.</td></tr>
+        <tr><th>Take-off of a sweep</th><td>Centerlines meet at a virtual corner: take-off = bend radius × tan(angle ÷ 2). Bigger radius, bigger take-off.</td></tr>
+        <tr><th>Bending gain</th><td>A bend cuts the corner: the two legs to the corner are longer than the arc. That leftover (about 0.43 × radius on a 90) is why benders have a gain scale.</td></tr>
+        <tr><th>Area is diameter squared</th><td>Two 2" pipes don't make a 4": it takes four. Friction drops even faster (about diameter to the 4.87), so one size up cuts it to about a quarter.</td></tr>
+        <tr><th>Mixing is a seesaw</th><td>Hot gal × (tank° − mix°) = cold gal × (mix° − cold°). A hotter tank needs less hot per gallon, so a 140° tank behind a mixing valve gives more shower minutes.</td></tr>
+        <tr><th>Where 0.4085 comes from</th><td>gpm × 231 in³ ÷ 60 s ÷ (0.7854 × ID²) ÷ 12 = ft/s. The same chain gives gallons per foot = 0.0408 × ID², the "ID² × 4 per 100 ft" trick.</td></tr>
+        <tr><th>Top half carries air</th><td>Wet venting, circuit venting and combination waste-and-vent are one trick: the pipe is big enough that it never runs more than half full, so the top half stays an air path. That's why those pipes are upsized and slope-limited (ICC 2021 venting guide).</td></tr>
+        <tr><th>DFU vs WSFU</th><td>DFU = load on the drain; WSFU = demand on the supply. Neither is gallons: they're odds-weighted, because fixtures rarely all run at once. Don't mix the two tables.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="facts" data-kw="fact file drains vents cleanouts ejector sump stack flow hydraulic jump">
@@ -5256,7 +5279,7 @@ const GROUPS = {
   calc:    [["layout","Layout"],["grade","Grade"],["sizing","Sizing"],["water","Flow"],["plans","Plans"],["units","Units"]],
   rough:   [["framing","Framing"],["drains","Drains"],["vents","Vents"],["supply","Water supply"],["fixtures","Fixtures"],["gas","Gas"],["materials","Materials"]],
   mech:    [["mechfix","Troubleshoot"],["codes","Error codes"],["mechmap","Room map"],["heaters","Water heaters"],["treat","Treatment"],["hotwater","Hot water"]],
-  trim:    [["trim","Valves & trim"],["idhow","ID a part"],["threads","Threads & sizes"],["finders","Finders"]],
+  trim:    [["trim","Valves & trim"],["idhow","ID a part"],["threads","Threads & sizes"]],
   inspect: [["phases","Tests"],["code","Which code"],["utah","Cities"]],
   contacts:[["emergency","Call"],["techlines","Tech lines"],["houses","Supply houses"]],
   site:    [["wxnow","Weather"],["safety","Safety"],["power","Electrical"]],
@@ -5586,8 +5609,9 @@ apply();  /* early, so tabs work even if a calculator below hits an error */
 /* pins: a star on each card's header puts it in Mine → Pinned. Keyed by the card's heading. */
 const slug = s => s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 /* cards that moved page or merged: old id → new id, so pins, notes and shop edits keep working (and old card links still open) */
-const PID_MOVED = {"heaters:electrical-for-plumbers": "power:electrical-for-plumbers", "hotwater:expansion-tank": "hotwater:expansion-tank-size",
-  "units:typical-fitting-take-offs": "layout:typical-fitting-take-offs", "units:my-take-offs": "layout:my-take-offs"};
+const PID_MOVED = {"heaters:electrical-for-plumbers": "power:circuits-wire-and-bonding", "power:electrical-for-plumbers": "power:circuits-wire-and-bonding",
+  "hotwater:expansion-tank": "hotwater:expansion-tank-size", "units:typical-fitting-take-offs": "layout:typical-fitting-take-offs", "units:my-take-offs": "layout:my-take-offs",
+  "mechfix:water-heater-age": "heaters:water-heater-age", "finders:install-guides-and-part-finders": "idhow:install-guides-and-part-finders", "finders:id-help-and-parts-sources": "idhow:id-help-and-parts-sources"};
 const pidMove = (o, merge) => { let ch = false; for (const [a, b] of Object.entries(PID_MOVED)) if (a in o){ if (!(b in o)) o[b] = o[a]; else if (merge) o[b] = merge(o[b], o[a]); delete o[a]; ch = true; } return ch; };
 let PINS = new Set((a => Array.isArray(a) ? a.map(x => PID_MOVED[x] || x) : [])(store.get("jpb-pins", [])));
 store.set("jpb-pins", [...PINS]);
@@ -5660,7 +5684,7 @@ function printCard(sec){
   addEventListener("afterprint", done); setTimeout(() => print(), 50);
 }
 /* See also: each explainer and fact sheet points at the field card it explains, and back */
-const SEE = [["Water heater install","Electrical for plumbers"],["Water heater install","Expansion tank size"],["Water heater install","Gas line sizer"],["Water heater install","Water heater age"],["Rough-in heights","Fixture DFU & trap size"],["Rough-in heights","Fixture supply size"],["Electricity in plain words","Test before you touch"],["Get power on site","Extension cords"],["Get power on site","Heat, asbestos, spillage, power"],["Water and power","Electrical for plumbers"],["If someone gets shocked","Emergency"],["Vent size","Venting rules"],["Why an expansion tank","Expansion tank size"],["Water heater size","Water heater output"],["How tankless works","Navien tankless codes"],["Service calls: first checks","Mech room trouble"],["Why traps need vents","Venting rules"],["Six ways a trap loses its seal","Drains, traps & trap arms"],["Why gas pressure is so small","Gas piping"],["Why gas pressure is so small","Gas line sizer"],
+const SEE = [["Water heater install","Circuits, wire & bonding"],["Water heater install","Expansion tank size"],["Water heater install","Gas line sizer"],["Water heater install","Water heater age"],["Rough-in heights","Fixture DFU & trap size"],["Rough-in heights","Fixture supply size"],["Electricity in plain words","Test before you touch"],["Get power on site","Extension cords"],["Get power on site","Heat, asbestos, spillage, power"],["Water and power","Circuits, wire & bonding"],["If someone gets shocked","Emergency"],["Vent size","Venting rules"],["Why an expansion tank","Expansion tank size"],["Water heater size","Water heater output"],["How tankless works","Navien tankless codes"],["Service calls: first checks","Mech room trouble"],["Why traps need vents","Venting rules"],["Six ways a trap loses its seal","Drains, traps & trap arms"],["Why gas pressure is so small","Gas piping"],["Why gas pressure is so small","Gas line sizer"],
   ["How a toilet flushes","Trim-out (finish): rest of the house"],["How a PRV works","Water supply"],["Why metals eat each other","Copper & solder"],["Why bigger drains get less slope","Slope & fall"],
   ["Why the pipe math works","Offset calculator"],["Why fittings face one way","Drains, traps & trap arms"],["Backflow devices","Backflow & cross-connection"],["Inside a tank water heater","Water heater install"],
   ["How a softener works","Softener install"],["How tankless works","Tankless setup"],["Static vs. flowing pressure","Pressure at the fixture"],
@@ -8357,19 +8381,21 @@ $("setup-skip").addEventListener("click", () => { store.set("jpb-setup", 1); she
 $("setup-open").addEventListener("click", () => sheet("setup", true));
 
 /* ---------- open at a card link (#tab/page/card), set the first history step, Back from there ---------- */
-{ const m = location.hash.match(/^#([a-z]+)\/([a-z0-9]+)(?:\/([a-z0-9-]+))?$/); let card0 = null;
-  if (m && GROUPS[m[1]] && GROUPS[m[1]].some(([k]) => k === m[2])){
-    nav = {group: m[1], sub: m[2]}; drawSubs(); apply();
-    const pid = m[3] ? PID_MOVED[m[2] + ":" + m[3]] || m[2] + ":" + m[3] : "";
-    card0 = (pid && SECTIONS.find(s => s.dataset.pid === pid)) || null;
-    if (card0){ if (card0.dataset.sec !== nav.sub){ nav = {group: card0.dataset.g, sub: card0.dataset.sec}; drawSubs(); apply(); } jumpToSec(card0, null, true); }
-  }
+/* a #tab/page/card address → where it points now. A card that moved resolves to its new page, even if its old page is gone. */
+function hashTarget(){
+  const m = location.hash.match(/^#([a-z]+)\/([a-z0-9]+)(?:\/([a-z0-9-]+))?$/); if (!m) return null;
+  const pid = m[3] ? PID_MOVED[m[2] + ":" + m[3]] || m[2] + ":" + m[3] : "", sec = (pid && SECTIONS.find(x => x.dataset.pid === pid)) || null;
+  if (sec) return {g: sec.dataset.g, s: sec.dataset.sec, sec};
+  return GROUPS[m[1]] && GROUPS[m[1]].some(([k]) => k === m[2]) ? {g: m[1], s: m[2], sec: null} : null;
+}
+{ const t0 = hashTarget(), card0 = t0 && t0.sec;
+  if (t0){ nav = {group: t0.g, sub: t0.s}; drawSubs(); apply(); if (card0) jumpToSec(card0, null, true); }
   try { history.replaceState(Object.assign({g: nav.group, s: nav.sub, q: ""}, card0 ? {card: card0.dataset.pid} : {}), "", location.pathname + location.search + navHash(card0 ? card0.dataset.pid.split(":")[1] : "")); } catch(e){ histOk = false; }
   addEventListener("popstate", e => {
     let st = e.state || {}; restoring = true;
     if (!e.state){   /* a card link pasted or tapped in the same tab: no saved step, so read the address */
-      const h = location.hash.match(/^#([a-z]+)\/([a-z0-9]+)(?:\/([a-z0-9-]+))?$/);
-      if (h && GROUPS[h[1]] && GROUPS[h[1]].some(([k]) => k === h[2])){ st = {g: h[1], s: h[2], q: "", card: h[3] ? h[2] + ":" + h[3] : null}; try { history.replaceState(st, ""); } catch(err){} }
+      const t = hashTarget();
+      if (t){ st = {g: t.g, s: t.s, q: "", card: t.sec ? t.sec.dataset.pid : null}; try { history.replaceState(st, ""); } catch(err){} }
     }
     ["look","more","setup"].forEach(n => { if (n !== st.sheet && sheetOn(n)) SHEETS[n](false); });
     if (st.sheet && SHEETS[st.sheet] && !sheetOn(st.sheet)) SHEETS[st.sheet](true);
@@ -8378,7 +8404,7 @@ $("setup-open").addEventListener("click", () => sheet("setup", true));
     if (!st.sheet){ const sec = st.card && SECTIONS.find(s => s.dataset.pid === st.card); if (sec && st.y == null) jumpToSec(sec, null, true); else scrollTo(0, st.y || 0); }
     restoring = false;
   });
-  if (!store.get("jpb-setup", 0) && !m) requestAnimationFrame(() => sheet("setup", true));
+  if (!store.get("jpb-setup", 0) && !t0) requestAnimationFrame(() => sheet("setup", true));
 }
 
 /* keyboard: the Konami code (↑ ↑ ↓ ↓ ← → ← → B A) */
