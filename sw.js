@@ -19,7 +19,6 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   const req = e.request; if (req.method !== "GET") return;
   const url = new URL(req.url);
-  if (url.pathname.startsWith("/_blob/")) return;  /* My files: always live, never cached */
 
   if (req.mode === "navigate") {
     /* the page: try the network for updates, give up after 4 s on weak signal, else use the saved copy */

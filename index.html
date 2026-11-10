@@ -204,11 +204,11 @@ body.searching .where-go,body.mixed .where-go{display:block;grid-column:1 / -1;j
 
 /* ===== calculators ===== */
 .calc{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;padding:12px;border-bottom:1px solid var(--rule)}
-.calc label,.up label,.cl-v{display:flex;flex-direction:column;gap:4px;font-family:var(--display);font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);min-width:0}
+.calc label,.cl-v{display:flex;flex-direction:column;gap:4px;font-family:var(--display);font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);min-width:0}
 .calc label{flex:1 1 120px}
 .calc label i{font-style:normal;text-transform:none;letter-spacing:0;font-family:var(--body);font-weight:500}
 input,select{font:inherit}
-.calc input,.calc select,.up input,.up select,.tk input,.t input,.cl-v input{font-family:var(--mono);font-weight:600;font-size:18px;padding:6px 10px;min-height:52px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%;min-width:0;text-transform:none;letter-spacing:0}
+.calc input,.calc select,.tk input,.t input,.cl-v input{font-family:var(--mono);font-weight:600;font-size:18px;padding:6px 10px;min-height:52px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%;min-width:0;text-transform:none;letter-spacing:0}
 .ans{flex:2 1 200px;min-width:0;font-family:var(--mono);font-weight:700;font-size:30px;line-height:1.12;color:var(--hi-ink);background:var(--hi);border:var(--bw) solid var(--hi-edge);border-radius:var(--r);padding:6px 12px}
 .ans small{display:block;font-family:var(--body);font-weight:600;font-size:15px;color:var(--hi-ink);margin-top:3px}
 .ans .warn{font-size:17px}
@@ -358,7 +358,7 @@ a[href^="mailto:"]{overflow-wrap:anywhere}
   .code-chip{min-height:44px;padding:4px 10px;font-size:14.5px;margin-top:6px}
 }
 .subtabs button,.del,.tk .x-del,.t .x-del{border-color:var(--ctl)}
-#q:focus,.calc input:focus,.calc select:focus,.up input:focus,.up select:focus,.tk input:focus,.t input:focus,.t select:focus,.cl-v input:focus{outline:none;border-color:var(--k);box-shadow:0 0 0 3px var(--hv),0 0 0 5px var(--k)}
+#q:focus,.calc input:focus,.calc select:focus,.tk input:focus,.t input:focus,.t select:focus,.cl-v input:focus{outline:none;border-color:var(--k);box-shadow:0 0 0 3px var(--hv),0 0 0 5px var(--k)}
 .t td.yes,.t td.no{font-size:22px;line-height:1;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
 .t td.yes{background:color-mix(in srgb,var(--ok) 16%,var(--sheet));color:color-mix(in srgb,var(--ok) 60%,var(--ink));font-weight:900}
 .t td.no{background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--danger) 16%,var(--sheet)) 0 5px,var(--sheet) 5px 10px);color:color-mix(in srgb,var(--danger) 60%,var(--ink));font-weight:900}
@@ -413,12 +413,7 @@ body.searching #gloss tr.off{display:table-row}
 .fc-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px;color:var(--muted)}
 .fc-foot select{font:inherit;font-size:17px;min-height:48px;padding:4px 8px;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);color:var(--ink)}
 
-/* my files */
-.up{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;padding:12px;border-bottom:1px solid var(--rule)}
-.up input,.up select{font-family:var(--body)}
-.up .full{grid-column:1 / -1}
-.up .act{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-@media (max-width:480px){.up{grid-template-columns:1fr}}
+/* status lines and remove buttons */
 .status{font-size:15px;font-weight:600;color:var(--muted)} .status.err{color:var(--danger)} .status.good{color:var(--ok)}
 .del{appearance:none;font:inherit;font-size:14.5px;font-weight:700;background:none;border:var(--bw) solid var(--ctl);color:var(--ink);border-radius:var(--r);padding:4px 12px;min-height:46px;cursor:pointer;white-space:nowrap}
 .del.confirm{border-color:var(--danger);color:var(--danger)}
@@ -707,7 +702,7 @@ details.explain p{margin:6px 0 0}
 .pin::after{content:"";position:absolute;inset:-3px}
 @media (max-width:759px){
   .book .note,.book .sub,.book td.sub,.book .t th .sub,.book .fc-hint,footer,
-  .sec-head small,.calc label,.up label,.cl-h,.cl-v,details.math ol,details.math summary,details.more summary,details.explain summary,details.explain div,
+  .sec-head small,.calc label,.cl-h,.cl-v,details.math ol,details.math summary,details.more summary,details.explain summary,details.explain div,
   .ans small,.out td.big small.warn,.t .k,.ro-hint,.ro-key,.tick-foot,.fc-meta,.fc-foot,.out td.sub,.out td.big small,.jump-list span,.seg-lbl,.wx-place .sub{font-size:16px}
   .t thead th{font-size:15.5px}
 }
@@ -903,6 +898,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <p class="maker-c">Mountain Side Plumbing</p>
         <div class="maker-lines"><span class="pn">385-289-9041</span><a class="maker-mail" href="mailto:felleycraft@gmail.com?subject=Utah%20Plumbers%20Digital%20Handbook">felleycraft@gmail.com</a></div>
         <p class="sample">Wrong number, dead link, code change, or an idea for the book? Call, text or email and I'll fix it.</p>
+        <p class="sample"><b>Not the code, and not ours.</b> The IPC, IRC and other model codes belong to the International Code Council; Utah's amendments are state law. This book sums them up in our own words and none of them approved it. Details: <b>Inspect → Which code → Not the code, and not ours</b>.</p>
       </div>
       <p><b>Utah Plumbers Digital Handbook</b> · residential. A study and field aid for Utah plumbers, not the code: the adopted code, approved plans, manufacturer instructions and your inspector always win.</p>
       <p class="sample" id="set-build"></p>
@@ -919,9 +915,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sheet-body"><div class="more-list" id="more-list">
       <button type="button" data-group="inspect" data-g="inspect"><b>Inspect</b><span>Tests · which code · city inspections</span></button>
       <button type="button" data-group="contacts" data-g="contacts"><b>Contacts</b><span>Emergency · my city · utilities · tech lines · supply houses</span></button>
-      <button type="button" data-group="site" data-g="site"><b>Jobsite</b><span>Weather go/no-go · safety</span></button>
+      <button type="button" data-group="site" data-g="site"><b>Jobsite</b><span>Weather go/no-go · safety · electrical</span></button>
       <button type="button" data-group="learn" data-g="learn"><b>Learn</b><span>How it works · flashcards · glossary · tools · license</span></button>
-      <button type="button" data-group="mine" data-g="mine"><b>Mine</b><span>Pinned cards · my files</span></button>
+      <button type="button" data-group="mine" data-g="mine"><b>Mine</b><span>Pinned · notes · tape · my shop</span></button>
       <button type="button" data-act="share"><b>Share the book</b><span>QR code for a coworker's phone</span></button>
       <button type="button" data-act="settings"><b>Settings</b><span>Look · text size · code · backup · about</span></button>
     </div></div></div>
@@ -931,6 +927,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sheet-bar"><h2 id="setup-title">Set up</h2><button type="button" class="close" id="setup-skip">Skip</button></div>
     <div class="sheet-body">
       <p class="sample">Three questions so the book fits your work. Change any of them later in Settings.</p>
+      <p class="sample"><b>Before you start: this book is not the code.</b> The rules in it are our summaries. The IPC and IRC belong to the International Code Council, and your inspector has the last word.</p>
       <div class="set-grp"><h3>1 · Code I work under</h3>
         <div class="seg" id="setup-code" role="group" aria-label="Code I work under"><button type="button" data-code="ipc21">2021 IPC</button><button type="button" data-code="irc21">2021 IRC (houses)</button><button type="button" data-code="ipc24">2024 IPC</button></div>
         <p class="sample">Utah houses are inspected to the 2021 IRC with Utah amendments; other permits use the IPC.</p></div>
@@ -2182,7 +2179,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td>PE-RT</td><td class="n">F2769</td><td>Raised-temperature polyethylene: <b>not</b> cross-linked, but rated like PEX (100 psi at 180°F, 200 at 73°F). Crimp, clamp or press fittings listed for it; <b>not</b> PEX-a expansion (F1960) fittings. Ask your inspector before you swap it in (PPI, SupplyHouse).</td></tr>
 </tbody></table></div>
   </section>
-  <section data-sec="materials" data-kw="pex uponor viega zurn sharkbite bend radius uv">
+  <section data-sec="materials" data-kw="pex uponor viega zurn sharkbite bend radius uv crimp ring clamp cinch go no-go gauge expansion propex joint">
     <div class="sec-head"><h2>PEX install</h2><small>Manufacturer guides</small></div>
     <div class="x"><table class="t">
       <tbody>
@@ -2195,6 +2192,8 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Expansion</th><td>Leave ⅛"–³⁄₁₆" slack per foot; snake buried lines.</td></tr>
         <tr><th>Chemicals</th><td>Only approved firestop. Keep petroleum or solvent paints, caulks and greases off the pipe.</td></tr>
         <tr><th>Fittings</th><td>Match the fitting to the standard printed on the pipe (F1960, F1807, F2159). See Pipe markings.</td></tr>
+        <tr><th>Crimp &amp; clamp</th><td>Check <b>every</b> crimp with the go/no-go gauge, plus a test crimp at the start of each job. Crimp tools drift.</td></tr>
+        <tr><th>Expansion (ProPEX)</th><td>A gap over 1/16" at the fitting shoulder means it isn't seated: cut 2–3" back and redo it with a new ring.</td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="materials" data-kw="cpvc flowguard cure time solvent">
@@ -3272,8 +3271,24 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>School vs. job</th><td>MTECH teaches the IPC. On a house the inspector enforces the IRC + Utah. Most numbers match; where they don't, this book says so, and the IRC wins on a house.</td></tr>
       </tbody></table></div>
   </section>
+  <section data-sec="code" data-kw="disclaimer not the code not ours copyright icc international code council who owns the code whose code ipc irc ifgc imc nec nfpa trademark endorsed official legal liability warranty at your own risk">
+    <div class="sec-head"><h2>Not the code, and not ours</h2><small>Whose rules these are</small></div>
+    <p class="flag warn-flag">This book is a study and field aid. It is not the code, and the codes it talks about are not ours.</p>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Who owns the codes</th><td>The International Plumbing Code (IPC), International Residential Code (IRC), International Fuel Gas Code (IFGC), International Mechanical Code (IMC) and International Building Code (IBC) are written, published and copyrighted by the <b>International Code Council (ICC)</b>. The National Electrical Code (NEC) belongs to the <b>National Fire Protection Association (NFPA)</b>. Utah's amendments are <b>Utah state law</b>.</td></tr>
+        <tr><th>What's in this book</th><td>Short summaries and section numbers in our own words, so you can find the rule and then read it. It does not reproduce the code text.</td></tr>
+        <tr><th>Not official</th><td>Nobody at the ICC, the NFPA, the State of Utah, DOPL, any city or any manufacturer wrote, reviewed, approved or endorsed this book. Their names are here only to say where a rule comes from.</td></tr>
+        <tr><th>What wins</th><td>The adopted code as your city enforces it, the approved plans, the manufacturer's instructions and your inspector. If this book disagrees with any of them, they are right and the book is wrong.</td></tr>
+        <tr><th>Read the real thing</th><td><b>Inspect → Which code → Code links</b> has the ICC's free read-only copies and the Utah Legislature's own pages.</td></tr>
+        <tr><th>Brands &amp; products</th><td>Product and company names belong to their owners. Numbers from a maker (take-offs, error codes, torque, cure times) come from that maker's published instructions, and the copy that shipped with your part wins.</td></tr>
+        <tr><th>No guarantee</th><td>We check the book and fix mistakes when we find them, but it can be wrong or out of date. Check before you cut, glue or cover anything: the work is yours.</td></tr>
+      </tbody></table></div>
+    <p class="note">Found something wrong? <b>Settings → About</b> has how to reach us.</p>
+  </section>
   <section data-sec="code" data-kw="2021 ipc quick reference section numbers table 909.1 709.1 710.1 704.1 312.2 312.3 312.5 312.9 504.6 504.7 604.8 424.3 305.4 308.5 905.4 903.5 918 1002 cleanout standpipe my code">
     <div class="sec-head"><h2>2021 IPC quick reference</h2><small>Section · rule · house if different</small></div>
+    <p class="note">Our summary, not the code text. The IPC and IRC belong to the International Code Council: read the real thing in <b>Inspect → Which code → Code links</b>.</p>
     <div class="x"><table class="t wrap">
       <thead><tr><th>2021 IPC</th><th>What it says</th><th>House (2021 IRC)</th></tr></thead>
       <tbody>
@@ -3309,6 +3324,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="code" data-kw="2021 ipc 2024 ipc edition difference older permit which code changes vacuum test">
     <div class="sec-head"><h2>2021 IPC vs 2024 IPC</h2><small>Both still on the job</small></div>
+    <p class="note">Our summary, not the code text. The IPC and IRC belong to the International Code Council: read the real thing in <b>Inspect → Which code → Code links</b>.</p>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>The tables here</th><td>DFU, trap-to-vent, slopes, pipe supports and the water/air test values in this book are the <b>same in 2021 and 2024</b>; 2024 adds the vacuum test. Houses still go by the 2021 IRC either way.</td></tr>
@@ -4532,21 +4548,8 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note">Book rules: Prov's 2021 Utah test-out bulletin. Format: Plumbers Training Institute. The current DOPL candidate bulletin wins: <a href="https://utahboi.provexam.com/UtahPlumbing" target="_blank" rel="noopener">exam bulletin ↗</a>.</p>
   </section>
 
-  <!-- ================= MINE ================= -->
-  <section data-sec="mine">
-    <div class="sec-head"><h2>My files</h2><small>Your PDFs and photos</small></div>
-    <form class="up" id="up" hidden>
-      <label class="full" for="f-file">PDF or photo (≤20 MB)<input id="f-file" type="file" accept="application/pdf,image/png,image/jpeg,image/webp" required></label>
-      <label for="f-name">Name<input id="f-name" type="text" placeholder="Lot 14 plumbing plan" maxlength="120"></label>
-      <label for="f-cat">Kind<select id="f-cat">
-        <option>Plans</option><option>Hole chart</option><option>Install guide</option>
-        <option>Code notes</option><option>Spec sheet</option><option>Inspection</option><option>Other</option></select></label>
-      <div class="full act"><button class="btn" type="submit" id="f-go">Add to book</button><span class="status" id="f-status" role="status"></span></div>
-    </form>
-    <div class="x"><table class="t"><tbody id="list-mine"><tr><td class="sub">Loading your files…</td></tr></tbody></table></div>
-  </section>
 
-  <footer><b>UTAH PLUMBERS DIGITAL HANDBOOK</b> · Built by Deklan Patrick Kelley, Mountain Side Plumbing · <button type="button" class="about-go" id="about-go">About &amp; contact</button><br>Residential. A study and field aid, not the code: the adopted code, approved plans, manufacturer instructions and your inspector always win. Code text belongs to the ICC and the State of Utah; product guides belong to their makers. Facts checked October 2026; Utah code editions, licensing and rebates rechecked November 2026.</footer>
+  <footer><b>UTAH PLUMBERS DIGITAL HANDBOOK</b> · Built by Deklan Patrick Kelley, Mountain Side Plumbing · <button type="button" class="about-go" id="about-go">About &amp; contact</button><br><b>Not the code, and not ours.</b> The IPC, IRC and the other model codes belong to the International Code Council, Utah's amendments are state law, and product guides belong to their makers. This book is a study and field aid that sums them up in our own words; none of them wrote or approved it. The adopted code, approved plans, manufacturer instructions and your inspector always win. <button type="button" class="about-go" data-go="inspect|code|Not the code, and not ours">Whose rules these are</button><br>Residential. Facts checked October 2026; Utah code editions, licensing and rebates rechecked November 2026.</footer>
   </div>
 </div>
 
@@ -4554,7 +4557,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 /* CONTENTS
    1 Helpers · 2 Links + glossary · 3 Phone numbers · 4 Navigation, search, theme · 5 Toolbar tuck
    6 Converter, pressure chart, water in pipe · 7 Offset calculator + drawings · 8 Feet-inch, take-offs, slope, velocity, expansion, tank
-   9 DFU · 10 Gas sizer, altitude, water heater · 11 Stud fit · 12 Inspection checklist · 13 Flashcards · 14 My files */
+   9 DFU · 10 Gas sizer, altitude, water heater · 11 Stud fit · 12 Inspection checklist · 13 Flashcards */
 
 /* ---------- 1 helpers ---------- */
 const $ = id => document.getElementById(id);
@@ -5015,6 +5018,7 @@ const GLOSS = [
   ["Correction notice","code","Inspector's list of what failed. Fix it and call for a re-inspection."],
   ["DOPL","code","Utah Division of Professional Licensing: issues plumbing licenses."],
   ["IFGC","code","International Fuel Gas Code (houses use IRC chapter 24 instead)."],
+  ["ICC","code","International Code Council: the private group that writes, publishes and owns the IPC, IRC, IFGC and IMC. Utah adopts its books into law with amendments. This book is not from the ICC."],
   ["IPC","code","International Plumbing Code: what MTECH teaches; used for other buildings."],
   ["IRC","code","International Residential Code: the code for one- and two-family houses."],
   ["Listed","code","Tested and certified by an approved agency to a standard, and marked that way."],
@@ -5284,14 +5288,12 @@ const GROUPS = {
   contacts:[["emergency","Call"],["techlines","Tech lines"],["houses","Supply houses"]],
   site:    [["wxnow","Weather"],["safety","Safety"],["power","Electrical"]],
   learn:   [["start","Start here"],["how","How it works"],["facts","Fact file"],["study","Flashcards"],["exam","Practice test"],["words","Glossary"],["tools","Tools"],["career","License"]],
-  mine:    [["pins","Pinned"],["notes","Notes"],["tape","Tape"],["shop","My shop"],["mine","My files"]]
+  mine:    [["pins","Pinned"],["notes","Notes"],["tape","Tape"],["shop","My shop"]]
 };
 const GNAME = {home:"Home",calc:"Calc",rough:"Build",mech:"Service",trim:"Trim",inspect:"Inspect",contacts:"Contacts",site:"Jobsite",learn:"Learn",mine:"Mine"};
 let MORE_G = ["inspect","contacts","site","learn","mine"];   /* phones: these live behind More (Settings → Tabs can change it) */
 const BOOK_URL = "https://felleykam.github.io/Plumbing-Booklet/";   /* card links point at the installable copy */
 const groupOf = sec => Object.keys(GROUPS).find(g => GROUPS[g].some(([s]) => s === sec));
-/* My files only works in the claude.ai copy: everywhere else it's a dead end, so it leaves the book (its elements stay for the code) */
-if (!window.claude){ GROUPS.mine = GROUPS.mine.filter(([k]) => k !== "mine"); const mf = document.querySelector('.book > section[data-sec="mine"]'); if (mf){ mf.hidden = true; document.body.appendChild(mf); } }
 const SECTIONS = [...document.querySelectorAll(".book > section[data-sec]")];
 const book = document.querySelector(".book");
 /* long pages (6 or more cards) get an "On this page" list on top: tap a name to drop to that card. It starts folded; opened once, it stays open. */
@@ -5355,7 +5357,7 @@ function inView(sec){
   if (nav.group === "mine"){
     if (nav.sub === "notes") return sec.dataset.note === "1" || sec.id === "notes-help";
     if (nav.sub === "shop") return sec.dataset.shop === "1" || sec.id === "shop-help";
-    if (nav.sub === "tape" || nav.sub === "mine") return sec.dataset.sec === nav.sub;
+    if (nav.sub === "tape") return sec.dataset.sec === "tape";
     return sec.dataset.pin === "1" || sec.dataset.sec === "pins";
   }
   return sec.dataset.g === nav.group && nav.sub === sec.dataset.sec;
@@ -5620,7 +5622,7 @@ function pinNote(){
   $("pins-note").innerHTML = n ? `<b>${n}</b> pinned. Tap a gold <b>★</b> to unpin. Pins are saved on this device.` : `Tap the <b>☆</b> on any card's header to pin it here. Good for the cards you open every day: your city, the offset calculator, rough-in heights.`;
 }
 SECTIONS.forEach(sec => {
-  if (["pins","mine","notes","tape","shop"].includes(sec.dataset.sec) || sec.id === "home-card") return;
+  if (["pins","notes","tape","shop"].includes(sec.dataset.sec) || sec.id === "home-card") return;
   const id = sec.dataset.sec + ":" + slug(sec.querySelector("h2").textContent), head = sec.querySelector(".sec-head"), t = esc(sec.querySelector("h2").textContent);
   sec.dataset.pid = id; if (PINS.has(id)) sec.dataset.pin = "1";
   head.insertAdjacentHTML("beforeend", `<button type="button" class="pin" aria-pressed="${PINS.has(id)}" aria-label="Pin ${t} to Mine">${PINS.has(id) ? "★" : "☆"}</button><button type="button" class="cmenu" aria-haspopup="menu" aria-label="${t}: link, share, print">⋯</button>`);
@@ -7653,7 +7655,7 @@ const CARDS = [
   ["Supply","PEX ≤1\" horizontal support spacing?","32\"","PEX softens and sags when hot. Close supports keep it from drooping and kinking."],
   ["Supply","Copper ≤1¼\" horizontal support spacing?","6 ft","Copper is stiff, so it can span farther between hangers."],
   ["Supply","ABS / PVC horizontal support spacing?","4 ft","Plastic DWV sags between supports. A sag holds water and kills your slope."],
-  ["Underground","Water service depth vs. frost line?","12\" deep and 6\" below frost (30\" frost here, so ≈36\")","The frost line is how deep the ground freezes. The 6 in margin keeps the service out of it in a hard winter."],
+  ["Supply","Water service depth vs. frost line?","12\" deep and 6\" below frost (30\" frost here, so ≈36\")","The frost line is how deep the ground freezes. The 6 in margin keeps the service out of it in a hard winter."],
   ["Math","Travel for a 12\" offset with two 45s?","≈17\" (12 × 1.414 = 16.97)","With 45s, travel = offset ÷ sin 45° = offset × 1.414."],
   ["Math","Fall over 40 ft at ¼\"/ft?","10\" (feet ÷ 4)","¼ in of fall per foot × 40 ft = 10 in."],
   ["Math","psi from a 10 ft column of water?","≈4.3 psi (0.433 per ft)","A 1 in square column of water 1 ft tall weighs 0.433 lb."],
@@ -7664,10 +7666,10 @@ const CARDS = [
   ["Utah","Pipe color for pressurized irrigation (PI)?","Purple (blue = potable, green = sewer)","Colors stop someone from tapping untreated water thinking it's drinking water."],
   ["Utah","Navien NPE-2 altitude setting at 4,500 ft?","Installer menu 1.2.14 → 2 (2,000–5,400 ft)","Thinner air up here. The setting matches fan speed and gas to the air so it burns clean."],
   ["Utah","Softener regen drain connects how?","Through an air gap to an indirect receptor","Without the air gap, a sewer backup could siphon into the softener and on into the house water."],
-  ["PEX","ProPEX joint: gap at the fitting shoulder that means redo it?","More than 1/16\": cut 2–3\" back, new ring","A gap means the PEX isn't seated full depth on the fitting. It can leak or pull off later behind a wall."],
-  ["PEX","How often do you check crimps with the go/no-go gauge?","Every crimp, plus a test crimp at the start of each job","Crimp tools drift out of adjustment. A bad crimp leaks behind drywall where nobody sees it."],
-  ["Underground","Water service and sewer in one trench?","Water on a solid shelf ≥12\" above the sewer (or 5 ft apart)","A leaking sewer below a water line can get pulled into it during a pressure drop. Height and distance keep them apart."],
-  ["Underground","Minimum water service size?","¾\"","Smaller pipe can't deliver a house's flow over a long run without too much pressure loss."],
+  ["Materials","ProPEX joint: gap at the fitting shoulder that means redo it?","More than 1/16\": cut 2–3\" back, new ring","A gap means the PEX isn't seated full depth on the fitting. It can leak or pull off later behind a wall."],
+  ["Materials","How often do you check crimps with the go/no-go gauge?","Every crimp, plus a test crimp at the start of each job","Crimp tools drift out of adjustment. A bad crimp leaks behind drywall where nobody sees it."],
+  ["Supply","Water service and sewer in one trench?","Water on a solid shelf ≥12\" above the sewer (or 5 ft apart)","A leaking sewer below a water line can get pulled into it during a pressure drop. Height and distance keep them apart."],
+  ["Supply","Minimum water service size?","¾\"","Smaller pipe can't deliver a house's flow over a long run without too much pressure loss."],
   ["Fixtures","Toilet center to side wall, minimum?","15\"","15 in from center gives a seated person room for hips and elbows."],
   ["Fixtures","Clear space in front of a toilet?","21\"","Room for knees and to stand up."],
   ["Fixtures","Minimum shower size?","900 in², and a 30\" circle must fit","Room to turn and wash without hitting the walls. A 30 in circle is about shoulder width."],
@@ -7768,7 +7770,7 @@ const CARDS = [
   ["Trim","Toilet fill valve CL mark goes where?","At least 1\" above the overflow pipe","That's the anti-siphon height: tank water can't be pulled back into the supply."],
   ["Trim","Toilet refills by itself every few minutes. One easy cause?","Refill tube pushed down inside the overflow, siphoning the tank","Clip it above the overflow. Inside, it acts like a straw and drains the tank."],
   ["Trim","Posi-Temp tub/shower valve height?","32\" above the tub floor; spout 6\"–11\" below the valve","Too far below the valve and you get shower rise."],
-  ["PEX","ProPress ½\" insertion depth mark?","¾\" (¾\" and 1\": ⅞\")","Short of the mark, the O-ring may not be under the press zone and the joint can blow off."],
+  ["Materials","ProPress ½\" insertion depth mark?","¾\" (¾\" and 1\": ⅞\")","Short of the mark, the O-ring may not be under the press zone and the joint can blow off."],
   ["Materials","95/5 solder melting range?","452–464°F","Tin-antimony melts in a narrow range, so it flows fast and needs tight-fitting joints."],
   ["Materials","Lead-free means how much lead?","0.25% weighted average of wetted surfaces; solder and flux 0.2%","Since 2014. Before that, fittings could be 8% lead."],
   ["Safety","Trench depth for a protective system? For an engineer's design?","5 ft; 20 ft","Cave-ins kill fast. Deep trenches carry so much soil load that only an engineer can design the support."],
@@ -8879,64 +8881,6 @@ const WX = (() => {
   return {render, due, state: () => ({place, S, T, err})};
 })();
 window.wxRender = WX.render;
-
-/* ---------- 14 my files (online book only) ---------- */
-const mineList = $("list-mine"), statusEl = $("f-status");
-const setStatus = (msg, k) => { statusEl.textContent = msg; statusEl.className = "status" + (k ? " " + k : ""); };
-const fmtSize = b => b > 1048576 ? (b/1048576).toFixed(1)+" MB" : Math.max(1, Math.round(b/1024))+" KB";
-const msgRow = t => `<tr><td class="sub">${t}</td></tr>`;
-function renderMine(docs, canDelete){
-  if (!docs.length){ mineList.innerHTML = msgRow("No files yet. Add a plan set, a hole chart or a photo of a spec sheet; it shows up here on any device."); IDX = null; return; }
-  mineList.innerHTML = docs.map(d => { const v = d.data();
-    return `<tr data-search="${esc((v.name+" "+v.kind).toLowerCase())}">
-      <td class="k">${esc(v.kind)}</td>
-      <td><a href="/_blob/${esc(v.asset)}" target="_blank" rel="noopener">${esc(v.name)} ↗</a> <span class="sub">· ${v.type === "application/pdf" ? "PDF" : "Photo"} · ${esc(fmtSize(v.size||0))} · ${esc(new Date(v.added).toLocaleDateString())}</span></td>
-      <td>${canDelete ? `<button type="button" class="del" data-id="${esc(d.id)}" data-asset="${esc(v.asset)}">Remove</button>` : ""}</td></tr>`;
-  }).join("");
-  IDX = null; apply();
-}
-(async () => {
-  const use = n => (window.claude && claude.use) ? claude.use(n).catch(() => null) : Promise.resolve(null);
-  const db = await use("db");
-  if (!db){
-    mineList.innerHTML = msgRow("My files lives in the online book on claude.ai. Open the book's claude.ai link to add or view files.");
-    return;
-  }
-  const assets = await use("assets");
-  const col = db.collection("files");
-  col.orderBy("added","desc").onSnapshot(s => renderMine(s.docs, !!assets), () => { mineList.innerHTML = msgRow("Couldn't load your files. Reload to try again."); });
-  if (!assets) return;
-  const form = $("up"); form.hidden = false;
-  const fileIn = $("f-file"), nameIn = $("f-name"), goBtn = $("f-go");
-  fileIn.addEventListener("change", () => { const f = fileIn.files[0]; if (f && !nameIn.value) nameIn.value = f.name.replace(/\.[^.]+$/, ""); });
-  form.addEventListener("submit", async e => {
-    e.preventDefault();
-    const f = fileIn.files[0];
-    if (!f){ setStatus("Pick a file first.", "err"); return; }
-    if (f.size > 20*1024*1024){ setStatus("Over 20 MB. Split or compress it.", "err"); return; }
-    goBtn.disabled = true; setStatus("Uploading…");
-    try {
-      const type = f.type || (/\.pdf$/i.test(f.name) ? "application/pdf" : "");
-      const res = await assets.upload(f, type ? {type} : undefined);
-      await col.add({ asset: res.id, name: (nameIn.value.trim() || f.name).slice(0,120), kind: $("f-cat").value, type: res.contentType, size: res.sizeBytes, added: Date.now() });
-      form.reset(); setStatus("Added.", "good");
-    } catch(err){
-      const c = err && err.code;
-      setStatus(c === "too_large" ? "Too big (20 MB max)." : c === "unsupported_type" ? "Only PDF, JPG, PNG or WebP." :
-        c === "quota_or_state" ? "Storage full. Remove an old file first." : c === "rate_limited" ? "Too many uploads. Wait a moment." :
-        "Upload failed. Check signal and try again.", "err");
-    } finally { goBtn.disabled = false; }
-  });
-  mineList.addEventListener("click", async e => {
-    const b = e.target.closest(".del"); if (!b) return;
-    if (!b.classList.contains("confirm")){ b.classList.add("confirm"); b.textContent = "Tap to confirm";
-      setTimeout(() => { b.classList.remove("confirm"); b.textContent = "Remove"; }, 4000); return; }
-    b.disabled = true;
-    try { await col.doc(b.dataset.id).delete(); await assets.delete(b.dataset.asset); }
-    catch(err){ b.disabled = false; b.textContent = "Couldn't remove"; }
-  });
-})();
-
 </script>
 
 <script>
