@@ -438,7 +438,7 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
   .t.cards tbody tr+tr{border-top:1px solid var(--rule)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-@media print{nav.tabs,.tools,.tb .hbtn,.res-bar,.cmenu,.pin,.see-also{display:none!important}body{padding:0}section{break-inside:avoid}
+@media print{nav.tabs,.tools,.tb .hbtn,.res-bar,.cmenu,.pin,.see-also,.otp{display:none!important}body{padding:0}section{break-inside:avoid}
   /* Print this card: just the card, black on white */
   body.print-one .tb,body.print-one .stripe,body.print-one .code-chip,body.print-one footer,body.print-one .no-hits,body.print-one .book > section:not(.print-me){display:none!important}
   body.print-one .book{columns:1}
@@ -615,6 +615,33 @@ body.sheet-open{overflow:hidden}
   --bar:#262B31; --bar-ink:#FFA66B; --hi:#3A2414; --hi-ink:#FFFFFF; --hi-edge:#FF8A3D; --ctl:#AAB2BA; --ul:#FF8A3D; --logo-tile:#FF8A3D; --logo-ink:#0B0D0F; --logo-dot:#FFFFFF;
   --d-bg:#111316; --d-grid:#2C3137; --stripe:repeating-linear-gradient(-45deg,#FF8A3D 0 10px,#0B0D0F 10px 20px)}
 
+:root[data-skin="primer"][data-theme="light"]{
+  --hv:#C4A1FF; --k:#1E1033; --on-k:#FBF7FF; --on-k-sub:#D9CBF0; --paper:#F5F1FB; --sheet:#FFFFFF; --ink:#1A0F2B; --muted:#3C2D55; --rule:#7D6C99; --edge:#2A1746; --zebra:#EEE7F8; --bar:#DDCBFA; --bar-ink:#1A0F2B; --hi:#E3D3FF; --hi-ink:#1A0F2B; --hi-edge:#2A1746; --ctl:#2A1746; --ul:#5B21B6; --logo-tile:#C4A1FF; --logo-ink:#1E1033; --logo-dot:#FFE500;
+  --stripe:repeating-linear-gradient(-45deg,#C4A1FF 0 10px,#1E1033 10px 20px)}
+:root[data-skin="primer"][data-theme="dark"]{
+  --hv:#C4A1FF; --k:#0A0514; --on-k:#F6F0FF; --on-k-sub:#D2C3EA; --paper:#0F081C; --sheet:#180F2A; --ink:#F6F0FF; --muted:#D2C3EA; --rule:#6F5C8F; --edge:#B39AD9; --zebra:#211538; --bar:#22143B; --bar-ink:#CDB0FF; --hi:#33205A; --hi-ink:#FFFFFF; --hi-edge:#C4A1FF; --ctl:#B39AD9; --ul:#C4A1FF; --logo-tile:#C4A1FF; --logo-ink:#0A0514; --logo-dot:#FFE500; --d-bg:#0F081C; --d-grid:#30224A;
+  --stripe:repeating-linear-gradient(-45deg,#C4A1FF 0 10px,#0A0514 10px 20px)}
+
+:root[data-skin="powell"][data-theme="light"]{
+  --hv:#5FE0D8; --k:#062A33; --on-k:#FFFFFF; --on-k-sub:#C6E3E6; --paper:#EEF7F7; --sheet:#FFFFFF; --ink:#061E24; --muted:#1F3A40; --rule:#5F8088; --edge:#0A3640; --zebra:#E2F1F1; --bar:#BFEFEA; --bar-ink:#061E24; --hi:#C5F3EE; --hi-ink:#061E24; --hi-edge:#0A3640; --ctl:#0A3640; --ul:#075059; --logo-tile:#5FE0D8; --logo-ink:#062A33; --logo-dot:#FF9157;
+  --stripe:repeating-linear-gradient(0deg,#5FE0D8 0 4px,#FF9157 4px 7px,#062A33 7px 12px)}
+:root[data-skin="powell"][data-theme="dark"]{
+  --hv:#5FE0D8; --k:#020D10; --on-k:#ECF9F9; --on-k-sub:#B9D9DC; --paper:#041216; --sheet:#0A1E23; --ink:#ECF9F9; --muted:#BFDDE0; --rule:#517A82; --edge:#8ABBC2; --zebra:#10282E; --bar:#0F2A30; --bar-ink:#7FEBE3; --hi:#123C43; --hi-ink:#FFFFFF; --hi-edge:#5FE0D8; --ctl:#8ABBC2; --ul:#5FE0D8; --logo-tile:#5FE0D8; --logo-ink:#020D10; --logo-dot:#FFB088; --d-bg:#041216; --d-grid:#1A3A41;
+  --stripe:repeating-linear-gradient(0deg,#5FE0D8 0 4px,#FF9157 4px 7px,#020D10 7px 12px)}
+
+:root[data-skin="aspen"][data-theme="light"]{
+  --hv:#FFC93C; --k:#2A2108; --on-k:#FFFBEF; --on-k-sub:#EADFBE; --paper:#FAF6E8; --sheet:#FFFFFF; --ink:#211A06; --muted:#463A16; --rule:#8C7D4E; --edge:#3A2E0C; --zebra:#F3EDD8; --bar:#FBE3A0; --bar-ink:#211A06; --hi:#FFE9A8; --hi-ink:#211A06; --hi-edge:#3A2E0C; --ctl:#3A2E0C; --ul:#6B4500; --logo-tile:#FFC93C; --logo-ink:#2A2108; --logo-dot:#FFFFFF;
+  --stripe:repeating-linear-gradient(90deg,#FFFFFF 0 6px,#2A2108 6px 8px,#FFC93C 8px 18px)}
+:root[data-skin="aspen"][data-theme="dark"]{
+  --hv:#FFC93C; --k:#0B0902; --on-k:#FFF9E6; --on-k-sub:#E3D7AE; --paper:#131004; --sheet:#1D1808; --ink:#FFF9E6; --muted:#E3D7AE; --rule:#85753F; --edge:#CDBB7C; --zebra:#27200B; --bar:#2A220A; --bar-ink:#FFD566; --hi:#3D310C; --hi-ink:#FFFFFF; --hi-edge:#FFC93C; --ctl:#CDBB7C; --ul:#FFC93C; --logo-tile:#FFC93C; --logo-ink:#0B0902; --logo-dot:#FFFFFF; --d-bg:#131004; --d-grid:#3A3114;
+  --stripe:repeating-linear-gradient(90deg,#FFFFFF 0 6px,#0B0902 6px 8px,#FFC93C 8px 18px)}
+
+:root[data-skin="alpenglow"][data-theme="light"]{
+  --hv:#FF9EC4; --k:#33101F; --on-k:#FFF5F9; --on-k-sub:#F0CCDA; --paper:#FBF1F5; --sheet:#FFFFFF; --ink:#2A0C19; --muted:#55263A; --rule:#99697C; --edge:#421528; --zebra:#F6E6EC; --bar:#FFCBDF; --bar-ink:#2A0C19; --hi:#FFD6E6; --hi-ink:#2A0C19; --hi-edge:#421528; --ctl:#421528; --ul:#8C1247; --logo-tile:#FF9EC4; --logo-ink:#33101F; --logo-dot:#FFE08A;
+  --stripe:repeating-linear-gradient(135deg,#FF9EC4 0 8px,#FFE08A 8px 12px,#33101F 12px 22px)}
+:root[data-skin="alpenglow"][data-theme="dark"]{
+  --hv:#FF9EC4; --k:#12040A; --on-k:#FFF0F6; --on-k-sub:#EBC4D4; --paper:#19070F; --sheet:#250D18; --ink:#FFF0F6; --muted:#EBC4D4; --rule:#93586E; --edge:#D99AB3; --zebra:#30121F; --bar:#341322; --bar-ink:#FFB0CF; --hi:#4A1A30; --hi-ink:#FFFFFF; --hi-edge:#FF9EC4; --ctl:#D99AB3; --ul:#FF9EC4; --logo-tile:#FF9EC4; --logo-ink:#12040A; --logo-dot:#FFE08A; --d-bg:#19070F; --d-grid:#3F1D2C;
+  --stripe:repeating-linear-gradient(135deg,#FF9EC4 0 8px,#FFE08A 8px 12px,#12040A 12px 22px)}
 /* Night shift: red light only, so your eyes stay dark-adapted in a crawlspace or a dark basement at 6 a.m. Always dark. */
 :root[data-skin="night"]{
   --hv:#FF6359; --k:#000000; --on-k:#FF7066; --on-k-sub:#FF6359; --paper:#000000; --sheet:#070000; --ink:#FF7066; --muted:#FF6359; --rule:#4A0E0B; --edge:#A3231C; --zebra:#120000;
@@ -696,6 +723,10 @@ details.explain p{margin:6px 0 0}
 @media (min-width:760px){nav.tabs .more-tab{display:none}}
 .card-h{margin:0;padding:10px 12px 4px;font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--rule)}
 details.fold{border-top:1px solid var(--rule)}
+.otp{margin:0 0 16px;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);overflow:hidden;break-inside:avoid}
+.otp details.fold{border-top:0}
+.otp-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 12px 12px}
+.otp-list button{appearance:none;font-family:var(--body);font-size:15px;font-weight:700;line-height:1.2;text-transform:none;letter-spacing:0;text-align:left;min-height:44px;padding:4px 10px;border:1px solid var(--rule);border-radius:var(--r);background:var(--zebra);color:var(--ink);cursor:pointer}
 details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:.04em;text-transform:uppercase}
 .see-also{display:flex;flex-wrap:wrap;align-items:center;gap:0 10px}
 .see-k{font-family:var(--display);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -788,6 +819,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
           <button type="button" data-s="redrock"><span class="sw" style="--a:#F7EEE3;--b:#FF9157;--c:#2E1208"></span><span class="nm">Red Rock</span><small>Southern Utah sandstone.</small></button>
           <button type="button" data-s="wasatch"><span class="sw" style="--a:#F1F6F4;--b:#9BE8C4;--c:#0F2E22"></span><span class="nm">Wasatch</span><small>Pine green and snow.</small></button>
           <button type="button" data-s="steel"><span class="sw" style="--a:#E8EBEE;--b:#FF8A3D;--c:#15181C"></span><span class="nm">Galvanized</span><small>Steel gray, safety orange.</small></button>
+          <button type="button" data-s="primer"><span class="sw" style="--a:#F5F1FB;--b:#C4A1FF;--c:#1E1033"></span><span class="nm">Primer</span><small>Purple primer, like the can.</small></button>
+          <button type="button" data-s="powell"><span class="sw" style="--a:#EEF7F7;--b:#5FE0D8;--c:#062A33"></span><span class="nm">Lake Powell</span><small>Turquoise water, sandstone.</small></button>
+          <button type="button" data-s="aspen"><span class="sw" style="--a:#FAF6E8;--b:#FFC93C;--c:#2A2108"></span><span class="nm">Aspen</span><small>Fall gold on bark.</small></button>
+          <button type="button" data-s="alpenglow"><span class="sw" style="--a:#FBF1F5;--b:#FF9EC4;--c:#33101F"></span><span class="nm">Alpenglow</span><small>Pink light on the peaks.</small></button>
           <button type="button" data-s="night"><span class="sw" style="--a:#000000;--b:#FF6359;--c:#170000"></span><span class="nm">Night shift</span><small>Red only. Keeps night vision.</small></button>
         </div></div>
       <div class="row" id="vest-row"><b>Vest color</b>
@@ -1150,6 +1185,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="layout" data-kw="jump it jumper offset over around obstacle duct beam pipe in the way clearance hop double offset go over go around setback">
     <div class="sec-head"><h2>Jump it</h2><small>Over or around a duct, beam or pipe</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> a duct, beam or another pipe is in the way, and your pipe has to climb over or around it and come back to the same line.</p><p><b>The idea:</b> it's two offsets back to back. Enter how far the obstacle sticks past your pipe's centerline, how wide it is and the gap you want. You get how far to offset, where each fitting center lands, and the cut length once you add a take-off.</p></div></details>
     <div class="calc">
       <label for="ju-h">H: obstacle reaches past the pipe's centerline<input id="ju-h" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="6"></label>
       <label for="ju-w">Obstacle width <i>(along the run)</i><input id="ju-w" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10"></label>
@@ -1249,6 +1285,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="grade" data-kw="grade slope fall laser elevation check quarter eighth inch per foot percent drain fall pitch">
     <div class="sec-head"><h2>Slope &amp; fall</h2><small>Find the fall, or check the grade you got</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you need to know how much a drain drops over a run, or you shot two elevations and want to know if the grade you got is enough.</p><p><b>The idea:</b> fall = run × slope. A 30 ft run at ¼" per foot drops 7½". <b>Check grade</b> works it backward: the fall you measured over the run gives the slope per foot.</p></div></details>
     <details class="more fold"><summary>See it drawn</summary><figure class="cut"><svg viewBox="0 0 400 150" role="img" aria-label="A drain pipe drops from a level line over a 10 foot run. At a quarter inch per foot it falls two and a half inches."><defs><marker id="ar-sl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-dim)"/></marker></defs><g font-size="12" fill="var(--d-text)"><path d="M60 40H318" stroke="var(--d-dim)" stroke-width="1.5" stroke-dasharray="6 4"/><text x="62" y="32" font-size="11">level</text>
 <path d="M60 40L300 85" stroke="var(--d-pipe)" stroke-width="10" stroke-linecap="round"/>
 <path d="M300 85H324M60 50V118M300 92V118" stroke="var(--d-dim)" stroke-width="1"/>
@@ -1294,6 +1331,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="grade" data-kw="bore line bore holes drill holes through studs joists slope grade drop per stud hole height layout chalk line laser drain through framing">
     <div class="sec-head"><h2>Bore line</h2><small>Where each hole goes so the drain keeps grade</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> a drain runs through a row of studs or joists, and each hole has to sit a little lower than the last one to hold grade.</p><p><b>The idea:</b> the members are a set distance apart, so each hole drops by slope × spacing. You get the height of every hole center, and a warning if the hole is too big for that stud or joist.</p></div></details>
     <div class="calc">
       <label for="bl-mem">Drilling through<select id="bl-mem"></select></label>
       <label for="bl-pipe">Pipe<select id="bl-pipe"></select></label>
@@ -1359,6 +1397,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="sizing" data-kw="ejector sump pump basin pit cycle run time pump down gallons per inch tdh total dynamic head lift friction discharge velocity 2 ft/s check valve gate valve sewage">
     <div class="sec-head"><h2>Ejector &amp; sump pump</h2><small>Cycle, velocity and head</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you're picking a pump for a basement bath or a sump, or checking one that short-cycles or clogs.</p><p><b>The idea:</b> the pump has to beat the lift plus the friction in the discharge pipe (together: total dynamic head, TDH) while moving water fast enough to carry solids, 2 ft/s or more. The basin should also hold enough that the pump isn't starting every few seconds.</p></div></details>
     <div class="calc">
       <label for="ej-d">Basin diameter <i>(inside)</i><input id="ej-d" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="18"></label>
       <label for="ej-pd">Pump-down <i>(on to off)</i><input id="ej-pd" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10"></label>
@@ -1396,8 +1435,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </details>
     <p class="note"><span class="badge why">WHY</span> Thin air holds less oxygen per ft³, so full input can't burn clean (soot, carbon monoxide). <b>The maker's altitude instructions win</b>: many appliances sold here are already listed or set up for altitude.</p>
   </section>
-  <section data-sec="water">
+  <section data-sec="water" data-kw="pressure height head static elevation psi per foot 0.433 2.31 upstairs floors pressure loss rise standpipe">
     <div class="sec-head"><h2>Pressure vs. height</h2><small>1 ft = 0.433 psi · 1 psi = 2.31 ft</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> a fixture sits above or below where you read the gauge: an upstairs shower, a hose bibb down the hill, a standpipe on a water test.</p><p><b>The idea:</b> every foot of height costs 0.433 psi going up and adds it going down. Ten feet up is about 4.3 psi less, before any friction.</p></div></details>
     <div class="calc">
       <label for="h-ft">Height <i>(20' or 240")</i><input id="h-ft" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="20'"></label>
       <div class="ans" id="h-ans" role="status" aria-atomic="true"></div>
@@ -1429,8 +1469,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <details class="math"><summary>Show the math</summary><ol id="pf-math"></ol></details>
     <p class="note">One row per pipe size, from the start to the fixture. <b>Flow</b> = what runs through that section at once (a lav ≈ 1.5 gpm, a shower ≈ 2 in Utah, a kitchen ≈ 1.8–2.2, a tub filler or hose bibb ≈ 4–6). Start with the <b>static</b> pressure you gauged at the hose bibb or setter. Fitting allowances: copper from the Copper Development Association table (soldered fittings, C 150); PEX from Uponor ProPEX EP spec sheets (expansion fittings narrow the bore, so a PEX elbow costs about 10 ft of pipe). Minimum pressures: IPC Table 604.3. A learning tool: code sizing is IRC P2903 / IPC 604, and the fixture maker's minimum wins.</p>
   </section>
-  <section data-sec="water">
+  <section data-sec="water" data-kw="water in the pipe gallons per foot volume pipe capacity hot water wait time how long weight drain down">
     <div class="sec-head"><h2>Water in the pipe</h2><small>From actual ID</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you want to know how much water a run holds: how long the hot takes to show up, how much drains down, how heavy a full pipe is.</p><p><b>The idea:</b> gallons = the pipe's inside area × its length. The wait for hot water is the gallons sitting in the line ÷ the faucet's gpm.</p></div></details>
     <div class="calc">
       <label for="p-size">Pipe<select id="p-size"></select></label>
       <label for="p-len">Length <i>(50' or 600")</i><input id="p-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="50'"></label>
@@ -1444,6 +1485,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="water" data-kw="velocity flow speed ft/s gpm pipe noise erosion">
     <div class="sec-head"><h2>Flow velocity</h2><small>gpm → feet per second</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> a line is noisy, or you want to check that a pipe isn't too small for the flow going through it.</p><p><b>The idea:</b> the same gpm moves faster through a smaller pipe. Fast water whistles, hammers and wears out copper, so the answer tells you when it's over the usual limits.</p></div></details>
     <div class="calc">
       <label for="v-pipe">Pipe<select id="v-pipe"></select></label>
       <label for="v-gpm">Flow (gpm)<input id="v-gpm" type="number" inputmode="decimal" min="0" step="any" value="8"></label>
@@ -1454,6 +1496,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="water" data-kw="hydronic hydronics boiler radiant heat baseboard btu gpm delta t temperature drop 500 glycol loop zone circulator pump pipe size heating">
     <div class="sec-head"><h2>Hydronic flow</h2><small>BTU → gpm → pipe size</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you're sizing a boiler loop, a zone or the feed to a radiant manifold: how many gpm carry the heat, and what pipe carries that gpm quietly.</p><p><b>The idea:</b> gpm = BTU/hr ÷ (500 × ΔT). ΔT is the supply temperature minus the return; 20°F is common. Then use the smallest pipe that stays at 4 ft/s or less.</p></div></details>
     <div class="calc">
       <label for="hy-btu">Heat load <i>(BTU/hr)</i><input id="hy-btu" type="number" inputmode="decimal" min="0" step="any" value="40000"></label>
       <label for="hy-dt">ΔT <i>(°F supply − return)</i><input id="hy-dt" type="number" inputmode="decimal" min="0" step="any" value="20"></label>
@@ -1477,6 +1520,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="water" data-kw="thermal expansion growth pex cpvc pvc abs copper long run hot loop offset">
     <div class="sec-head"><h2>Pipe expansion</h2><small>How much a run grows</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> a long hot run needs slack, a loop or an offset, or a pipe ticks and pulls on its hangers when it heats up.</p><p><b>The idea:</b> pipe grows as it warms: its length × the temperature change × the material's rate. Plastic grows several times more than copper.</p></div></details>
     <div class="calc">
       <label for="te-mat">Pipe<select id="te-mat"></select></label>
       <label for="te-len">Run <i>(50' or 600")</i><input id="te-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="50'"></label>
@@ -1488,6 +1532,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="water" data-kw="tank volume gallons cylinder round rectangle tub sump pit how many gallons">
     <div class="sec-head"><h2>Tank &amp; tub volume</h2><small>Gallons from measurements</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you need gallons from a tape measure: a tub, a pit, a tank or a pan.</p><p><b>The idea:</b> cubic inches ÷ 231 = gallons, and each gallon weighs 8.34 lb, so you also see what the floor is holding.</p></div></details>
     <div class="mode" id="tv-mode" role="group" aria-label="Shape">
       <button type="button" data-tv="round" aria-pressed="true">Round</button>
       <button type="button" data-tv="box" aria-pressed="false">Rectangular</button>
@@ -1765,7 +1810,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note">Solid lumber only. I-joists, LVL and trusses: see below.</p>
   </section>
-  <section data-sec="framing">
+  <section data-sec="framing" data-kw="i-joist tji bci lpi web hole knockout flange never cut engineered joist hole size">
     <div class="sec-head"><h2>I&#8209;joist holes</h2><small>Web only · brand's own chart</small></div>
     <div class="x"><table class="t">
       <tbody>
@@ -1781,7 +1826,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td><b>LPI</b><div class="sub">LP SolidStart</div></td><td>Anywhere in web, ignore knockouts, ¼" off flanges.</td><td>Size and location from LP tables (pp. 14–15)</td><td>2× larger hole or 12" o.c., whichever is more</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="framing">
+  <section data-sec="framing" data-kw="beam lvl lsl glulam parallam microllam truss engineered lumber drill notch hole never cut header">
     <div class="sec-head"><h2>Beams, LVL, LSL, trusses</h2><small>Summary · confirm on chart</small></div>
     <div class="x"><table class="t">
       <thead><tr><th>Product</th><th>Allowed</th></tr></thead>
@@ -1793,7 +1838,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td><b>Open-web truss</b></td><td>Never cut any chord or web without an engineer (IRC R502.11.3). Run pipe through the openings.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="framing">
+  <section data-sec="framing" data-kw="hole chart guide pdf weyerhaeuser tji boise cascade bci pacific woodtech lp allowable holes specifier">
     <div class="sec-head"><h2>Hole charts &amp; guides</h2><small>Official PDFs</small></div>
     <div class="x"><table class="t"><tbody id="list-holes"></tbody></table></div>
   </section>
@@ -1835,7 +1880,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Radon</th><td>About 1 in 3 Utah homes tested is over the EPA action level (Utah DEQ). Seal every slab penetration.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="drains" data-kw="drain trap arm trap-to-vent distance slope fall cleanout clearance trap seal standpipe san tee combo weir">
+  <section data-sec="drains" data-kw="drain trap arm trap-to-vent distance slope fall cleanout clearance cleanout spacing where cleanouts go every 100 ft trap seal standpipe san tee combo weir">
     <div class="sec-head"><h2>Drains, traps &amp; trap arms</h2><small>IPC 704 · 909 · IRC P3005 · P3105</small></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Pipe / trap</th><th>Min slope</th><th>Max trap arm<br>(trap to vent)</th></tr></thead>
@@ -1859,7 +1904,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note">Trap arm lengths: IPC Table 909.1 / IRC Table P3105.1, the same in 2021 and 2024. Why the limit exists: <b>Learn → How it works</b>.</p>
   </section>
-  <section data-sec="drains">
+  <section data-sec="drains" data-kw="fixture dfu trap size drain size tub drain shower drain lav kitchen sink toilet washer standpipe floor drain drainage fixture units table 709.1">
     <div class="sec-head"><h2>Fixture DFU &amp; trap size</h2><small>IPC Table 709.1</small></div>
     <div class="x"><table class="t">
       <thead><tr><th>Fixture</th><th>DFU</th><th>Min trap</th></tr></thead>
@@ -1880,7 +1925,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note"><b>Bathroom group</b> = toilet + lav + tub or shower on the same floor level; a bidet and an emergency floor drain are already included. Add fixtures outside that list (a second lav) separately. The IRC also has half-bath, kitchen and laundry groups. <b>Houses: IRC Table P3201.7 wants a 2" shower trap.</b> Unlisted fixtures go by trap size: 1¼" = 1, 1½" = 2, 2" = 3, 3" = 5, 4" = 6.</p>
   </section>
-  <section data-sec="drains">
+  <section data-sec="drains" data-kw="branch stack size dfu capacity horizontal branch interval how many fixtures drain size table 710.1">
     <div class="sec-head"><h2>Branches &amp; stacks</h2><small>Max DFU · IPC Table 710.1(2)</small></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Pipe</th><th>Branch</th><th>Stack, ≤3 intervals</th><th>Stack, &gt;3: total / each</th></tr></thead>
@@ -1893,7 +1938,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note">A branch interval is a story-height section of stack (at least 8 ft) where branches connect.</p>
   </section>
-  <section data-sec="drains">
+  <section data-sec="drains" data-kw="building drain sewer main line size dfu slope capacity 3 inch 4 inch table 710.1">
     <div class="sec-head"><h2>Building drain &amp; sewer</h2><small>Max DFU · IPC Table 710.1(1)</small></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Pipe</th><th>⅛"/ft</th><th>¼"/ft</th><th>½"/ft</th></tr></thead>
@@ -2017,7 +2062,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note">Plastic verticals <b>2" and smaller</b> also need a mid-story guide (IPC 308.5 / IRC P2605.1).</p>
   </section>
-  <section data-sec="supply">
+  <section data-sec="supply" data-kw="flow limit gpm gpf showerhead lav faucet kitchen faucet toilet utah water saving watersense max flow 2.0 1.5 1.28">
     <div class="sec-head"><h2>Fixture flow limits</h2><small>New construction</small></div>
     <div class="x"><table class="t">
       <thead><tr><th>Fixture</th><th>Utah</th><th>Federal</th><th>WaterSense</th></tr></thead>
@@ -2377,6 +2422,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="heaters" data-kw="hot water last how long shower run out tank minutes mixing valve 140 tempering hot share first hour recovery sizing big tub">
     <div class="sec-head"><h2>Hot water that lasts</h2><small>How long before the shower goes cold</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> a customer asks why the shower goes cold, or whether a bigger tank or a hotter setting would fix it.</p><p><b>The idea:</b> a shower mixes tank water with cold, so only part of each gallon comes from the tank. Take the tank's usable gallons, add what the burner makes while the shower runs, and divide by the hot water the shower pulls each minute: that's how long it lasts.</p></div></details>
     <div class="calc">
       <label for="hl-tank">Tank (gal)<input id="hl-tank" type="number" inputmode="decimal" min="1" step="any" value="50"></label>
       <label for="hl-set">Tank set °F<input id="hl-set" type="number" inputmode="decimal" step="any" value="120"></label>
@@ -2489,7 +2535,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <details class="math"><summary>Show the math</summary><ol id="sf-math"></ol></details>
     <p class="note"><span class="badge why">WHY</span> The "48,000-grain" on the box is what the resin holds at the <b>maximum</b> salt dose. Set it to save salt and the same tank holds about two thirds of that. That's why a "too big" softener is usually the right one: it runs efficient and still goes a week. Iron: the common rule adds 4 gpg per 1 ppm. Hardness for your city: <b>Service → Treatment → Utah water</b>, or test it.</p>
   </section>
-  <section data-sec="treat" data-kw="softener settings service salt bridge mush potassium chloride resin life hardness setting regen time 2 am metered demand timer clock not using salt hard water resin beads">
+  <section data-sec="treat" data-kw="softener settings service water softener salt level add salt salt bridge mush potassium chloride resin life hardness setting regen time 2 am metered demand timer clock not using salt hard water resin beads">
     <div class="sec-head"><h2>Softener service</h2><small>Settings · salt · trouble</small></div>
     <div class="x"><table class="t">
       <tbody>
@@ -3257,7 +3303,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note">From ICC's 2024 IPC significant-changes presentation. Confirm the exact wording in the edition your job is under.</p>
   </section>
-  <section data-sec="code">
+  <section data-sec="code" data-kw="code links read online free icc irc ipc ifgc utah code amendments title 15a adopted editions">
     <div class="sec-head"><h2>Code links</h2><small>Free read-only</small></div>
     <div class="x"><table class="t"><tbody id="list-code"></tbody></table></div>
   </section>
@@ -3631,7 +3677,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div></div>
     <p class="note">Sources: OSHA heat illness guidance, EPA asbestos and vermiculite pages, OSHA 1926.404 and .651–.652, IFGC Appendix D.</p>
   </section>
-<section data-sec="safety">
+<section data-sec="safety" data-kw="jobsite safety osha trench shoring fall protection ladder silica concrete dust torch hot work fire watch seguridad">
     <div class="sec-head"><h2>Jobsite safety</h2><small>OSHA 1926</small></div>
     <div class="lang-bar"><button type="button" class="lang-btn" aria-pressed="false">Español</button></div>
     <div class="lang-en"><div class="x"><table class="t">
@@ -3943,6 +3989,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "pex crimp") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Electrical for plumbers. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow.</td></tr>
         <tr><th>Nov 8, 2026 · diagrams</th><td><b>New drawings:</b> water vs. electricity, how a GFCI catches a shock, live-dead-live (Jobsite → Electrical) · how a take-off makes a cut length (Calc → Layout) · slope and fall (Calc → Grade) · a rough-in heights ruler (Build → Fixtures) · inside a tank water heater, air gap vs. RPZ, manifold vs. trunk, a hydronic loop, a softener, static vs. flowing pressure, water hammer, galvanic corrosion and a gas manometer (Learn → How it works).</td></tr>
         <tr><th>Nov 8, 2026 · board</th><td><b>New:</b> Jobsite → Electrical: electricity in plain words, getting power on site, an extension cord chart, generators, test before you touch, power lines, and what to do if someone gets shocked · Electrical flashcards and glossary words. <b>Fixed:</b> Back returns to where you were · a plain number in a feet box (gas sizer, slope, laser) now says it was read as inches, with a one-tap fix · search shows which tab each card is in, and "rinnai 11" or "E-003" finds the one row · tabs remember the last page you were on · tape entries list their inputs and read cleanly · card links keep the card · scald time and the 2029 heat pump rule agree everywhere · one expansion tank card · fitting take-offs moved next to Cut length, with a Save button · "go here" pointers are all tappable · Test log shows what the test must hold · brand buttons on Error codes · My files is gone from the GitHub copy, where it never worked. Pins and notes on moved cards come along.</td></tr>
         <tr><th>Nov 8, 2026 · Utah</th><td><b>Updated:</b> Home shows a countdown to the Nov 30 license renewal · License: renewal fee, late fee and where to renew · Rebates: the toilet rebate closed Nov 1; added Enbridge boiler and combi rebates. Checked: Utah's code law changes again Jan 1, 2027, but only the wildfire code; houses stay on the 2021 IRC and everything else on the 2024 codes.</td></tr>
@@ -4096,7 +4143,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>On its back</th><td>A san tee laid flat throws flow across into the other branch. Use a wye.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="how" data-kw="backflow rpz double check dual check how works">
+  <section data-sec="how" data-kw="backflow test testable tested rpz double check dual check air gap avb pvb vacuum breaker how works">
     <div class="sec-head"><h2>Backflow devices</h2><small>Air gap first, then the stand-ins</small></div>
     <figure class="cut"><svg viewBox="0 0 400 186" role="img" aria-label="Left: a faucet spout hangs above a sink with open air between the spout and the flood rim, at least twice the opening and never under an inch. Right: a reduced pressure zone assembly, two check valves in a row with a relief valve between them that dumps water if a check leaks."><defs><marker id="ar-bf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-dim)"/></marker><marker id="ar-bfc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-cut)"/></marker></defs><g font-size="12" fill="var(--d-text)"><text x="100" y="16" font-size="13" font-weight="700" text-anchor="middle">AIR GAP</text><text x="300" y="16" font-size="13" font-weight="700" text-anchor="middle">RPZ</text>
 <path d="M200 26V176" stroke="var(--d-grid)" stroke-width="1"/>
@@ -4389,7 +4436,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="x"><table class="t"><tbody id="fact-more"></tbody></table></div>
     <p class="note">Every fact here links to where it came from (checked Oct 2026). Study guides are marked as such; the code book, the maker's instructions and your inspector win.</p>
   </section>
-  <section data-sec="study">
+  <section data-sec="study" data-kw="flashcards flash cards study quiz decks practice memorize review">
     <div class="sec-head"><h2>Flashcards</h2><small>Spaced repetition · tap to flip</small></div>
     <div class="fc">
       <div class="fc-meta"><span id="fc-topic">—</span><span id="fc-pos">—</span></div>
@@ -4427,7 +4474,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="x"><table class="t gloss"><tbody id="gloss"></tbody></table></div>
     <p class="note">Tap a topic to narrow the list, or type any word in the search bar. Missing a word? It's a good one to ask your journeyman, then add.</p>
   </section>
-  <section data-sec="career">
+  <section data-sec="career" data-kw="license journeyman residential apprentice hours classroom dopl renew renewal fee continuing education ce exam school mtech upgrade">
     <div class="sec-head"><h2>Path to a license</h2><small>Utah DOPL · R156-55c</small></div>
     <div class="x"><table class="t">
       <thead><tr><th>License</th><th>Classroom</th><th>OJT as apprentice</th></tr></thead>
@@ -4476,7 +4523,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="x"><table class="t"><tbody id="list-mine"><tr><td class="sub">Loading your files…</td></tr></tbody></table></div>
   </section>
 
-  <footer><b>UTAH PLUMBERS DIGITAL HANDBOOK</b> · Built by Deklan Patrick Kelley, Mountain Side Plumbing · <button type="button" class="about-go" id="about-go">About &amp; contact</button><br>Residential. A study and field aid, not the code: the adopted code, approved plans, manufacturer instructions and your inspector always win. Code text belongs to the ICC and the State of Utah; product guides belong to their makers. Facts checked October 2026.</footer>
+  <footer><b>UTAH PLUMBERS DIGITAL HANDBOOK</b> · Built by Deklan Patrick Kelley, Mountain Side Plumbing · <button type="button" class="about-go" id="about-go">About &amp; contact</button><br>Residential. A study and field aid, not the code: the adopted code, approved plans, manufacturer instructions and your inspector always win. Code text belongs to the ICC and the State of Utah; product guides belong to their makers. Facts checked October 2026; Utah code editions, licensing and rebates rechecked November 2026.</footer>
   </div>
 </div>
 
@@ -5224,6 +5271,16 @@ const groupOf = sec => Object.keys(GROUPS).find(g => GROUPS[g].some(([s]) => s =
 if (!window.claude){ GROUPS.mine = GROUPS.mine.filter(([k]) => k !== "mine"); const mf = document.querySelector('.book > section[data-sec="mine"]'); if (mf){ mf.hidden = true; document.body.appendChild(mf); } }
 const SECTIONS = [...document.querySelectorAll(".book > section[data-sec]")];
 const book = document.querySelector(".book");
+/* long pages (6 or more cards) get an "On this page" list on top: tap a name to drop to that card. It starts folded; opened once, it stays open. */
+book.insertAdjacentHTML("afterbegin", `<nav class="otp" id="otp" aria-label="On this page" hidden></nav>`);
+function otpDraw(searching){
+  const el = $("otp"), vis = searching || nav.group === "mine" || nav.group === "home" ? [] : SECTIONS.filter(x => !x.hidden);
+  if (vis.length < 6){ el.hidden = true; el.dataset.k = ""; return; }
+  const k = nav.group + "/" + nav.sub + "/" + vis.length; el.hidden = false; if (el.dataset.k === k) return; el.dataset.k = k;
+  el.innerHTML = `<details class="fold"${store.get("jpb-otp", 0) ? " open" : ""}><summary>On this page · ${vis.length} cards</summary><div class="otp-list">${vis.map(x => `<button type="button" data-otp="${SECTIONS.indexOf(x)}">${esc(x.querySelector("h2").textContent)}</button>`).join("")}</div></details>`;
+  el.firstChild.addEventListener("toggle", e => store.set("jpb-otp", e.target.open ? 1 : 0));
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-otp]"); if (b && SECTIONS[+b.dataset.otp]) jumpToSec(SECTIONS[+b.dataset.otp], null, true); });
 let lastOrder = SECTIONS.slice(), hiddenRows = [];   /* cards start in book order; rows the last search hid */
 SECTIONS.forEach(sec => {
   const g = groupOf(sec.dataset.sec); sec.dataset.g = g;
@@ -5267,6 +5324,7 @@ const buildIdx = () => IDX = SECTIONS.map(sec => ({
   title: norm(sec.querySelector("h2").textContent + " " + (sec.dataset.kw || "")),
   head: norm(words(sec.querySelector(".sec-head")) + " " + (sec.dataset.kw || "") + " " + sec.dataset.where),
   all: norm(words(sec) + " " + (sec.dataset.extra || "")),
+  labels: norm([...sec.querySelectorAll("summary, th, .card-h, tbody td:first-child b")].filter(el => !el.closest(SKIP)).map(words).join(" ")),   /* row and fold-out names: "No hot water", "Cleanouts" */
   rows: [...sec.querySelectorAll("tbody tr, .tick li")].filter(r => !r.closest(SKIP)).map(r => [r, norm(r.dataset.search || words(r))])
 }));
 /* what the current tab shows. Mine → Pinned shows pinned cards from anywhere in the book. */
@@ -5279,15 +5337,23 @@ function inView(sec){
   }
   return sec.dataset.g === nav.group && nav.sub === sec.dataset.sec;
 }
+/* search words fold to a stem: plurals drop the s, and "leaking", "dripping", "running" match leak, drip, run */
+const stem = t => {
+  if (t.length <= 3 || /\d/.test(t)) return t;
+  t = t.replace(/(s|x|z|ch|sh)es$/, "$1").replace(/([^s])s$/, "$1");
+  const m = t.match(/^(.{4,})ing$/); if (m) t = m[1].replace(/([b-df-hj-np-rtv-z])\1$/, "$1");
+  return t;
+};
 let roWasShown = false, roReady = false;
 function apply(){
   const raw = $("q").value.trim().replace(/\b([a-z])-(\d)/gi, "$1$2"), term = sFix && sFix.from === raw ? sFix.to : raw;   /* E-003 → E003 */
   press("nav.tabs", b => !term && (b.dataset.group === nav.group || (b.id === "more-btn" && MORE_G.includes(nav.group))));
   document.body.classList.toggle("mixed", nav.group === "mine");
   press(subRow, b => b.dataset.sub === nav.sub);
-  const toks = norm(term).trim().split(" ").filter(Boolean).filter((t, i, a) => !STOP.has(t) || a.every(x => STOP.has(x))).map(t => t.length > 3 && !/\d/.test(t) ? t.replace(/(s|x|z|ch|sh)es$/, "$1").replace(/([^s])s$/, "$1") : t);
+  const toks = norm(term).trim().split(" ").filter(Boolean).filter((t, i, a) => !STOP.has(t) || a.every(x => STOP.has(x))).map(stem);
   const res = toks.map(t => new RegExp("(?:^|[^a-z0-9.])(?:" + alts(t).map(x => x !== t && x.length <= 3 ? reEsc(x) + "(?![a-z])" : reEsc(x)).join("|") + ")"));
   if (term !== sLast){ sLast = term; sGroup = ""; sAll = false; }
+  const phrase = toks.length > 1 ? " " + toks.join(" ") : "";   /* the words side by side, as typed */
   const has = (txt, list) => list.every(r => r.test(txt));
   let shown = 0; const hits = [];
   const setH = (el, h) => { if (el.hidden !== h) el.hidden = h; };
@@ -5297,7 +5363,7 @@ function apply(){
   const hideRow = r => { r.hidden = true; hiddenRows.push(r); };
   if (!toks.length) for (const sec of SECTIONS){ setH(sec, !inView(sec)); if (!sec.hidden) shown++; }
   else { if (!IDX) buildIdx();   /* built on the first search, not at startup */
-  for (const {sec, h2, title, head, all, rows} of IDX){
+  for (const {sec, h2, title, head, all, rows, labels} of IDX){
     if (sec.id === "home-card" || tabMode(sec.dataset.g) === "off"){ setH(sec, true); continue; }   /* Home is a dashboard, not a search result */
     const rem = res.filter(r => !r.test(head));
     let any = false;
@@ -5313,9 +5379,14 @@ function apply(){
       else if (has(all, rem)) any = true;  /* sections without table rows (calculators, cards) */
     }
     setH(sec, !any);
-    if (any){ shown++; hits.push([sec, 4*res.filter(r => r.test(h2)).length + 3*res.filter(r => r.test(title)).length + (res.length - rem.length)]); }
+    if (any){ shown++;
+      /* rank: words in the heading count most, then keywords, then row and fold-out names; the exact phrase in any of them is a big bump */
+      const n = t => res.filter(r => r.test(t)).length;
+      let sc = 4*n(h2) + 3*n(title) + 2*n(labels) + (res.length - rem.length);
+      if (phrase){ if (h2.includes(phrase)) sc += 10; else if (title.includes(phrase)) sc += 6; if (labels.includes(phrase)) sc += 6; }
+      hits.push([sec, sc]); }
   } }
-  /* best match first: words in the card heading count most, then keywords; the book's own order otherwise */
+  /* best match first; the book's own order breaks ties */
   hits.sort((a,b) => b[1] - a[1]);
   /* a big result set shows the best 8, with a chip per tab to narrow it */
   const bar = $("res-bar"); bar.hidden = true;
@@ -5330,6 +5401,7 @@ function apply(){
   const order = toks.length ? [...hits.map(h => h[0]).filter(s => !s.hidden), ...SECTIONS.filter(s => s.hidden)] : SECTIONS;
   if (order.length !== lastOrder.length || order.some((s, i) => s !== lastOrder[i])){ const foot = book.querySelector("footer"); order.forEach(s => book.insertBefore(s, foot)); lastOrder = order; }
   document.body.classList.toggle("searching", !!toks.length);
+  otpDraw(!!toks.length);
   if (toks.length && !shown && !(sFix && sFix.from === raw)){ const to = fuzzyFix(raw); if (to && to !== raw.toLowerCase()){ sFix = {from: raw, to}; return apply(); } }
   if (sFix && sFix.from !== raw) sFix = null;
   const fixed = !!(sFix && shown);
@@ -5382,7 +5454,7 @@ function fuzzyFix(t){
 }
 const SYN = [["prv","pressure reducing","reducing valve"],["t&p","tp","relief valve","temperature and pressure"],["wh","water heater"],["dfu","drainage fixture unit"],["wsfu","water supply fixture unit","supply demand"],
   ["aav","air admittance"],["csst","corrugated stainless"],["sillcock","hose bibb","hose bib","spigot"],["wc","water closet","toilet"],["lav","lavatory"],["co","cleanout"],["rpz","reduced pressure"],["dcva","double check"],
-  ["pvb","pressure vacuum breaker"],["fip","female"],["mip","male"],["npt","pipe thread"],["tankless","on demand","on-demand"],["ejector","sewage pump"],["san tee","sanitary tee"],["hammer","arrester","arrestor"],["recirc","recirculation"],["dw","dishwasher"],["gfci","gfi","ground fault"],["generator","genny"],["extension cord","drop cord","cord"],["breaker","circuit breaker"],["flue","vent","exhaust"],["galv","galvanized"],["light","pilot","ignite","ignition"]];
+  ["pvb","pressure vacuum breaker"],["fip","female"],["mip","male"],["npt","pipe thread"],["tankless","on demand","on-demand"],["ejector","sewage pump"],["san tee","sanitary tee"],["hammer","arrester","arrestor"],["recirc","recirculation"],["dw","dishwasher"],["gfci","gfi","ground fault"],["garbage","disposal","disposer"],["generator","genny"],["extension cord","drop cord","cord"],["breaker","circuit breaker"],["flue","vent","exhaust"],["galv","galvanized"],["light","pilot","ignite","ignition"]];
 function alts(t){
   const out = [t];
   if (/^\d{2,3}$/.test(t)){ out.push("e" + t); if (/^0/.test(t)) out.push("e" + t.replace(/^0+/, "")); }
@@ -7943,7 +8015,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-08c";
+{ const NEWS = "2026-11-09";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8128,8 +8200,8 @@ function tapeDraw(){
 }
 async function copyText(t, ok){ try { await navigator.clipboard.writeText(t); toast(ok || "Copied."); } catch(e){ prompt("Copy this:", t); } }
 SECTIONS.forEach(sec => {
-  if (sec.dataset.g === "site" || !sec.querySelector(".out tr.hit, .ans")) return;
-  const anchor = sec.querySelector(".ans") || sec.querySelector(".out tr.hit").closest(".x");
+  if (sec.dataset.sec === "wxnow" || !sec.querySelector(".out tr.hit, .ans, #ju-out, #ej-out")) return;   /* Jump it and the pump card draw their rows later */
+  const anchor = sec.querySelector(".ans") || sec.querySelector(".out tr.hit, #ju-out, #ej-out").closest(".x");
   anchor.insertAdjacentHTML("afterend", `<div class="res-act"><button type="button" data-ra="copy">Copy</button>${navigator.share ? `<button type="button" data-ra="share">Share</button>` : ""}<button type="button" data-ra="tape">Add to tape</button></div>`);
 });
 document.addEventListener("click", async e => {
@@ -8843,7 +8915,7 @@ function renderMine(docs, canDelete){
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-08c";
+var BUILD = "handbook-2026-11-09";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
