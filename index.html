@@ -181,7 +181,7 @@ body.searching .where-go,body.mixed .where-go{display:block;grid-column:1 / -1;j
 .badge{display:inline-block;font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.06em;line-height:1.3;padding:0 5px;border-radius:3px;margin-right:4px;vertical-align:1px;border:1.5px solid currentColor}
 .badge.why{background:none;border:0;padding:0;margin-right:2px;color:var(--muted);letter-spacing:.1em}
 .badge.why::after{content:":"}
-.pn{display:inline-flex;align-items:center;font-family:var(--mono);font-weight:700;font-size:16px;background:var(--hi);color:var(--hi-ink);border:var(--bw) solid var(--hi-edge);border-radius:var(--r);padding:2px 9px;margin:2px 0;cursor:pointer;white-space:nowrap;text-decoration:none}
+.pn{display:inline-flex;align-items:center;font-family:var(--mono);font-weight:700;font-size:16px;background:var(--hi);color:var(--hi-ink);border:var(--bw) solid var(--hi-edge);border-radius:var(--r);padding:2px 9px;margin:2px 0;min-height:44px;cursor:pointer;white-space:nowrap;text-decoration:none}
 .pn.copied{background:var(--ok);color:var(--sheet)}
 .warn{color:var(--danger);font-family:var(--body);font-weight:800;font-size:15.5px;white-space:normal;line-height:1.3}
 .ok{color:var(--ok);font-weight:700}
@@ -555,12 +555,13 @@ footer .about-go{appearance:none;font:inherit;font-weight:700;color:var(--ink);b
 body.sheet-open{overflow:hidden}
 
 /* ===== pins and cross-references ===== */
-.sec-head .pin{grid-column:2;grid-row:1 / span 2;position:relative;appearance:none;width:42px;height:42px;border:0;background:none;color:var(--bar-ink);font-size:24px;line-height:1;cursor:pointer;border-radius:var(--r);opacity:.85}
+.sec-head .pin{grid-column:2;grid-row:1 / span 2;position:relative;appearance:none;width:44px;height:44px;border:0;background:none;color:var(--bar-ink);font-size:24px;line-height:1;cursor:pointer;border-radius:var(--r);opacity:.85}
 .sec-head .pin[aria-pressed="true"]{opacity:1;color:var(--bar-ink);text-shadow:0 0 0 currentColor}
 .sec-head .pin:hover,.sec-head .pin:focus-visible{opacity:1}
-.xref{cursor:pointer;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--acc);border-radius:3px}
+.xref{cursor:pointer;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--acc);border-radius:3px;padding:13px 0}
 .xref::after{content:" ›";font-weight:800;color:var(--acc)}
-.xref:active{background:var(--hi)}
+.xref:active{text-decoration-thickness:4px}
+[data-sec="techlines"] td.sub{overflow-wrap:anywhere}
 #pins-help .note{border-top:0}
 
 /* ===== THEMES (skins). Hi-Vis is the base above; each skin swaps the color tokens for Sun and Night.
@@ -710,7 +711,7 @@ details.explain p{margin:6px 0 0}
 .wx-hero .sub{color:var(--on-k-sub)}
 .out td.big small.warn,small.warn{color:var(--ink)}
 .badge.ut{color:color-mix(in srgb,var(--g-inspect) 78%,var(--ink))}   /* stays after .tip .badge so a UT badge inside a tip keeps its orange */
-.t :is(td,th) a:not(.pn),.wx-hero .sub a,.book .note a{display:inline-block;padding:11px 0}   /* links in tables: a 44 px tall tap target */
+.t :is(td,th) a:not(.pn),.wx-hero .sub a,.book .note a,.book .flag a{display:inline-block;padding:11px 0}   /* links in tables: a 44 px tall tap target */
 .pin::after{content:"";position:absolute;inset:-3px}
 @media (max-width:759px){
   .book .note,.book .sub,.book td.sub,.book .t th .sub,.book .fc-hint,footer,
@@ -739,7 +740,7 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
 .see-also{display:flex;flex-wrap:wrap;align-items:center;gap:0 10px}
 .see-k{font-family:var(--display);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .note.stamp{color:var(--ink);background:var(--zebra)}
-.sec-head .cmenu{grid-column:3;grid-row:1 / span 2;position:relative;appearance:none;width:42px;height:42px;border:0;background:none;color:var(--bar-ink);font-size:24px;font-weight:800;line-height:1;cursor:pointer;border-radius:var(--r);opacity:.85}
+.sec-head .cmenu{grid-column:3;grid-row:1 / span 2;position:relative;appearance:none;width:44px;height:44px;border:0;background:none;color:var(--bar-ink);font-size:24px;font-weight:800;line-height:1;cursor:pointer;border-radius:var(--r);opacity:.85}
 .sec-head .cmenu::after{content:"";position:absolute;inset:-3px}
 .cpop{position:absolute;z-index:40;min-width:220px;display:flex;flex-direction:column;background:var(--sheet);border:var(--bw) solid var(--edge);border-radius:var(--r);box-shadow:4px 4px 0 var(--k)}
 .cpop button{appearance:none;text-align:left;font:inherit;font-weight:700;min-height:48px;padding:8px 14px;border:0;border-top:1px solid var(--rule);background:none;color:var(--ink);cursor:pointer}
