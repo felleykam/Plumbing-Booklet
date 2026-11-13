@@ -577,7 +577,7 @@ body.sheet-open{overflow:hidden}
   --bar:#FFFF00; --bar-ink:#000000; --hi:#FFFF00; --hi-ink:#000000; --hi-edge:#FFFFFF; --ctl:#FFFFFF; --ul:#FFFF00; --logo-tile:#FFFF00; --logo-ink:#000000; --bw:4px}
 :root[data-skin="contrast"] .sec-head{border-left-width:12px}
 :root[data-skin="contrast"],:root[data-skin="contrast"] nav.tabs{--g-calc:var(--ink);--g-rough:var(--ink);--g-mech:var(--ink);--g-trim:var(--ink);--g-inspect:var(--ink);--g-calls:var(--ink);--g-learn:var(--ink);--g-parts:var(--ink);--g-mine:var(--ink)}
-:root[data-skin="contrast"] nav.tabs{--ink:#FFFFFF}
+@media (max-width:759px){:root[data-skin="contrast"] nav.tabs{--ink:#FFFFFF}}   /* white labels only on the phone's black bottom bar; wide screens have white tab cards */
 
 :root[data-skin="blueprint"][data-theme="light"]{
   --hv:#8FD8FF; --k:#0B2A55; --on-k:#FFFFFF; --on-k-sub:#C9D8F0; --paper:#E6EEF9; --sheet:#FFFFFF; --ink:#0B1F3A; --muted:#24395A; --rule:#6F86AA; --edge:#0B2A55; --zebra:#E3ECF8;
@@ -748,6 +748,9 @@ details.explain p{margin:6px 0 0}
 /* ===== review fixes 2026-10-24: design team ===== */
 .wx-hero .sub{color:var(--on-k-sub)}
 .out td.big small.warn,small.warn{color:var(--ink)}
+/* a warning inside a highlighted answer row: red text on the highlight color fell under 4.5:1 in several Night themes,
+   so the words take the row's own text color and a red bar carries the warning */
+.out tr.hit span.warn{display:inline-block;color:var(--hi-ink);border-left:4px solid var(--danger);padding-left:8px}
 .badge.ut{color:color-mix(in srgb,var(--g-inspect) 78%,var(--ink))}   /* stays after .tip .badge so a UT badge inside a tip keeps its orange */
 .t :is(td,th) a:not(.pn),.wx-hero .sub a,.book .note a,.book .flag a{display:inline-block;padding:11px 0}   /* links in tables: a 44 px tall tap target */
 .pin::after{content:"";position:absolute;inset:-3px}
