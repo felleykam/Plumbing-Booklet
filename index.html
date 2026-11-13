@@ -971,7 +971,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 
     <div class="set-grp" id="set-share"><h3>Share the book</h3>
       <p class="sample">Have a coworker point their phone camera at this, open the link in Safari, then Share → <b>Add to Home Screen</b>.</p>
-      <div class="qr-box" id="qr-box"><span class="sample">QR code loads with signal.</span></div>
+      <div class="qr-box" id="qr-box"></div>
       <p class="sample qr-url">felleykam.github.io/Plumbing-Booklet</p>
       <div class="set-btns"><button type="button" class="btn" id="share-link">Share link</button><button type="button" class="btn ghost" id="copy-link">Copy link</button></div>
     </div>
@@ -4234,6 +4234,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 12, 2026 · share</th><td><b>Share the book</b> (Settings) shows its QR code with no signal now: the code is stored in the book instead of being fetched.</td></tr>
         <tr><th>Nov 12, 2026 · bar &amp; weather</th><td><b>Bottom bar:</b> eight tables had started scrolling up and down a few pixels inside their own boxes, which can tug the iPhone bar loose: fixed. After the "Allow location" prompt the book now re-seats the bar. <b>Weather:</b> the first forecast shows in a few seconds even when the main service is slow, and picking a new place no longer blanks the card. A book left in the background over 6 hours reloads when you come back, so it picks up updates.</td></tr>
         <tr><th>Nov 12, 2026 · weather</th><td><b>Weather fixed:</b> when the main forecast service doesn't answer, the card now switches to the National Weather Service forecast instead of sitting on "Loading". Every weather request gives up after 12 seconds and tries again. <b>New:</b> a weather button in the top corner shows the sky right now and the temperature; tap it for Jobsite → Weather. Turn it off in <b>Settings → Behavior → Weather in the header</b>.</td></tr>
         <tr><th>Nov 12, 2026 · tune-up</th><td><b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them.</td></tr>
@@ -6120,15 +6121,14 @@ $("tab-rows").addEventListener("click", e => {
 });
 $("tabs-reset").addEventListener("click", () => { PREFS.tabs = {}; savePrefs(); tabsApply(); drawSubs(); apply(); tabsDraw(); if (window.homeDraw) homeDraw(); say("Tabs reset"); });
 
-/* Settings → Share the book: QR from a small library fetched the first time (sharing needs signal anyway) */
-let qrState = 0;   /* 0 not tried · 1 loading · 2 drawn */
+/* Settings → Share the book: the QR code for the book's link, drawn once ahead of time and kept here, so it shows with
+   no signal and nothing is fetched. QR_D is the dark squares as an SVG path on a QR_N × QR_N grid (error level M).
+   If BOOK_URL ever changes, redraw the code; until then the card says so instead of showing a code for the wrong link. */
+const QR_FOR = "https://felleykam.github.io/Plumbing-Booklet/", QR_N = 33, QR_D = "M0 0h7v1h-7zM8 0h3v1h-3zM12 0h3v1h-3zM17 0h2v1h-2zM26 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM11 1h1v1h-1zM13 1h2v1h-2zM18 1h5v1h-5zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h1v1h-1zM13 2h4v1h-4zM19 2h3v1h-3zM26 2h1v1h-1zM28 2h3v1h-3zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM9 3h1v1h-1zM12 3h1v1h-1zM14 3h1v1h-1zM16 3h1v1h-1zM18 3h1v1h-1zM20 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM26 3h1v1h-1zM28 3h3v1h-3zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM8 4h1v1h-1zM11 4h3v1h-3zM15 4h2v1h-2zM24 4h1v1h-1zM26 4h1v1h-1zM28 4h3v1h-3zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h4v1h-4zM14 5h6v1h-6zM22 5h3v1h-3zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h7v1h-7zM11 7h6v1h-6zM18 7h1v1h-1zM22 7h1v1h-1zM0 8h1v1h-1zM3 8h6v1h-6zM12 8h1v1h-1zM14 8h1v1h-1zM17 8h1v1h-1zM20 8h1v1h-1zM24 8h2v1h-2zM28 8h1v1h-1zM30 8h3v1h-3zM0 9h1v1h-1zM4 9h1v1h-1zM8 9h3v1h-3zM13 9h1v1h-1zM17 9h1v1h-1zM19 9h1v1h-1zM21 9h3v1h-3zM28 9h3v1h-3zM1 10h1v1h-1zM3 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM10 10h1v1h-1zM13 10h1v1h-1zM15 10h2v1h-2zM22 10h4v1h-4zM28 10h5v1h-5zM1 11h2v1h-2zM8 11h1v1h-1zM13 11h1v1h-1zM15 11h1v1h-1zM18 11h1v1h-1zM21 11h3v1h-3zM25 11h3v1h-3zM30 11h1v1h-1zM32 11h1v1h-1zM1 12h2v1h-2zM4 12h1v1h-1zM6 12h1v1h-1zM10 12h2v1h-2zM13 12h1v1h-1zM17 12h1v1h-1zM21 12h1v1h-1zM26 12h2v1h-2zM31 12h2v1h-2zM1 13h1v1h-1zM5 13h1v1h-1zM8 13h2v1h-2zM11 13h4v1h-4zM18 13h4v1h-4zM23 13h1v1h-1zM25 13h1v1h-1zM27 13h1v1h-1zM2 14h1v1h-1zM6 14h5v1h-5zM15 14h1v1h-1zM19 14h2v1h-2zM22 14h1v1h-1zM26 14h2v1h-2zM29 14h2v1h-2zM1 15h4v1h-4zM7 15h1v1h-1zM9 15h1v1h-1zM11 15h4v1h-4zM16 15h1v1h-1zM20 15h1v1h-1zM25 15h1v1h-1zM28 15h3v1h-3zM32 15h1v1h-1zM2 16h2v1h-2zM5 16h5v1h-5zM12 16h1v1h-1zM15 16h1v1h-1zM20 16h1v1h-1zM22 16h8v1h-8zM0 17h5v1h-5zM10 17h1v1h-1zM12 17h1v1h-1zM14 17h7v1h-7zM22 17h1v1h-1zM26 17h1v1h-1zM28 17h1v1h-1zM30 17h1v1h-1zM32 17h1v1h-1zM0 18h3v1h-3zM5 18h4v1h-4zM10 18h1v1h-1zM12 18h2v1h-2zM15 18h1v1h-1zM17 18h3v1h-3zM21 18h4v1h-4zM27 18h1v1h-1zM29 18h2v1h-2zM32 18h1v1h-1zM1 19h2v1h-2zM4 19h1v1h-1zM8 19h1v1h-1zM10 19h1v1h-1zM15 19h2v1h-2zM22 19h1v1h-1zM28 19h3v1h-3zM32 19h1v1h-1zM0 20h1v1h-1zM4 20h3v1h-3zM8 20h2v1h-2zM13 20h2v1h-2zM16 20h1v1h-1zM18 20h2v1h-2zM21 20h4v1h-4zM27 20h3v1h-3zM32 20h1v1h-1zM0 21h2v1h-2zM5 21h1v1h-1zM8 21h2v1h-2zM11 21h4v1h-4zM23 21h1v1h-1zM27 21h3v1h-3zM0 22h1v1h-1zM2 22h2v1h-2zM6 22h2v1h-2zM10 22h3v1h-3zM14 22h1v1h-1zM18 22h4v1h-4zM23 22h4v1h-4zM29 22h1v1h-1zM31 22h2v1h-2zM0 23h1v1h-1zM3 23h1v1h-1zM5 23h1v1h-1zM7 23h2v1h-2zM11 23h5v1h-5zM17 23h4v1h-4zM23 23h1v1h-1zM26 23h2v1h-2zM30 23h2v1h-2zM0 24h2v1h-2zM4 24h1v1h-1zM6 24h1v1h-1zM11 24h1v1h-1zM13 24h2v1h-2zM16 24h1v1h-1zM18 24h1v1h-1zM20 24h1v1h-1zM24 24h6v1h-6zM8 25h3v1h-3zM12 25h2v1h-2zM15 25h4v1h-4zM21 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM30 25h2v1h-2zM0 26h7v1h-7zM8 26h4v1h-4zM14 26h2v1h-2zM17 26h1v1h-1zM19 26h1v1h-1zM23 26h2v1h-2zM26 26h1v1h-1zM28 26h1v1h-1zM30 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM16 27h4v1h-4zM21 27h4v1h-4zM28 27h5v1h-5zM0 28h1v1h-1zM2 28h3v1h-3zM6 28h1v1h-1zM8 28h2v1h-2zM11 28h4v1h-4zM16 28h2v1h-2zM19 28h1v1h-1zM21 28h8v1h-8zM31 28h2v1h-2zM0 29h1v1h-1zM2 29h3v1h-3zM6 29h1v1h-1zM8 29h4v1h-4zM13 29h2v1h-2zM16 29h1v1h-1zM18 29h1v1h-1zM21 29h2v1h-2zM24 29h2v1h-2zM27 29h1v1h-1zM30 29h1v1h-1zM32 29h1v1h-1zM0 30h1v1h-1zM2 30h3v1h-3zM6 30h1v1h-1zM9 30h4v1h-4zM14 30h2v1h-2zM19 30h1v1h-1zM21 30h1v1h-1zM24 30h2v1h-2zM27 30h2v1h-2zM31 30h2v1h-2zM0 31h1v1h-1zM6 31h1v1h-1zM13 31h2v1h-2zM18 31h3v1h-3zM22 31h1v1h-1zM25 31h1v1h-1zM27 31h2v1h-2zM30 31h3v1h-3zM0 32h7v1h-7zM8 32h2v1h-2zM12 32h2v1h-2zM15 32h3v1h-3zM19 32h1v1h-1zM22 32h3v1h-3zM26 32h3v1h-3z";
 function qrDraw(){
-  if (qrState) return; qrState = 1;
-  const draw = () => { try { const q = qrcode(0, "M"); q.addData(BOOK_URL); q.make(); $("qr-box").innerHTML = q.createSvgTag({cellSize: 5, margin: 2, scalable: true}); const sv = $("qr-box").querySelector("svg"); if (sv) sv.setAttribute("aria-label", "QR code for " + BOOK_URL); qrState = 2; } catch(e){ qrState = 0; } };
-  if (window.qrcode) return draw();
-  const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"; s.async = true;
-  s.onload = draw; s.onerror = () => { qrState = 0; $("qr-box").innerHTML = '<span class="sample">No signal: the QR code needs it once. Use Share link instead.</span>'; s.remove(); };
-  document.head.appendChild(s);
+  $("qr-box").innerHTML = BOOK_URL === QR_FOR
+    ? `<svg viewBox="-2 -2 ${QR_N + 4} ${QR_N + 4}" role="img" aria-label="QR code for ${BOOK_URL}" shape-rendering="crispEdges"><rect x="-2" y="-2" width="${QR_N + 4}" height="${QR_N + 4}" fill="#fff"/><path d="${QR_D}" fill="#000"/></svg>`
+    : '<span class="sample">Use Share link instead.</span>';
 }
 $("share-link").addEventListener("click", async () => {
   if (navigator.share){ try { await navigator.share({title: "Utah Plumbers Digital Handbook", text: "The plumbing handbook I use on the job:", url: BOOK_URL}); return; } catch(e){ if (e && e.name === "AbortError") return; } }
@@ -8288,7 +8288,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-12d";
+{ const NEWS = "2026-11-12e";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -9260,7 +9260,7 @@ window.wxRender = WX.render;
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-12d";
+var BUILD = "handbook-2026-11-12e";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
