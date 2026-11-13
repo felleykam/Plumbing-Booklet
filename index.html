@@ -111,6 +111,22 @@ b{font-weight:700}
 .hbtn{appearance:none;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;min-width:44px;padding:0 12px;border:var(--bw) solid var(--hv);border-radius:var(--r);background:transparent;color:var(--hv);font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
 .hbtn svg{width:18px;height:18px}
 .hbtn[aria-pressed="true"]{background:var(--hv);color:var(--k)}
+/* header weather button: the sky right now and the temperature. The drawing moves a little (rays turn, rain falls). */
+.hbtn.wx-btn{font-family:var(--mono);font-weight:700;letter-spacing:0;font-size:15px}
+.hbtn.wx-btn.stale{border-style:dashed}
+.wx-ico{display:inline-flex}
+.hbtn .wx-ico svg{width:22px;height:22px;overflow:visible}
+@keyframes wxa-spin{to{transform:rotate(360deg)}}
+@keyframes wxa-fall{0%{transform:translateY(-2px);opacity:0}30%{opacity:1}100%{transform:translateY(3px);opacity:0}}
+@keyframes wxa-flash{0%,60%,100%{opacity:1}70%,85%{opacity:.15}}
+@keyframes wxa-drift{0%,100%{transform:translateX(-1px)}50%{transform:translateX(1.5px)}}
+.wxa-spin{transform-box:view-box;transform-origin:12px 12px;animation:wxa-spin 24s linear infinite}
+.wxa-spin.sm{transform-origin:17px 7px}
+.wxa-fall{animation:wxa-fall 1.6s linear infinite}.wxa-fall.d2{animation-delay:.5s}.wxa-fall.d3{animation-delay:1s}
+.wxa-flash{animation:wxa-flash 3s linear infinite}
+.wxa-drift{animation:wxa-drift 5s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){[class*="wxa-"]{animation:none}}
+:root[data-fx="off"] [class*="wxa-"]{animation:none}
 .stripe{height:10px;background:var(--stripe);margin:0 calc(-1*max(12px,env(safe-area-inset-left)))}
 .code-chip{appearance:none;display:flex;align-items:center;gap:6px;width:100%;margin:8px 0 0;padding:6px 10px;min-height:46px;font:inherit;font-size:15px;font-weight:600;color:var(--ink);background:var(--sheet);border:var(--bw) solid var(--edge);border-radius:var(--r);cursor:pointer;text-align:left;white-space:nowrap;overflow:hidden}
 .code-chip b{font-weight:700}.code-chip .go{margin-left:auto;font-weight:800;font-size:18px;line-height:1}
@@ -846,6 +862,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <div class="tb-in">
     <svg class="logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect width="48" height="48" rx="11" fill="var(--logo-tile)"/><path d="M11 7h16v9h10v25H11z" fill="var(--logo-ink)"/><path d="M24 17c4.6 5.4 7 9.2 7 12.6a7 7 0 0 1-14 0c0-3.4 2.4-7.2 7-12.6z" fill="var(--logo-tile)"/><path d="M21.2 30.2a3.2 3.2 0 0 0 3 3" fill="none" stroke="var(--logo-ink)" stroke-width="1.8" stroke-linecap="round"/></svg>
     <div class="brand"><small class="pre">Utah Plumbers</small><h1>HANDBOOK</h1><small class="ed">Digital edition</small></div>
+    <button type="button" class="hbtn wx-btn" id="wx-btn" aria-label="Weather" hidden><span class="wx-ico" id="wx-ico" aria-hidden="true"></span><span id="wx-btn-t">—°</span></button>
     <button type="button" class="hbtn" id="look-btn" aria-expanded="false" aria-controls="look" aria-label="Settings: themes, text, behavior, backup"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="hbtn-lbl">Settings</span></button>
     <button type="button" class="hbtn" id="theme-btn" aria-label="Color mode"><svg aria-hidden="true" class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><svg aria-hidden="true" class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><span id="theme-lbl">Sun</span></button>
   </div>
@@ -919,6 +936,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <button type="button" class="tog" role="switch" data-t="chip"><span><b>Code banner</b><small>The UT strip showing which code you're on.</small></span></button>
         <button type="button" class="tog" role="switch" data-t="stars"><span><b>Pin stars on cards</b><small>The ☆ that pins a card to Mine.</small></span></button>
         <button type="button" class="tog" role="switch" data-t="fx"><span><b>Fun stuff</b><small>Splashes, jokes and rank-ups. Off = all business.</small></span></button>
+        <button type="button" class="tog" role="switch" data-t="wxIcon"><span><b>Weather in the header</b><small>The sky and temperature next to Settings. Checks the forecast every 10 minutes while the book is open.</small></span></button>
         <button type="button" class="tog" role="switch" data-t="pnCopy"><span><b>Tap a phone number to copy</b><small>Off: on a phone, a tap calls and a long press copies. On: a tap copies.</small></span></button>
         <button type="button" class="tog" role="switch" data-t="recentQ"><span><b>Remember my searches</b><small>Recent searches on Home. Off clears the list.</small></span></button>
       </div>
@@ -4216,6 +4234,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 12, 2026 · weather</th><td><b>Weather fixed:</b> when the main forecast service doesn't answer, the card now switches to the National Weather Service forecast instead of sitting on "Loading". Every weather request gives up after 12 seconds and tries again. <b>New:</b> a weather button in the top corner shows the sky right now and the temperature; tap it for Jobsite → Weather. Turn it off in <b>Settings → Behavior → Weather in the header</b>.</td></tr>
         <tr><th>Nov 12, 2026 · tune-up</th><td><b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them.</td></tr>
         <tr><th>Nov 12, 2026</th><td><b>Water treatment</b> (Service → Treatment) grew: <b>Where treatment goes</b> (order in the line, hard water for hose bibbs, the softener loop rough-in), <b>Softener trouble</b> (no soft water, salt bridge, resin in the lines, low pressure), <b>How RO works</b>, <b>Treatment code</b> (the IPC and IRC sections for softeners and RO) and <b>Treatment brands</b>. <b>Contacts → Tech lines → Water treatment</b> has 14 makers' phone lines.</td></tr>
         <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "shower valve height") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Circuits, wire &amp; bonding. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow. <b>Reopening the book</b> lands where you were on the page, not at the top. <b>Fits the phone:</b> calculator answers and the Pressure at the fixture rows no longer run off the right edge, long dropdowns get a full row, and tech line numbers stack instead of scrolling sideways.</td></tr>
@@ -5512,7 +5531,7 @@ SECTIONS.forEach(sec => {
   sec.dataset.where = GROUPS[g].length > 1 ? `${GNAME[g]} › ${sub}` : GNAME[g];
 });
 let nav = {group:"home", sub:"home"};
-const PREFS = Object.assign({start:"last", light:"phone", tip:true, chip:matchMedia("(min-width:760px)").matches, stars:true, fx:true, wake:false, fcNew:15, pipe:"abs", recentQ:true, tabs:{}, frac:"16"}, store.get("jpb-prefs", {}) || {});
+const PREFS = Object.assign({start:"last", light:"phone", tip:true, chip:matchMedia("(min-width:760px)").matches, stars:true, fx:true, wake:false, wxIcon:true, fcNew:15, pipe:"abs", recentQ:true, tabs:{}, frac:"16"}, store.get("jpb-prefs", {}) || {});
 PREFS.hc = PREFS.skin === "contrast";
 if (!PREFS.tabs || typeof PREFS.tabs !== "object" || Array.isArray(PREFS.tabs)) PREFS.tabs = {};
 const savePrefs = () => store.set("jpb-prefs", PREFS);
@@ -6012,6 +6031,7 @@ document.querySelectorAll("#look .tog").forEach(t => t.addEventListener("click",
   }
   savePrefs(); prefApply(); wakeSet();
   if (t.dataset.t === "hc"){ themeNow(); themeLabel(); redrawArt(); }
+  if (t.dataset.t === "wxIcon" && window.wxRender){ wxRender(); if (PREFS.wxIcon) WX.due(false, ["om"]); }
   lookDraw(); say(t.querySelector("b").textContent + (PREFS[t.dataset.t] ? " on" : " off"));
   if (t.dataset.t === "recentQ" && !PREFS.recentQ){ RECENT.qs = []; store.set("jpb-recent-q", []); if (window.homeDraw) homeDraw(); }
 }));
@@ -8259,7 +8279,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-12b";
+{ const NEWS = "2026-11-12c";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8909,18 +8929,67 @@ const WX = (() => {
   const WMO = c => ({0:"Clear",1:"Mostly clear",2:"Partly cloudy",3:"Overcast",45:"Fog",48:"Freezing fog",51:"Light drizzle",53:"Drizzle",55:"Heavy drizzle",56:"Freezing drizzle",57:"Freezing drizzle",
     61:"Light rain",63:"Rain",65:"Heavy rain",66:"Freezing rain",67:"Freezing rain",71:"Light snow",73:"Snow",75:"Heavy snow",77:"Snow grains",80:"Rain showers",81:"Rain showers",82:"Heavy showers",
     85:"Snow showers",86:"Heavy snow showers",95:"Thunderstorms",96:"T-storms, hail",99:"T-storms, hail"})[c] ?? "—";
-  async function get(url, opts){ const r = await fetch(url, Object.assign({cache:"no-store", headers:{Accept:"application/geo+json, application/json"}}, opts || {})); if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }
+  async function get(url, opts, ms){   /* 12 s limit: a service that never answers must fail, so the backup and the retry can run */
+    const ac = new AbortController(), t = setTimeout(() => ac.abort(), ms || 12000);
+    try { const r = await fetch(url, Object.assign({cache:"no-store", headers:{Accept:"application/geo+json, application/json"}, signal: ac.signal}, opts || {})); if (!r.ok) throw new Error("HTTP " + r.status); return await r.json(); }
+    catch(e){ throw new Error(e && e.name === "AbortError" ? "no answer in time" : (e && e.message) || "failed"); }
+    finally { clearTimeout(t); }
+  }
   const blocked = () => !!window.claude;   /* the claude.ai viewer: outside data is blocked by design */
 
   /* ---- fetchers (each only when due) ---- */
-  async function fOM(){
+  async function fOMmain(){
     const q = `latitude=${place.lat}&longitude=${place.lon}&timezone=auto&timeformat=unixtime&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch` +
       "&current=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,uv_index,is_day" +
       "&minutely_15=precipitation,snowfall,temperature_2m&forecast_minutely_15=12" +
       "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,snowfall,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,uv_index,relative_humidity_2m," +
       "soil_temperature_0cm,soil_temperature_6cm,soil_temperature_18cm,soil_temperature_54cm,soil_moisture_9_to_27cm,soil_moisture_27_to_81cm,snow_depth,freezing_level_height,visibility&forecast_hours=48" +
       "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,snowfall_sum,wind_gusts_10m_max,wind_direction_10m_dominant,sunrise,sunset,daylight_duration,uv_index_max&forecast_days=7";
-    return get("https://api.open-meteo.com/v1/forecast?" + q);
+    return get("https://api.open-meteo.com/v1/forecast?" + q, null, 8000);
+  }
+  /* Backup forecast: when Open-Meteo doesn't answer, the National Weather Service hourly forecast is reshaped to look like
+     an Open-Meteo reply, so the rest of this card draws it the same way. NWS has no soil, UV, gust or snow-depth numbers:
+     those stay null and show as a dash. */
+  let omDown = +store.get("jpb-wx-omdown", 0) || 0;   /* when Open-Meteo last failed; for 20 min after that the backup goes first, even after the book is reopened */
+  const omMark = t => { omDown = t; store.set("jpb-wx-omdown", t); };
+  async function fOM(){
+    if (Date.now() - omDown > 20 * 60e3){ try { const data = await fOMmain(); if (omDown) omMark(0); return data; } catch(e){ omMark(Date.now()); } }
+    try { return await fNWS(); } catch(e){ omMark(0); throw new Error("forecast services not answering"); }
+  }
+  const DIRS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+  const nwsNum = v => v == null ? null : typeof v === "number" ? v : typeof v === "object" ? cOf(v) : (m => m ? Math.max(...m.map(Number)) : null)(String(v).match(/\d+(\.\d+)?/g));
+  const nwsTempF = p => { const t = p.temperature; if (t == null) return null; if (typeof t === "object") return /degF/.test(t.unitCode || "") ? cOf(t) : fOfC(cOf(t)); return p.temperatureUnit === "C" ? fOfC(t) : t; };
+  const nwsWind = p => { const w = p.windSpeed; if (w == null) return null; if (typeof w === "object") return mphOf(w); const n = nwsNum(w); return n == null ? null : /km/.test(w) ? n * 0.621371 : n; };
+  const nwsCode = t => { t = (t || "").toLowerCase();   /* NWS words → the same weather codes Open-Meteo uses */
+    return /thunder/.test(t) ? 95 : /freezing rain|sleet|ice/.test(t) ? 66 : /snow|flurr|blizzard/.test(t) ? (/heavy|blizzard/.test(t) ? 75 : /light|chance|slight|flurr/.test(t) ? 71 : 73)
+      : /drizzle/.test(t) ? 53 : /shower/.test(t) ? 80 : /rain/.test(t) ? (/heavy/.test(t) ? 65 : /light|chance|slight/.test(t) ? 61 : 63) : /fog|haze|smoke|mist/.test(t) ? 45
+      : /partly/.test(t) ? 2 : /mostly (sunny|clear)/.test(t) ? 1 : /cloud|overcast/.test(t) ? 3 : 0; };
+  const feelsF = (T, V, RH) => {   /* NWS wind chill and heat index formulas */
+    if (T == null) return null;
+    if (T <= 50 && V >= 3) return 35.74 + 0.6215*T - 35.75*V**0.16 + 0.4275*T*V**0.16;
+    if (T >= 80 && RH != null) return Math.max(T, -42.379 + 2.04901523*T + 10.14333127*RH - 0.22475541*T*RH - 0.00683783*T*T - 0.05481717*RH*RH + 0.00122874*T*T*RH + 0.00085282*T*RH*RH - 0.00000199*T*T*RH*RH);
+    return T; };
+  async function fNWS(){
+    const pt = await fPoint();
+    const j = await get(pt.hourly), all = ((j.properties || {}).periods || []).map(p => {
+      const T = nwsTempF(p), V = nwsWind(p), RH = cOf(p.relativeHumidity), dir = DIRS.indexOf(p.windDirection);
+      return {t: Date.parse(p.startTime) / 1000, T, V, RH, dew: fOfC(cOf(p.dewpoint)), pop: cOf(p.probabilityOfPrecipitation), dir: dir < 0 ? null : dir * 22.5, code: nwsCode(p.shortForecast), day: p.isDaytime ? 1 : 0, feels: feelsF(T, V, RH)};
+    }).filter(p => isFinite(p.t) && p.T != null);
+    if (all.length < 6) throw new Error("NWS forecast empty");
+    const hs = all.slice(0, 48), col = k => hs.map(p => p[k]), none = hs.map(() => null);
+    const now = all.find(p => p.t >= Date.now() / 1000 - 3600) || all[0];
+    const days = [];   /* highs, lows and the midday sky for each calendar day, from the hourly forecast */
+    all.forEach(p => { const dt = new Date(p.t * 1000), k = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).getTime() / 1000; let g = days.find(x => x.k === k); if (!g) days.push(g = {k, ps: []}); g.ps.push(p); });
+    const dd = days.filter((g, i) => i === 0 || g.ps.length >= 8).slice(0, 7), mid = g => g.ps.reduce((a, p) => Math.abs(new Date(p.t * 1000).getHours() - 13) < Math.abs(new Date(a.t * 1000).getHours() - 13) ? p : a);
+    const el = j.properties && j.properties.elevation;
+    return {src: "nws", elevation: el && el.value != null ? el.value : NaN,
+      current: {temperature_2m: now.T, relative_humidity_2m: now.RH, dew_point_2m: now.dew, apparent_temperature: now.feels, precipitation: null, weather_code: now.code, cloud_cover: null, pressure_msl: null,
+        wind_speed_10m: now.V, wind_direction_10m: now.dir, wind_gusts_10m: null, uv_index: null, is_day: now.day},
+      hourly_units: {},
+      hourly: {time: col("t"), temperature_2m: col("T"), apparent_temperature: col("feels"), precipitation_probability: col("pop"), precipitation: none, snowfall: none, weather_code: col("code"),
+        wind_speed_10m: col("V"), wind_gusts_10m: none, wind_direction_10m: col("dir"), uv_index: none, relative_humidity_2m: col("RH"), soil_temperature_6cm: none, snow_depth: none},
+      daily: {time: dd.map(g => g.k), weather_code: dd.map(g => mid(g).code), temperature_2m_max: dd.map(g => Math.max(...g.ps.map(p => p.T))), temperature_2m_min: dd.map(g => Math.min(...g.ps.map(p => p.T))),
+        precipitation_probability_max: dd.map(g => Math.max(...g.ps.map(p => p.pop || 0))), snowfall_sum: dd.map(() => null), wind_gusts_10m_max: dd.map(() => null)}};
   }
   async function fPoint(){
     if (S.pt && S.pt.key === key()) return S.pt;
@@ -8930,7 +8999,7 @@ const WX = (() => {
     const stations = (st.features || []).slice(0, 4).map(f => ({id: f.properties.stationIdentifier, name: f.properties.name, lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0]}));
     const rl = p.properties.relativeLocation && p.properties.relativeLocation.properties;
     if (key() !== k0) throw new Error("moved");
-    S.pt = {key: k0, forecast: p.properties.forecast, stations, city: rl ? `${rl.city}, ${rl.state}` : ""};
+    S.pt = {key: k0, forecast: p.properties.forecast, hourly: p.properties.forecastHourly, stations, city: rl ? `${rl.city}, ${rl.state}` : ""};
     if (place.src === "gps" && S.pt.city){ place.name = S.pt.city; place.sub = "Near you"; store.set("jpb-wx-place", place); }
     return S.pt;
   }
@@ -8955,11 +9024,12 @@ const WX = (() => {
     } catch(e){ if (key() === k){ err[name] = e.message || "failed"; T[name] = Date.now() - EVERY[name] + 60e3; } }   /* retry in ~1 min */
     finally { if (busy[name] === k) busy[name] = false; if (key() === k) render(); }
   }
-  function due(force){
+  function due(force, only){
     if (blocked() || !navigator.onLine) return;
     const k = key(); if (T.k !== k){ for (const n in T) delete T[n]; for (const n in G) delete G[n]; T.k = k; S.pt = null; }
     const need = n => force || !T[n] || Date.now() - T[n] > EVERY[n];
     if (need("om")) run("om", fOM);
+    if (only) return;
     if (need("obs")) run("obs", fObs);
     if (need("alerts")) run("alerts", fAlerts);
     if (need("air")) run("air", fAir);
@@ -8989,7 +9059,7 @@ const WX = (() => {
     const maxG = Math.max(...hs.slice(0, 10).map(x => x.gust));
     if (maxG >= 25) { const at = hs.find(x => x.gust === maxG); out.push(["warn", `Gusts to ${r0(maxG)} mph around ${fmtH(at.t)}`, "Tie off or lower ladders, keep roof work (vent terminals) to calmer hours, weight down tarps, pipe stacks and test caps."]); }
     const wet = hs.slice(0, 12).find(x => x.pop >= 50 || x.pr >= 0.02);
-    if (wet) out.push(["warn", wet.sn > 0 ? `Snow likely from ${fmtH(wet.t)}` : `Rain likely from ${fmtH(wet.t)} (${r0(wet.pop)}%)`, "Cap open pipe ends and cover cement. Trenches get a competent-person check after rain before anyone goes in. Water in a trench softens bedding."]);
+    if (wet) out.push(["warn", wet.sn > 0 || [71,73,75,77,85,86].includes(wet.code) ? `Snow likely from ${fmtH(wet.t)}` : `Rain likely from ${fmtH(wet.t)} (${r0(wet.pop)}%)`, "Cap open pipe ends and cover cement. Trenches get a competent-person check after rain before anyone goes in. Water in a trench softens bedding."]);
     const hi = Math.max(...hs.slice(0, 12).map(x => x.feels));
     if (hi >= 90) out.push(["warn", `Heat: feels like ${r0(hi)}°F`, "Water, shade, breaks. Pipe in the sun runs 20–30°F hotter than the air, so cement flashes off: shade pipe and cans, cool ends with a damp rag, make critical joints early (Build → Materials → Cement in heat & cold)."]);
     const uv = Math.max(...hs.slice(0, 12).map(x => x.uv || 0));
@@ -9026,14 +9096,14 @@ const WX = (() => {
       if (c){
         const mT = ob ? fOfC(cOf(ob.temperature)) : null, stMi = ob ? miles(place.lat, place.lon, S.obs.st.lat, S.obs.st.lon) : 99, useObs = mT != null && stMi <= 12;   /* a far-off station (other valley, other elevation) is worse than the model */
         const temp = useObs ? mT : c.temperature_2m;
-        $("wx-hero").innerHTML = `<div class="wx-big">${r0(temp)}°<span>F</span></div><div class="wx-desc"><b>${esc(useObs && ob.textDescription ? ob.textDescription : WMO(c.weather_code))}</b><div>Feels like ${r0(c.apparent_temperature)}° · ${arrow(c.wind_direction_10m)} ${compass(c.wind_direction_10m)} ${r0(c.wind_speed_10m)} mph, gusts ${r0(c.wind_gusts_10m)}</div><div class="sub">${useObs ? `Measured at ${esc(S.obs.st.name)} (${esc(S.obs.st.id)}), ${miles(place.lat, place.lon, S.obs.st.lat, S.obs.st.lon).toFixed(1)} mi away · <span data-ago="${Date.parse(ob.timestamp)}">${ago(Date.parse(ob.timestamp))}</span>` : "Model estimate for this spot"}</div></div>`;
+        $("wx-hero").innerHTML = `<div class="wx-big">${r0(temp)}°<span>F</span></div><div class="wx-desc"><b>${esc(useObs && ob.textDescription ? ob.textDescription : WMO(c.weather_code))}</b><div>Feels like ${r0(c.apparent_temperature)}° · ${arrow(c.wind_direction_10m)} ${compass(c.wind_direction_10m)} ${r0(c.wind_speed_10m)} mph${c.wind_gusts_10m == null ? "" : ", gusts " + r0(c.wind_gusts_10m)}</div><div class="sub">${useObs ? `Measured at ${esc(S.obs.st.name)} (${esc(S.obs.st.id)}), ${miles(place.lat, place.lon, S.obs.st.lat, S.obs.st.lon).toFixed(1)} mi away · <span data-ago="${Date.parse(ob.timestamp)}">${ago(Date.parse(ob.timestamp))}</span>` : om.src === "nws" ? "National Weather Service forecast for this spot" : "Model estimate for this spot"}</div></div>`;
         if (!G.om || Date.now() - G.om > 3 * 3600e3) $("wx-hero").querySelector(".wx-desc").insertAdjacentHTML("afterbegin", `<div class="wx-stale">Saved ${ago(G.om)}: not live</div>`);
         const rows = [
-          ["Model temp here", `${r0(c.temperature_2m)}°F`, "NOAA model at your exact spot, 15-min data"],
+          om.src === "nws" ? ["Forecast temp here", `${r0(c.temperature_2m)}°F`, "National Weather Service hourly forecast (backup source)"] : ["Model temp here", `${r0(c.temperature_2m)}°F`, "NOAA model at your exact spot, 15-min data"],
           ["Humidity · dew point", `${r0(c.relative_humidity_2m)}% · ${r0(c.dew_point_2m)}°F`, c.temperature_2m - c.dew_point_2m < 4 ? "Near the dew point: cold pipe and fittings sweat, fog likely" : `${r0(c.temperature_2m - c.dew_point_2m)}° above the dew point: surfaces stay dry`],
-          ["Pressure", `${(c.pressure_msl * 0.02953).toFixed(2)} inHg`, `${r0(c.pressure_msl)} hPa sea-level`],
+          ["Pressure", c.pressure_msl == null ? "—" : `${(c.pressure_msl * 0.02953).toFixed(2)} inHg`, c.pressure_msl == null ? "Not in the backup forecast" : `${r0(c.pressure_msl)} hPa sea-level`],
           ["Cloud · UV", `${r0(c.cloud_cover)}% · UV ${r0(c.uv_index)}`, c.is_day ? "Daytime" : "Night"],
-          ["Precip right now", `${(c.precipitation || 0).toFixed(2)}"`, "Last 15 min"]
+          ["Precip right now", c.precipitation == null ? "—" : `${c.precipitation.toFixed(2)}"`, c.precipitation == null ? "Not in the backup forecast" : "Last 15 min"]
         ];
         if (ob){ const g = mphOf(ob.windGust); rows.push(["Station reading", `${r0(fOfC(cOf(ob.temperature)))}°F`, `${esc(S.obs.st.id)}: wind ${r0(mphOf(ob.windSpeed))} mph${g ? `, gusts ${r0(g)}` : ""}, RH ${r0(cOf(ob.relativeHumidity))}%`]); }
         $("wx-now").innerHTML = rows.map(([a, b, d]) => `<tr><th>${a}</th><td class="big">${b}</td><td class="sub">${d}</td></tr>`).join("");
@@ -9053,7 +9123,7 @@ const WX = (() => {
       const hs = hourly().slice(0, 24);
       if (hs.length){
         drawWx(hs);
-        $("wx-hours").innerHTML = hs.filter((x, i) => i % 2 === 0).map(x => `<tr${x.temp <= 32 ? ' class="frz"' : ""}><td>${short(x.t)}</td><td>${r0(x.temp)}°</td><td>${r0(x.feels)}°</td><td>${r0(x.pop)}%</td><td>${arrow(x.dir)} ${r0(x.wind)}–${r0(x.gust)}</td><td class="sub">${WMO(x.code)}</td></tr>`).join("");
+        $("wx-hours").innerHTML = hs.filter((x, i) => i % 2 === 0).map(x => `<tr${x.temp <= 32 ? ' class="frz"' : ""}><td>${short(x.t)}</td><td>${r0(x.temp)}°</td><td>${r0(x.feels)}°</td><td>${r0(x.pop)}%</td><td>${arrow(x.dir)} ${r0(x.wind)}${x.gust == null ? "" : "–" + r0(x.gust)}</td><td class="sub">${WMO(x.code)}</td></tr>`).join("");
         const fz = freezeWindow(hourly());
         $("wx-freeze-sum").textContent = fz ? (fz.now ? "Freezing now" : `Freezes ${fmtH(fz.start)}`) + (fz.end ? ` → thaws ${fmtH(fz.end)}` : "") : "No freeze in 24 h";
       }
@@ -9067,6 +9137,7 @@ const WX = (() => {
 
 
     if (!om && (err.om || !navigator.onLine)) $("wx-hero").innerHTML = `<div class="sub" role="alert">${navigator.onLine ? "Couldn't reach the forecast service. It tries again in a minute." : "No signal, and nothing saved for this spot yet. Open this tab once with signal and it keeps the last forecast."}</div>`;
+    headIcon();
     tick();
   }
   function drawWx(hs){
@@ -9085,6 +9156,35 @@ const WX = (() => {
     s += `<text x="${L}" y="${H - 4}" font-size="12.5" fill="${muted}">Line: temp °F · bars: chance of rain or snow</text>`;
     svg.innerHTML = s;
   }
+  /* ---- header button: a small drawing of the sky right now, plus the temperature ---- */
+  function wxIcon(code, day){
+    const cloud = `<path d="M7 14h10a3.5 3.5 0 0 0 .5-6.96A5 5 0 0 0 7.6 6.6 3.8 3.8 0 0 0 7 14z"/>`, low = `<g transform="translate(-1.5 6)">${cloud}</g>`;
+    const sun = `<circle cx="12" cy="12" r="4.2"/><g class="wxa-spin"><path d="M12 2.5v2.3M12 19.2v2.3M2.5 12h2.3M19.2 12h2.3M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g>`;
+    const moon = `<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>`;
+    const smSun = `<circle cx="17" cy="7" r="2.6"/><g class="wxa-spin sm"><path d="M17 1.6v1.4M22.4 7H21M20.8 3.2l-1 1M13.2 3.2l1 1"/></g>`, smMoon = `<path d="M21.5 8.2A4.6 4.6 0 0 1 15.8 2.5a4.6 4.6 0 1 0 5.7 5.7z"/>`;
+    const drops = `<path class="wxa-fall" d="M8 16.5l-.8 2.6"/><path class="wxa-fall d2" d="M12 16.5l-.8 2.6"/><path class="wxa-fall d3" d="M16 16.5l-.8 2.6"/>`;
+    const flakes = `<path class="wxa-fall" d="M8 17.5v.01"/><path class="wxa-fall d2" d="M12 18.5v.01"/><path class="wxa-fall d3" d="M16 17.5v.01"/><path class="wxa-fall d2" d="M10 20.5v.01"/><path class="wxa-fall" d="M14 20.5v.01"/>`;
+    const body = code >= 95 ? cloud + `<path class="wxa-flash" d="M12.5 15l-2.5 3.5h3L11 22"/>`
+      : [71,73,75,77,85,86].includes(code) ? cloud + flakes
+      : [51,53,55,56,57,61,63,65,66,67,80,81,82].includes(code) ? cloud + drops
+      : code === 45 || code === 48 ? `<g class="wxa-drift"><path d="M4 9h13M7 13h13M4 17h11"/></g>`
+      : code === 3 ? `<g transform="translate(0 3)">${cloud}</g>`
+      : code === 2 ? (day ? smSun : smMoon) + low
+      : day ? sun : moon;
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+  }
+  function headIcon(){
+    const b = $("wx-btn"), c = S.om && S.om.current;
+    if (blocked() || PREFS.wxIcon === false || !c || c.temperature_2m == null){ b.hidden = true; return; }
+    const ob = S.obs && S.obs.p, mT = ob ? fOfC(cOf(ob.temperature)) : null, near = ob && miles(place.lat, place.lon, S.obs.st.lat, S.obs.st.lon) <= 12;
+    const temp = mT != null && near ? mT : c.temperature_2m, stale = !G.om || Date.now() - G.om > 3 * 3600e3;
+    const code = !stale && near && ob.textDescription ? nwsCode(ob.textDescription) : c.weather_code, h24 = hourly().slice(0, 24).map(x => x.temp);
+    const hiLo = h24.length > 3 ? ` Next 24 hours: high ${r0(Math.max(...h24))}°, low ${r0(Math.min(...h24))}°.` : "";
+    const txt = `${place.name}: ${r0(temp)}°F, ${WMO(code)}.${hiLo}${stale ? ` Saved ${ago(G.om)}, not live.` : ""}`;
+    $("wx-ico").innerHTML = wxIcon(code, !!c.is_day); $("wx-btn-t").textContent = r0(temp) + "°";
+    b.classList.toggle("stale", stale); b.title = txt; b.setAttribute("aria-label", "Weather. " + txt + " Opens Jobsite, Weather."); b.hidden = false;
+  }
+  $("wx-btn").addEventListener("click", () => go("site", "wxnow"));
   /* every 10 s: clock, ages, countdowns, and fetch whatever is due */
   function tick(){
     $("wx-clock").textContent = (G.om ? "Data " + ago(G.om) : "Jobsite weather") + (navigator.onLine ? "" : " · no signal");
@@ -9092,7 +9192,7 @@ const WX = (() => {
     const next = Math.max(0, (T.om || 0) + EVERY.om - Date.now());
     const last = G.om ? `last good data ${fmtT(new Date(G.om))} (${ago(G.om)})` : "no saved data for this spot yet";
     $("wx-status").textContent = blocked() ? "Live data runs in the installed app." : !navigator.onLine ? `No signal: showing ${last}. It refreshes when you're back online.`
-      : err.om ? `Couldn't reach the forecast service: ${last}. Trying again in ${dur(next)}.` : `Forecast ${G.om ? "updated " + ago(G.om) : "loading"} · next check in ${dur(next)}${place.src === "gps" ? " · following your location" : ""}.`;
+      : err.om ? `Couldn't reach the forecast service: ${last}. Trying again in ${dur(next)}.` : `Forecast ${G.om ? "updated " + ago(G.om) : "loading"} · next check in ${dur(next)}${place.src === "gps" ? " · following your location" : ""}.${S.om && S.om.src === "nws" ? " Backup source (National Weather Service): the main forecast service isn't answering, so there are no soil, UV, gust or snow-depth readings." : ""}`;
   }
   /* ---- location ---- */
   function setPlace(p){ place = p; store.set("jpb-wx-place", place); for (const n in S) S[n] = null; for (const n in err) err[n] = null;
@@ -9128,12 +9228,13 @@ const WX = (() => {
     setPlace({name: r.name, sub: r.sub, lat: +(+r.lat).toFixed(4), lon: +(+r.lon).toFixed(4), src: "town"}); $("wx-search").value = ""; $("wx-results").innerHTML = ""; });
   /* follow the phone if the user chose My location before and allowed it */
   const followGps = () => { if (place.src === "gps" && (!T.gps || Date.now() - T.gps > EVERY.gps) && navigator.permissions) navigator.permissions.query({name: "geolocation"}).then(s => { if (s.state === "granted") gps(true); }).catch(() => {}); };
-  setInterval(() => { if (shown() && !document.hidden){ followGps(); due(false); tick(); } }, 10000);
-  document.addEventListener("visibilitychange", () => { if (!document.hidden && shown()) due(false); });
-  addEventListener("online", () => { if (shown()) due(false); });
+  const bg = () => { if (PREFS.wxIcon !== false && !document.hidden) due(false, ["om"]); };   /* header button only */
+  setInterval(() => { if (shown() && !document.hidden){ followGps(); due(false); tick(); } else bg(); }, 10000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) shown() ? due(false) : bg(); });
+  addEventListener("online", () => { shown() ? due(false) : bg(); });
   const mo = new MutationObserver(() => { if (shown()){ render(); followGps(); due(false); } });
   SECTIONS.filter(s => s.dataset.sec.startsWith("wx")).forEach(s => mo.observe(s, {attributes: true, attributeFilter: ["hidden"]}));
-  if (shown()){ render(); due(false); }
+  if (shown()){ render(); due(false); } else { headIcon(); bg(); }
   return {render, due, state: () => ({place, S, T, err})};
 })();
 window.wxRender = WX.render;
@@ -9141,7 +9242,7 @@ window.wxRender = WX.render;
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-12b";
+var BUILD = "handbook-2026-11-12c";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
