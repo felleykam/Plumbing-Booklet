@@ -56,15 +56,15 @@ try{var v=JSON.parse(localStorage.getItem("jpb-vest"));if(v==="yellow"||v==="ora
    readability with size and weight: no text grey lighter than #262626, no hairlines, no pastel behind text.
    Night: true black with hi-vis type for dawn, dusk and crawlspaces. Auto switches at civil dawn and dusk. */
 :root{
-  --hv:#CCFF00; --hv-ink:#000000; --k:#000000; --on-k:#FFFFFF; --on-k-sub:#E6E6E6;
+  --hv:#CCFF00; --k:#000000; --on-k:#FFFFFF; --on-k-sub:#E6E6E6;
   --paper:#FFFFFF; --sheet:#FFFFFF; --ink:#000000; --muted:#262626; --rule:#595959; --edge:#000000; --zebra:#ECECEC;
   --bar:#CCFF00; --bar-ink:#000000; --hi:#CCFF00; --hi-ink:#000000; --hi-edge:#000000;
   --danger:#C2001B; --danger-soft:#FFF0F0; --ok:#006B2B;
   /* group color tags */
-  --g-calc:#0033CC; --g-rough:#00702E; --g-mech:#00636B; --g-trim:#A8007A; --g-inspect:#B33A00; --g-calls:#C2001B; --g-learn:#5A1FB8; --g-parts:#00636B; --g-weather:#005A9E; --g-mine:#262626;
+  --g-calc:#0033CC; --g-rough:#00702E; --g-mech:#00636B; --g-trim:#A8007A; --g-inspect:#B33A00; --g-calls:#C2001B; --g-learn:#5A1FB8; --g-parts:#00636B; --g-mine:#262626;
   --ctl:#000000; --caution:#8A5A00; --ul:#000000; --wood:#C98A3E;
   /* logo: always sits on the black header bar, so one set for both looks */
-  --logo-tile:#CCFF00; --logo-ink:#000000; --logo-dot:#0033CC;
+  --logo-tile:#CCFF00; --logo-ink:#000000;
   /* offset drawings */
   --d-bg:#FFFFFF; --d-grid:#B8B8B8; --d-pipe:#4D4D4D; --d-fit:#C23400; --d-cut:#0033E0; --d-cut-lbl:#0033E0; --d-rise:#B0007A; --d-roll:#006A27; --d-run:#000000; --d-tru:#6A1FD0; --d-text:#000000; --d-dim:#333333;
   --acc:var(--ink);
@@ -81,7 +81,7 @@ try{var v=JSON.parse(localStorage.getItem("jpb-vest"));if(v==="yellow"||v==="ora
   --paper:#000000; --sheet:#0D0D0D; --ink:#FFFFFF; --muted:#D9D9D9; --rule:#6E6E6E; /* dividers 3:1 on the sheet so rows stay apart in a dim crawlspace */ --edge:#BFBFBF; --zebra:#1A1A1A;
   --bar:#1F1F1F; --bar-ink:#CCFF00; --hi:#223000; --hi-ink:#FFFFFF; --hi-edge:#CCFF00;
   --danger:#FF5C5C; --danger-soft:#2A0808; --ok:#3DF58A;
-  --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-mech:#4FD1DB; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-parts:#4FD1DB; --g-weather:#7DD3FC; --g-mine:#FFFFFF;
+  --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-mech:#4FD1DB; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-parts:#4FD1DB; --g-mine:#FFFFFF;
   --ctl:#BFBFBF; --caution:#FFB020; --ul:#CCFF00; --wood:#B07A3A;
   --d-bg:#000000; --d-grid:#333333; --d-pipe:#9A9A9A; --d-fit:#FF7A33; --d-cut:#5C9DFF; --d-cut-lbl:#8FBCFF; --d-rise:#FF66CC; --d-roll:#33E07A; --d-run:#FFFFFF; --d-tru:#B48CFF; --d-text:#FFFFFF; --d-dim:#CFCFCF;
   color-scheme:dark}
@@ -125,7 +125,7 @@ nav.tabs button[aria-pressed="true"]{background:var(--hv);color:var(--k);border-
 nav.tabs button[aria-pressed="true"]::before{background:var(--k)}
 @media (max-width:759px){
   body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-  nav.tabs{--g-calc:#7FA6FF;--g-rough:#4ADE80;--g-mech:#4FD1DB;--g-trim:#FF7AC6;--g-parts:#4FD1DB;--g-inspect:#FF9A4D;--g-calls:#FF6B7A;--g-learn:#C3A6FF;--g-weather:#7DD3FC;--g-mine:#FFFFFF;
+  nav.tabs{--g-calc:#7FA6FF;--g-rough:#4ADE80;--g-mech:#4FD1DB;--g-trim:#FF7AC6;--g-parts:#4FD1DB;--g-inspect:#FF9A4D;--g-calls:#FF6B7A;--g-learn:#C3A6FF;--g-mine:#FFFFFF;
     position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(var(--bar-n,6),minmax(0,1fr));gap:0;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--k);border-top:5px solid var(--hv);transform:translateZ(0);-webkit-transform:translateZ(0);transform-origin:0 100%;will-change:transform}
   /* the bar is moved out of the sticky toolbar on phones (script): iPhone Safari drags a fixed bar along with a sticky parent that slides */
   nav.tabs button{flex-direction:column;justify-content:center;gap:3px;min-height:62px;padding:6px 0 7px;border:0;border-radius:0;background:transparent;color:var(--on-k);font-weight:800;font-size:clamp(12.5px,3.7vw,14px);letter-spacing:.01em;box-shadow:none;min-width:0}
@@ -567,98 +567,98 @@ body.sheet-open{overflow:hidden}
    Rule for every skin: --hv is the bright accent and --k the dark bar color, so text on either always reads. ===== */
 :root[data-skin="contrast"][data-theme="light"]{
   --hv:#FFFF00; --k:#000000; --on-k:#FFFFFF; --on-k-sub:#FFFFFF; --paper:#FFFFFF; --sheet:#FFFFFF; --ink:#000000; --muted:#000000; --rule:#000000; --edge:#000000; --zebra:#F2F2F2;
-  --bar:#000000; --bar-ink:#FFFF00; --hi:#FFFF00; --hi-ink:#000000; --hi-edge:#000000; --ctl:#000000; --ul:#000000; --logo-tile:#FFFF00; --logo-ink:#000000; --logo-dot:#000000; --bw:4px;
+  --bar:#000000; --bar-ink:#FFFF00; --hi:#FFFF00; --hi-ink:#000000; --hi-edge:#000000; --ctl:#000000; --ul:#000000; --logo-tile:#FFFF00; --logo-ink:#000000; --bw:4px;
   --stripe:repeating-linear-gradient(-45deg,#FFFF00 0 10px,#000 10px 20px)}
 :root[data-skin="contrast"][data-theme="dark"]{
   --hv:#FFFF00; --k:#000000; --on-k:#FFFFFF; --on-k-sub:#FFFFFF; --paper:#000000; --sheet:#000000; --ink:#FFFFFF; --muted:#FFFFFF; --rule:#FFFFFF; --edge:#FFFFFF; --zebra:#1A1A1A;
-  --bar:#FFFF00; --bar-ink:#000000; --hi:#FFFF00; --hi-ink:#000000; --hi-edge:#FFFFFF; --ctl:#FFFFFF; --ul:#FFFF00; --logo-tile:#FFFF00; --logo-ink:#000000; --logo-dot:#000000; --bw:4px}
+  --bar:#FFFF00; --bar-ink:#000000; --hi:#FFFF00; --hi-ink:#000000; --hi-edge:#FFFFFF; --ctl:#FFFFFF; --ul:#FFFF00; --logo-tile:#FFFF00; --logo-ink:#000000; --bw:4px}
 :root[data-skin="contrast"] .sec-head{border-left-width:12px}
-:root[data-skin="contrast"],:root[data-skin="contrast"] nav.tabs{--g-calc:var(--ink);--g-rough:var(--ink);--g-mech:var(--ink);--g-trim:var(--ink);--g-inspect:var(--ink);--g-calls:var(--ink);--g-learn:var(--ink);--g-parts:var(--ink);--g-weather:var(--ink);--g-mine:var(--ink)}
+:root[data-skin="contrast"],:root[data-skin="contrast"] nav.tabs{--g-calc:var(--ink);--g-rough:var(--ink);--g-mech:var(--ink);--g-trim:var(--ink);--g-inspect:var(--ink);--g-calls:var(--ink);--g-learn:var(--ink);--g-parts:var(--ink);--g-mine:var(--ink)}
 :root[data-skin="contrast"] nav.tabs{--ink:#FFFFFF}
 
 :root[data-skin="blueprint"][data-theme="light"]{
   --hv:#8FD8FF; --k:#0B2A55; --on-k:#FFFFFF; --on-k-sub:#C9D8F0; --paper:#E6EEF9; --sheet:#FFFFFF; --ink:#0B1F3A; --muted:#24395A; --rule:#6F86AA; --edge:#0B2A55; --zebra:#E3ECF8;
-  --bar:#D2E7FF; --bar-ink:#0B1F3A; --hi:#C3E8FF; --hi-ink:#0B1F3A; --hi-edge:#0B2A55; --ctl:#0B2A55; --ul:#1257B8; --logo-tile:#8FD8FF; --logo-ink:#0B2A55; --logo-dot:#FFFFFF;
+  --bar:#D2E7FF; --bar-ink:#0B1F3A; --hi:#C3E8FF; --hi-ink:#0B1F3A; --hi-edge:#0B2A55; --ctl:#0B2A55; --ul:#1257B8; --logo-tile:#8FD8FF; --logo-ink:#0B2A55;
   --stripe:repeating-linear-gradient(90deg,#8FD8FF 0 2px,#0B2A55 2px 14px); --bp-grid:#C7D6EC}
 :root[data-skin="blueprint"][data-theme="dark"]{
   --hv:#8FD8FF; --k:#020B18; --on-k:#EAF4FF; --on-k-sub:#B9CDEA; --paper:#06162E; --sheet:#0B2142; --ink:#EAF4FF; --muted:#BFD2EC; --rule:#5D7FAE; --edge:#7FA8DB; --zebra:#0F2A52;
-  --bar:#0F2A52; --bar-ink:#9EDCFF; --hi:#123A6B; --hi-ink:#FFFFFF; --hi-edge:#8FD8FF; --ctl:#7FA8DB; --ul:#8FD8FF; --logo-tile:#8FD8FF; --logo-ink:#020B18; --logo-dot:#FFFFFF;
+  --bar:#0F2A52; --bar-ink:#9EDCFF; --hi:#123A6B; --hi-ink:#FFFFFF; --hi-edge:#8FD8FF; --ctl:#7FA8DB; --ul:#8FD8FF; --logo-tile:#8FD8FF; --logo-ink:#020B18;
   --d-bg:#06162E; --d-grid:#1D3A63; --stripe:repeating-linear-gradient(90deg,#8FD8FF 0 2px,#020B18 2px 14px); --bp-grid:#10264A}
 :root[data-skin="blueprint"] body{background-image:linear-gradient(var(--bp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--bp-grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
 :root[data-skin="blueprint"] .tools{background:color-mix(in srgb,var(--paper) 92%,transparent)}
 
 :root[data-skin="copper"][data-theme="light"]{
   --hv:#F2A65E; --k:#2B1810; --on-k:#FFF6EE; --on-k-sub:#E8D3C2; --paper:#FBF5EE; --sheet:#FFFFFF; --ink:#24140B; --muted:#4A3324; --rule:#8E6F58; --edge:#3A2215; --zebra:#F4E9DD;
-  --bar:#F7D4B0; --bar-ink:#24140B; --hi:#FAD9B8; --hi-ink:#24140B; --hi-edge:#3A2215; --ctl:#3A2215; --ul:#B5561F; --logo-tile:#F2A65E; --logo-ink:#2B1810; --logo-dot:#2E8B7A;
+  --bar:#F7D4B0; --bar-ink:#24140B; --hi:#FAD9B8; --hi-ink:#24140B; --hi-edge:#3A2215; --ctl:#3A2215; --ul:#B5561F; --logo-tile:#F2A65E; --logo-ink:#2B1810;
   --stripe:repeating-linear-gradient(-45deg,#F2A65E 0 10px,#2B1810 10px 20px)}
 :root[data-skin="copper"][data-theme="dark"]{
   --hv:#F2A65E; --k:#0B0603; --on-k:#FFF3E8; --on-k-sub:#E4CDB9; --paper:#140B06; --sheet:#1E120B; --ink:#FFF3E8; --muted:#E4CDB9; --rule:#87664F; --edge:#C9A184; --zebra:#29190F;
-  --bar:#2A180D; --bar-ink:#F6B77A; --hi:#3B2212; --hi-ink:#FFF3E8; --hi-edge:#F2A65E; --ctl:#C9A184; --ul:#F2A65E; --logo-tile:#F2A65E; --logo-ink:#0B0603; --logo-dot:#5FD3BE;
+  --bar:#2A180D; --bar-ink:#F6B77A; --hi:#3B2212; --hi-ink:#FFF3E8; --hi-edge:#F2A65E; --ctl:#C9A184; --ul:#F2A65E; --logo-tile:#F2A65E; --logo-ink:#0B0603;
   --d-bg:#140B06; --d-grid:#3A2A1E; --stripe:repeating-linear-gradient(-45deg,#F2A65E 0 10px,#0B0603 10px 20px)}
 
 :root[data-skin="redrock"][data-theme="light"]{
   --hv:#FF9157; --k:#2E1208; --on-k:#FFF4EA; --on-k-sub:#F0D2C0; --paper:#F7EEE3; --sheet:#FFFDF9; --ink:#2A1209; --muted:#55301F; --rule:#93705A; --edge:#3D1A0D; --zebra:#F1E2D2;
-  --bar:#EFA982; --bar-ink:#2A1209; --hi:#FFD7BD; --hi-ink:#2A1209; --hi-edge:#3D1A0D; --ctl:#3D1A0D; --ul:#B33A12; --logo-tile:#FF9157; --logo-ink:#3D1A0D; --logo-dot:#2F7FB8;
+  --bar:#EFA982; --bar-ink:#2A1209; --hi:#FFD7BD; --hi-ink:#2A1209; --hi-edge:#3D1A0D; --ctl:#3D1A0D; --ul:#B33A12; --logo-tile:#FF9157; --logo-ink:#3D1A0D;
   --stripe:repeating-linear-gradient(0deg,#FF9157 0 3px,#C4502A 3px 6px,#3D1A0D 6px 10px)}
 :root[data-skin="redrock"][data-theme="dark"]{
   --hv:#FF9157; --k:#0E0503; --on-k:#FFF1E6; --on-k-sub:#EBC9B3; --paper:#170A06; --sheet:#22100A; --ink:#FFF1E6; --muted:#EBC9B3; --rule:#93614B; --edge:#D49A7D; --zebra:#2C150D;
-  --bar:#2E140A; --bar-ink:#FFA36E; --hi:#45200F; --hi-ink:#FFF1E6; --hi-edge:#FF9157; --ctl:#D49A7D; --ul:#FF9157; --logo-tile:#FF9157; --logo-ink:#0E0503; --logo-dot:#7CC4F5;
+  --bar:#2E140A; --bar-ink:#FFA36E; --hi:#45200F; --hi-ink:#FFF1E6; --hi-edge:#FF9157; --ctl:#D49A7D; --ul:#FF9157; --logo-tile:#FF9157; --logo-ink:#0E0503;
   --d-bg:#170A06; --d-grid:#3E2418; --stripe:repeating-linear-gradient(0deg,#FF9157 0 3px,#C4502A 3px 6px,#0E0503 6px 10px)}
 
 :root[data-skin="wasatch"][data-theme="light"]{
   --hv:#9BE8C4; --k:#0F2E22; --on-k:#FFFFFF; --on-k-sub:#CFE6DB; --paper:#F1F6F4; --sheet:#FFFFFF; --ink:#0B1D16; --muted:#24392F; --rule:#6B8478; --edge:#0F2E22; --zebra:#E7F0EC;
-  --bar:#D3F3E4; --bar-ink:#0B1D16; --hi:#C8F2DE; --hi-ink:#0B1D16; --hi-edge:#0F2E22; --ctl:#0F2E22; --ul:#16754F; --logo-tile:#9BE8C4; --logo-ink:#0F2E22; --logo-dot:#FFFFFF;
+  --bar:#D3F3E4; --bar-ink:#0B1D16; --hi:#C8F2DE; --hi-ink:#0B1D16; --hi-edge:#0F2E22; --ctl:#0F2E22; --ul:#16754F; --logo-tile:#9BE8C4; --logo-ink:#0F2E22;
   --stripe:repeating-linear-gradient(135deg,#FFFFFF 0 8px,#9BE8C4 8px 12px,#0F2E22 12px 22px)}
 :root[data-skin="wasatch"][data-theme="dark"]{
   --hv:#9BE8C4; --k:#04100B; --on-k:#EEF8F3; --on-k-sub:#BCD9CB; --paper:#06130E; --sheet:#0C1F17; --ink:#EEF8F3; --muted:#C2DCCF; --rule:#5A7F6E; --edge:#8FB8A5; --zebra:#12291F;
-  --bar:#12291F; --bar-ink:#A8F0CF; --hi:#173A2B; --hi-ink:#FFFFFF; --hi-edge:#9BE8C4; --ctl:#8FB8A5; --ul:#9BE8C4; --logo-tile:#9BE8C4; --logo-ink:#04100B; --logo-dot:#FFFFFF;
+  --bar:#12291F; --bar-ink:#A8F0CF; --hi:#173A2B; --hi-ink:#FFFFFF; --hi-edge:#9BE8C4; --ctl:#8FB8A5; --ul:#9BE8C4; --logo-tile:#9BE8C4; --logo-ink:#04100B;
   --d-bg:#06130E; --d-grid:#1D3A2D; --stripe:repeating-linear-gradient(135deg,#EEF8F3 0 8px,#9BE8C4 8px 12px,#04100B 12px 22px)}
 
 :root[data-skin="steel"][data-theme="light"]{
   --hv:#FF8A3D; --k:#15181C; --on-k:#FFFFFF; --on-k-sub:#D0D5DB; --paper:#E8EBEE; --sheet:#FFFFFF; --ink:#111417; --muted:#2B3137; --rule:#6B747D; --edge:#23282E; --zebra:#EEF0F2;
-  --bar:#D6DBE0; --bar-ink:#111417; --hi:#FFD2B3; --hi-ink:#111417; --hi-edge:#23282E; --ctl:#23282E; --ul:#C2410C; --logo-tile:#FF8A3D; --logo-ink:#23282E; --logo-dot:#FFFFFF;
+  --bar:#D6DBE0; --bar-ink:#111417; --hi:#FFD2B3; --hi-ink:#111417; --hi-edge:#23282E; --ctl:#23282E; --ul:#C2410C; --logo-tile:#FF8A3D; --logo-ink:#23282E;
   --stripe:repeating-linear-gradient(-45deg,#FF8A3D 0 10px,#23282E 10px 20px)}
 :root[data-skin="steel"][data-theme="dark"]{
   --hv:#FF8A3D; --k:#0B0D0F; --on-k:#F2F4F6; --on-k-sub:#C5CBD1; --paper:#111316; --sheet:#1A1D21; --ink:#F2F4F6; --muted:#C9CFD5; --rule:#6E7883; --edge:#AAB2BA; --zebra:#22262B;
-  --bar:#262B31; --bar-ink:#FFA66B; --hi:#3A2414; --hi-ink:#FFFFFF; --hi-edge:#FF8A3D; --ctl:#AAB2BA; --ul:#FF8A3D; --logo-tile:#FF8A3D; --logo-ink:#0B0D0F; --logo-dot:#FFFFFF;
+  --bar:#262B31; --bar-ink:#FFA66B; --hi:#3A2414; --hi-ink:#FFFFFF; --hi-edge:#FF8A3D; --ctl:#AAB2BA; --ul:#FF8A3D; --logo-tile:#FF8A3D; --logo-ink:#0B0D0F;
   --d-bg:#111316; --d-grid:#2C3137; --stripe:repeating-linear-gradient(-45deg,#FF8A3D 0 10px,#0B0D0F 10px 20px)}
 
 :root[data-skin="primer"][data-theme="light"]{
-  --hv:#C4A1FF; --k:#1E1033; --on-k:#FBF7FF; --on-k-sub:#D9CBF0; --paper:#F5F1FB; --sheet:#FFFFFF; --ink:#1A0F2B; --muted:#3C2D55; --rule:#7D6C99; --edge:#2A1746; --zebra:#EEE7F8; --bar:#DDCBFA; --bar-ink:#1A0F2B; --hi:#E3D3FF; --hi-ink:#1A0F2B; --hi-edge:#2A1746; --ctl:#2A1746; --ul:#5B21B6; --logo-tile:#C4A1FF; --logo-ink:#1E1033; --logo-dot:#FFE500;
+  --hv:#C4A1FF; --k:#1E1033; --on-k:#FBF7FF; --on-k-sub:#D9CBF0; --paper:#F5F1FB; --sheet:#FFFFFF; --ink:#1A0F2B; --muted:#3C2D55; --rule:#7D6C99; --edge:#2A1746; --zebra:#EEE7F8; --bar:#DDCBFA; --bar-ink:#1A0F2B; --hi:#E3D3FF; --hi-ink:#1A0F2B; --hi-edge:#2A1746; --ctl:#2A1746; --ul:#5B21B6; --logo-tile:#C4A1FF; --logo-ink:#1E1033;
   --stripe:repeating-linear-gradient(-45deg,#C4A1FF 0 10px,#1E1033 10px 20px)}
 :root[data-skin="primer"][data-theme="dark"]{
-  --hv:#C4A1FF; --k:#0A0514; --on-k:#F6F0FF; --on-k-sub:#D2C3EA; --paper:#0F081C; --sheet:#180F2A; --ink:#F6F0FF; --muted:#D2C3EA; --rule:#6F5C8F; --edge:#B39AD9; --zebra:#211538; --bar:#22143B; --bar-ink:#CDB0FF; --hi:#33205A; --hi-ink:#FFFFFF; --hi-edge:#C4A1FF; --ctl:#B39AD9; --ul:#C4A1FF; --logo-tile:#C4A1FF; --logo-ink:#0A0514; --logo-dot:#FFE500; --d-bg:#0F081C; --d-grid:#30224A;
+  --hv:#C4A1FF; --k:#0A0514; --on-k:#F6F0FF; --on-k-sub:#D2C3EA; --paper:#0F081C; --sheet:#180F2A; --ink:#F6F0FF; --muted:#D2C3EA; --rule:#6F5C8F; --edge:#B39AD9; --zebra:#211538; --bar:#22143B; --bar-ink:#CDB0FF; --hi:#33205A; --hi-ink:#FFFFFF; --hi-edge:#C4A1FF; --ctl:#B39AD9; --ul:#C4A1FF; --logo-tile:#C4A1FF; --logo-ink:#0A0514; --d-bg:#0F081C; --d-grid:#30224A;
   --stripe:repeating-linear-gradient(-45deg,#C4A1FF 0 10px,#0A0514 10px 20px)}
 
 :root[data-skin="powell"][data-theme="light"]{
-  --hv:#5FE0D8; --k:#062A33; --on-k:#FFFFFF; --on-k-sub:#C6E3E6; --paper:#EEF7F7; --sheet:#FFFFFF; --ink:#061E24; --muted:#1F3A40; --rule:#5F8088; --edge:#0A3640; --zebra:#E2F1F1; --bar:#BFEFEA; --bar-ink:#061E24; --hi:#C5F3EE; --hi-ink:#061E24; --hi-edge:#0A3640; --ctl:#0A3640; --ul:#075059; --logo-tile:#5FE0D8; --logo-ink:#062A33; --logo-dot:#FF9157;
+  --hv:#5FE0D8; --k:#062A33; --on-k:#FFFFFF; --on-k-sub:#C6E3E6; --paper:#EEF7F7; --sheet:#FFFFFF; --ink:#061E24; --muted:#1F3A40; --rule:#5F8088; --edge:#0A3640; --zebra:#E2F1F1; --bar:#BFEFEA; --bar-ink:#061E24; --hi:#C5F3EE; --hi-ink:#061E24; --hi-edge:#0A3640; --ctl:#0A3640; --ul:#075059; --logo-tile:#5FE0D8; --logo-ink:#062A33;
   --stripe:repeating-linear-gradient(0deg,#5FE0D8 0 4px,#FF9157 4px 7px,#062A33 7px 12px)}
 :root[data-skin="powell"][data-theme="dark"]{
-  --hv:#5FE0D8; --k:#020D10; --on-k:#ECF9F9; --on-k-sub:#B9D9DC; --paper:#041216; --sheet:#0A1E23; --ink:#ECF9F9; --muted:#BFDDE0; --rule:#517A82; --edge:#8ABBC2; --zebra:#10282E; --bar:#0F2A30; --bar-ink:#7FEBE3; --hi:#123C43; --hi-ink:#FFFFFF; --hi-edge:#5FE0D8; --ctl:#8ABBC2; --ul:#5FE0D8; --logo-tile:#5FE0D8; --logo-ink:#020D10; --logo-dot:#FFB088; --d-bg:#041216; --d-grid:#1A3A41;
+  --hv:#5FE0D8; --k:#020D10; --on-k:#ECF9F9; --on-k-sub:#B9D9DC; --paper:#041216; --sheet:#0A1E23; --ink:#ECF9F9; --muted:#BFDDE0; --rule:#517A82; --edge:#8ABBC2; --zebra:#10282E; --bar:#0F2A30; --bar-ink:#7FEBE3; --hi:#123C43; --hi-ink:#FFFFFF; --hi-edge:#5FE0D8; --ctl:#8ABBC2; --ul:#5FE0D8; --logo-tile:#5FE0D8; --logo-ink:#020D10; --d-bg:#041216; --d-grid:#1A3A41;
   --stripe:repeating-linear-gradient(0deg,#5FE0D8 0 4px,#FF9157 4px 7px,#020D10 7px 12px)}
 
 :root[data-skin="aspen"][data-theme="light"]{
-  --hv:#FFC93C; --k:#2A2108; --on-k:#FFFBEF; --on-k-sub:#EADFBE; --paper:#FAF6E8; --sheet:#FFFFFF; --ink:#211A06; --muted:#463A16; --rule:#8C7D4E; --edge:#3A2E0C; --zebra:#F3EDD8; --bar:#FBE3A0; --bar-ink:#211A06; --hi:#FFE9A8; --hi-ink:#211A06; --hi-edge:#3A2E0C; --ctl:#3A2E0C; --ul:#6B4500; --logo-tile:#FFC93C; --logo-ink:#2A2108; --logo-dot:#FFFFFF;
+  --hv:#FFC93C; --k:#2A2108; --on-k:#FFFBEF; --on-k-sub:#EADFBE; --paper:#FAF6E8; --sheet:#FFFFFF; --ink:#211A06; --muted:#463A16; --rule:#8C7D4E; --edge:#3A2E0C; --zebra:#F3EDD8; --bar:#FBE3A0; --bar-ink:#211A06; --hi:#FFE9A8; --hi-ink:#211A06; --hi-edge:#3A2E0C; --ctl:#3A2E0C; --ul:#6B4500; --logo-tile:#FFC93C; --logo-ink:#2A2108;
   --stripe:repeating-linear-gradient(90deg,#FFFFFF 0 6px,#2A2108 6px 8px,#FFC93C 8px 18px)}
 :root[data-skin="aspen"][data-theme="dark"]{
-  --hv:#FFC93C; --k:#0B0902; --on-k:#FFF9E6; --on-k-sub:#E3D7AE; --paper:#131004; --sheet:#1D1808; --ink:#FFF9E6; --muted:#E3D7AE; --rule:#85753F; --edge:#CDBB7C; --zebra:#27200B; --bar:#2A220A; --bar-ink:#FFD566; --hi:#3D310C; --hi-ink:#FFFFFF; --hi-edge:#FFC93C; --ctl:#CDBB7C; --ul:#FFC93C; --logo-tile:#FFC93C; --logo-ink:#0B0902; --logo-dot:#FFFFFF; --d-bg:#131004; --d-grid:#3A3114;
+  --hv:#FFC93C; --k:#0B0902; --on-k:#FFF9E6; --on-k-sub:#E3D7AE; --paper:#131004; --sheet:#1D1808; --ink:#FFF9E6; --muted:#E3D7AE; --rule:#85753F; --edge:#CDBB7C; --zebra:#27200B; --bar:#2A220A; --bar-ink:#FFD566; --hi:#3D310C; --hi-ink:#FFFFFF; --hi-edge:#FFC93C; --ctl:#CDBB7C; --ul:#FFC93C; --logo-tile:#FFC93C; --logo-ink:#0B0902; --d-bg:#131004; --d-grid:#3A3114;
   --stripe:repeating-linear-gradient(90deg,#FFFFFF 0 6px,#0B0902 6px 8px,#FFC93C 8px 18px)}
 
 :root[data-skin="alpenglow"][data-theme="light"]{
-  --hv:#FF9EC4; --k:#33101F; --on-k:#FFF5F9; --on-k-sub:#F0CCDA; --paper:#FBF1F5; --sheet:#FFFFFF; --ink:#2A0C19; --muted:#55263A; --rule:#99697C; --edge:#421528; --zebra:#F6E6EC; --bar:#FFCBDF; --bar-ink:#2A0C19; --hi:#FFD6E6; --hi-ink:#2A0C19; --hi-edge:#421528; --ctl:#421528; --ul:#8C1247; --logo-tile:#FF9EC4; --logo-ink:#33101F; --logo-dot:#FFE08A;
+  --hv:#FF9EC4; --k:#33101F; --on-k:#FFF5F9; --on-k-sub:#F0CCDA; --paper:#FBF1F5; --sheet:#FFFFFF; --ink:#2A0C19; --muted:#55263A; --rule:#99697C; --edge:#421528; --zebra:#F6E6EC; --bar:#FFCBDF; --bar-ink:#2A0C19; --hi:#FFD6E6; --hi-ink:#2A0C19; --hi-edge:#421528; --ctl:#421528; --ul:#8C1247; --logo-tile:#FF9EC4; --logo-ink:#33101F;
   --stripe:repeating-linear-gradient(135deg,#FF9EC4 0 8px,#FFE08A 8px 12px,#33101F 12px 22px)}
 :root[data-skin="alpenglow"][data-theme="dark"]{
-  --hv:#FF9EC4; --k:#12040A; --on-k:#FFF0F6; --on-k-sub:#EBC4D4; --paper:#19070F; --sheet:#250D18; --ink:#FFF0F6; --muted:#EBC4D4; --rule:#93586E; --edge:#D99AB3; --zebra:#30121F; --bar:#341322; --bar-ink:#FFB0CF; --hi:#4A1A30; --hi-ink:#FFFFFF; --hi-edge:#FF9EC4; --ctl:#D99AB3; --ul:#FF9EC4; --logo-tile:#FF9EC4; --logo-ink:#12040A; --logo-dot:#FFE08A; --d-bg:#19070F; --d-grid:#3F1D2C;
+  --hv:#FF9EC4; --k:#12040A; --on-k:#FFF0F6; --on-k-sub:#EBC4D4; --paper:#19070F; --sheet:#250D18; --ink:#FFF0F6; --muted:#EBC4D4; --rule:#93586E; --edge:#D99AB3; --zebra:#30121F; --bar:#341322; --bar-ink:#FFB0CF; --hi:#4A1A30; --hi-ink:#FFFFFF; --hi-edge:#FF9EC4; --ctl:#D99AB3; --ul:#FF9EC4; --logo-tile:#FF9EC4; --logo-ink:#12040A; --d-bg:#19070F; --d-grid:#3F1D2C;
   --stripe:repeating-linear-gradient(135deg,#FF9EC4 0 8px,#FFE08A 8px 12px,#12040A 12px 22px)}
 /* Night shift: red light only, so your eyes stay dark-adapted in a crawlspace or a dark basement at 6 a.m. Always dark. */
 :root[data-skin="night"]{
   --hv:#FF6359; --k:#000000; --on-k:#FF7066; --on-k-sub:#FF6359; --paper:#000000; --sheet:#070000; --ink:#FF7066; --muted:#FF6359; --rule:#4A0E0B; --edge:#A3231C; --zebra:#120000;
   --bar:#170000; --bar-ink:#FF7066; --hi:#2A0200; --hi-ink:#FF7A72; --hi-edge:#FF3B30; --danger:#FF5A50; --danger-soft:#1A0000; --ok:#FFA49E; --caution:#FF7A72;
-  --ctl:#FF6359; --ul:#FF6359; --logo-tile:#FF3B30; --logo-ink:#000000; --logo-dot:#000000;
-  --g-calc:#FF5A50; --g-rough:#FF5A50; --g-mech:#FF5A50; --g-trim:#FF5A50; --g-inspect:#FF7A72; --g-calls:#FF3B30; --g-learn:#FF5A50; --g-parts:#FF5A50; --g-weather:#FF5A50; --g-mine:#FF5A50;
+  --ctl:#FF6359; --ul:#FF6359; --logo-tile:#FF3B30; --logo-ink:#000000;
+  --g-calc:#FF5A50; --g-rough:#FF5A50; --g-mech:#FF5A50; --g-trim:#FF5A50; --g-inspect:#FF7A72; --g-calls:#FF3B30; --g-learn:#FF5A50; --g-parts:#FF5A50; --g-mine:#FF5A50;
   --d-bg:#000000; --d-grid:#2A0200; --d-pipe:#B3332B; --d-fit:#FF7A72; --d-cut:#FF5A50; --d-cut-lbl:#FF5A50; --d-rise:#FF8A82; --d-roll:#E0453C; --d-run:#FF5A50; --d-tru:#FF9C96; --d-text:#FF7066; --d-dim:#FF6359;
   --stripe:repeating-linear-gradient(-45deg,#FF3B30 0 10px,#000 10px 20px); color-scheme:dark}
-:root[data-skin="night"] nav.tabs{--g-calc:#FF5A50;--g-rough:#FF5A50;--g-mech:#FF5A50;--g-trim:#FF5A50;--g-inspect:#FF5A50;--g-calls:#FF5A50;--g-learn:#FF5A50;--g-weather:#FF5A50;--g-mine:#FF5A50}
+:root[data-skin="night"] nav.tabs{--g-calc:#FF5A50;--g-rough:#FF5A50;--g-mech:#FF5A50;--g-trim:#FF5A50;--g-inspect:#FF5A50;--g-calls:#FF5A50;--g-learn:#FF5A50;--g-mine:#FF5A50}
 :root[data-skin="night"] img{filter:grayscale(1) sepia(1) hue-rotate(-50deg) saturate(4) brightness(.7)}
 
 /* reading options */
@@ -971,7 +971,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <div class="no-hits" hidden></div>
   <div class="res-bar" id="res-bar" hidden></div>
 
-  <div class="book">
+  <div class="book" role="main">
   <section data-sec="pins" id="pins-help">
     <div class="sec-head"><h2>Pinned cards</h2><small>Your shortcuts · saved on this device</small></div>
     <p class="note" id="pins-note">Tap the <b>☆</b> on any card's header to pin it here. Good for the five cards you open every day: your city, the offset calculator, your rough-in heights.</p>
@@ -5979,8 +5979,8 @@ document.querySelectorAll("#look [data-reset]").forEach(b => b.addEventListener(
   const what = b.dataset.reset, drop = k => { try { localStorage.removeItem(k); } catch(e){} };
   if (what === "look") ["jpb-prefs","jpb-theme","jpb-vest","jpb-zoom"].forEach(drop);
   else if (what === "pins") drop("jpb-pins");
-  else if (what === "fc") Object.keys(localStorage).filter(k => k.startsWith("jpb-fc")).forEach(drop);
-  else Object.keys(localStorage).filter(k => k.startsWith("jpb-")).forEach(drop);
+  else { let keys = []; try { keys = Object.keys(localStorage); } catch(e){}
+    keys.filter(k => k.startsWith(what === "fc" ? "jpb-fc" : "jpb-")).forEach(drop); }
   location.reload();
 }));
 $("set-update").addEventListener("click", async () => {
