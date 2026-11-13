@@ -181,7 +181,7 @@ body.searching .where-go,body.mixed .where-go{display:block;grid-column:1 / -1;j
 .flag{margin:0;padding:9px 12px 9px 14px;font-size:15.5px;font-weight:700;background:var(--danger-soft);border-top:1px solid var(--rule);border-left:8px solid var(--danger)}
 
 /* ===== tables ===== */
-.x{overflow-x:auto}
+.x{overflow-x:auto;overflow-y:hidden}
 .t{width:100%;border-collapse:collapse;font-size:16px}
 @media (min-width:760px){.t{font-size:15.5px}}
 .t th,.t td{padding:8px 12px;text-align:left;vertical-align:top}
@@ -4234,6 +4234,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 12, 2026 · bar &amp; weather</th><td><b>Bottom bar:</b> eight tables had started scrolling up and down a few pixels inside their own boxes, which can tug the iPhone bar loose: fixed. After the "Allow location" prompt the book now re-seats the bar. <b>Weather:</b> the first forecast shows in a few seconds even when the main service is slow, and picking a new place no longer blanks the card. A book left in the background over 6 hours reloads when you come back, so it picks up updates.</td></tr>
         <tr><th>Nov 12, 2026 · weather</th><td><b>Weather fixed:</b> when the main forecast service doesn't answer, the card now switches to the National Weather Service forecast instead of sitting on "Loading". Every weather request gives up after 12 seconds and tries again. <b>New:</b> a weather button in the top corner shows the sky right now and the temperature; tap it for Jobsite → Weather. Turn it off in <b>Settings → Behavior → Weather in the header</b>.</td></tr>
         <tr><th>Nov 12, 2026 · tune-up</th><td><b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them.</td></tr>
         <tr><th>Nov 12, 2026</th><td><b>Water treatment</b> (Service → Treatment) grew: <b>Where treatment goes</b> (order in the line, hard water for hose bibbs, the softener loop rough-in), <b>Softener trouble</b> (no soft water, salt bridge, resin in the lines, low pressure), <b>How RO works</b>, <b>Treatment code</b> (the IPC and IRC sections for softeners and RO) and <b>Treatment brands</b>. <b>Contacts → Tech lines → Water treatment</b> has 14 makers' phone lines.</td></tr>
@@ -5787,6 +5788,14 @@ $("q").addEventListener("input", () => {
   };
   const queue = () => { if (!raf) raf = requestAnimationFrame(glue); };
   window.navGlue = queue;
+  /* A system prompt (Allow location) covers the home-screen app and can leave the page sitting a little off when it
+     closes, with no viewport event to say so. Nudge the page a few times afterwards: scroll to where it already is,
+     re-check the bar, and make iOS re-read the viewport line. */
+  window.navReseat = () => {
+    [0, 250, 700, 1500, 3000].forEach(t => setTimeout(() => { if (!typing()) scrollTo(scrollX, scrollY); queue(); }, t));
+    const vp = document.querySelector('meta[name="viewport"]');
+    if (vp && document.documentElement.classList.contains("pwa")){ const c = vp.getAttribute("content"); vp.setAttribute("content", c + ",minimum-scale=1"); setTimeout(() => vp.setAttribute("content", c), 150); }
+  };
   if (vv){ vv.addEventListener("resize", queue); vv.addEventListener("scroll", queue); }
   addEventListener("scroll", queue, {passive: true});
   addEventListener("orientationchange", () => setTimeout(queue, 350));
@@ -8279,7 +8288,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-12c";
+{ const NEWS = "2026-11-12d";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8952,8 +8961,14 @@ const WX = (() => {
      those stay null and show as a dash. */
   let omDown = +store.get("jpb-wx-omdown", 0) || 0;   /* when Open-Meteo last failed; for 20 min after that the backup goes first, even after the book is reopened */
   const omMark = t => { omDown = t; store.set("jpb-wx-omdown", t); };
+  const firstOk = ps => new Promise((ok, no) => { let left = ps.length; ps.forEach(p => p.then(ok, () => { if (!--left) no(new Error("forecast services not answering")); })); });
   async function fOM(){
-    if (Date.now() - omDown > 20 * 60e3){ try { const data = await fOMmain(); if (omDown) omMark(0); return data; } catch(e){ omMark(Date.now()); } }
+    if (Date.now() - omDown > 20 * 60e3){
+      let done = false;
+      const main = fOMmain().then(data => { done = true; if (omDown) omMark(0); return data; }, e => { omMark(Date.now()); throw e; });
+      if (S.om){ try { return await main; } catch(e){} }   /* something is already on screen: give the main service its full time */
+      else return firstOk([main, new Promise(r => setTimeout(r, 2500)).then(() => { if (done) throw new Error("not needed"); return fNWS(); })]);
+    }
     try { return await fNWS(); } catch(e){ omMark(0); throw new Error("forecast services not answering"); }
   }
   const DIRS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
@@ -9136,6 +9151,7 @@ const WX = (() => {
 
 
 
+    if (!om && (err.om || !navigator.onLine)){ $("wx-chart").innerHTML = ""; ["wx-now","wx-hours","wx-days"].forEach(id => $(id).innerHTML = ""); }   /* nothing for this place: don't leave another town's numbers up */
     if (!om && (err.om || !navigator.onLine)) $("wx-hero").innerHTML = `<div class="sub" role="alert">${navigator.onLine ? "Couldn't reach the forecast service. It tries again in a minute." : "No signal, and nothing saved for this spot yet. Open this tab once with signal and it keeps the last forecast."}</div>`;
     headIcon();
     tick();
@@ -9196,17 +9212,19 @@ const WX = (() => {
   }
   /* ---- location ---- */
   function setPlace(p){ place = p; store.set("jpb-wx-place", place); for (const n in S) S[n] = null; for (const n in err) err[n] = null;
-    $("wx-hero").innerHTML = `<div class="sub">Loading the forecast for ${esc(place.name)}…</div>`; $("wx-alerts").innerHTML = ""; $("wx-chart").innerHTML = "";
-    ["wx-now","wx-hours","wx-days"].forEach(id => $(id).innerHTML = ""); $("wx-air").innerHTML = `<tr><td class="sub">Loading…</td></tr>`;
+    /* the old tables stay until the new forecast lands: emptying them made the page jump shorter, then longer */
+    $("wx-hero").innerHTML = `<div class="sub">Loading the forecast for ${esc(place.name)}…</div>`; $("wx-alerts").innerHTML = "";
+    $("wx-flags").innerHTML = `<p class="flag ok-flag">Waiting for the forecast for ${esc(place.name)}…</p>`;
     render(); due(true); }
   function gps(silent){
     if (!navigator.geolocation){ if (!silent) $("wx-placesub").textContent = "Location not available on this device"; return; }
     if (!silent) $("wx-placesub").textContent = "Finding you…";
     navigator.geolocation.getCurrentPosition(p => {
+      if (window.navReseat) navReseat();
       const lat = +p.coords.latitude.toFixed(4), lon = +p.coords.longitude.toFixed(4), moved = miles(lat, lon, place.lat, place.lon) > 0.3;
       T.gps = Date.now();
       if (place.src !== "gps" || moved) setPlace({name: "My location", sub: `±${Math.round(p.coords.accuracy)} m`, lat, lon, src: "gps"});
-    }, () => { if (!silent) $("wx-placesub").textContent = "Location blocked: search a town instead"; }, {enableHighAccuracy: true, timeout: 12000, maximumAge: 120000});
+    }, () => { if (window.navReseat) navReseat(); if (!silent) $("wx-placesub").textContent = "Location blocked: search a town instead"; }, {enableHighAccuracy: true, timeout: 12000, maximumAge: 120000});
   }
   $("wx-gps").addEventListener("click", () => gps(false));
   let sT = 0;
@@ -9242,7 +9260,7 @@ window.wxRender = WX.render;
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-12c";
+var BUILD = "handbook-2026-11-12d";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
@@ -9260,6 +9278,12 @@ var BUILD = "handbook-2026-11-12c";
   navigator.serviceWorker.addEventListener("controllerchange", function(){
     if (!hadController) { hadController = true; return; }
     note.textContent = "✓ Updated: build " + BUILD + " is saved on this device.";
+  });
+  /* an installed app that is only ever put in the background never reloads, so it never sees a new build */
+  var hiddenAt = 0;
+  document.addEventListener("visibilitychange", function(){
+    if (document.hidden){ hiddenAt = Date.now(); return; }
+    if (hiddenAt && Date.now() - hiddenAt > 6 * 3600e3 && navigator.onLine) location.reload();
   });
 })();
 </script>
