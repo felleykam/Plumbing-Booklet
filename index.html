@@ -228,6 +228,8 @@ input,select{font:inherit}
 .btn:disabled{opacity:.5;cursor:default}
 .chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 12px 12px}
 .chips:empty{display:none}
+.chips.pick{padding:0}
+.chips.pick button[aria-pressed="true"]{background:var(--hv);color:var(--k);border-color:var(--k)}
 .chips button{font-family:var(--mono);font-weight:700;font-size:14.5px;text-transform:none;letter-spacing:0;min-height:46px;padding:2px 10px;background:var(--zebra)}
 .linkish{appearance:none;font:inherit;font-weight:700;background:none;border:0;padding:10px 4px;min-height:44px;color:var(--ink);text-decoration:underline;text-decoration-color:var(--ul);text-decoration-thickness:3px;text-underline-offset:4px;cursor:pointer}
 .keys{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-bottom:1px solid var(--rule)}
@@ -875,6 +877,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
           <button type="button" data-s="saltflats"><span class="sw" style="--a:#F7F5F0;--b:#7FD6F2;--c:#12303B"></span><span class="nm">Salt Flats</span><small>White salt, big sky.</small></button>
           <button type="button" data-s="night"><span class="sw" style="--a:#000000;--b:#FF6359;--c:#170000"></span><span class="nm">Night shift</span><small>Red only. Keeps night vision.</small></button>
         </div></div>
+      <div class="tog-list">
+        <button type="button" class="tog" role="switch" data-t="hc"><span><b>High contrast</b><small>Black, white and yellow with the thickest lines. Off goes back to your theme.</small></span></button>
+      </div>
       <div class="row" id="vest-row"><b>Vest color</b>
         <div class="seg" id="look-vest" role="group" aria-label="Vest color"><button type="button" data-v="lime"><span class="vest-sw" style="background:#CCFF00"></span>Lime</button><button type="button" data-v="yellow"><span class="vest-sw" style="background:#FFE500"></span>Yellow</button><button type="button" data-v="orange"><span class="vest-sw" style="background:#FF7A1F"></span>Orange</button></div></div>
       <div class="row"><b>Sun or Night</b>
@@ -901,6 +906,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <div class="row"><b>Open the book to</b>
         <label class="sel"><select id="set-start" aria-label="Open the book to">
           <option value="last">Where I left off</option><option value="home">Home</option><option value="calc">Calc</option><option value="rough">Build</option><option value="mech">Service</option><option value="trim">Trim</option><option value="inspect">Inspect</option><option value="contacts">Contacts</option><option value="site">Jobsite</option><option value="learn">Learn</option><option value="mine">★ Pinned</option></select></label></div>
+      <div class="row"><b>Home shortcuts</b>
+        <div class="chips pick" id="set-homego" role="group" aria-label="Home shortcuts"></div>
+        <p class="sample" id="set-homego-note"></p></div>
       <div class="tog-list">
         <button type="button" class="tog" role="switch" data-t="gloves"><span><b>Gloves on</b><small>Bigger buttons and boxes everywhere, for work gloves.</small></span></button>
         <button type="button" class="tog" role="switch" data-t="wake"><span><b>Keep the screen on</b><small>While the book is open. Handy with dirty gloves. Uses more battery.</small></span></button>
@@ -908,6 +916,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <button type="button" class="tog" role="switch" data-t="chip"><span><b>Code banner</b><small>The UT strip showing which code you're on.</small></span></button>
         <button type="button" class="tog" role="switch" data-t="stars"><span><b>Pin stars on cards</b><small>The ☆ that pins a card to Mine.</small></span></button>
         <button type="button" class="tog" role="switch" data-t="fx"><span><b>Fun stuff</b><small>Splashes, jokes and rank-ups. Off = all business.</small></span></button>
+        <button type="button" class="tog" role="switch" data-t="pnCopy"><span><b>Tap a phone number to copy</b><small>Off: on a phone, a tap calls and a long press copies. On: a tap copies.</small></span></button>
         <button type="button" class="tog" role="switch" data-t="recentQ"><span><b>Remember my searches</b><small>Recent searches on Home. Off clears the list.</small></span></button>
       </div>
       <div class="row"><b>My drain pipe</b>
@@ -4204,6 +4213,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 12, 2026 · tune-up</th><td><b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them.</td></tr>
         <tr><th>Nov 12, 2026</th><td><b>Water treatment</b> (Service → Treatment) grew: <b>Where treatment goes</b> (order in the line, hard water for hose bibbs, the softener loop rough-in), <b>Softener trouble</b> (no soft water, salt bridge, resin in the lines, low pressure), <b>How RO works</b>, <b>Treatment code</b> (the IPC and IRC sections for softeners and RO) and <b>Treatment brands</b>. <b>Contacts → Tech lines → Water treatment</b> has 14 makers' phone lines.</td></tr>
         <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "shower valve height") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Circuits, wire &amp; bonding. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow. <b>Reopening the book</b> lands where you were on the page, not at the top. <b>Fits the phone:</b> calculator answers and the Pressure at the fixture rows no longer run off the right edge, long dropdowns get a full row, and tech line numbers stack instead of scrolling sideways.</td></tr>
         <tr><th>Nov 9, 2026 · organized</th><td><b>Which tool?</b> on Home now lists every calculator, grouped by the job it does · Trim → Finders is folded into <b>ID a part</b> · Water heater age sits beside Reading a rating plate (Service → Water heaters), and the heater calculators run size, output, then how long it lasts · How it works is grouped by system: drains, water, hot water, gas · the calculator on the Electrical page is now called <b>Circuits, wire &amp; bonding</b> · PEX install gained the crimp and expansion joint checks. <b>New card: Not the code, and not ours</b> (Inspect → Which code) says plainly that the IPC, IRC and other codes belong to the ICC and that this book is our own summary. <b>Removed:</b> My files, which never worked in this copy of the book. Pins, notes and old links follow every card that moved.</td></tr>
@@ -5459,7 +5469,7 @@ function bindPn(root = document){ root.querySelectorAll(".pn:not([data-pn])").fo
   n.addEventListener("touchstart", () => { held = false; hold = setTimeout(() => { held = true; copyNum(n); }, 550); }, {passive:true});
   ["touchend","touchmove","touchcancel"].forEach(ev => n.addEventListener(ev, () => clearTimeout(hold), {passive:true}));
   n.addEventListener("contextmenu", e => { if (canCall) e.preventDefault(); });
-  n.addEventListener("click", () => { if (held){ held = false; return; } if (canCall) location.href = "tel:" + digits; else copyNum(n); });
+  n.addEventListener("click", () => { if (held){ held = false; return; } if (canCall && !PREFS.pnCopy) location.href = "tel:" + digits; else copyNum(n); });
 }); }
 bindPn();
 
@@ -5500,6 +5510,7 @@ SECTIONS.forEach(sec => {
 });
 let nav = {group:"home", sub:"home"};
 const PREFS = Object.assign({start:"last", light:"phone", tip:true, chip:matchMedia("(min-width:760px)").matches, stars:true, fx:true, wake:false, fcNew:15, pipe:"abs", recentQ:true, tabs:{}, frac:"16"}, store.get("jpb-prefs", {}) || {});
+PREFS.hc = PREFS.skin === "contrast";
 if (!PREFS.tabs || typeof PREFS.tabs !== "object" || Array.isArray(PREFS.tabs)) PREFS.tabs = {};
 const savePrefs = () => store.set("jpb-prefs", PREFS);
 { const s = store.get("jpb-nav", null);
@@ -5674,7 +5685,12 @@ function alts(t){
   return out;
 }
 /* recent places and searches, for Home */
-const RECENT = {places: (a => Array.isArray(a) ? a : [])(store.get("jpb-recent", [])), qs: (a => Array.isArray(a) ? a : [])(store.get("jpb-recent-q", []))};
+const RECENT = {places: (a => Array.isArray(a) ? a : [])(store.get("jpb-recent", [])), qs: (a => Array.isArray(a) ? a : [])(store.get("jpb-recent-q", [])), cards: (a => Array.isArray(a) ? a : [])(store.get("jpb-recent-c", []))};
+function cardRemember(sec){
+  const p = sec.dataset.pid; if (!p || sec.dataset.g === "home" || sec.dataset.g === "mine") return;
+  RECENT.cards = [p, ...RECENT.cards.filter(x => x !== p)].slice(0, 6); store.set("jpb-recent-c", RECENT.cards);
+  if (window.homeDraw) homeDraw();
+}
 function placeRemember(){
   if (nav.group === "home") return;
   const k = nav.group + "|" + nav.sub; RECENT.places = [k, ...RECENT.places.filter(x => x !== k)].slice(0, 6); store.set("jpb-recent", RECENT.places);
@@ -5962,7 +5978,7 @@ function lookDraw(){
 }
 $("set-skin").addEventListener("click", e => {
   const b = e.target.closest("button[data-s]"); if (!b) return;
-  PREFS.skin = b.dataset.s; savePrefs(); prefApply(); themeNow(); themeLabel(); redrawArt(); lookDraw(); say(b.querySelector(".nm").textContent + " theme");
+  PREFS.skin = b.dataset.s; PREFS.hc = PREFS.skin === "contrast"; savePrefs(); prefApply(); themeNow(); themeLabel(); redrawArt(); lookDraw(); say(b.querySelector(".nm").textContent + " theme");
 });
 $("look-light").addEventListener("click", e => {
   const b = e.target.closest("button[data-l]"); if (!b || b.disabled) return;
@@ -5986,7 +6002,14 @@ document.querySelectorAll("#look .seg[data-pref]").forEach(g => g.addEventListen
 }));
 document.querySelectorAll("#look .tog").forEach(t => t.addEventListener("click", () => {
   if (t.disabled) return;
-  PREFS[t.dataset.t] = !PREFS[t.dataset.t]; savePrefs(); prefApply(); wakeSet(); lookDraw(); say(t.querySelector("b").textContent + (PREFS[t.dataset.t] ? " on" : " off"));
+  PREFS[t.dataset.t] = !PREFS[t.dataset.t];
+  if (t.dataset.t === "hc"){
+    if (PREFS.hc){ if ((PREFS.skin || "hivis") !== "contrast") PREFS.skinWas = PREFS.skin || "hivis"; PREFS.skin = "contrast"; }
+    else PREFS.skin = PREFS.skinWas && PREFS.skinWas !== "contrast" ? PREFS.skinWas : "hivis";
+  }
+  savePrefs(); prefApply(); wakeSet();
+  if (t.dataset.t === "hc"){ themeNow(); themeLabel(); redrawArt(); }
+  lookDraw(); say(t.querySelector("b").textContent + (PREFS[t.dataset.t] ? " on" : " off"));
   if (t.dataset.t === "recentQ" && !PREFS.recentQ){ RECENT.qs = []; store.set("jpb-recent-q", []); if (window.homeDraw) homeDraw(); }
 }));
 $("set-code-seg").addEventListener("click", e => { const b = e.target.closest("button[data-code]"); if (b){ setCode(b.dataset.code); say(b.textContent); } });
@@ -7278,7 +7301,7 @@ function jumpTo(group, sub, title, focusId){
   jumpToSec(sec, focusId);
 }
 function jumpToSec(sec, focusId, noPush){
-  if (!noPush){ const y = scrollY; nav = {group: sec.dataset.g, sub: sec.dataset.sec}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrollTo({top:0}); placeRemember(); histPush({card: sec.dataset.pid}, (sec.dataset.pid || "").split(":")[1], y); }
+  if (!noPush){ const y = scrollY; nav = {group: sec.dataset.g, sub: sec.dataset.sec}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrollTo({top:0}); placeRemember(); histPush({card: sec.dataset.pid}, (sec.dataset.pid || "").split(":")[1], y); cardRemember(sec); }
   requestAnimationFrame(() => {
     sec.scrollIntoView({block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
     const f = focusId && $(focusId); const h = sec.querySelector("h2");
@@ -8233,7 +8256,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-12";
+{ const NEWS = "2026-11-12b";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8552,6 +8575,7 @@ function homeDraw(){
   const pins = SECTIONS.filter(s => s.dataset.pin === "1");
   const sub = (g, s) => (GROUPS[g] || []).find(([k]) => k === s);
   const places = RECENT.places.map(k => k.split("|")).filter(([g, s]) => sub(g, s));
+  const recentCards = RECENT.cards.map(p => SECTIONS.find(x => x.dataset.pid === p)).filter(Boolean);
   const now = new Date(), due = new Date(now.getFullYear(), 10, 30), days = Math.ceil((due - now) / 864e5);
   const renew = now.getFullYear() % 2 === 0 && now.getMonth() >= 8 && days >= 0   /* plumbing licenses expire Nov 30 of even years */
     ? `<button type="button" class="renew-line" data-hg="learn|career|Path to a license|renew-row"><b>License renewal due Nov 30</b> · ${days ? days + (days === 1 ? " day" : " days") + " left" : "today"} · 12 CE hr, 8 core ›</button>` : "";
@@ -8564,9 +8588,23 @@ function homeDraw(){
         : `<p class="note"><button type="button" class="linkish" data-hg="contacts|emergency|My city">Set my city</button> for inspection booking, trouble lines, hardness and frost depth.</p>`}
     ${TAPE.length ? `<p class="card-h">Last on the tape <button type="button" class="linkish" data-hg="mine|tape">All</button></p><pre class="tape-last">${esc(TAPE[0].text.split("\n").slice(0, 4).join("\n"))}</pre>` : ""}
     ${pins.length ? `<p class="card-h">Pinned</p><div class="chips home-chips">${pins.map(s => `<button type="button" data-see="${s.dataset.pid}">★ ${esc(s.querySelector("h2").textContent)}</button>`).join("")}</div>` : ""}
-    ${places.length || RECENT.qs.length ? `<p class="card-h">Recent</p><div class="chips home-chips">${places.map(([g, s]) => `<button type="button" data-hg="${g}|${s}">${GNAME[g]} › ${esc(sub(g, s)[1])}</button>`).join("")}${RECENT.qs.map(q => `<button type="button" data-hq="${esc(q)}">🔍 ${esc(q)}</button>`).join("")}</div>` : ""}`;
+    ${places.length || RECENT.qs.length || recentCards.length ? `<p class="card-h">Recent</p><div class="chips home-chips">${recentCards.map(s => `<button type="button" data-see="${s.dataset.pid}">${esc(s.querySelector("h2").textContent)}</button>`).join("")}${places.map(([g, s]) => `<button type="button" data-hg="${g}|${s}">${GNAME[g]} › ${esc(sub(g, s)[1])}</button>`).join("")}${RECENT.qs.map(q => `<button type="button" data-hq="${esc(q)}">🔍 ${esc(q)}</button>`).join("")}</div>` : ""}`;
   bindPn($("home-body"));
+  homeGoPick();
 }
+function homeGoPick(){
+  const on = homeGoList();
+  $("set-homego").innerHTML = Object.keys(HOME_GO).map(k => `<button type="button" data-k="${k}" aria-pressed="${on.includes(k)}">${HOME_GO[k][1]}</button>`).join("");
+  $("set-homego-note").textContent = `${on.length} of ${HOME_GO_MAX} picked. Emergency always shows first.`;
+}
+$("set-homego").addEventListener("click", e => {
+  const b = e.target.closest("button[data-k]"); if (!b) return;
+  let on = homeGoList(); const k = b.dataset.k;
+  if (on.includes(k)){ if (on.length === 1){ toast("Keep at least one shortcut."); return; } on = on.filter(x => x !== k); }
+  else if (on.length >= HOME_GO_MAX){ toast(`Only ${HOME_GO_MAX} fit. Turn one off first.`); return; }
+  else on = [...on, k];
+  PREFS.homeGo = on; savePrefs(); homeDraw(); say(HOME_GO[k][1] + (on.includes(k) ? " on" : " off"));
+});
 $("home-body").addEventListener("click", e => {
   const b = e.target.closest("[data-hg],[data-hq]"); if (!b) return;
   if (b.dataset.hq){ $("q").value = b.dataset.hq; $("q").dispatchEvent(new Event("input")); return; }
@@ -9100,7 +9138,7 @@ window.wxRender = WX.render;
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-12";
+var BUILD = "handbook-2026-11-12b";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
