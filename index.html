@@ -651,6 +651,42 @@ body.sheet-open{overflow:hidden}
 :root[data-skin="alpenglow"][data-theme="dark"]{
   --hv:#FF9EC4; --k:#12040A; --on-k:#FFF0F6; --on-k-sub:#EBC4D4; --paper:#19070F; --sheet:#250D18; --ink:#FFF0F6; --muted:#EBC4D4; --rule:#93586E; --edge:#D99AB3; --zebra:#30121F; --bar:#341322; --bar-ink:#FFB0CF; --hi:#4A1A30; --hi-ink:#FFFFFF; --hi-edge:#FF9EC4; --ctl:#D99AB3; --ul:#FF9EC4; --logo-tile:#FF9EC4; --logo-ink:#12040A; --d-bg:#19070F; --d-grid:#3F1D2C;
   --stripe:repeating-linear-gradient(135deg,#FF9EC4 0 8px,#FFE08A 8px 12px,#12040A 12px 22px)}
+/* To add a theme: copy one light block and one dark block below, change the name and the colors, and add a button
+   with the same data-s name to the Theme list in Settings. Nothing else needs to change. */
+:root[data-skin="cone"][data-theme="light"]{
+  --hv:#FF7A1F; --k:#160B03; --on-k:#FFFFFF; --on-k-sub:#F0D9C8; --paper:#FFF6EE; --sheet:#FFFFFF; --ink:#1F1206; --muted:#4A3320; --rule:#9A7A60; --edge:#3A200C; --zebra:#FBEBDD; --bar:#FFD0A8; --bar-ink:#1F1206; --hi:#FFD9BA; --hi-ink:#1F1206; --hi-edge:#3A200C; --ctl:#3A200C; --ul:#7A2C00; --logo-tile:#FF7A1F; --logo-ink:#160B03;
+  --stripe:repeating-linear-gradient(-45deg,#FF7A1F 0 10px,#FFFFFF 10px 14px,#160B03 14px 24px)}
+:root[data-skin="cone"][data-theme="dark"]{
+  --hv:#FF7A1F; --k:#0A0502; --on-k:#FFF4EA; --on-k-sub:#E8CDB8; --paper:#120903; --sheet:#1C1008; --ink:#FFF4EA; --muted:#E8CDB8; --rule:#8A6444; --edge:#D9A77E; --zebra:#26170C; --bar:#2B1808; --bar-ink:#FF9A52; --hi:#452408; --hi-ink:#FFFFFF; --hi-edge:#FF7A1F; --ctl:#D9A77E; --ul:#FF9A52; --logo-tile:#FF7A1F; --logo-ink:#0A0502; --d-bg:#120903; --d-grid:#3A2412;
+  --stripe:repeating-linear-gradient(-45deg,#FF7A1F 0 10px,#FFFFFF 10px 14px,#0A0502 14px 24px)}
+
+:root[data-skin="hotcold"][data-theme="light"]{
+  --hv:#7CC4FF; --k:#0B1F3A; --on-k:#FFFFFF; --on-k-sub:#C9D8EC; --paper:#F1F5FB; --sheet:#FFFFFF; --ink:#0A1A30; --muted:#2C3F5C; --rule:#6C7F9C; --edge:#12305A; --zebra:#E6EDF7; --bar:#CFE4FA; --bar-ink:#0A1A30; --hi:#D6E9FF; --hi-ink:#0A1A30; --hi-edge:#12305A; --ctl:#12305A; --ul:#96101C; --logo-tile:#7CC4FF; --logo-ink:#0B1F3A;
+  --stripe:repeating-linear-gradient(90deg,#E5383B 0 10px,#0B1F3A 10px 13px,#5CB8FF 13px 23px,#0B1F3A 23px 26px)}
+:root[data-skin="hotcold"][data-theme="dark"]{
+  --hv:#7CC4FF; --k:#040C18; --on-k:#F1F6FF; --on-k-sub:#C2D2E8; --paper:#071326; --sheet:#0E1D36; --ink:#F1F6FF; --muted:#C2D2E8; --rule:#5A7196; --edge:#9DB6DA; --zebra:#142642; --bar:#132845; --bar-ink:#9AD2FF; --hi:#1C3A63; --hi-ink:#FFFFFF; --hi-edge:#7CC4FF; --ctl:#9DB6DA; --ul:#FF9D94; --logo-tile:#7CC4FF; --logo-ink:#040C18; --d-bg:#071326; --d-grid:#1F3557;
+  --stripe:repeating-linear-gradient(90deg,#E5383B 0 10px,#040C18 10px 13px,#5CB8FF 13px 23px,#040C18 23px 26px)}
+
+:root[data-skin="castiron"][data-theme="light"]{
+  --hv:#E0A030; --k:#1C1B1A; --on-k:#F7F3EA; --on-k-sub:#D9D2C2; --paper:#F3F1EC; --sheet:#FFFFFF; --ink:#171614; --muted:#3D3A35; --rule:#807A6E; --edge:#2B2926; --zebra:#EAE7E0; --bar:#E9D5A8; --bar-ink:#171614; --hi:#F3DFAE; --hi-ink:#171614; --hi-edge:#2B2926; --ctl:#2B2926; --ul:#613C00; --logo-tile:#E0A030; --logo-ink:#1C1B1A;
+  --stripe:repeating-linear-gradient(0deg,#1C1B1A 0 8px,#E0A030 8px 10px)}
+:root[data-skin="castiron"][data-theme="dark"]{
+  --hv:#E0A030; --k:#0B0B0A; --on-k:#F4EFE6; --on-k-sub:#D6CFC0; --paper:#131211; --sheet:#1D1C1A; --ink:#F4EFE6; --muted:#D6CFC0; --rule:#7A746A; --edge:#BDB5A5; --zebra:#272523; --bar:#2A2722; --bar-ink:#F0B850; --hi:#3D3420; --hi-ink:#FFFFFF; --hi-edge:#E0A030; --ctl:#BDB5A5; --ul:#F0B850; --logo-tile:#E0A030; --logo-ink:#0B0B0A; --d-bg:#131211; --d-grid:#35322D;
+  --stripe:repeating-linear-gradient(0deg,#0B0B0A 0 8px,#E0A030 8px 10px)}
+
+:root[data-skin="torch"][data-theme="light"]{
+  --hv:#FFB020; --k:#0A1430; --on-k:#FFFFFF; --on-k-sub:#C8D2EA; --paper:#F2F5FC; --sheet:#FFFFFF; --ink:#0A1226; --muted:#2A3654; --rule:#6A7898; --edge:#10224E; --zebra:#E7ECF8; --bar:#FFE2A6; --bar-ink:#0A1226; --hi:#FFE8B8; --hi-ink:#0A1226; --hi-edge:#10224E; --ctl:#10224E; --ul:#0B3FA8; --logo-tile:#FFB020; --logo-ink:#0A1430;
+  --stripe:repeating-linear-gradient(-45deg,#4DA3FF 0 8px,#FFB020 8px 12px,#0A1430 12px 22px)}
+:root[data-skin="torch"][data-theme="dark"]{
+  --hv:#FFB020; --k:#04070F; --on-k:#F2F6FF; --on-k-sub:#C3CEE6; --paper:#0A0F1F; --sheet:#121A30; --ink:#F2F6FF; --muted:#C3CEE6; --rule:#5C6C92; --edge:#9FB0D6; --zebra:#18223C; --bar:#16203A; --bar-ink:#7CBCFF; --hi:#1D3260; --hi-ink:#FFFFFF; --hi-edge:#4DA3FF; --ctl:#9FB0D6; --ul:#7CBCFF; --logo-tile:#FFB020; --logo-ink:#04070F; --d-bg:#0A0F1F; --d-grid:#232F4E;
+  --stripe:repeating-linear-gradient(-45deg,#4DA3FF 0 8px,#FFB020 8px 12px,#04070F 12px 22px)}
+
+:root[data-skin="saltflats"][data-theme="light"]{
+  --hv:#7FD6F2; --k:#12303B; --on-k:#FFFFFF; --on-k-sub:#CFE1E8; --paper:#F7F5F0; --sheet:#FFFFFF; --ink:#1A1A1A; --muted:#3F3F3F; --rule:#85827A; --edge:#2A2A2A; --zebra:#EFECE5; --bar:#D4EEF7; --bar-ink:#1A1A1A; --hi:#D9F1FA; --hi-ink:#1A1A1A; --hi-edge:#2A2A2A; --ctl:#2A2A2A; --ul:#004E70; --logo-tile:#7FD6F2; --logo-ink:#12303B;
+  --stripe:repeating-linear-gradient(0deg,#FFFFFF 0 5px,#7FD6F2 5px 8px,#12303B 8px 14px)}
+:root[data-skin="saltflats"][data-theme="dark"]{
+  --hv:#7FD6F2; --k:#06141A; --on-k:#F5F3EE; --on-k-sub:#CFCBC2; --paper:#101214; --sheet:#1A1D20; --ink:#F5F3EE; --muted:#D3CFC6; --rule:#74777A; --edge:#B9BDC0; --zebra:#24282C; --bar:#14303B; --bar-ink:#9BE2F8; --hi:#1B4252; --hi-ink:#FFFFFF; --hi-edge:#7FD6F2; --ctl:#B9BDC0; --ul:#8EDCF5; --logo-tile:#7FD6F2; --logo-ink:#06141A; --d-bg:#101214; --d-grid:#30363B;
+  --stripe:repeating-linear-gradient(0deg,#FFFFFF 0 5px,#7FD6F2 5px 8px,#06141A 8px 14px)}
 /* Night shift: red light only, so your eyes stay dark-adapted in a crawlspace or a dark basement at 6 a.m. Always dark. */
 :root[data-skin="night"]{
   --hv:#FF6359; --k:#000000; --on-k:#FF7066; --on-k-sub:#FF6359; --paper:#000000; --sheet:#070000; --ink:#FF7066; --muted:#FF6359; --rule:#4A0E0B; --edge:#A3231C; --zebra:#120000;
@@ -832,6 +868,11 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
           <button type="button" data-s="powell"><span class="sw" style="--a:#EEF7F7;--b:#5FE0D8;--c:#062A33"></span><span class="nm">Lake Powell</span><small>Turquoise water, sandstone.</small></button>
           <button type="button" data-s="aspen"><span class="sw" style="--a:#FAF6E8;--b:#FFC93C;--c:#2A2108"></span><span class="nm">Aspen</span><small>Fall gold on bark.</small></button>
           <button type="button" data-s="alpenglow"><span class="sw" style="--a:#FBF1F5;--b:#FF9EC4;--c:#33101F"></span><span class="nm">Alpenglow</span><small>Pink light on the peaks.</small></button>
+          <button type="button" data-s="cone"><span class="sw" style="--a:#FFF6EE;--b:#FF7A1F;--c:#160B03"></span><span class="nm">Safety Orange</span><small>Cone orange with a white stripe.</small></button>
+          <button type="button" data-s="hotcold"><span class="sw" style="--a:#F1F5FB;--b:#7CC4FF;--c:#0B1F3A"></span><span class="nm">Hot &amp; Cold</span><small>Red and blue, like PEX.</small></button>
+          <button type="button" data-s="castiron"><span class="sw" style="--a:#F3F1EC;--b:#E0A030;--c:#1C1B1A"></span><span class="nm">Cast Iron</span><small>Black iron and lead-gold.</small></button>
+          <button type="button" data-s="torch"><span class="sw" style="--a:#F2F5FC;--b:#FFB020;--c:#0A1430"></span><span class="nm">Torch</span><small>Blue flame, yellow tip.</small></button>
+          <button type="button" data-s="saltflats"><span class="sw" style="--a:#F7F5F0;--b:#7FD6F2;--c:#12303B"></span><span class="nm">Salt Flats</span><small>White salt, big sky.</small></button>
           <button type="button" data-s="night"><span class="sw" style="--a:#000000;--b:#FF6359;--c:#170000"></span><span class="nm">Night shift</span><small>Red only. Keeps night vision.</small></button>
         </div></div>
       <div class="row" id="vest-row"><b>Vest color</b>
