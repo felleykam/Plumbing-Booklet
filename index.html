@@ -373,6 +373,9 @@ details.math li::marker{font-weight:700;color:var(--muted)}
 .wx-place .sub{font-family:var(--mono);font-size:14px}
 .wx-searchrow{padding-top:6px}.wx-searchrow label{flex:1 1 100%}
 #wx-results{padding:0 12px 4px}#wx-results:empty{display:none}
+#mc-found{padding:0 12px 8px}#mc-found:empty,#setup-found:empty{display:none}
+#setup-found{margin:8px 0}
+input.find{display:block;width:100%;min-height:48px;margin:0 0 8px;padding:6px 12px;font:inherit;font-size:17px;color:var(--ink);background:var(--sheet);border:var(--bw) solid var(--ctl);border-radius:var(--r)}
 .wx-hero{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 14px;margin:8px 12px 10px;background:var(--k);color:var(--on-k);border-left:10px solid var(--hv);border-radius:var(--r)}
 .wx-hero a{color:var(--hv);font-weight:700}
 a[href^="mailto:"]{overflow-wrap:anywhere}
@@ -1015,7 +1018,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <div class="set-grp"><h3>1 · Code I work under</h3>
         <div class="seg" id="setup-code" role="group" aria-label="Code I work under"><button type="button" data-code="ipc21">2021 IPC</button><button type="button" data-code="irc21">2021 IRC (houses)</button><button type="button" data-code="ipc24">2024 IPC</button></div>
         <p class="sample">Utah houses are inspected to the 2021 IRC with Utah amendments; other permits use the IPC.</p></div>
-      <div class="set-grp"><h3>2 · My city</h3><label class="sel"><select id="setup-city" aria-label="My city"></select></label>
+      <div class="set-grp"><h3>2 · My city</h3><input id="setup-find" class="find" type="search" placeholder="Type to find your city" aria-label="Find a city" autocomplete="off" enterkeyhint="search">
+        <div class="chips pick" id="setup-found" aria-live="polite"></div>
+        <label class="sel"><select id="setup-city" aria-label="My city"></select></label>
         <p class="sample">Sets inspection booking, trouble lines, hardness, frost depth and elevation for altitude derates.</p></div>
       <div class="set-grp"><h3>3 · Text size</h3>
         <div class="seg" id="setup-size" role="group" aria-label="Text size"><button type="button" data-z="0.9">S</button><button type="button" data-z="1">M</button><button type="button" data-z="1.15">L</button><button type="button" data-z="1.3">XL</button><button type="button" data-z="1.45">XXL</button></div>
@@ -3775,7 +3780,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
 <section data-sec="emergency" data-kw="my city pick city inspection booking frost depth pi secondary water hardness phone building after hours water">
     <div class="sec-head mc-head"><h2>My city</h2><small>Pick once · saved on this phone</small></div>
-    <div class="calc"><label for="mc-pick" class="wide"><span>City I'm working in</span><select id="mc-pick"></select></label></div>
+    <div class="calc"><label for="mc-find" class="wide"><span>Find a city</span><input id="mc-find" type="search" placeholder="Type a name: Payson, Moab, Heber…" autocomplete="off" enterkeyhint="search"></label></div>
+    <div class="chips" id="mc-found" aria-live="polite"></div>
+    <div class="calc"><label for="mc-pick" class="wide"><span>Or pick from the list</span><select id="mc-pick"></select></label></div>
     <div class="x"><table class="t wrap"><tbody id="mc-out"></tbody></table></div>
     <p class="note">From the city sites, checked Oct 2026. Blank spots say so instead of guessing. When you get a number from the city, add it to <b>My numbers</b>.</p>
   </section>
@@ -4320,7 +4327,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 13, 2026</th><td><b>Every Utah city and town</b> is in the city picker now (259 places). The 227 new ones show their elevation. 24 of them (the rest of Utah County and the biggest cities nearby) also have how to book inspections and, where found, secondary water; the others say "not checked yet". <b>New home-screen icon:</b> bright lime on black, so it stays easy to see when the phone is in dark mode. An iPhone keeps the old picture until you delete the Handbook from the home screen and add it again (Safari → Share → Add to Home Screen). Your saved pins and notes stay. The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install. <b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
+        <tr><th>Nov 13, 2026</th><td><b>Find a city by typing:</b> the city menus (Contacts → Call → My city, and first-time setup) have a search box, so you don't scroll 259 names. <b>Every Utah city and town</b> is in the city picker now (259 places). The 227 new ones show their elevation. 24 of them (the rest of Utah County and the biggest cities nearby) also have how to book inspections and, where found, secondary water; the others say "not checked yet". <b>New home-screen icon:</b> bright lime on black, so it stays easy to see when the phone is in dark mode. An iPhone keeps the old picture until you delete the Handbook from the home screen and add it again (Safari → Share → Add to Home Screen). Your saved pins and notes stay. The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install. <b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
         <tr><th>Nov 12, 2026</th><td><b>Share the book</b> (Settings) shows its QR code with no signal now: the code is stored in the book instead of being fetched. <b>Bottom bar:</b> eight tables had started scrolling up and down a few pixels inside their own boxes, which can tug the iPhone bar loose: fixed. After the "Allow location" prompt the book now re-seats the bar. <b>Weather:</b> the first forecast shows in a few seconds even when the main service is slow, and picking a new place no longer blanks the card. A book left in the background over 6 hours reloads when you come back, so it picks up updates. <b>Weather fixed:</b> when the main forecast service doesn't answer, the card now switches to the National Weather Service forecast instead of sitting on "Loading". Every weather request gives up after 12 seconds and tries again. <b>New:</b> a weather button in the top corner shows the sky right now and the temperature; tap it for Jobsite → Weather. Turn it off in <b>Settings → Behavior → Weather in the header</b>. <b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them. <b>Water treatment</b> (Service → Treatment) grew: <b>Where treatment goes</b> (order in the line, hard water for hose bibbs, the softener loop rough-in), <b>Softener trouble</b> (no soft water, salt bridge, resin in the lines, low pressure), <b>How RO works</b>, <b>Treatment code</b> (the IPC and IRC sections for softeners and RO) and <b>Treatment brands</b>. <b>Contacts → Tech lines → Water treatment</b> has 14 makers' phone lines.</td></tr>
         <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "shower valve height") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Circuits, wire &amp; bonding. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow. <b>Reopening the book</b> lands where you were on the page, not at the top. <b>Fits the phone:</b> calculator answers and the Pressure at the fixture rows no longer run off the right edge, long dropdowns get a full row, and tech line numbers stack instead of scrolling sideways.</td></tr>
         <tr><th>Nov 9, 2026 · organized</th><td><b>Which tool?</b> on Home now lists every calculator, grouped by the job it does · Trim → Finders is folded into <b>ID a part</b> · Water heater age sits beside Reading a rating plate (Service → Water heaters), and the heater calculators run size, output, then how long it lasts · How it works is grouped by system: drains, water, hot water, gas · the calculator on the Electrical page is now called <b>Circuits, wire &amp; bonding</b> · PEX install gained the crimp and expansion joint checks. <b>New card: Not the code, and not ours</b> (Inspect → Which code) says plainly that the IPC, IRC and other codes belong to the ICC and that this book is our own summary. <b>Removed:</b> My files, which never worked in this copy of the book. Pins, notes and old links follow every card that moved.</td></tr>
@@ -8422,7 +8429,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-13d";
+{ const NEWS = "2026-11-13e";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8779,6 +8786,22 @@ $("home-body").addEventListener("click", e => {
 homeDraw();
 if ("serviceWorker" in navigator) navigator.serviceWorker.addEventListener("controllerchange", homeDraw);
 $("mc-pick").addEventListener("change", homeDraw);
+/* type-to-find for the two city menus: 259 places is a long list to scroll */
+function cityFind(inp, box, sel){
+  const I = $(inp), B = $(box), S = $(sel);
+  I.addEventListener("input", () => {
+    const q = I.value.trim().toLowerCase();
+    const hits = !q ? [] : CITIES.filter(c => !Array.isArray(c) && c.n.toLowerCase().includes(q))
+      .sort((a, b) => (b.n.toLowerCase().startsWith(q) - a.n.toLowerCase().startsWith(q)) || a.n.localeCompare(b.n)).slice(0, 8);
+    B.innerHTML = hits.map(c => `<button type="button" data-id="${c.id}">${esc(c.n)}</button>`).join("") || (q ? `<span class="sample">No Utah city or town by that name.</span>` : "");
+  });
+  B.addEventListener("click", e => {
+    const b = e.target.closest("button[data-id]"); if (!b) return;
+    S.value = b.dataset.id; S.dispatchEvent(new Event("change", {bubbles: true})); I.value = ""; B.innerHTML = ""; say(b.textContent + " picked");
+  });
+  I.addEventListener("keydown", e => { if (e.key === "Enter"){ const b = B.querySelector("button"); if (b){ e.preventDefault(); b.click(); } } });
+}
+cityFind("mc-find", "mc-found", "mc-pick"); cityFind("setup-find", "setup-found", "setup-city");
 /* first run: code, city, text size */
 function setupDraw(){
   $("setup-city").innerHTML = $("mc-pick").innerHTML; $("setup-city").value = myCity;
@@ -9394,7 +9417,7 @@ window.wxRender = WX.render;
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-13d";
+var BUILD = "handbook-2026-11-13e";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
