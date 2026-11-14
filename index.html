@@ -182,6 +182,7 @@ body.searching .where-go,body.mixed .where-go{display:block;grid-column:1 / -1;j
 
 /* ===== tables ===== */
 .x{overflow-x:auto;overflow-y:hidden}
+@media (max-width:480px){.t.fit :is(th,td){padding-left:4px;padding-right:4px;min-width:0}.t.num.fit :is(th,td){font-size:14.5px}.t.fit :is(th,td):first-child{padding-left:8px}}   /* many-column tables: fit the phone instead of scrolling sideways */
 .t{width:100%;border-collapse:collapse;font-size:16px}
 @media (min-width:760px){.t{font-size:15.5px}}
 .t th,.t td{padding:8px 12px;text-align:left;vertical-align:top}
@@ -1494,7 +1495,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Table column</th><td id="gl-col" class="big">—</td><td class="sub">Rounded <b>up</b> to the next length in the table.</td></tr>
       </tbody></table></div>
     <details class="more"><summary>See the table</summary>
-      <div class="x"><table class="t num"><thead><tr><th>Length</th><th>½"</th><th>¾"</th><th>1"</th><th>1¼"</th><th>1½"</th><th>2"</th></tr></thead><tbody id="gl-tbl"></tbody></table></div>
+      <div class="x"><table class="t num fit"><thead><tr><th>Length</th><th>½"</th><th>¾"</th><th>1"</th><th>1¼"</th><th>1½"</th><th>2"</th></tr></thead><tbody id="gl-tbl"></tbody></table></div>
     </details>
     <p class="note">CFH capacities from <b>IFGC Table 402.4(2)</b> (same numbers as IRC Table G2413.4(1)): natural gas, 0.60 sp. gr., 1,000 BTU/ft³. <b>Each branch:</b> same longest length, but only the load that branch carries. <b>CSST:</b> use the maker's tables. 2 psi systems use different tables. A learning tool: check it against the code book before you buy pipe.</p>
   </section>
@@ -2667,6 +2668,26 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note">Code: the softener drain is an indirect waste (air gap): section numbers are in <b>Service → Treatment → Treatment code</b>. NSF/ANSI 44 limits a softener to 15 psi loss at rated flow; undersized ones choke flow.</p>
   </section>
+  <section data-sec="treat" data-kw="what not to do treatment donts don'ts mistakes softener mistakes reionator mistakes combo mistakes backwards hard pipe drain standpipe brine overflow rock salt switched outlet hot line flush flux anode soft water water heater">
+    <div class="sec-head"><h2>Treatment: what not to do</h2><small>Softeners, Reionators and combos</small></div>
+    <div class="x"><table class="t">
+      <thead><tr><th>Don't</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><th>Pipe it backwards</th><td>IN and OUT swapped lifts the bed and sends resin or carbon into the house lines.</td></tr>
+        <tr><th>Shove the drain into the standpipe</th><td>No air gap means a sewer backup can siphon into the drinking water (IPC 608.4, 802.3.1).</td></tr>
+        <tr><th>Tee the brine overflow into the drain line</th><td>The drain line is under pressure during regen and pushes water back into the salt tank. The overflow drains by gravity, on its own line.</td></tr>
+        <tr><th>Soften the hose bibbs and sprinklers</th><td>Wastes salt and capacity, and sodium is hard on plants. Tee them off before the loop.</td></tr>
+        <tr><th>Put it on a hot line or right at the heater</th><td>Softener valves and resin are rated for about 110°F water. Heat backs up the cold inlet.</td></tr>
+        <tr><th>Sweat fittings on the valve</th><td>The valve and bypass are plastic. Solder the adapters first, let them cool, then connect.</td></tr>
+        <tr><th>Flush new pipe through it</th><td>Flux, shavings and glue plug the injector and foul the bed. Bypass it, flush the house, then put it in service.</td></tr>
+        <tr><th>Plug it into a switched outlet</th><td>Lights off, power off: the clock and the meter lose their place and it stops regenerating.</td></tr>
+        <tr><th>Fill it with rock salt</th><td>Rock salt carries dirt that plugs the brine valve. Pellets or crystals, or what the manual says (some call for potassium).</td></tr>
+        <tr><th>Call a conditioner a softener</th><td>Salt-free units leave the water hard. The owner will still see spots, and you'll get the call.</td></tr>
+        <tr><th>Leave a dead unit in the line</th><td>An unplugged or abandoned softener grows bacteria and can dump resin. Bypass it or take it out.</td></tr>
+        <tr><th>Guess at a dealer unit</th><td>Culligan, Kinetico, RainSoft, Reionator and other dealer brands have their own parts and programming. Call the dealer before you open the valve.</td></tr>
+      </tbody></table></div>
+    <p class="note">Trade practice unless a section is named. Fixing one that's already wrong: <b>Service → Treatment → Softener trouble</b>.</p>
+  </section>
   <section data-sec="treat" data-kw="softener sizing calculator grain capacity hardness gpg people gallons per day regeneration days salt dose pounds per cubic foot resin 32000 48000 64000 iron">
     <div class="sec-head"><h2>Softener sizer</h2><small>Grains per day → tank to buy</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> picking a softener size for a house, or checking if the one there is too small.</p><p><b>What's a grain?</b> A unit of hardness. Water at 12 gpg carries 12 grains in every gallon. People × gallons × hardness = grains the softener has to catch each day; the resin has to hold a week's worth.</p></div></details>
@@ -2813,26 +2834,6 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Not the same thing</th><td>Natural zeolite sold as filter media (in place of sand) is a sediment filter that backwashes with water. It doesn't soften. <span class="sub">Trade knowledge.</span></td></tr>
       </tbody></table></div>
     <p class="note">Source: mineral-right.com. How resin softening works: <b>Learn → How it works → How a softener works</b>.</p>
-  </section>
-  <section data-sec="treat" data-kw="what not to do treatment donts don'ts mistakes softener mistakes reionator mistakes combo mistakes backwards hard pipe drain standpipe brine overflow rock salt switched outlet hot line flush flux anode soft water water heater">
-    <div class="sec-head"><h2>Treatment: what not to do</h2><small>Softeners, Reionators and combos</small></div>
-    <div class="x"><table class="t">
-      <thead><tr><th>Don't</th><th>Why</th></tr></thead>
-      <tbody>
-        <tr><th>Pipe it backwards</th><td>IN and OUT swapped lifts the bed and sends resin or carbon into the house lines.</td></tr>
-        <tr><th>Shove the drain into the standpipe</th><td>No air gap means a sewer backup can siphon into the drinking water (IPC 608.4, 802.3.1).</td></tr>
-        <tr><th>Tee the brine overflow into the drain line</th><td>The drain line is under pressure during regen and pushes water back into the salt tank. The overflow drains by gravity, on its own line.</td></tr>
-        <tr><th>Soften the hose bibbs and sprinklers</th><td>Wastes salt and capacity, and sodium is hard on plants. Tee them off before the loop.</td></tr>
-        <tr><th>Put it on a hot line or right at the heater</th><td>Softener valves and resin are rated for about 110°F water. Heat backs up the cold inlet.</td></tr>
-        <tr><th>Sweat fittings on the valve</th><td>The valve and bypass are plastic. Solder the adapters first, let them cool, then connect.</td></tr>
-        <tr><th>Flush new pipe through it</th><td>Flux, shavings and glue plug the injector and foul the bed. Bypass it, flush the house, then put it in service.</td></tr>
-        <tr><th>Plug it into a switched outlet</th><td>Lights off, power off: the clock and the meter lose their place and it stops regenerating.</td></tr>
-        <tr><th>Fill it with rock salt</th><td>Rock salt carries dirt that plugs the brine valve. Pellets or crystals, or what the manual says (some call for potassium).</td></tr>
-        <tr><th>Call a conditioner a softener</th><td>Salt-free units leave the water hard. The owner will still see spots, and you'll get the call.</td></tr>
-        <tr><th>Leave a dead unit in the line</th><td>An unplugged or abandoned softener grows bacteria and can dump resin. Bypass it or take it out.</td></tr>
-        <tr><th>Guess at a dealer unit</th><td>Culligan, Kinetico, RainSoft, Reionator and other dealer brands have their own parts and programming. Call the dealer before you open the valve.</td></tr>
-      </tbody></table></div>
-    <p class="note">Trade practice unless a section is named. Fixing one that's already wrong: <b>Service → Treatment → Softener trouble</b>.</p>
   </section>
   <section data-sec="treat" data-kw="soft water water heater softened water anode rod faster anode consumption a. o. smith bulletin 44 scale tankless softener rotten egg smell soft water heater life">
     <div class="sec-head"><h2>Soft water &amp; the water heater</h2><small>Less scale, faster anodes</small></div>
@@ -3265,7 +3266,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="threads" data-kw="copper pex pvc pipe od id outside inside diameter dimensions k l m sdr schedule 40">
     <div class="sec-head"><h2>Pipe sizes: OD &amp; ID</h2><small>Inches</small></div>
-    <div class="x"><table class="t num">
+    <div class="x"><table class="t num fit">
       <thead><tr><th>Nominal</th><th>OD</th><th>Cu K ID</th><th>Cu L ID</th><th>Cu M ID</th><th>PEX ID</th></tr></thead>
       <tbody>
         <tr><td>½"</td><td>0.625</td><td>0.527</td><td>0.545</td><td>0.569</td><td>0.475</td></tr>
@@ -3501,7 +3502,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <details class="math"><summary>Show the math</summary><ol id="at-math"></ol></details>
     <p class="note"><span class="badge why">WHY</span> Trapped air shrinks as it cools (gas law on <b>absolute</b> pressure: gauge + air pressure, ≈12.5 psi at 4,500 ft). A shell that cools 30°F overnight drops an 80 psi test about 5 psi with no leak at all, and a 5 psi DWV test about 1 psi, which is 20% of it. Sun on the pipe pushes it the other way. Read the gauge at the same temperature you set it at, or let this do the math. Still dropping more than this says? Soap the joints.</p>
       <details class="more fold"><summary>Test values: what must hold, and for how long</summary>
-    <div class="x"><table class="t wrap">
+    <div class="x"><table class="t wrap fit">
       <thead><tr><th>System</th><th>Method</th><th>Value</th><th>Hold</th></tr></thead>
       <tbody>
         <tr><td>DWV</td><td>Water (2021 IRC and IPC)</td><td class="n">10 ft head</td><td class="n">15 min</td></tr>
@@ -4319,6 +4320,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 13, 2026 · polish</th><td>The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install.</td></tr>
         <tr><th>Nov 13, 2026</th><td><b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
         <tr><th>Nov 12, 2026 · share</th><td><b>Share the book</b> (Settings) shows its QR code with no signal now: the code is stored in the book instead of being fetched.</td></tr>
         <tr><th>Nov 12, 2026 · bar &amp; weather</th><td><b>Bottom bar:</b> eight tables had started scrolling up and down a few pixels inside their own boxes, which can tug the iPhone bar loose: fixed. After the "Allow location" prompt the book now re-seats the bar. <b>Weather:</b> the first forecast shows in a few seconds even when the main service is slow, and picking a new place no longer blanks the card. A book left in the background over 6 hours reloads when you come back, so it picks up updates.</td></tr>
@@ -8379,7 +8381,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-13";
+{ const NEWS = "2026-11-13b";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -9351,7 +9353,7 @@ window.wxRender = WX.render;
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-13";
+var BUILD = "handbook-2026-11-13b";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
