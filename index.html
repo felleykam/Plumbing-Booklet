@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="UT Handbook">
-<link rel="icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png?v=2">
 <title>Utah Plumbers Digital Handbook</title>
 <!-- link previews when the book is texted or shared -->
 <meta name="description" content="Free field handbook for Utah residential plumbers: offsets, grade, take-offs, code, water heaters, trim, city inspections. Works offline.">
@@ -48,7 +48,7 @@ document.documentElement.classList.toggle("pwa",matchMedia("(display-mode: stand
 try{var P=JSON.parse(localStorage.getItem("jpb-prefs"))||{},R=document.documentElement;["skin","font","caps","density","cols"].forEach(function(k){if(P[k]&&!(k==="skin"&&P[k]==="hivis"))R.dataset[k]=P[k]});if(P.skin==="night")R.dataset.theme="dark";R.dataset.stars=P.stars===false?"off":"on";R.dataset.gloves=P.gloves?"on":"off";R.dataset.fx=P.fx===false?"off":"on";}catch(e){}
 try{var v=JSON.parse(localStorage.getItem("jpb-vest"));if(v==="yellow"||v==="orange")document.documentElement.dataset.vest=v;var z=+JSON.parse(localStorage.getItem("jpb-zoom"));if(z>=0.8&&z<=1.5)document.documentElement.style.setProperty("--zoom",z);}catch(e){}</script>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" href="icon-180.png?v=2">
 <style>
 /* LOOK: hi-vis vest. ANSI 107 fluorescent yellow-green on black: the vest color, picked because daylight eyes are most
    sensitive to yellow-green. Sun: pure white sheets, pure black type, hi-vis card heads and answers, heavy borders.
@@ -4320,6 +4320,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 13, 2026 · icon</th><td><b>New home-screen icon:</b> bright lime on black, so it stays easy to see when the phone is in dark mode. An iPhone keeps the old picture until you delete the Handbook from the home screen and add it again (Safari → Share → Add to Home Screen). Your saved pins and notes stay.</td></tr>
         <tr><th>Nov 13, 2026 · polish</th><td>The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install.</td></tr>
         <tr><th>Nov 13, 2026</th><td><b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
         <tr><th>Nov 12, 2026 · share</th><td><b>Share the book</b> (Settings) shows its QR code with no signal now: the code is stored in the book instead of being fetched.</td></tr>
@@ -8381,7 +8382,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-13b";
+{ const NEWS = "2026-11-13c";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -9353,7 +9354,7 @@ window.wxRender = WX.render;
 
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-13b";
+var BUILD = "handbook-2026-11-13c";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
