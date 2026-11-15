@@ -451,6 +451,7 @@ function jbListHtml(){
     <tr><th>Last week</th><td>${jbHr(H.lw)} hr</td></tr>
     <tr><th>Toward license</th><td>${jbHr(have)} of ${goal.toLocaleString()} hr · ${Math.floor(pct)}%<div class="jb-bar" aria-hidden="true"><i style="width:${pct}%"></i></div></td></tr>
   </tbody></table></div>
+  <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-a="hrs-csv">Export hours (spreadsheet)</button></div></div>
   <details class="explain"><summary>Set the license goal</summary><div>
     <div class="calc"><label for="jb-goal">Goal<select id="jb-goal"><option value="6000">Residential journeyman · 6,000 hr</option><option value="8000">Journeyman · 8,000 hr</option></select></label>
     <label for="jb-before">Hours before this app<input id="jb-before" type="number" inputmode="decimal" min="0" step="any" value="${+jbD.before || ""}" placeholder="0"></label></div>
@@ -458,7 +459,10 @@ function jbListHtml(){
   ${jbBytes() > 15e5 ? `<div class="jb-in"><p class="note${jbBytes() > 35e5 ? " flag" : ""}">Jobs use about ${(jbBytes() / 1e6).toFixed(1)} MB of the roughly 5 MB this phone gives them. Download a backup and delete finished jobs before it fills: past that, new entries won't save.</p></div>` : ""}
   <p class="card-h" id="jb-bk">Backup</p>
   <div class="jb-in"><p class="note">${jbLastBk()}</p>
-  <div class="set-btns"><button type="button" class="btn" data-a="bk-all">Back up everything</button><label class="btn ghost">Restore a backup<input type="file" id="jb-restore" accept=".zip,.json,application/zip,application/json" hidden></label></div>
+  <div class="set-btns"><button type="button" class="btn" data-a="bk-all">Back up everything</button><label class="btn ghost">Merge a backup<input type="file" id="jb-merge" accept=".zip,.json,application/zip,application/json" hidden></label><label class="btn ghost">Restore a backup<input type="file" id="jb-restore" accept=".zip,.json,application/zip,application/json" hidden></label></div>
+  <details class="explain"><summary>Restore or merge? Keeping a phone and an iPad matched</summary><div>
+    <p class="note"><b>Restore</b> replaces everything here with the backup. <b>Merge</b> adds the backup to what's here: for each job, person and note, whichever copy was changed last wins, and nothing new on this phone is wiped.</p>
+    <p class="note"><b>Two devices:</b> tap <b>Back up everything</b> on the one with the newest work, AirDrop the file to the other, then <b>Merge a backup</b> there. Do it the other way when the other one is newer. Things deleted on either one stay deleted (they're in Recently deleted).</p></div></details>
   <p class="note" id="jf-say" aria-live="polite"></p><p class="note" id="jf-use"></p></div>
   <details class="explain"><summary>Back up with a password</summary><div>
     <p class="note">Locks the file, so names, addresses and phone numbers stay private if it gets texted, emailed or kept in the cloud. <b>Write the password down.</b> Without it nobody can open that file, and there's no reset.</p>
@@ -759,6 +763,7 @@ B.addEventListener("click", e => {
   if (a === "bin-empty"){ if (!jbAsk(`Delete the ${jbD.bin.length} item${jbD.bin.length === 1 ? "" : "s"} in Recently deleted for good? This can't be undone.`)) return; jbBinPurge(true); jbDraw(); toast("Emptied.", 1600); return; }
   if (a === "bk-all"){ JF.sayId = "jf-say"; jbBackupAll(); return; }
   if (a === "bk-share"){ jbShareReady(false); return; }
+  if (a === "hrs-csv"){ jbHoursCsv(); return; }
   if (a === "bk-lock"){ const p1 = $("jb-pw").value, p2 = $("jb-pw2").value; JF.sayId = "jf-say";
     if (!window.LOCK || !LOCK.ok){ jfSay("This browser can't lock files. Open the installed app.", "err"); return; }
     if (p1.length < 6){ jfSay("Use a password of 6 or more characters.", "err"); return; }
@@ -852,6 +857,7 @@ B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.pers
   if (t.id === "jb-before"){ jbD.before = Math.max(0, parseFloat(t.value) || 0); jbSave(); jbDraw(); return; }
   if (t.id === "jf-ph" || t.id === "jf-fi"){ jfAdd([...t.files], t.id === "jf-ph"); return; }
   if (t.id === "jb-restore" && t.files[0]) jbRestoreAll(t.files[0]);
+  if (t.id === "jb-merge" && t.files[0]) jbRestoreAll(t.files[0], "jf-say", true);
 });
 
 /* Home: MY JOBS box (homeDraw calls this) */
@@ -891,7 +897,7 @@ const jfDel = id => jfTx("readwrite", s => s.delete(id));
 async function jfDraw(job){
   let L; try { L = await jfAll(job); } catch(e){ const p = $("jf-photos"); if (p) p.innerHTML = `<p class="note">This browser won't store photos here.</p>`; return; }
   const j = jbCur(); if (!j || JB.open !== job || JB.person || JB.ent) return;
-  L.sort((a, b) => a.t - b.t); JF.n = L.length;
+  L = L.filter(f => !f.del); L.sort((a, b) => a.t - b.t); JF.n = L.length;
   for (const f of L) if (f.kind === "photo" && !f.s){ f.s = jbStageNow(j); jfPut(f).catch(() => {}); }   /* photos from before stages */
   const P = L.filter(f => f.kind === "photo" && f.s === JB.stage), F = L.filter(f => f.kind !== "photo");
   const ph = $("jf-photos"), fi = $("jf-files");
@@ -901,7 +907,7 @@ async function jfDraw(job){
     || `<p class="note">None yet. Plans, the permit, spec sheets.</p>`;
 }
 function jfUse(){
-  jfAll().then(L => { const u = $("jf-use"); if (!u) return; const s = L.reduce((n, f) => n + (f.blob ? f.blob.size : 0), 0);
+  jfAll().then(L => { L = L.filter(f => !f.del); const u = $("jf-use"); if (!u) return; const s = L.reduce((n, f) => n + (f.blob ? f.blob.size : 0), 0);
     u.textContent = L.length ? `On this phone: ${L.length} photo${L.length === 1 ? "" : "s"} and file${L.length === 1 ? "" : "s"}, about ${jfMB(s)}. They're in the backup too.` : ""; }).catch(() => {});
 }
 /* one decode, two JPEGs: about 1600 px for the record, 240 px for the grid. The browser applies the phone's rotation. */
@@ -949,8 +955,10 @@ $("jf-share").addEventListener("click", async () => { const c = JF.cur; if (!c) 
   const f = new File([c.blob], c.kind === "photo" ? c.name.replace(/\.[^.]*$/, "") + ".jpg" : c.name, {type: c.type});
   try { if (navigator.canShare && navigator.canShare({files: [f]})){ await navigator.share({files: [f]}); return; } } catch(e){ if (e && e.name === "AbortError") return; }
   const a = document.createElement("a"); a.href = JF.url; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); });
-$("jf-del").addEventListener("click", async () => { const c = JF.cur; if (!c || !jbAsk(`Delete this ${c.kind === "photo" ? "photo" : "file"}?`)) return;
-  JF.cur = null; await jfDel(c.id).catch(() => {}); $("jf-dlg").close(); jfDraw(c.job); });
+$("jf-del").addEventListener("click", async () => { const c = JF.cur; if (!c || !jbAsk(`Delete this ${c.kind === "photo" ? "photo" : "file"}? It goes to Recently deleted for 30 days.`)) return;
+  JF.cur = null; c.del = Date.now(); await jfPut(c).catch(() => {});   /* marked, not erased: Recently deleted can bring it back */
+  jbBin("file", {id: c.id, kind: c.kind, job: c.job, name: c.kind === "photo" ? (c.note || "Photo") : c.name}); jbSave();
+  $("jf-dlg").close(); jfDraw(c.job); toast("Moved to Recently deleted.", 1800); });
 
 /* ---- photos & files backup: a plain (stored, not compressed) zip with manifest.json; JPEGs and PDFs don't shrink anyway */
 const JF_CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++){ let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
@@ -994,7 +1002,7 @@ const jbLastBk = () => { const lb = +store.get("jpb-lastbk", 0);
   return (lb ? `Last backup: <b>${jbAgo(lb)}</b>. ` : "<b>No backup yet.</b> ") + "One file with your jobs, people, notes, settings, photos and files. Save it to iCloud Drive or Files so it's off this phone: deleting the app from the Home Screen deletes everything in it."; };
 async function jfPack(){
   let L = []; try { L = await jfAll(); } catch(e){}
-  const man = L.map(f => ({id: f.id, job: f.job, s: f.s, jobName: (j0 => j0 ? jbName(j0) : "")(jbD.jobs.find(x => x.id === f.job)), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb,
+  const man = L.map(f => ({id: f.id, job: f.job, s: f.s, jobName: (j0 => j0 ? jbName(j0) : "")(jbD.jobs.find(x => x.id === f.job)), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb, del: f.del || 0,
     path: `files/${f.id}-${String(f.name).replace(/[^\w.\- ]+/g, "_").slice(-60)}`}));
   const zip = await jfZip([{name: "handbook-backup.json", blob: new Blob([bkDump()], {type: "application/json"})},
     {name: "manifest.json", blob: new Blob([JSON.stringify({app: "utah-plumbers-handbook-files", v: 1, made: new Date().toISOString(), files: man})])},
@@ -1034,13 +1042,13 @@ async function jfRestoreZ(z){
   const m = JSON.parse(new TextDecoder().decode(z["manifest.json"])); if (!m || m.app !== "utah-plumbers-handbook-files" || !Array.isArray(m.files)) return 0;
   let n = 0;
   for (const f of m.files){ const x = z[f.path]; if (!x) continue;
-    await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, f.s ? {s: f.s} : {})); n++; }
+    await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, f.s ? {s: f.s} : {}, f.del ? {del: f.del} : {})); n++; }
   return n;
 }
 /* takes the new all-in-one .zip, an older photos-only .zip, or a Settings .json backup */
-async function jbRestoreAll(file, sayId){
+async function jbRestoreAll(file, sayId, merge){
   JF.sayId = sayId || "jf-say";
-  const clear = () => { const r = $("jb-restore"); if (r) r.value = ""; };
+  const clear = () => ["jb-restore", "jb-merge", "bk-merge"].forEach(id => { const r = $(id); if (r) r.value = ""; });
   try {
     let buf = await file.arrayBuffer(), u8 = new Uint8Array(buf); const dec = new TextDecoder(); let data = null, z = null;
     if (u8[0] === 0x7b){ let o = null; try { o = JSON.parse(dec.decode(u8)); } catch(e){}   /* a locked backup: ask for its password */
@@ -1057,6 +1065,14 @@ async function jbRestoreAll(file, sayId){
     if (!keys.length && !photos) throw 0;
     let n = 0; try { n = JSON.parse(d["jpb-jobs"] || "{}").jobs.length || 0; } catch(e){}
     const when = data && data.saved ? " from " + new Date(data.saved).toLocaleDateString(undefined, {month: "short", day: "numeric", year: "numeric"}) : "";
+    if (merge){ let o = null; try { o = JSON.parse(d && d["jpb-jobs"] || "null"); } catch(e){}
+      if (!o && !photos) throw 0;
+      const no = o && Array.isArray(o.jobs) ? o.jobs.length : 0;
+      if (!jbAsk(`Merge the backup${when} into this phone? It has ${no} job${no === 1 ? "" : "s"}${photos ? ` and ${photos} photos & files` : ""}. For each job, person and note, whichever copy was changed last wins. Nothing new here gets wiped.`)){ clear(); return; }
+      try { await SNAP.put("undo"); } catch(e){}
+      const np = z && photos ? await jfRestoreZ(z) : 0, r = o ? jbMerge(o) : {add: 0, upd: 0};
+      jbSave(); jbDraw();
+      jfSay(`Merged: ${r.add} new, ${r.upd} updated${np ? `, ${np} photos & files` : ""}. Undo it from Settings → Backup → Safety copies if it isn't right.`, "good"); clear(); return; }
     if (!jbAsk(keys.length ? `Replace everything on this phone with the backup${when}? It has ${n} job${n === 1 ? "" : "s"}${photos ? ` and ${photos} photos & files` : ""}. Anything added since then will be gone.`
       : `Add the ${photos} photos & files from this backup?`)){ const r = $("jb-restore"); if (r) r.value = ""; return; }
     if (keys.length) try { await SNAP.put("undo"); } catch(e){}   /* so this restore can be undone: Settings → Backup → Safety copies */
@@ -1067,15 +1083,76 @@ async function jbRestoreAll(file, sayId){
   clear();
 }
 window.jbRestoreAll = jbRestoreAll;
+/* the search bar at the top: jobs that have every word, shown above the cards */
+window.jbSearchHits = q => {
+  const W = String(q || "").toLowerCase().split(/\s+/).filter(w => w.length > 1 && !["the", "my", "and"].includes(w)); if (!W.length || !jbD.jobs.length) return "";
+  const hits = jbD.jobs.filter(j => { const h = jbHay(j); return W.every(w => h.includes(w)); }).sort((a, b) => (a.st === "done") - (b.st === "done") || jbNat(a, b));
+  if (!hits.length) return "";
+  return `<p class="job-hits-h"><b>My jobs</b> · ${hits.length} match${hits.length === 1 ? "" : "es"}</p><div class="jb-list">${hits.slice(0, 4).map(j => jbRow(j, "data-hjob")).join("")}</div>`
+    + (hits.length > 4 ? `<button type="button" class="linkish job-hits-all" data-hjall="1">See all ${hits.length} in My jobs ›</button>` : "");
+};
+document.addEventListener("click", e => { const b = e.target.closest("[data-hjob],[data-hjall]"); if (!b || !b.closest("#job-hits")) return;
+  const q = $("q").value; JF.n = 0; JB.edit = null; JB.person = null; JB.ent = null; JB.hist = []; JB.stage = null; JB.view = "jobs";
+  if (b.dataset.hjob) JB.open = b.dataset.hjob; else { JB.open = null; JB.q = q; }
+  go("mine", "jobs"); jbDraw(); jbTop(); });
+
+/* ---- Hours export: one row per entry, oldest first, opens in Numbers, Excel or Google Sheets */
+async function jbHoursCsv(){
+  JF.sayId = "jf-say";
+  const q = v => { const t = String(v ?? ""); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+  const rows = jbD.jobs.flatMap(j => j.hrs.map(h => [h.d, +h.h, jbName(j), j.a || "", JB_SNAME[h.s] || "", h.n || ""])).sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0);
+  if (!rows.length){ jfSay("No hours logged yet. Log them on a job's stage.", "err"); return; }
+  const tot = rows.reduce((n, r) => n + r[1], 0);
+  const csv = [["Date", "Hours", "Job", "Address", "Stage", "What you did"], ...rows, [], ["Total", Math.round(tot * 100) / 100]].map(r => r.map(q).join(",")).join("\r\n");
+  const f = new File(["\ufeff" + csv], `hours-${jbDay()}.csv`, {type: "text/csv"});
+  try { if (navigator.canShare && navigator.canShare({files: [f]})){ await navigator.share({files: [f]}); jfSay(`Exported ${rows.length} entries, ${jbHr(tot)} hr.`, "good"); jbReseat(); return; } }
+  catch(e){ if (e && e.name === "AbortError"){ jbReseat(); return; } }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+  jfSay(`Exported ${rows.length} entries, ${jbHr(tot)} hr. It's in Downloads.`, "good");
+}
+
+/* ---- Merge: another phone's backup joins this one. Each job, person, builder and subdivision keeps whichever copy was
+   changed last; notes, inspections, hours and punch items from both are kept; anything deleted on either side stays deleted
+   (it's in Recently deleted). Settings and colors here win. */
+function jbMerge(o){
+  const isO = x => !!x && typeof x === "object" && !Array.isArray(x), A = a => Array.isArray(a) ? a.filter(x => isO(x) && x.id) : [], cl = x => JSON.parse(JSON.stringify(x));
+  const r = {add: 0, upd: 0}, ids = () => new Set([...jbD.jobs, ...jbD.people, ...jbD.builders, ...jbD.subs].map(x => x.id)), before = ids();
+  const when = e => +e.ed || +e.at || +e.add || 0;
+  const byId = (mine, theirs, inner) => { const m = new Map(mine.map(x => [x.id, x]));
+    A(theirs).forEach(y => { const x = m.get(y.id);
+      if (!x){ m.set(y.id, cl(y)); r.add++; return; }
+      const newer = (+y.t || 0) > (+x.t || 0), keep = newer ? cl(y) : x, other = newer ? x : y;
+      if (newer && JSON.stringify(x) !== JSON.stringify(y)) r.upd++;
+      inner.forEach(k => { const L = new Map(A(keep[k]).map(e => [e.id, e]));
+        A(other[k]).forEach(e => { const c = L.get(e.id); if (!c || when(e) > when(c)) L.set(e.id, cl(e)); }); keep[k] = [...L.values()]; });
+      m.set(y.id, keep); });
+    return [...m.values()]; };
+  jbD.jobs = byId(jbD.jobs, o.jobs, ["log", "insp", "hrs", "punch", "ppl"]);
+  jbD.people = byId(jbD.people, o.people, ["log"]); jbD.builders = byId(jbD.builders, o.builders, ["log"]); jbD.subs = byId(jbD.subs, o.subs, ["log"]);
+  const bin = new Map(jbD.bin.map(b => [b.id, b])); A(o.bin).forEach(b => { if (!bin.has(b.id) && isO(b.item) && typeof b.at === "number") bin.set(b.id, cl(b)); });
+  jbD.bin = [...bin.values()].sort((a, b) => b.at - a.at);
+  const LIST = {job: "jobs", person: "people", bld: "builders", sub: "subs"}, OWN = {job: "jobs", person: "people", bld: "builders", sub: "subs"};
+  jbD.bin.forEach(b => {   /* deleted on either side after its last change: stays deleted */
+    if (LIST[b.kind]) jbD[LIST[b.kind]] = jbD[LIST[b.kind]].filter(x => !(x.id === b.item.id && (+x.t || 0) <= b.at));
+    else if (b.kind === "note"){ const ow = (jbD[OWN[b.owner]] || []).find(x => x.id === b.oid); if (ow) ow.log = ow.log.filter(e => !(e.id === b.item.id && when(e) <= b.at)); } });
+  ["fold", "tagCol", "stageCol", "tpl"].forEach(k => { if (isO(o[k])) jbD[k] = Object.assign({}, o[k], isO(jbD[k]) ? jbD[k] : {}); });
+  if (!jbD.goal && o.goal) jbD.goal = o.goal; if (!+jbD.before && +o.before) jbD.before = o.before;
+  jbClean(); jbD.jobs.forEach(jbFix);
+  jbD.jobs.forEach(j => { if (!Array.isArray(j.xs)) j.xs = []; });
+  r.add = [...ids()].filter(id => !before.has(id)).length;   /* counted after deletions, so a job deleted here isn't "new" */
+  [...jbD.people, ...jbD.builders, ...jbD.subs].forEach(p => { if (!Array.isArray(p.log)) p.log = []; if (typeof p.draft !== "string") p.draft = ""; });
+  return r;
+}
 
 /* ---- Recently deleted: jobs, people, builders, subdivisions and notes wait 30 days before they're gone */
-const JB_BIN_DAYS = 30, JB_BIN_NAME = {job: "Job", person: "Person", bld: "Builder", sub: "Subdivision", note: "Note"};
+const JB_BIN_DAYS = 30, JB_BIN_NAME = {job: "Job", person: "Person", bld: "Builder", sub: "Subdivision", note: "Note", file: "Photo or file"};
 function jbBin(kind, item, extra){ jbD.bin.unshift(Object.assign({id: jbId(), kind, at: Date.now(), item: JSON.parse(JSON.stringify(item))}, extra || {})); }
-const jbBinName = b => b.kind === "job" ? jbName(b.item) : b.kind === "note" ? String(b.item.b || "").split("\n").map(x => x.replace(/^[\s#>*!\-\[\]xX]+/, "").trim()).find(Boolean) || "Note" : (b.item.n || "No name");
+const jbBinName = b => b.kind === "file" ? `${b.item.name || "Photo"}${(j0 => j0 ? " · " + jbName(j0) : "")(jbD.jobs.find(j => j.id === b.item.job))}` : b.kind === "job" ? jbName(b.item) : b.kind === "note" ? String(b.item.b || "").split("\n").map(x => x.replace(/^[\s#>*!\-\[\]xX]+/, "").trim()).find(Boolean) || "Note" : (b.item.n || "No name");
 function jbBinPurge(all){
   const cut = Date.now() - JB_BIN_DAYS * 864e5, gone = jbD.bin.filter(b => all || b.at < cut); if (!gone.length) return 0;
   jbD.bin = jbD.bin.filter(b => !gone.includes(b));
   gone.filter(b => b.kind === "job").forEach(b => jfAll(b.item.id).then(L => Promise.all(L.map(f => jfDel(f.id)))).catch(() => {}));   /* now its photos go */
+  gone.filter(b => b.kind === "file").forEach(b => jfDel(b.item.id).catch(() => {}));
   jbSave(); return gone.length;
 }
 function jbBinRestore(id){
@@ -1086,6 +1163,7 @@ function jbBinRestore(id){
       if (f === "lead" || f === "sup"){ if (!j[f]) j[f] = it.id; } else if (f === "ppl"){ if (!j.ppl.some(y => y.p === it.id)) j.ppl.push(x); } else if (f === "stage" && j.stages[x] && !j.stages[x].lead) j.stages[x].lead = it.id; }); }
   else if (b.kind === "bld" || b.kind === "sub"){ eList(b.kind).push(it);
     (b.links || []).forEach(([jid, f]) => { if (jid.startsWith("sub:")){ const sb = jbD.subs.find(y => y.id === jid.slice(4)); if (sb && !sb.bld) sb.bld = it.id; } else { const j = jbD.jobs.find(y => y.id === jid); if (j && !j[f]) j[f] = it.id; } }); }
+  else if (b.kind === "file"){ jfTx("readonly", st => st.get(it.id)).then(f => { if (!f){ toast("That photo is already gone."); return; } delete f.del; return jfPut(f).then(() => { if (JB.open === f.job) jfDraw(f.job); jfUse(); }); }).catch(() => {}); }
   else if (b.kind === "note"){ const o = b.owner === "job" ? jbD.jobs.find(j => j.id === b.oid) : b.owner === "person" ? pById(b.oid) : eById(b.owner, b.oid);
     if (!o){ toast("The job or page it was on is gone. Restore that first, then this note."); return; } o.log.push(it); }
   jbD.bin = jbD.bin.filter(x => x !== b); jbSave(); jbDraw(); toast(`${JB_BIN_NAME[b.kind]} restored.`, 2000);
