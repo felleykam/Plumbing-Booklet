@@ -21,7 +21,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
 
   if (req.mode === "navigate") {
-    /* the page: try the network for updates, give up after 4 s on weak signal, else use the saved copy */
+    /* the page: try the network for updates, give up after 2 s on weak signal (the fresh copy still saves for next time), else use the saved copy */
     /* a 404/5xx (GitHub deploy or outage) counts as no signal, so the saved copy shows instead of an error page */
     let saved = Promise.resolve();
     const net = fetch(req).then(r => {
@@ -30,7 +30,7 @@ self.addEventListener("fetch", e => {
       return r;
     });
     e.waitUntil(net.then(() => saved, () => {}));
-    const timeout = new Promise((_, fail) => setTimeout(fail, 4000));
+    const timeout = new Promise((_, fail) => setTimeout(fail, 2000));
     e.respondWith(Promise.race([net, timeout]).catch(() =>
       caches.match("./index.html").then(hit => hit || net.catch(x => x instanceof Response ? x : Response.error()))));
     return;

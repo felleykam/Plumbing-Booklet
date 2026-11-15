@@ -44,6 +44,7 @@ var P0;try{P0=JSON.parse(localStorage.getItem("jpb-prefs"))||{}}catch(e){P0={}}
 document.documentElement.dataset.theme=t&&(t.look==="light"||t.look==="dark")&&t.until>Date.now()?t.look:P0.light==="daylight"?(window.jpbAuto().day?"light":"dark"):(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
 /* installed to the home screen: the status bar sits on top of the page, so the header pads itself down (class drives the CSS) */
 document.documentElement.classList.toggle("pwa",matchMedia("(display-mode: standalone)").matches||navigator.standalone===true);
+document.documentElement.classList.toggle("shell",document.documentElement.classList.contains("pwa")||/[?&]shell=1/.test(location.search));
 /* vest color and text size, before paint too */
 try{var P=JSON.parse(localStorage.getItem("jpb-prefs"))||{},R=document.documentElement;["skin","font","caps","density","cols"].forEach(function(k){if(P[k]&&!(k==="skin"&&P[k]==="hivis"))R.dataset[k]=P[k]});if(P.skin==="night")R.dataset.theme="dark";R.dataset.stars=P.stars===false?"off":"on";R.dataset.gloves=P.gloves?"on":"off";R.dataset.fx=P.fx===false?"off":"on";}catch(e){}
 try{var v=JSON.parse(localStorage.getItem("jpb-vest"));if(v==="yellow"||v==="orange")document.documentElement.dataset.vest=v;var z=+JSON.parse(localStorage.getItem("jpb-zoom"));if(z>=0.8&&z<=1.5)document.documentElement.style.setProperty("--zoom",z);}catch(e){}</script>
@@ -139,8 +140,13 @@ nav.tabs button::before{content:"";width:10px;height:10px;border-radius:2px;back
 nav.tabs button svg{width:20px;height:20px;flex:0 0 auto}
 nav.tabs button[aria-pressed="true"]{background:var(--hv);color:var(--k);border-color:var(--k);box-shadow:3px 3px 0 var(--k)}
 nav.tabs button[aria-pressed="true"]::before{background:var(--k)}
+/* home-screen app: the page itself never scrolls (iPhone can't shove the bottom bar around); the book scrolls in #scroller */
+html.shell,html.shell body{height:100%;overflow:hidden;overscroll-behavior:none}
+html.shell #scroller{position:fixed;inset:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain}
 @media (max-width:759px){
   body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+  html.shell body{padding-bottom:0}
+  html.shell #scroller{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
   nav.tabs{--g-calc:#7FA6FF;--g-rough:#4ADE80;--g-mech:#4FD1DB;--g-trim:#FF7AC6;--g-parts:#4FD1DB;--g-inspect:#FF9A4D;--g-calls:#FF6B7A;--g-learn:#C3A6FF;--g-mine:#FFFFFF;
     position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(var(--bar-n,6),minmax(0,1fr));gap:0;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:var(--k);border-top:5px solid var(--hv);transform:translateZ(0);-webkit-transform:translateZ(0);transform-origin:0 100%;will-change:transform}
   /* the bar is moved out of the sticky toolbar on phones (script): iPhone Safari drags a fixed bar along with a sticky parent that slides */
@@ -377,6 +383,10 @@ details.math li::marker{font-weight:700;color:var(--muted)}
 #setup-found{margin:8px 0}
 input.find{display:block;width:100%;min-height:48px;margin:0 0 8px;padding:6px 12px;font:inherit;font-size:17px;color:var(--ink);background:var(--sheet);border:var(--bw) solid var(--ctl);border-radius:var(--r)}
 /* My jobs */
+/* phones: skip laying out and painting cards that are off-screen until you scroll near them (tab switches 2-10x faster);
+   it remembers each card's real height once seen. Print shows everything. */
+section[data-sec]{content-visibility:auto;contain-intrinsic-size:auto 500px}
+@media print{section[data-sec]{content-visibility:visible}}
 .jb-list{display:flex;flex-direction:column;gap:6px;padding:8px 12px}
 .jb-row{appearance:none;display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;min-height:52px;padding:8px 12px;text-align:left;font:inherit;color:var(--ink);background:var(--zebra);border:var(--bw) solid var(--edge);border-radius:var(--r);cursor:pointer}
 .jb-row b{font-family:var(--display);font-size:17px;overflow-wrap:anywhere}
@@ -4415,7 +4425,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 14, 2026</th><td><b>Your own checklists:</b> tap <b>Edit list</b> on a stage's checklist to remove items (the book's too) and add your own, then <b>Use this list on new jobs</b> to make it your starting list for that stage. <b>Back to the book's list</b> undoes it. <b>A job's city is its own:</b> new jobs start with no city instead of My city, the city only feeds Directions, and jobs no longer show the city's inspection booking (that stays in Inspect → Cities and Contacts → My city). <b>Each job is a timeline now:</b> Underground → Top-out (rough-in) → Gas → Finish (trim) → Final → Warranty, with the blanks ready. Tap a stage to fill it in: To do / Doing / Done / Skip, dates, who led it, a checklist that starts from the book's "Before you call it in" list, inspections, hours, notes and photos. Mark a stage Done and the next one opens. <b>People:</b> set the job's Lead and Superintendent; everyone gets a page with phone (Call / Text), company, notes and every job they're on, and <code>[[Dave]]</code> in a note links to it. <b>Directions</b> opens the address in Maps. The bottom bar no longer floats when you add something while the keyboard is up. <b>Job notes are a dated log now:</b> add as many notes to a job as you like, each with its date, newest first, and tap ✎ to change one. Write them with quick marks: <code>- [ ]</code> a checkbox (the job shows how many are open), <code>!!</code> a red heads-up, <code>#</code> headings, <code>**bold**</code>, <code>#tag</code> (tap to see every job with it), and <code>[[Lot 14]]</code> to link another job or a card in the book. Buttons above the box put them in for you, and phone numbers in notes are tappable. Old notes moved into the log. The bottom bar re-seats after the delete pop-up, the date wheel and the photo picker. <b>My jobs (Mine → Jobs):</b> each job keeps its address, builder or customer, city (with how to book its inspections), phase and status; its inspections (booked, pass, partial, fail) with the inspector and corrections; hours with today, this week, last week and a running count toward your license hours; a punch and materials list you check off; and photos (a note on each) and files like PDF plans. <b>MY JOBS</b> on Home shows your open jobs. Jobs go in Settings → Download backup; photos and files are too big for it and have their own backup at the bottom of the Jobs page.</td></tr>
+        <tr><th>Nov 14, 2026</th><td><b>The bottom bar, rebuilt:</b> in the home-screen app the page itself no longer scrolls; the book scrolls inside it and the bar sits below, so the keyboard and pop-ups can't push the bar up. <b>Jobs have a name</b> separate from the address: the name shows in lists, the address feeds Directions, and <code>[[links]]</code> match either one. <b>Faster:</b> switching tabs is 2 to 10 times quicker on long pages (cards off the screen aren't drawn until you scroll to them), and on weak signal the app opens from its saved copy after 2 seconds instead of 4. <b>Your own checklists:</b> tap <b>Edit list</b> on a stage's checklist to remove items (the book's too) and add your own, then <b>Use this list on new jobs</b> to make it your starting list for that stage. <b>Back to the book's list</b> undoes it. <b>A job's city is its own:</b> new jobs start with no city instead of My city, the city only feeds Directions, and jobs no longer show the city's inspection booking (that stays in Inspect → Cities and Contacts → My city). <b>Each job is a timeline now:</b> Underground → Top-out (rough-in) → Gas → Finish (trim) → Final → Warranty, with the blanks ready. Tap a stage to fill it in: To do / Doing / Done / Skip, dates, who led it, a checklist that starts from the book's "Before you call it in" list, inspections, hours, notes and photos. Mark a stage Done and the next one opens. <b>People:</b> set the job's Lead and Superintendent; everyone gets a page with phone (Call / Text), company, notes and every job they're on, and <code>[[Dave]]</code> in a note links to it. <b>Directions</b> opens the address in Maps. The bottom bar no longer floats when you add something while the keyboard is up. <b>Job notes are a dated log now:</b> add as many notes to a job as you like, each with its date, newest first, and tap ✎ to change one. Write them with quick marks: <code>- [ ]</code> a checkbox (the job shows how many are open), <code>!!</code> a red heads-up, <code>#</code> headings, <code>**bold**</code>, <code>#tag</code> (tap to see every job with it), and <code>[[Lot 14]]</code> to link another job or a card in the book. Buttons above the box put them in for you, and phone numbers in notes are tappable. Old notes moved into the log. The bottom bar re-seats after the delete pop-up, the date wheel and the photo picker. <b>My jobs (Mine → Jobs):</b> each job keeps its address, builder or customer, city (with how to book its inspections), phase and status; its inspections (booked, pass, partial, fail) with the inspector and corrections; hours with today, this week, last week and a running count toward your license hours; a punch and materials list you check off; and photos (a note on each) and files like PDF plans. <b>MY JOBS</b> on Home shows your open jobs. Jobs go in Settings → Download backup; photos and files are too big for it and have their own backup at the bottom of the Jobs page.</td></tr>
         <tr><th>Nov 13, 2026</th><td><b>Find a city by typing:</b> the city menus (Contacts → Call → My city, and first-time setup) have a search box, so you don't scroll 259 names. <b>Every Utah city and town</b> is in the city picker now (259 places). The 227 new ones show their elevation. 24 of them (the rest of Utah County and the biggest cities nearby) also have how to book inspections and, where found, secondary water; the others say "not checked yet". <b>New home-screen icon:</b> bright lime on black, so it stays easy to see when the phone is in dark mode. An iPhone keeps the old picture until you delete the Handbook from the home screen and add it again (Safari → Share → Add to Home Screen). Your saved pins and notes stay. The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install. <b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
         <tr><th>Nov 12, 2026</th><td><b>Share the book</b> (Settings) shows its QR code with no signal now: the code is stored in the book instead of being fetched. <b>Bottom bar:</b> eight tables had started scrolling up and down a few pixels inside their own boxes, which can tug the iPhone bar loose: fixed. After the "Allow location" prompt the book now re-seats the bar. <b>Weather:</b> the first forecast shows in a few seconds even when the main service is slow, and picking a new place no longer blanks the card. A book left in the background over 6 hours reloads when you come back, so it picks up updates. <b>Weather fixed:</b> when the main forecast service doesn't answer, the card now switches to the National Weather Service forecast instead of sitting on "Loading". Every weather request gives up after 12 seconds and tries again. <b>New:</b> a weather button in the top corner shows the sky right now and the temperature; tap it for Jobsite → Weather. Turn it off in <b>Settings → Behavior → Weather in the header</b>. <b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them. <b>Water treatment</b> (Service → Treatment) grew: <b>Where treatment goes</b> (order in the line, hard water for hose bibbs, the softener loop rough-in), <b>Softener trouble</b> (no soft water, salt bridge, resin in the lines, low pressure), <b>How RO works</b>, <b>Treatment code</b> (the IPC and IRC sections for softeners and RO) and <b>Treatment brands</b>. <b>Contacts → Tech lines → Water treatment</b> has 14 makers' phone lines.</td></tr>
         <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "shower valve height") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Circuits, wire &amp; bonding. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow. <b>Reopening the book</b> lands where you were on the page, not at the top. <b>Fits the phone:</b> calculator answers and the Pressure at the fixture rows no longer run off the right edge, long dropdowns get a full row, and tech line numbers stack instead of scrolling sideways.</td></tr>
@@ -4950,6 +4960,15 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 </div>
 
 <script>
+/* Home-screen app: move the book into #scroller. The bottom bar is put back on <body> later (outside it), so the keyboard and
+   system pop-ups have no page scroll to knock it off. In a Safari tab or on a computer the page scrolls as it always did. */
+const SHELL = document.documentElement.classList.contains("shell");
+if (SHELL){ const sc = document.createElement("div"); sc.id = "scroller";
+  [...document.body.children].forEach(el => { if (!/^(SCRIPT|DIALOG)$/.test(el.tagName) && el.id !== "toast" && el.id !== "sr-status") sc.appendChild(el); });
+  document.body.insertBefore(sc, document.body.firstChild); }
+const SCR = SHELL ? document.getElementById("scroller") : null, SCR_EV = SCR || window;
+const scrY = () => SCR ? SCR.scrollTop : scrollY;
+const scrTo = (a, b) => SCR ? SCR.scrollTo(a, b) : scrollTo(a, b);
 /* CONTENTS
    1 Helpers · 2 Links + glossary · 3 Phone numbers · 4 Navigation, search, theme · 5 Toolbar tuck
    6 Converter, pressure chart, water in pipe · 7 Offset calculator + drawings · 8 Feet-inch, take-offs, slope, velocity, expansion, tank
@@ -5909,32 +5928,32 @@ function qRemember(term, shown){
 let restoring = false, histOk = true;
 try { history.scrollRestoration = "manual"; } catch(e){}   /* Back restores the y this book saved; the browser's own restore would put it back at the top */
 const navHash = slug => "#" + nav.group + "/" + nav.sub + (slug ? "/" + slug : "");
-function histMark(y){ try { history.replaceState(Object.assign({}, history.state || {}, {y: y ?? scrollY}), ""); } catch(e){ histOk = false; } }
+function histMark(y){ try { history.replaceState(Object.assign({}, history.state || {}, {y: y ?? scrY()}), ""); } catch(e){ histOk = false; } }
 function histPush(extra, slug, y){   /* y: where the old view was scrolled before it changed */
   if (restoring || !histOk) return;
   histMark(y);
   try { history.pushState(Object.assign({g: nav.group, s: nav.sub, q: $("q").value}, extra || {}), "", navHash(slug)); } catch(e){ histOk = false; }
 }
 function go(group, sub){
-  const y = scrollY;
+  const y = scrY();
   nav = {group, sub: sub || (nav.group === group ? nav.sub : lastSub(group))};
-  $("q").value = ""; saveNav(); drawSubs(); apply(); scrollTo({top:0}); placeRemember(); histPush(null, "", y);
+  $("q").value = ""; saveNav(); drawSubs(); apply(); scrTo({top:0}); placeRemember(); histPush(null, "", y);
 }
 document.querySelectorAll("nav.tabs button[data-group]").forEach(b => b.addEventListener("click", () => go(b.dataset.group)));
 subRow.addEventListener("click", e => {
   const b = e.target.closest("button[data-sub]"); if (!b) return;
-  const y = scrollY; nav.sub = b.dataset.sub; $("q").value = ""; saveNav(); apply(); scrollTo({top:0}); placeRemember(); histPush(null, "", y);
+  const y = scrY(); nav.sub = b.dataset.sub; $("q").value = ""; saveNav(); apply(); scrTo({top:0}); placeRemember(); histPush(null, "", y);
 });
 $("res-bar").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   if (b.dataset.rall) sAll = true; else sGroup = sGroup === b.dataset.rg ? "" : b.dataset.rg;
-  apply(); scrollTo({top:0});
+  apply(); scrTo({top:0});
 });
 $("code-jump").addEventListener("click", () => go("inspect", "code"));
 let qRaf = 0, wasSearching = false;
 $("q").addEventListener("input", () => {
   const now = !!$("q").value.trim();
-  if (now && !wasSearching){ histPush({q: $("q").value}); scrollTo({top:0}); }
+  if (now && !wasSearching){ histPush({q: $("q").value}); scrTo({top:0}); }
   else if (!restoring && histOk) try { history.replaceState(Object.assign({}, history.state || {}, {q: $("q").value}), ""); } catch(e){}
   wasSearching = now;
   cancelAnimationFrame(qRaf); qRaf = requestAnimationFrame(apply);
@@ -5956,6 +5975,7 @@ $("q").addEventListener("input", () => {
   const typing = () => { const a = document.activeElement; return !!a && (/^(TEXTAREA|SELECT)$/.test(a.tagName) || (a.tagName === "INPUT" && !/^(checkbox|radio|button|submit|range|file)$/.test(a.type))); };
   const glue = () => {
     raf = 0;
+    if (SHELL && !typing() && (scrollX || scrollY)) scrollTo(0, 0);   /* the app's page never scrolls: put it back */
     if (!vv || !mq.matches){ navEl.style.transform = ""; document.body.classList.remove("kb-open"); return; }
     document.body.classList.toggle("kb-open", typing() && vv.height < innerHeight - 120);
     /* Only move the bar for pinch-zoom. At normal zoom, position:fixed already sits on the bottom edge; moving it by the
@@ -5974,15 +5994,17 @@ $("q").addEventListener("input", () => {
      closes, with no viewport event to say so. Nudge the page a few times afterwards: scroll to where it already is,
      re-check the bar, and make iOS re-read the viewport line. */
   window.navReseat = () => {
-    [0, 250, 700, 1500, 3000].forEach(t => setTimeout(() => { if (!typing()) scrollTo(scrollX, scrollY); queue(); }, t));
+    [0, 250, 700, 1500, 3000].forEach(t => setTimeout(() => { if (!typing()) SHELL ? scrollTo(0, 0) : scrollTo(scrollX, scrollY); queue(); }, t));
     const vp = document.querySelector('meta[name="viewport"]');
     if (vp && document.documentElement.classList.contains("pwa")){ const c = vp.getAttribute("content"); vp.setAttribute("content", c + ",minimum-scale=1"); setTimeout(() => vp.setAttribute("content", c), 150); }
   };
   if (vv){ vv.addEventListener("resize", queue); vv.addEventListener("scroll", queue); }
+  /* the keyboard just closed (what you see grew back by a keyboard's height): re-seat, the same as after a system pop-up */
+  if (vv){ let lastH = vv.height; vv.addEventListener("resize", () => { if (vv.height - lastH > 120 && window.navReseat) navReseat(); lastH = vv.height; }); }
   addEventListener("scroll", queue, {passive: true});
   addEventListener("orientationchange", () => setTimeout(queue, 350));
   document.addEventListener("focusin", queue);
-  document.addEventListener("focusout", () => { [100, 400, 900].forEach(t => setTimeout(queue, t)); setTimeout(() => { if (!typing()) scrollTo(scrollX, scrollY); }, 300); });   /* re-seat after the keyboard closes; iOS reports it late */
+  document.addEventListener("focusout", () => { [100, 400, 900].forEach(t => setTimeout(queue, t)); setTimeout(() => { if (!typing()) SHELL ? scrollTo(0, 0) : scrollTo(scrollX, scrollY); }, 300); });   /* re-seat after the keyboard closes; iOS reports it late */
   addEventListener("pageshow", queue); document.addEventListener("visibilitychange", queue);   /* re-seat after the keyboard closes */
   document.addEventListener("touchend", queue, {passive: true});   /* iOS doesn't always fire a viewport event when it shifts: re-check on every tap */
   if (mq.addEventListener) mq.addEventListener("change", queue);
@@ -6097,7 +6119,7 @@ const cardLink = sec => BOOK_URL + "#" + sec.dataset.g + "/" + sec.dataset.sec +
     if (!e.target.closest("#cpop")) close();
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !pop.hidden) close(); });
-  addEventListener("scroll", () => { if (!pop.hidden) close(); }, {passive: true});
+  SCR_EV.addEventListener("scroll", () => { if (!pop.hidden) close(); }, {passive: true});
 }
 function printCard(sec){
   document.querySelectorAll("details").forEach(dd => { if (sec.contains(dd)) { dd.dataset.wasOpen = dd.open ? "1" : ""; dd.open = true; } });
@@ -6330,7 +6352,7 @@ $("more-list").addEventListener("click", e => {
   SHEETS.more(false);   /* swap the More step for the tab, so Back from the tab skips the sheet */
   if (b.dataset.act === "settings" || b.dataset.act === "share"){ try { history.replaceState(Object.assign({}, history.state || {}, {sheet: ""}), ""); } catch(err){} sheet("look", true);
     if (b.dataset.act === "share") setTimeout(() => $("set-share").scrollIntoView({block: "start"}), 60); return; }
-  if (histOk && history.state && history.state.sheet === "more"){ restoring = true; nav = {group: b.dataset.group, sub: GROUPS[b.dataset.group][0][0]}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrollTo({top:0}); placeRemember(); restoring = false;
+  if (histOk && history.state && history.state.sheet === "more"){ restoring = true; nav = {group: b.dataset.group, sub: GROUPS[b.dataset.group][0][0]}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrTo({top:0}); placeRemember(); restoring = false;
     try { history.replaceState({g: nav.group, s: nav.sub, q: ""}, "", navHash()); } catch(err){} }
   else go(b.dataset.group);
 });
@@ -6344,12 +6366,12 @@ document.querySelectorAll("table.cards").forEach(t => {
 
 /* ---------- 5 toolbar: tucks away scrolling down on phones, back on any scroll up ---------- */
 (() => {
-  let lastY = scrollY, ticking = false, tucked = false;
+  let lastY = scrY(), ticking = false, tucked = false;
   const setTuck = on => { if (on === tucked) return; tucked = on; tools.style.top = on ? -(tools.offsetHeight + 4) + "px" : ""; };
-  addEventListener("scroll", () => {
+  SCR_EV.addEventListener("scroll", () => {
     if (ticking) return; ticking = true;
     requestAnimationFrame(() => {
-      const y = scrollY, down = y > lastY + 4, up = y < lastY - 4;
+      const y = scrY(), down = y > lastY + 4, up = y < lastY - 4;
       tools.classList.toggle("stuck", y > 40);
       const busy = tools.contains(document.activeElement) || document.querySelector(".ro-stage.big");
       if (innerWidth < 760 && down && y > 300 && !busy) setTuck(true);
@@ -7518,7 +7540,7 @@ function jumpTo(group, sub, title, focusId){
   jumpToSec(sec, focusId);
 }
 function jumpToSec(sec, focusId, noPush){
-  if (!noPush){ const y = scrollY; nav = {group: sec.dataset.g, sub: sec.dataset.sec}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrollTo({top:0}); placeRemember(); histPush({card: sec.dataset.pid}, (sec.dataset.pid || "").split(":")[1], y); cardRemember(sec); }
+  if (!noPush){ const y = scrY(); nav = {group: sec.dataset.g, sub: sec.dataset.sec}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrTo({top:0}); placeRemember(); histPush({card: sec.dataset.pid}, (sec.dataset.pid || "").split(":")[1], y); cardRemember(sec); }
   requestAnimationFrame(() => {
     sec.scrollIntoView({block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
     const f = focusId && $(focusId); const h = sec.querySelector("h2");
@@ -8519,7 +8541,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-14e";
+{ const NEWS = "2026-11-14g";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8911,7 +8933,7 @@ $("setup-open").addEventListener("click", () => sheet("setup", true));
 /* ---------- open at a card link (#tab/page/card), set the first history step, Back from there ---------- */
 /* reopening the book lands where you were on the page, not at its top (an iPhone unloads a home-screen app in the background).
    The spot is saved whenever the book is hidden, and used once at startup if it's the same page and less than 30 minutes old. */
-const posSave = () => { if (!$("q").value.trim()) store.set("jpb-pos", {k: nav.group + "/" + nav.sub, y: Math.round(scrollY), t: Date.now()}); };
+const posSave = () => { if (!$("q").value.trim()) store.set("jpb-pos", {k: nav.group + "/" + nav.sub, y: Math.round(scrY()), t: Date.now()}); };
 addEventListener("pagehide", posSave);
 document.addEventListener("visibilitychange", () => { if (document.hidden) posSave(); });
 /* a #tab/page/card address → where it points now. A card that moved resolves to its new page, even if its old page is gone. */
@@ -8925,7 +8947,7 @@ function hashTarget(){
   if (t0){ nav = {group: t0.g, sub: t0.s}; drawSubs(); apply(); if (card0) jumpToSec(card0, null, true); }
   try { history.replaceState(Object.assign({g: nav.group, s: nav.sub, q: ""}, card0 ? {card: card0.dataset.pid} : {}), "", location.pathname + location.search + navHash(card0 ? card0.dataset.pid.split(":")[1] : "")); } catch(e){ histOk = false; }
   { const pz = store.get("jpb-pos", null);
-    if (!card0 && pz && pz.k === nav.group + "/" + nav.sub && pz.y > 0 && Date.now() - pz.t < 18e5) setTimeout(() => scrollTo(0, pz.y), 60); }
+    if (!card0 && pz && pz.k === nav.group + "/" + nav.sub && pz.y > 0 && Date.now() - pz.t < 18e5) setTimeout(() => scrTo(0, pz.y), 60); }
   addEventListener("popstate", e => {
     let st = e.state || {}; restoring = true;
     if (!e.state){   /* a card link pasted or tapped in the same tab: no saved step, so read the address */
@@ -8936,7 +8958,7 @@ function hashTarget(){
     if (st.sheet && SHEETS[st.sheet] && !sheetOn(st.sheet)) SHEETS[st.sheet](true);
     if (st.g && GROUPS[st.g] && GROUPS[st.g].some(([k]) => k === st.s)){ nav = {group: st.g, sub: st.s}; saveNav(); drawSubs(); }
     $("q").value = st.q || ""; wasSearching = !!(st.q || "").trim(); apply();
-    if (!st.sheet){ const sec = st.card && SECTIONS.find(s => s.dataset.pid === st.card); if (sec && st.y == null) jumpToSec(sec, null, true); else scrollTo(0, st.y || 0); }
+    if (!st.sheet){ const sec = st.card && SECTIONS.find(s => s.dataset.pid === st.card); if (sec && st.y == null) jumpToSec(sec, null, true); else scrTo(0, st.y || 0); }
     restoring = false;
   });
   if (!store.get("jpb-setup", 0) && !t0) requestAnimationFrame(() => sheet("setup", true));
@@ -9533,7 +9555,7 @@ const jbWk = s => { const x = new Date(s + "T12:00:00"); x.setDate(x.getDate() -
 const jbNice = s => { const x = new Date(s + "T12:00:00"); return !s || isNaN(x) ? esc(s || "") : x.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}); };
 const jbHr = x => (Math.round(x * 100) / 100).toLocaleString();
 const jbCur = () => jbD.jobs.find(j => j.id === JB.open);
-const jbName = j => (j.a || "").trim() || "Untitled job";
+const jbName = j => (j.name || "").trim() || (j.a || "").trim() || "Untitled job";   /* the job's name, else its address */
 const jbNext = j => j.insp.filter(i => i.r === "booked").sort((a, b) => a.d < b.d ? -1 : 1)[0];
 const jbByDate = (a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : 0;
 const jfMB = n => n >= 1e6 ? (n / 1e6).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1e3)) + " KB";
@@ -9559,7 +9581,7 @@ const pJobs = p => { const L = "[[" + p.n.trim().toLowerCase() + "]]";
 /* jobs from earlier builds: notes into the log, phase into stages */
 function jbFix(j){
   if (!Array.isArray(j.log)){ j.log = (j.note || "").trim() ? [{id: jbId(), d: jbDay(new Date(j.t || Date.now())), at: j.t || Date.now(), b: j.note}] : []; delete j.note; }
-  if (typeof j.draft !== "string") j.draft = "";
+  if (typeof j.draft !== "string") j.draft = ""; if (typeof j.name !== "string") j.name = "";
   ["insp", "hrs", "punch", "ppl"].forEach(k => { if (!Array.isArray(j[k])) j[k] = []; });
   if (j.lead === undefined) j.lead = ""; if (j.sup === undefined) j.sup = "";
   if (!j.stages){
@@ -9642,14 +9664,14 @@ function jbHours(){
   return {today: sum(h => h.d === now), wk: sum(h => jbWk(h.d) === wk), lw: sum(h => jbWk(h.d) === lw), all: sum(() => true)};
 }
 function jbNew(){
-  const j = {id: jbId(), a: "", who: "", city: "", st: "open", lead: "", sup: "", ppl: [], log: [], draft: "", t: Date.now(), insp: [], hrs: [], punch: [], stages: {}};
+  const j = {id: jbId(), name: "", a: "", who: "", city: "", st: "open", lead: "", sup: "", ppl: [], log: [], draft: "", t: Date.now(), insp: [], hrs: [], punch: [], stages: {}};
   JB_STG.forEach(([k], i) => { j.stages[k] = {st: i ? "todo" : "doing", d0: "", d1: "", lead: "", done: [], extra: []}; });
   jbD.jobs.push(j); JB.open = j.id; JB.person = null; JB.edit = null; JB.stage = null; jbSave(); return j;
 }
 const jbRow = (j, attr = "data-open") => { const n = jbNext(j), c = cityById(j.city), tk = jbTasks(j), cs = jbStageNow(j), last = j.log.slice().sort(jnSort)[0];
   const act = JB_STG.filter(([k]) => j.stages[k].st !== "skip"), done = act.filter(([k]) => j.stages[k].st === "done").length;
   const gist = last ? last.b.split("\n").map(x => x.replace(/^\s*([-*] \[[ xX]\]|[-*•]|\d+[.)]|#{1,3}|!!|>)\s*/, "").replace(/\*\*|==|~~|\[\[|\]\]|`/g, "").trim()).find(Boolean) || "" : "";
-  return `<button type="button" class="jb-row" ${attr}="${j.id}"><b>${esc(jbName(j))}</b><span>${[j.who, c && c.n, pName(j.lead) && "Lead " + pName(j.lead)].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
+  return `<button type="button" class="jb-row" ${attr}="${j.id}"><b>${esc(jbName(j))}</b><span>${[(j.name || "").trim() && j.a, j.who, c && c.n, pName(j.lead) && "Lead " + pName(j.lead)].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
     + (gist ? `<span class="jb-gist">${esc(gist.slice(0, 90))}</span>` : "")
     + `<span class="jb-tags"><span class="badge">${esc(JB_SNAME[cs])}</span><span class="badge">${done}/${act.length}</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${tk ? `<span class="badge">☐ ${tk}</span>` : ""}${n ? `Inspection ${jbNice(n.d)}` : ""}</span></button>`; };
 const pRow = p => { const n = pJobs(p).length;
@@ -9745,7 +9767,8 @@ function jbJobHtml(j){
   const team = [...[["lead", "Lead"], ["sup", "Superintendent"]].filter(([f]) => pById(j[f])).map(([f, r]) => ({p: pById(j[f]), r})), ...j.ppl.map(x => ({p: pById(x.p), r: x.r, id: x.id})).filter(x => x.p)];
   return `<div class="set-btns jb-top"><button type="button" class="btn ghost" data-a="back">‹ All jobs</button></div>
   <div class="calc">
-    <label for="jb-a" class="wide">Address / lot<input id="jb-a" data-f="a" type="text" autocomplete="off" value="${esc(j.a)}" placeholder="Lot 12 · 123 N Main"></label>
+    <label for="jb-n" class="wide">Job name<input id="jb-n" data-f="name" type="text" autocomplete="off" value="${esc(j.name)}" placeholder="Lot 12 Ivory · Smith basement"></label>
+    <label for="jb-a" class="wide">Address<input id="jb-a" data-f="a" type="text" autocomplete="off" value="${esc(j.a)}" placeholder="123 N Main St"></label>
     <label for="jb-who" class="wide">Builder / customer<input id="jb-who" data-f="who" type="text" autocomplete="off" value="${esc(j.who)}" placeholder="Builder or homeowner"></label>
     <label for="jb-city">City <i>(for Directions)</i><select id="jb-city" data-f="city">${$("mc-pick").innerHTML}</select></label>
     <label for="jb-st">Job status<select id="jb-st" data-f="st">${jbOpts(JB_ST, j.st)}</select></label>
@@ -9815,15 +9838,15 @@ function jbBack(){
     if (p && !p.n.trim() && !p.log.length && !pJobs(p).length) jbD.people = jbD.people.filter(x => x !== p);   /* a new person left blank isn't kept */
     JB.person = null; JB.edit = null; const b = JB.back || {}; JB.open = b.open || null; JB.stage = b.stage || null; JB.back = null; jbSave(); jbDraw(); jbTop(); return; }
   const j = jbCur();
-  if (j && !(j.a || "").trim() && !j.who.trim() && !j.log.length && !j.draft.trim() && !j.insp.length && !j.hrs.length && !j.punch.length && !j.lead && !j.sup && !JF.n)
+  if (j && !(j.a || "").trim() && !(j.name || "").trim() && !j.who.trim() && !j.log.length && !j.draft.trim() && !j.insp.length && !j.hrs.length && !j.punch.length && !j.lead && !j.sup && !JF.n)
     jbD.jobs = jbD.jobs.filter(x => x !== j);   /* a new job left blank isn't kept */
   JB.open = null; JB.edit = null; JB.stage = null; jbSave(); jbDraw(); jbTop();
 }
 /* [[link]]: a person, another job by its address, else a card in the book by its title */
 function jnGo(x){
   const per = pByName(x); if (per){ jbOpenPerson(per.id); return; }
-  const q = x.trim().toLowerCase(), nm = j => jbName(j).toLowerCase();
-  const job = jbD.jobs.find(j => nm(j) === q) || jbD.jobs.find(j => nm(j).includes(q));
+  const q = x.trim().toLowerCase(), nm = j => [j.name, j.a].map(v => (v || "").trim().toLowerCase()).filter(Boolean);   /* by name or address */
+  const job = jbD.jobs.find(j => nm(j).includes(q)) || jbD.jobs.find(j => nm(j).some(v => v.includes(q)));
   if (job){ JB.person = null; JB.open = job.id; JB.edit = null; JB.stage = null; JF.n = 0; jbDraw(); jbTop(); return; }
   const secs = SECTIONS.filter(s => s.dataset.sec !== "jobs" && s.querySelector("h2")), h = s => s.querySelector("h2").textContent.trim().toLowerCase();
   const sec = secs.find(s => h(s) === q) || secs.find(s => h(s).includes(q));
@@ -9880,7 +9903,7 @@ B.addEventListener("click", e => {
       s2.extra = have.filter(y => !bs.has(y.t)).map(y => ({id: jbId(), t: y.t, done: y.done})); s2.hide = book.filter(b => !have.some(y => y.t === b)); s2.done = have.filter(y => y.done).map(y => y.t); });
     delete jbD.tpl[JB.stage]; JB.ckEdit = false; jbTouch(j); toast("Back to the book's list for new jobs.", 2200); return; }
   if (a === "back"){ jbBack(); return; }
-  if (a === "new"){ jbNew(); JF.n = 0; jbDraw(); jbTop(); $("jb-a").focus(); return; }
+  if (a === "new"){ jbNew(); JF.n = 0; jbDraw(); jbTop(); $("jb-n").focus(); return; }
   if (a === "p-new"){ const p = {id: jbId(), n: "", role: "Other", co: "", ph: "", em: "", log: [], draft: "", t: Date.now()}; jbD.people.push(p); jbSave(); JB.open = null; jbOpenPerson(p.id); $("pp-n").focus(); return; }
   if (a === "p-del" && JB.person){ const p = pById(JB.person); if (!p || !jbAsk(`Delete ${p.n || "this person"}? They come off every job; notes that mention them stay.`)) return;
     jbD.people = jbD.people.filter(x => x !== p);
@@ -10068,7 +10091,7 @@ async function jfBackup(){
   let L; try { L = await jfAll(); } catch(e){ jfSay("Couldn't read the photos on this phone.", "err"); return; }
   if (!L.length){ jfSay("No photos or files yet."); return; }
   jfSay(`Packing ${L.length}…`);
-  const man = L.map(f => ({id: f.id, job: f.job, s: f.s, jobName: ((jbD.jobs.find(x => x.id === f.job) || {}).a || ""), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb,
+  const man = L.map(f => ({id: f.id, job: f.job, s: f.s, jobName: (j0 => j0 ? jbName(j0) : "")(jbD.jobs.find(x => x.id === f.job)), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb,
     path: `files/${f.id}-${String(f.name).replace(/[^\w.\- ]+/g, "_").slice(-60)}`}));
   try {
     const zip = await jfZip([{name: "manifest.json", blob: new Blob([JSON.stringify({app: "utah-plumbers-handbook-files", v: 1, made: new Date().toISOString(), files: man})])},
@@ -10096,7 +10119,7 @@ jbDraw(); try { homeDraw(); } catch(e){}
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-14e";
+var BUILD = "handbook-2026-11-14g";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
