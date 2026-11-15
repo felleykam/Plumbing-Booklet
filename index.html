@@ -5199,6 +5199,156 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Gas</th><td>Thinner air, less oxygen: appliances derate about 4% per 1,000 ft above 2,000 ft (<b>Calc → Sizing → Altitude derate</b>). Tankless altitude settings: <b>Service → Water heaters → Altitude settings</b>.</td></tr>
       </tbody></table></div>
   </section>
+  <section data-sec="how" data-kw="shower valve how works pressure balance balancing thermostatic scald anti-scald spool piston wax element limit stop 120 asse 1016 1070 1017 tub filler mixing valve flush toilet temperature swing">
+    <div class="sec-head"><h2>How a shower valve works</h2><small>Pressure-balance vs thermostatic</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 200" role="img" aria-label="A shower valve body with hot coming in from the left and cold from the right. A spool in the middle slides toward the hot side when cold pressure drops, choking the hot to match. The mix goes up to the shower head."><defs><marker id="ar-sv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><g font-size="13" fill="var(--d-text)">
+<path d="M20 100H120" stroke="var(--d-fit)" stroke-width="10"/><path d="M280 100H380" stroke="var(--d-cut)" stroke-width="10"/>
+<rect x="120" y="55" width="160" height="90" rx="8" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><path d="M200 55V18" stroke="var(--d-pipe)" stroke-width="8"/>
+<rect x="178" y="72" width="34" height="56" rx="4" fill="var(--d-tru)"/><path d="M172 100H140" stroke="var(--d-text)" stroke-width="2.5" marker-end="url(#ar-sv)"/>
+<text x="20" y="88">Hot in</text><text x="320" y="88">Cold in</text><text x="210" y="28">Mixed, to the head</text><text x="216" y="122">Spool</text>
+<text x="20" y="172">A toilet flushes: cold pressure drops, the spool slides</text><text x="20" y="190">toward hot and chokes it down to match. No scald.</text></g></svg><figcaption>Pressure-balance: the spool answers to pressure, not temperature.</figcaption></figure>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The danger</th><td>Someone flushes, the cold side loses pressure for a few seconds, and the shower turns all hot. Every shower and tub-shower valve has to protect against that.</td></tr>
+        <tr><th>Pressure-balance</th><td>A spool or diaphragm sits between hot and cold. When one side loses pressure, it slides and cuts the other side down to match, so the <b>mix</b> stays about the same and the flow drops instead. It doesn't notice the water <i>temperature</i> changing, only pressure.</td></tr>
+        <tr><th>Thermostatic</th><td>A wax or bimetal element sits in the mixed water and moves the valve to hold the temperature you set, whatever the pressures do. Often a separate knob for volume. Costs more; strainers and clean water keep it working.</td></tr>
+        <tr><th>Limit stop</th><td>A stop on the cartridge that limits how far the handle turns toward hot. The code wants it set so the water is <b>no hotter than 120°F</b> (IRC P2708.4). Set it on the job with a thermometer at the head: the water heater's dial doesn't count.</td></tr>
+        <tr><th>Tub fillers</th><td>A tub-only spout also gets a 120°F limit, from its own limiting device or the tub-shower valve (IRC P2713.3).</td></tr>
+        <tr><th>At the heater</th><td>A master mixing valve (ASSE 1017) at the heater tempers the whole house's hot water. It doesn't replace the protection in each shower valve.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Check it</th><td>Many valves leave the box with the stop turned wide open. Brands and cartridges: <b>Trim → Valves &amp; trim → Shower valve families</b>; setting it during trim: <b>Trim → Valves &amp; trim → Trim a shower / tub valve</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="ejector pump sump pump how works basin float switch impeller centrifugal volute check valve full open valve discharge vent sealed lid weep hole air lock grinder solids recirculation circulator pump crossover thermal bypass comfort valve">
+    <div class="sec-head"><h2>How pumps lift water</h2><small>Ejectors, sumps and recirc pumps</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 235" role="img" aria-label="A sewage basin below the floor. Drains run in from the side. A pump sits at the bottom with a float on an arm. The discharge runs straight up through a check valve, through the lid, then a full-open valve, then over to the gravity drain. A vent rises from the lid."><defs><marker id="ar-ej" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-cut)"/></marker></defs><g font-size="12.5" fill="var(--d-text)">
+<rect x="112" y="140" width="176" height="68" fill="var(--d-cut)" opacity=".22"/>
+<path d="M110 62V210H290V62" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><path d="M100 62H300" stroke="var(--d-fit)" stroke-width="5"/>
+<path d="M14 118H110" stroke="var(--d-pipe)" stroke-width="7"/><text x="14" y="108">From basement drains</text>
+<rect x="168" y="172" width="54" height="34" rx="5" fill="var(--d-bg)" stroke="var(--d-pipe)" stroke-width="3"/><text x="122" y="228">Pump at the bottom of the basin</text>
+<path d="M222 186L252 156" stroke="var(--d-pipe)" stroke-width="3"/><circle cx="257" cy="151" r="9" fill="var(--d-rise)"/><text x="232" y="136">Float</text>
+<path d="M195 172V28H372" fill="none" stroke="var(--d-pipe)" stroke-width="6"/><path d="M182 150V112" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-ej)"/>
+<rect x="186" y="90" width="18" height="16" fill="var(--d-fit)"/><text x="212" y="102">Check valve</text>
+<circle cx="195" cy="46" r="7" fill="var(--d-tru)"/><text x="206" y="51">Full-open valve</text><text x="300" y="20">To the drain</text>
+<path d="M265 62V20" stroke="var(--d-pipe)" stroke-width="4"/><text x="246" y="14">Vent</text></g></svg><figcaption>Water rises, the float switches the pump on, the pump throws it up and out until the float drops.</figcaption></figure>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The cycle</th><td>Fixtures below the sewer drain into a sealed basin. When the water lifts the <b>float</b> to its on point, the pump runs and empties the basin down to the off point. Then it waits.</td></tr>
+        <tr><th>The impeller</th><td>A spinning wheel throws water outward into the pump's housing and up the discharge. A pump that takes a toilet has to pass 2-inch solids; a grinder pump chops instead.</td></tr>
+        <tr><th>Check valve</th><td>Without it, the column of water in the discharge falls back into the basin the moment the pump stops, and the pump runs again. A <b>full-open valve</b> goes after the check so the pump can be pulled. Both have to be reachable.</td></tr>
+        <tr><th>Vent &amp; lid</th><td>A sewage basin's lid is gas-tight, so the basin gets its own vent: air has to get in and out as the level rises and falls.</td></tr>
+        <tr><th>Sump pumps</th><td>Same idea for groundwater and footing drains, not sewage. Many makers want a small weep hole in the discharge between the pump and the check valve so trapped air can't air-lock the pump: follow the manual.</td></tr>
+        <tr><th>Runs too often</th><td>A float set with too little range, or a leaking check valve. Sizing a pump and its cycles: <b>Calc → Sizing → Ejector &amp; sump pump</b>.</td></tr>
+        <tr><th>Recirc pumps</th><td>A small <b>circulator</b> doesn't lift water, it just pushes it around a loop so hot is waiting at the tap. Either a dedicated return line back to the heater, or a crossover valve under the farthest sink that sends cooled hot water home through the cold line. More: <b>Service → Hot water → Recirculation</b>.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Code &amp; layout</th><td>What the basin, vent and discharge need: <b>Build → Drains → Sumps &amp; ejectors</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="gas burner how works pilot light thermocouple thermopile millivolt gas valve magnet hot surface igniter flame sensor flame rod rectification lockout draft flue natural draft power vent pressure switch fvir flame arrestor ignition">
+    <div class="sec-head"><h2>How a gas burner stays lit</h2><small>Prove the flame, or no gas</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 220" role="img" aria-label="Gas comes down into a gas valve. A main burner tube and a small pilot tube run out of the valve. The pilot flame heats the tip of a thermocouple, which runs back to the valve. Hot exhaust rises up the flue."><defs><marker id="ar-gb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-rise)"/></marker></defs><g font-size="12.5" fill="var(--d-text)">
+<path d="M60 20V92" stroke="var(--d-fit)" stroke-width="6"/><text x="70" y="32">Gas in</text>
+<rect x="20" y="92" width="84" height="54" rx="6" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><text x="30" y="124">Gas valve</text>
+<path d="M104 112H262" stroke="var(--d-pipe)" stroke-width="7"/><path d="M216 106l6-18 6 18M232 106l6-22 6 22M248 106l6-18 6 18" fill="none" stroke="var(--d-fit)" stroke-width="3"/><text x="214" y="134">Main burner</text>
+<path d="M104 136H176" stroke="var(--d-pipe)" stroke-width="3"/><path d="M178 136l5-14 5 14" fill="none" stroke="var(--d-fit)" stroke-width="3"/><text x="150" y="160">Pilot</text>
+<path d="M190 140Q150 188 104 142" fill="none" stroke="var(--d-tru)" stroke-width="3"/><text x="64" y="196">Thermocouple: the pilot heats its tip,</text><text x="64" y="212">it makes millivolts, the valve stays open</text>
+<rect x="290" y="14" width="34" height="90" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><path d="M307 94V30" stroke="var(--d-rise)" stroke-width="3" marker-end="url(#ar-gb)"/><text x="332" y="50">Hot gas</text><text x="332" y="66">rises:</text><text x="332" y="82">draft</text></g></svg><figcaption>Every gas control works the same way: no proof of flame, no gas.</figcaption></figure>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The one rule</th><td>Gas only flows while the control can <b>prove there's a flame</b>. Lose the proof and the valve shuts. Every system below is just a different way to prove it.</td></tr>
+        <tr><th>Standing pilot</th><td>A small flame burns all the time and heats a <b>thermocouple</b>. Heat makes a few millivolts, just enough to hold a magnet in the gas valve open. Pilot goes out, the tip cools, the magnet lets go, gas off. That's why you hold the knob in for a while when you light it.</td></tr>
+        <tr><th>Thermopile</th><td>A stack of thermocouples makes hundreds of millivolts: enough to run the whole gas valve with no plug-in power. Common on sealed-combustion (FVIR) tanks. Test numbers: <b>Service → Water heaters → Water heater repair: test it</b>.</td></tr>
+        <tr><th>Igniter + flame rod</th><td>Furnaces, boilers and power-vent heaters: a hot surface igniter glows (fragile: don't touch it), the gas opens, and a <b>flame rod</b> sends a tiny current through the flame to prove it lit. No current in a few seconds, it shuts the gas and tries again or locks out. A dirty rod is the classic "lights, then shuts off."</td></tr>
+        <tr><th>Draft</th><td>Hot exhaust is lighter than room air, so it rises up the vent and pulls fresh air in behind it. A natural-draft vent needs rise and a warm flue to pull. A power vent uses a fan, and a <b>pressure switch</b> proves the fan is moving air before the gas opens.</td></tr>
+        <tr><th>FVIR screen</th><td>Newer gas tanks are sealed at the bottom with a flame arrestor so spilled gasoline vapor can't reach the burner. Lint or dust on that screen starves the burner of air.</td></tr>
+        <tr><th><span class="badge why">WHY</span>After you work on one</th><td>Check that it drafts: <b>Jobsite → Safety → Heat, cold, asbestos, spillage</b>. At elevation the air is thinner, so burners are derated: <b>Learn → How it works → Altitude: what changes</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="water main service line curb stop curb box meter shutoff main shut off where water comes from sewer main lateral building drain building sewer septic tank drain field leach field sludge scum city water path whole house">
+    <div class="sec-head"><h2>From the main to the sewer</h2><small>The whole path through a house</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 215" role="img" aria-label="Top: water comes from the city main at the street, through the curb stop and meter, into the house through the main shutoff and PRV to the heater and fixtures. Bottom: drains leave the house as the building drain, pass a cleanout outside the foundation, and run as the building sewer to the city sewer or a septic tank."><defs><marker id="ar-ms" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="16" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><g font-size="12" fill="var(--d-text)">
+<text x="10" y="16" font-weight="700">STREET</text><text x="330" y="16" font-weight="700">HOUSE</text>
+<path d="M200 22V200" stroke="var(--d-dim)" stroke-width="2" stroke-dasharray="6 5"/><text x="206" y="210">Foundation</text>
+<path d="M10 52H360" stroke="var(--d-cut)" stroke-width="6" marker-end="url(#ar-ms)"/><text x="10" y="40">City main</text>
+<circle cx="80" cy="52" r="8" fill="var(--d-bg)" stroke="var(--d-tru)" stroke-width="3"/><text x="58" y="80">Curb stop</text>
+<rect x="128" y="42" width="30" height="20" rx="3" fill="var(--d-fit)"/><text x="126" y="80">Meter</text>
+<circle cx="230" cy="52" r="8" fill="var(--d-bg)" stroke="var(--d-tru)" stroke-width="3"/><text x="212" y="80">Shutoff</text>
+<rect x="268" y="42" width="24" height="20" rx="3" fill="var(--d-tru)"/><text x="268" y="80">PRV</text><text x="300" y="80">to heater,</text><text x="300" y="94">fixtures</text>
+<path d="M390 150H24" stroke="var(--d-pipe)" stroke-width="8" marker-end="url(#ar-ms)"/>
+<path d="M170 150V118" stroke="var(--d-pipe)" stroke-width="5"/><rect x="162" y="110" width="16" height="8" fill="var(--d-fit)"/><text x="120" y="104">Cleanout</text>
+<text x="240" y="138">Building drain</text><text x="40" y="138">Building sewer</text><text x="10" y="178">City sewer main</text><text x="10" y="194">or a septic tank</text></g></svg><figcaption>Water comes in under pressure; drains leave by gravity.</figcaption></figure>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The main</th><td>The city's pipe under the street, kept pressurized by tanks up the hill and pumps. Low parts of a Utah valley sit far below their tanks, which is why so many houses get a PRV.</td></tr>
+        <tr><th>Curb stop</th><td>A valve on the service line near the property line, down in a curb box, turned with a long curb key. It's usually the water department's to operate: ask before you turn it.</td></tr>
+        <tr><th>Meter</th><td>In a pit near the street or inside the house, depending on the city. After it, the pipe is the owner's.</td></tr>
+        <tr><th>In the house</th><td>Main shutoff, then the PRV and expansion tank if there is one, then a branch to the water heater and the rest to the fixtures. Learn where the shutoff is on day one of a job.</td></tr>
+        <tr><th>The way out</th><td>Fixture → trap → branch → stack → <b>building drain</b> (inside, out to about 30 inches past the foundation) → <b>building sewer</b> → the city sewer main. Who owns the lateral out to the main depends on the city. Cleanouts give access along the way.</td></tr>
+        <tr><th>Septic</th><td>No city sewer: a tank holds the water long enough for solids to sink (sludge) and grease to float (scum). The clearer middle flows to a drain field, where the soil finishes the job. Bacteria do the work, so no grease, wipes or dumping chemicals. Utah systems are permitted by the local health department.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Digging</th><td>Call 811 before you dig for a sewer or service line. Numbers: <b>Contacts → Call</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="why pipes sweat sweating condensation dew point cold water line drip humid summer basement toilet tank sweat anti-sweat tempering valve insulation closed cell vapor barrier mistaken for leak">
+    <div class="sec-head"><h2>Why pipes sweat</h2><small>It's not a leak (yet)</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 160" role="img" aria-label="Warm damp air moves toward a cold water pipe. Drops of water form on the outside of the pipe and drip off."><g font-size="13" fill="var(--d-text)">
+<path d="M40 30q10-8 20 0t20 0t20 0M150 30q10-8 20 0t20 0t20 0M260 30q10-8 20 0t20 0t20 0" fill="none" stroke="var(--d-rise)" stroke-width="3"/><text x="20" y="16">Warm, damp air</text>
+<path d="M20 76H380" stroke="var(--d-cut)" stroke-width="16"/>
+<path d="M90 90q-5 9 0 13q5-4 0-13M150 90q-5 9 0 13q5-4 0-13M210 90q-5 9 0 13q5-4 0-13M270 90q-5 9 0 13q5-4 0-13M330 90q-5 9 0 13q5-4 0-13M150 116q-5 9 0 13q5-4 0-13M270 120q-5 9 0 13q5-4 0-13" fill="var(--d-cut)"/>
+<text x="20" y="152">Pipe colder than the air's dew point: water comes out of the air.</text></g></svg><figcaption>The water was in the air. The pipe just cooled it out.</figcaption></figure>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The physics</th><td>Air holds water vapor, and warmer air holds more. Cool air down to its <b>dew point</b> and it can't hold it all: the extra turns to liquid on whatever is cold. A cold water line in a humid room is that cold thing.</td></tr>
+        <tr><th>When</th><td>Summer, humid basements and crawlspaces, cold well water, a toilet tank that refills with cold water every flush. In winter, the same thing happens inside cold attics and on vent pipes as frost.</td></tr>
+        <tr><th>Sweat or leak?</th><td>Dry the pipe, wrap a piece of toilet paper around it, and watch. Sweat wets the whole length evenly; a leak starts at one spot, usually a joint or fitting.</td></tr>
+        <tr><th>The fix</th><td>Insulate the cold line with closed-cell foam and seal the seams and ends, so damp air can't reach the pipe. Lower the room's humidity. For a sweating toilet: an insulated tank liner, or a tempering (anti-sweat) valve that mixes a little hot into the tank fill.</td></tr>
+        <tr><th><span class="badge why">WHY</span>It matters</th><td>Constant drips rot subfloor and grow mold, and the stain gets blamed on the last plumber. Freeze-side of the same idea: <b>Learn → How it works → Freeze protection</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="how joints seal solvent weld cement primer abs pvc solder capillary flux tinning threads npt tapered dope tape pex expansion f1960 crimp cinch ring press o-ring push fit sharkbite compression ferrule no-hub band fernco gasket">
+    <div class="sec-head"><h2>How joints seal</h2><small>What actually holds the water in</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Solvent weld<br>(ABS, PVC)</th><td>Cement isn't glue. It dissolves the surface of the pipe and the hub, the two soften and run together, and as the solvent leaves they harden into <b>one piece of plastic</b>. That's why the pipe has to go in full depth with a quarter turn right away, and why it needs cure time before a test. ABS takes ABS cement; PVC is for flue work here, with primer where it's required.</td></tr>
+        <tr><th>Solder (copper)</th><td>Flux cleans the copper and keeps oxide off while it heats. Heat the fitting, not the solder: when it's hot enough, <b>capillary action</b> pulls the melted solder into the thin gap, toward the heat. Lead-free solder on anything that carries drinking water: <b>Build → Materials → Copper &amp; solder</b>.</td></tr>
+        <tr><th>Threads</th><td>Pipe threads are tapered, so they wedge tighter as they go in. The metal does the holding; tape or dope fills the little spiral path a leak would follow.</td></tr>
+        <tr><th>PEX expansion</th><td>PEX-A remembers its shape. Stretch the pipe and a ring with the expander, slide it over the fitting, and it shrinks back down hard. Cold slows the shrink.</td></tr>
+        <tr><th>PEX crimp &amp; cinch</th><td>A copper or stainless ring squeezes the pipe onto the fitting's barbs. A go/no-go gauge tells you it's squeezed enough.</td></tr>
+        <tr><th>Press &amp; push</th><td>An <b>O-ring</b> does the sealing in both. A press fitting gets crushed onto the pipe by the tool so it can't pull out; a push fitting grips with stainless teeth. Both need the pipe square, deburred and in to the depth mark.</td></tr>
+        <tr><th>Compression</th><td>The nut drives a brass ferrule into the pipe and the fitting's seat. Common on stops and supplies.</td></tr>
+        <tr><th>Bands (no-hub)</th><td>A rubber gasket squeezed onto both pipes by steel clamps. Torque to the band's marking.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Every joint</th><td>Clean, square cut, deburred, full depth. Most leaks are one of those four. More: <b>Build → Materials → Joint tricks</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="valve types ball valve gate valve globe valve stop check valve swing spring butterfly quarter turn multi turn full port throttle flow arrow which valve">
+    <div class="sec-head"><h2>Valve types</h2><small>Ball, gate, globe, check</small></div>
+    <figure class="cut"><svg viewBox="0 0 400 170" role="img" aria-label="Four small cutaways side by side. Ball: a drilled ball that turns a quarter turn. Gate: a wedge that slides up and down across the pipe. Globe: a disc that presses down onto a seat. Check: a flapper that swings open one way only."><defs><marker id="ar-vt" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-cut)"/></marker></defs><g font-size="12.5" fill="var(--d-text)" text-anchor="middle">
+<g><path d="M6 76H94M6 104H94" stroke="var(--d-pipe)" stroke-width="3"/><circle cx="50" cy="90" r="20" fill="var(--d-bg)" stroke="var(--d-fit)" stroke-width="3"/><rect x="30" y="83" width="40" height="14" fill="var(--d-cut)"/><path d="M50 70V40M32 40H68" stroke="var(--d-tru)" stroke-width="5"/><text x="50" y="140" font-weight="700">Ball</text><text x="50" y="158">¼ turn</text></g>
+<g><path d="M106 76H194M106 104H194" stroke="var(--d-pipe)" stroke-width="3"/><rect x="142" y="46" width="16" height="40" fill="var(--d-fit)"/><path d="M150 46V20" stroke="var(--d-tru)" stroke-width="4"/><path d="M140 28l10-10 10 10" fill="none" stroke="var(--d-tru)" stroke-width="3"/><text x="150" y="140" font-weight="700">Gate</text><text x="150" y="158">Wedge slides</text></g>
+<g><path d="M206 76H294M206 104H294" stroke="var(--d-pipe)" stroke-width="3"/><path d="M236 104V90H264V76" fill="none" stroke="var(--d-pipe)" stroke-width="3"/><rect x="240" y="80" width="22" height="8" fill="var(--d-fit)"/><path d="M251 80V30" stroke="var(--d-tru)" stroke-width="4"/><text x="250" y="140" font-weight="700">Globe / stop</text><text x="250" y="158">Disc on a seat</text></g>
+<g><path d="M306 76H394M306 104H394" stroke="var(--d-pipe)" stroke-width="3"/><circle cx="342" cy="80" r="3" fill="var(--d-text)"/><path d="M342 80L362 100" stroke="var(--d-fit)" stroke-width="4"/><path d="M320 60H380" stroke="var(--d-cut)" stroke-width="2.5" marker-end="url(#ar-vt)"/><text x="350" y="140" font-weight="700">Check</text><text x="350" y="158">One way only</text></g></g></svg><figcaption>Pick the valve for the job: shut off, throttle, or stop backflow.</figcaption></figure>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Ball</th><td>A ball with a hole through it turns a quarter turn: hole in line, water flows; hole across, it's shut. Fast, tough, the go-to shutoff. <b>Full port</b> means the hole is the pipe's size, so it doesn't choke flow.</td></tr>
+        <tr><th>Gate</th><td>A wedge slides down across the pipe. Wide open it doesn't restrict anything, but it's for all-open or all-shut only. Old ones stick, or the wedge breaks off the stem and the valve never really closes.</td></tr>
+        <tr><th>Globe &amp; stops</th><td>A disc presses down onto a seat and the water turns a corner inside. Good for throttling; the washer is what wears. Flow goes the way the arrow points, up under the seat. Old multi-turn angle stops work like this.</td></tr>
+        <tr><th>Check</th><td>Lets water go one way. <b>Swing</b>: a flapper on a hinge, meant for horizontal runs. <b>Spring</b>: a spring-loaded disc, works in any position. Follow the arrow.</td></tr>
+        <tr><th>Butterfly</th><td>A disc on a shaft turns across the pipe. Mostly big commercial lines.</td></tr>
+        <tr><th>Quarter vs multi-turn</th><td>Quarter-turn stops shut fast and don't seize as often. A multi-turn stop that hasn't moved in years may leak at the stem when you turn it: have a plan before you touch it.</td></tr>
+        <tr><th><span class="badge why">WHY</span>On drinking water</th><td>Valves on potable lines are marked lead-free. Stops and supplies: <b>Trim → Valves &amp; trim → Stops, supplies &amp; aerators</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="how" data-kw="faucet how works compression washer seat cartridge ball type delta ceramic disc aerator flushometer flush valve diaphragm bypass relief valve runs on short flush commercial toilet urinal sloan">
+    <div class="sec-head"><h2>Faucets &amp; flush valves</h2><small>What's inside, and why they drip</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Compression</th><td>The old two-handle kind. Turning the handle screws a rubber washer down onto a brass seat. Drips mean a worn washer, or a seat chewed up by water running past it.</td></tr>
+        <tr><th>Cartridge</th><td>A sleeve with holes in it. Turning or lifting the handle lines the holes up with the hot and cold ports. Drip or stiff handle: replace the cartridge (match it by brand and number).</td></tr>
+        <tr><th>Ball</th><td>A slotted ball rolls over two rubber seats pushed up by springs. Leaks at the spout mean seats and springs; the ball itself rarely wears out.</td></tr>
+        <tr><th>Ceramic disc</th><td>Two polished ceramic discs slide over each other; when their holes line up, water flows. Almost drip-proof, but grit scratches them: flush the lines before you set one after line work.</td></tr>
+        <tr><th>Aerator</th><td>The screen at the spout mixes air in and limits the flow; the gpm is printed on it. Low flow right after a repair is usually debris caught here.</td></tr>
+        <tr><th>Flushometer</th><td>The commercial toilet and urinal valve with no tank. A rubber <b>diaphragm</b> holds it shut because the same pressure sits above it and below it, and the top side has more area. Push the handle: a little relief valve dumps the top chamber, the diaphragm lifts, and the bowl gets a big rush. A tiny <b>bypass</b> hole refills the top chamber and closes it again.</td></tr>
+        <tr><th>Flush valve trouble</th><td>Runs and won't stop: the bypass is plugged or the relief valve is stuck. Short, weak flush: the wrong or worn diaphragm, or a bypass that's too big. Kits are matched to the valve's brand and gallons per flush.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Same idea, different box</th><td>A tank toilet runs on a siphon instead: <b>Learn → How it works → How a toilet flushes</b>. Fixing them: <b>Service → Troubleshoot → Toilet problems</b>.</td></tr>
+      </tbody></table></div>
+  </section>
   <section data-sec="how" data-kw="why math works 1.414 square diagonal sin tan travel run rolling offset two triangles take-off sweep radius bending gain area diameter squared friction mixing 0.4085 velocity">
     <div class="sec-head"><h2>Why the pipe math works</h2><small>The aha behind the multipliers</small></div>
     <div class="x"><table class="t">
