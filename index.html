@@ -4440,6 +4440,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 15, 2026</th><td><b>Sturdier My jobs:</b> damaged saved data is repaired instead of blanking the page (and if anything still breaks, a button downloads your jobs so they're safe); a save that fails because the phone's space is full now tells you, and the job list shows how full it's getting; restoring a backup asks first and says how many jobs it has; person and builder pages open faster with lots of jobs; <code>[[ ]]</code> with nothing in it stays plain text. <b>Bottom bar fixed:</b> the home-screen app no longer draws under the status bar, which is what made iOS float the bar after typing (re-add the app to the Home Screen to get it).</td></tr>
         <tr><th>Nov 14, 2026</th><td><b>Bottom bar, the real fix (we hope):</b> the home-screen app no longer draws under the clock and battery strip. That mode is what iOS got wrong after the keyboard, leaving the app 59 points short. If it ever still comes back short, the bar drops its home-indicator padding so it sits snug. <b>Bottom bar:</b> no longer slides into the strip iOS leaves undrawn after the keyboard (that cut it off); instead the app asks iOS to re-measure, and Screen check logs each try. <b>My city is gone:</b> nothing saves a city now. Home drops the city box, first-time setup drops the city step, and the city details moved to <b>Inspect → Cities → Look up a city</b> (any town, nothing saved). <b>Sturdier notes:</b> indented lists nest, numbered lists keep their number, back-to-back quote lines join, <code>```</code> blocks show text exactly as typed, <code>[[Dave|the inspector]]</code> shows your own words, a backslash shows a mark as-is, and web links don't swallow the period after them. <b>Fewer stages by default:</b> every job has Underground, Top-out and Finish. Gas, Final and Warranty are extras: tap <b>+ Gas</b> (or Final, Warranty) under the timeline to add one, and <b>Remove stage</b> to take it off. Older jobs keep any extra that has something in it. <b>Bottom bar, again:</b> after the keyboard, iOS can leave the app drawn shorter than the screen. The app now checks once a second and stretches back to the real bottom, and Settings → Screen check keeps the last readings so a floating bar can be tracked down. <b>Builders and subdivisions have pages,</b> like people: a builder's office phone, website, their people and subdivisions; a subdivision's city, builder, gate code and water/sewer tie-in; notes and every job on each. Jobs pick a builder and subdivision (a subdivision fills in its city and builder), the customer is its own box, and the job list is grouped by builder. <code>[[Ivory Homes]]</code> links to the page. Older jobs: what was in "Builder / customer" became a builder page. <b>Job page polish:</b> the timeline line no longer runs through the open stage, date boxes stay inside the card, a skipped stage isn't dimmed while open, the four status buttons sit in one row, and the notes toolbar is one swipeable row. <b>The bottom bar, rebuilt:</b> in the home-screen app the page itself no longer scrolls; the book scrolls inside it and the bar sits below, so the keyboard and pop-ups can't push the bar up. <b>Jobs have a name</b> separate from the address: the name shows in lists, the address feeds Directions, and <code>[[links]]</code> match either one. <b>Faster:</b> switching tabs is 2 to 10 times quicker on long pages (cards off the screen aren't drawn until you scroll to them), and on weak signal the app opens from its saved copy after 2 seconds instead of 4. <b>Your own checklists:</b> tap <b>Edit list</b> on a stage's checklist to remove items (the book's too) and add your own, then <b>Use this list on new jobs</b> to make it your starting list for that stage. <b>Back to the book's list</b> undoes it. <b>A job's city is its own:</b> new jobs start with no city instead of My city, the city only feeds Directions, and jobs no longer show the city's inspection booking (that stays in Inspect → Cities). <b>Each job is a timeline now:</b> Underground → Top-out (rough-in) → Gas → Finish (trim) → Final → Warranty, with the blanks ready. Tap a stage to fill it in: To do / Doing / Done / Skip, dates, who led it, a checklist that starts from the book's "Before you call it in" list, inspections, hours, notes and photos. Mark a stage Done and the next one opens. <b>People:</b> set the job's Lead and Superintendent; everyone gets a page with phone (Call / Text), company, notes and every job they're on, and <code>[[Dave]]</code> in a note links to it. <b>Directions</b> opens the address in Maps. The bottom bar no longer floats when you add something while the keyboard is up. <b>Job notes are a dated log now:</b> add as many notes to a job as you like, each with its date, newest first, and tap ✎ to change one. Write them with quick marks: <code>- [ ]</code> a checkbox (the job shows how many are open), <code>!!</code> a red heads-up, <code>#</code> headings, <code>**bold**</code>, <code>#tag</code> (tap to see every job with it), and <code>[[Lot 14]]</code> to link another job or a card in the book. Buttons above the box put them in for you, and phone numbers in notes are tappable. Old notes moved into the log. The bottom bar re-seats after the delete pop-up, the date wheel and the photo picker. <b>My jobs (Mine → Jobs):</b> each job keeps its address, builder or customer, city (with how to book its inspections), phase and status; its inspections (booked, pass, partial, fail) with the inspector and corrections; hours with today, this week, last week and a running count toward your license hours; a punch and materials list you check off; and photos (a note on each) and files like PDF plans. <b>MY JOBS</b> on Home shows your open jobs. Jobs go in Settings → Download backup; photos and files are too big for it and have their own backup at the bottom of the Jobs page.</td></tr>
         <tr><th>Nov 13, 2026</th><td><b>Find a city by typing:</b> the city menus (Contacts → Call → My city, and first-time setup) have a search box, so you don't scroll 259 names. <b>Every Utah city and town</b> is in the city picker now (259 places). The 227 new ones show their elevation. 24 of them (the rest of Utah County and the biggest cities nearby) also have how to book inspections and, where found, secondary water; the others say "not checked yet". <b>New home-screen icon:</b> bright lime on black, so it stays easy to see when the phone is in dark mode. An iPhone keeps the old picture until you delete the Handbook from the home screen and add it again (Safari → Share → Add to Home Screen). Your saved pins and notes stay. The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install. <b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
         <tr><th>Nov 12, 2026</th><td><b>Share the book</b> (Settings) shows its QR code with no signal now: the code is stored in the book instead of being fetched. <b>Bottom bar:</b> eight tables had started scrolling up and down a few pixels inside their own boxes, which can tug the iPhone bar loose: fixed. After the "Allow location" prompt the book now re-seats the bar. <b>Weather:</b> the first forecast shows in a few seconds even when the main service is slow, and picking a new place no longer blanks the card. A book left in the background over 6 hours reloads when you come back, so it picks up updates. <b>Weather fixed:</b> when the main forecast service doesn't answer, the card now switches to the National Weather Service forecast instead of sitting on "Loading". Every weather request gives up after 12 seconds and tries again. <b>New:</b> a weather button in the top corner shows the sky right now and the temperature; tap it for Jobsite → Weather. Turn it off in <b>Settings → Behavior → Weather in the header</b>. <b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them. <b>Water treatment</b> (Service → Treatment) grew: <b>Where treatment goes</b> (order in the line, hard water for hose bibbs, the softener loop rough-in), <b>Softener trouble</b> (no soft water, salt bridge, resin in the lines, low pressure), <b>How RO works</b>, <b>Treatment code</b> (the IPC and IRC sections for softeners and RO) and <b>Treatment brands</b>. <b>Contacts → Tech lines → Water treatment</b> has 14 makers' phone lines.</td></tr>
@@ -6315,6 +6316,9 @@ $("bk-file").addEventListener("change", async () => {
   const f = $("bk-file").files[0]; if (!f) return;
   try { const j = JSON.parse(await f.text()); const d = j && j.data; if (!d || typeof d !== "object") throw 0;
     const keys = Object.keys(d).filter(k => k.startsWith("jpb-") && typeof d[k] === "string"); if (!keys.length) throw 0;
+    let n = 0; try { n = JSON.parse(d["jpb-jobs"] || "{}").jobs.length || 0; } catch(e){}
+    const when = j.saved ? new Date(j.saved).toLocaleDateString(undefined, {month: "short", day: "numeric", year: "numeric"}) : "an unknown date";
+    if (!confirm(`Replace everything on this phone with the backup from ${when}? It has ${n} job${n === 1 ? "" : "s"}. Anything added since then will be gone.`)){ $("bk-file").value = ""; if (window.navReseat) navReseat(); return; }
     keys.forEach(k => localStorage.setItem(k, d[k])); bkSay(`Restored ${keys.length} items. Reloading…`, "good"); setTimeout(() => location.reload(), 900);
   } catch(e){ bkSay("That file isn't a Handbook backup.", "err"); }
   $("bk-file").value = "";
@@ -8578,7 +8582,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-14m";
+{ const NEWS = "2026-11-15";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -9565,7 +9569,9 @@ window.wxRender = WX.render;
    linked from jobs and from notes with [[Name]]. Jobs and people live in jpb-jobs (in Settings → Download backup); photos
    and files live in IndexedDB "jpb-files" with their own zip backup. Own script block, all inside try. */
 try {
-const jbD = (x => x && Array.isArray(x.jobs) ? x : {jobs: [], goal: 8000, before: 0})(store.get("jpb-jobs", null));
+const jbD = (x => { if (x && typeof x === "object" && Array.isArray(x.jobs)) return x;
+  try { const raw = localStorage.getItem("jpb-jobs"); if (raw && raw !== "null") localStorage.setItem("jpb-jobs-unreadable", raw); } catch(e){}   /* never overwrite what we couldn't read */
+  return {jobs: [], goal: 8000, before: 0}; })(store.get("jpb-jobs", null));
 if (!Array.isArray(jbD.people)) jbD.people = []; if (!Array.isArray(jbD.builders)) jbD.builders = []; if (!Array.isArray(jbD.subs)) jbD.subs = [];
 const JB = {open: null, person: null, view: "jobs", show: "open", tag: null, edit: null, stage: null, back: null, ckEdit: false, ent: null, hist: []}, JF = {n: 0, cur: null, url: null};
 const JB_STG = [["under", "Underground"], ["rough", "Top-out (rough-in)"], ["gas", "Gas"], ["trim", "Finish (trim)"], ["final", "Final"], ["warr", "Warranty"]];
@@ -9583,7 +9589,12 @@ const JB_ROLES = ["Lead", "Superintendent", "Builder / GC", "Homeowner", "Inspec
 const JB_RES = {booked: "Booked", pass: "Pass", partial: "Partial", fail: "Fail"};
 const JB_ST = {open: "Open", hold: "On hold", done: "Done"};
 let jbT, jfNT;
-const jbSave = () => { clearTimeout(jbT); store.set("jpb-jobs", jbD); IDX = null; try { homeDraw(); } catch(e){} };
+let jbFull = false;
+const jbSave = () => { clearTimeout(jbT); JB_IX = null; let ok = true;
+  try { localStorage.setItem("jpb-jobs", JSON.stringify(jbD)); } catch(e){ ok = false; }
+  if (!ok && !jbFull) toast("<b>Jobs didn't save:</b> this phone's space for them is full. Download a backup, then delete finished jobs.", 9000);
+  jbFull = !ok; IDX = null; try { homeDraw(); } catch(e){} };
+const jbBytes = () => { try { return (localStorage.getItem("jpb-jobs") || "").length; } catch(e){ return 0; } };
 const jbId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const jbDay = (n = new Date()) => new Date(n - n.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
 const jbWk = s => { const x = new Date(s + "T12:00:00"); x.setDate(x.getDate() - (x.getDay() + 6) % 7); return jbDay(x); };   /* weeks start Monday */
@@ -9610,8 +9621,9 @@ const pName = id => (pById(id) || {}).n || "";
 function pGet(name, role){ const n = String(name).trim(); if (!n) return null; let p = pByName(n);
   if (!p){ p = {id: jbId(), n, role: role || "Other", co: "", ph: "", em: "", log: [], draft: "", t: Date.now()}; jbD.people.push(p); } return p; }
 const pTel = p => (p.ph || "").replace(/[^\d+]/g, "");
-const pJobs = p => { const L = "[[" + p.n.trim().toLowerCase() + "]]";
-  return jbD.jobs.filter(j => j.lead === p.id || j.sup === p.id || j.ppl.some(x => x.p === p.id) || JB_STG.some(([k]) => j.stages[k].lead === p.id) || j.log.some(e => e.b.toLowerCase().includes(L))); };
+let JB_IX = null;   /* per screen: each job's people and its notes' text, so person and builder pages don't rescan every note */
+const jbIx = () => JB_IX || (JB_IX = jbD.jobs.map(j => ({j, ids: new Set([j.lead, j.sup, ...j.ppl.map(x => x.p), ...JB_STG.map(([k]) => (j.stages[k] || {}).lead)].filter(Boolean)), txt: j.log.map(e => e.b).join("\n").toLowerCase()})));
+const jbMentions = (x, n) => { const L = "[[" + n.trim().toLowerCase(); return !!n.trim() && (x.txt.includes(L + "]]") || x.txt.includes(L + "|")); };
 
 /* builders and subdivisions: saved once, picked on any job, each with a page (fields, notes, every job) */
 const ENT = {
@@ -9623,7 +9635,8 @@ const eByName = (t, n) => { const q = String(n).trim().toLowerCase(); return q ?
 const eName = (t, id) => (eById(t, id) || {}).n || "";
 function eGet(t, name){ const n = String(name).trim(); if (!n) return null; let x = eByName(t, n);
   if (!x){ x = {id: jbId(), n, log: [], draft: "", t: Date.now()}; ENT[t].fields.forEach(([k]) => { x[k] = ""; }); eList(t).push(x); } return x; }
-const eJobs = (t, x) => { const L = "[[" + x.n.trim().toLowerCase() + "]]"; return jbD.jobs.filter(j => j[t] === x.id || j.log.some(e => e.b.toLowerCase().includes(L))); };
+const eJobs = (t, x) => jbIx().filter(r => r.j[t] === x.id || jbMentions(r, x.n)).map(r => r.j);
+const pJobs = p => jbIx().filter(r => r.ids.has(p.id) || jbMentions(r, p.n)).map(r => r.j);
 const eCur = () => JB.ent && eById(JB.ent.t, JB.ent.id);
 /* jobs from earlier builds: notes into the log, phase into stages */
 function jbFix(j){
@@ -9642,6 +9655,28 @@ function jbFix(j){
     delete j.ph;
   }
 }
+/* saved data is checked and repaired before use, so one damaged record can't take down the job tracker */
+function jbClean(){
+  const isO = x => !!x && typeof x === "object" && !Array.isArray(x), arrO = a => Array.isArray(a) ? a.filter(isO) : [];
+  const str = x => typeof x === "string" ? x : x == null ? "" : String(x);
+  jbD.jobs = arrO(jbD.jobs);
+  ["people", "builders", "subs"].forEach(k => { jbD[k] = arrO(jbD[k]); jbD[k].forEach(x => { x.id = str(x.id) || jbId(); x.n = str(x.n); }); });
+  jbD.jobs.forEach(j => {
+    j.id = str(j.id) || jbId(); ["name", "a", "who", "city", "draft"].forEach(k => { j[k] = str(j[k]); });
+    if (!Array.isArray(j.log)){ j.log = str(j.note).trim() ? [{id: jbId(), d: jbDay(new Date(+j.t || Date.now())), at: +j.t || Date.now(), b: str(j.note)}] : []; delete j.note; }
+    ["log", "insp", "hrs", "punch", "ppl"].forEach(k => { j[k] = arrO(j[k]); j[k].forEach(x => { x.id = str(x.id) || jbId(); }); });
+    j.log.forEach(e => { e.b = str(e.b); e.d = str(e.d) || jbDay(); if (typeof e.at !== "number") e.at = 0; });
+    j.hrs = j.hrs.filter(h => +h.h > 0 && +h.h <= 24); j.hrs.forEach(h => { h.h = +h.h; h.d = str(h.d) || jbDay(); h.n = str(h.n); });
+    j.insp.forEach(i => { i.d = str(i.d); if (!JB_RES[i.r]) i.r = "booked"; ["who", "n", "k"].forEach(k => { i[k] = str(i[k]); }); });
+    j.punch.forEach(x => { x.t = str(x.t); x.done = !!x.done; });
+    if (!JB_ST[j.st]) j.st = "open";
+    if (j.stages != null && !isO(j.stages)) j.stages = null;   /* jbFix builds it fresh */
+    if (j.stages) JB_STG.forEach(([k]) => { const S = j.stages[k] = Object.assign({st: "todo", d0: "", d1: "", lead: "", done: [], extra: []}, isO(j.stages[k]) ? j.stages[k] : {});
+      if (!JB_SST[S.st]) S.st = "todo"; S.done = Array.isArray(S.done) ? S.done.map(str) : []; S.extra = arrO(S.extra); if (S.hide && !Array.isArray(S.hide)) S.hide = []; });
+    if (j.xs && !Array.isArray(j.xs)) delete j.xs;
+  });
+}
+jbClean();
 jbD.jobs.forEach(jbFix);
 jbD.jobs.forEach(j => { if (!Array.isArray(j.xs)) j.xs = JB_XTRA.filter(k => { const s = j.stages[k];   /* older jobs keep an extra that has anything in it */
   return s.st === "done" || s.st === "doing" || s.d0 || s.d1 || s.lead || s.done.length || s.extra.length || j.insp.some(i => i.s === k) || j.hrs.some(h => h.s === k) || j.log.some(e => e.s === k); }); });
@@ -9664,7 +9699,7 @@ function jnInline(s){
   const keep = [], hold = h => "\u0001" + (keep.push(h) - 1) + "\u0002";
   s = s.replace(/`([^`]+)`/g, (m, x) => hold(`<code>${esc(x)}</code>`)).replace(/\\([\\`*_=~#\[\]!>-])/g, (m, x) => hold(esc(x)));
   s = esc(s)
-    .replace(/\[\[([^\]|]+?)(?:\|([^\]]+))?\]\]/g, (m, x, label) => hold(`<button type="button" class="jn-link" data-wl="${x.trim()}">${(label || x).trim()}</button>`))
+    .replace(/\[\[([^\]|]+?)(?:\|([^\]]+))?\]\]/g, (m, x, label) => !x.trim() ? m : hold(`<button type="button" class="jn-link" data-wl="${x.trim()}">${(label || x).trim()}</button>`))
     .replace(/\*\*(?=\S)(.+?)\*\*/g, "<b>$1</b>").replace(/(^|[^*\w])\*(?=[^*\s])([^*]*?[^*\s])\*(?!\w)/g, "$1<i>$2</i>")
     .replace(/==(?=\S)(.+?)==/g, "<mark>$1</mark>").replace(/~~(?=\S)(.+?)~~/g, "<s>$1</s>")
     .replace(/\bhttps?:\/\/[^\s<]+?(?=[.,;:!?)]*(?:\s|$|<))/g, u => hold(`<a href="${u}" target="_blank" rel="noopener">${u}</a>`))
@@ -9789,6 +9824,7 @@ function jbListHtml(){
     <div class="calc"><label for="jb-goal">Goal<select id="jb-goal"><option value="6000">Residential journeyman · 6,000 hr</option><option value="8000">Journeyman · 8,000 hr</option></select></label>
     <label for="jb-before">Hours before this app<input id="jb-before" type="number" inputmode="decimal" min="0" step="any" value="${+jbD.before || ""}" placeholder="0"></label></div>
     <p class="note">Your own count, so you can see where you stand. DOPL goes by the hours your sponsor reports, so keep those records too. The goals are the on-the-job hours in Learn → License → Path to a license.</p></div></details>
+  ${jbBytes() > 15e5 ? `<div class="jb-in"><p class="note${jbBytes() > 35e5 ? " flag" : ""}">Jobs use about ${(jbBytes() / 1e6).toFixed(1)} MB of the roughly 5 MB this phone gives them. Download a backup and delete finished jobs before it fills: past that, new entries won't save.</p></div>` : ""}
   <p class="card-h">Photos &amp; files backup</p>
   <div class="jb-in"><p class="note" id="jf-use">Photos and files stay on this phone. They're too big for Settings → Download backup, so save them here now and then.</p>
   <div class="set-btns"><button type="button" class="btn ghost" data-a="jf-save">Download photos &amp; files</button><label class="btn ghost">Restore photos &amp; files<input type="file" id="jf-restore" accept=".zip,application/zip" hidden></label></div>
@@ -9903,12 +9939,15 @@ function jbPersonHtml(p){
   </div>
   ${tel ? `<div class="jb-in"><div class="set-btns"><a class="btn" href="tel:${tel}">Call</a><a class="btn ghost" href="sms:${tel}">Text</a></div></div>` : ""}
   <p class="card-h">Jobs · ${jobs.length}</p>
-  <div class="jb-list">${jobs.map(j => jbRow(j)).join("") || `<p class="note">Not on a job yet. Add them as a lead, super or someone else on a job, or write [[${esc(p.n || "their name")}]] in a job's notes.</p>`}</div>
+  <div class="jb-list">${jbFew(jobs) || `<p class="note">Not on a job yet. Add them as a lead, super or someone else on a job, or write [[${esc(p.n || "their name")}]] in a job's notes.</p>`}</div>
   <p class="card-h">Notes</p>
   ${jnBlock(p, p.log, "How they like things done. - [ ] send them the test photos")}
   <div class="set-btns jb-end"><button type="button" class="del" data-a="p-del">Delete this person</button></div>`;
 }
 
+/* a page that lists jobs shows the 15 most recent; "Show all" for the rest (a lead can be on hundreds) */
+const jbFew = jobs => { const L = jobs.slice().sort((a, b) => b.t - a.t), more = L.length - 15;
+  return (JB.allJobs ? L : L.slice(0, 15)).map(j => jbRow(j)).join("") + (!JB.allJobs && more > 0 ? `<button type="button" class="btn ghost" data-a="all-jobs">Show all ${L.length} jobs</button>` : ""); };
 function jbEntHtml(t, x){
   const C = ENT[t], jobs = eJobs(t, x), tel = (x.ph || "").replace(/[^\d+]/g, ""), web = (x.web || "").trim();
   const fld = ([k, label, type, ph]) => type === "city" ? `<label for="ef-city">${label}<select id="ef-city" data-ef="city">${CITY_OPTS}</select></label>`
@@ -9921,12 +9960,13 @@ function jbEntHtml(t, x){
   ${t === "bld" ? `<p class="card-h">People · ${ppl.length}</p><div class="jb-list">${ppl.map(pRow).join("") || `<p class="note">Their supers and office people show up here: set a person's company to ${esc(x.n || "this builder")}, or make someone the super on one of their jobs.</p>`}</div>
   <p class="card-h">Subdivisions · ${subs.length}</p><div class="jb-list">${subs.map(s => eRow("sub", s)).join("") || `<p class="note">None yet. Pick this builder on a subdivision's page.</p>`}</div>` : ""}
   <p class="card-h">Jobs · ${jobs.length}</p>
-  <div class="jb-list">${jobs.map(j => jbRow(j)).join("") || `<p class="note">No jobs yet. Pick ${esc(x.n || `this ${C.one}`)} on a job, or write [[${esc(x.n || "its name")}]] in a job's notes.</p>`}</div>
+  <div class="jb-list">${jbFew(jobs) || `<p class="note">No jobs yet. Pick ${esc(x.n || `this ${C.one}`)} on a job, or write [[${esc(x.n || "its name")}]] in a job's notes.</p>`}</div>
   <p class="card-h">Notes</p>
   ${jnBlock(x, x.log, t === "bld" ? "How they want things done. Who pays. - [ ] get the new super's number" : "Where the meters are, HOA rules, which lots are left")}
   <div class="set-btns jb-end"><button type="button" class="del" data-a="e-del">Delete this ${C.one}</button></div>`;
 }
 function jbDraw(){
+  JB_IX = null;
   const body = $("jb-body"), ae = document.activeElement, had = !!ae && ae !== document.body && body.contains(ae);
   if (had) ae.blur();   /* a box removed while the keyboard is up never says so, and the bar floats: close it properly first */
   const en = eCur(), j = jbCur(), p = JB.person && pById(JB.person); if (JB.open && !j) JB.open = null; if (JB.person && !p) JB.person = null; if (JB.ent && !en) JB.ent = null;
@@ -9945,8 +9985,8 @@ const jbTop = () => { const c = $("jobs-card"); if (c) c.scrollIntoView({block: 
 const jbOpenStage = () => { const o = $("jt-open"); if (o) o.scrollIntoView({block: "start"}); };
 const jbState = () => ({open: JB.open, stage: JB.stage, person: JB.person, ent: JB.ent});
 const jbPush = () => { if (JB.open || JB.person || JB.ent) JB.hist.push(jbState()); };
-function jbOpenPerson(id){ jbPush(); JB.ent = null; JB.person = id; JB.edit = null; jbDraw(); jbTop(); }
-function jbOpenEnt(t, id){ jbPush(); JB.person = null; JB.ent = {t, id}; JB.edit = null; jbDraw(); jbTop(); }
+function jbOpenPerson(id){ JB.allJobs = false; jbPush(); JB.ent = null; JB.person = id; JB.edit = null; jbDraw(); jbTop(); }
+function jbOpenEnt(t, id){ JB.allJobs = false; jbPush(); JB.person = null; JB.ent = {t, id}; JB.edit = null; jbDraw(); jbTop(); }
 function jbGoBack(){ const b = JB.hist.pop() || {open: null, stage: null, person: null, ent: null}; Object.assign(JB, b); JB.edit = null; JB.ckEdit = false; jbSave(); jbDraw(); jbTop(); }
 function jbBack(){
   const en = eCur(); if (en){ if (!en.n.trim() && !en.log.length && !eJobs(JB.ent.t, en).length) jbD[ENT[JB.ent.t].list] = eList(JB.ent.t).filter(x => x !== en); jbGoBack(); return; }   /* a new page left blank isn't kept */
@@ -10023,7 +10063,8 @@ B.addEventListener("click", e => {
     jbD.jobs.forEach(x => { const s2 = x.stages[JB.stage], have = jbCk(x, JB.stage).items;
       s2.extra = have.filter(y => !bs.has(y.t)).map(y => ({id: jbId(), t: y.t, done: y.done})); s2.hide = book.filter(b => !have.some(y => y.t === b)); s2.done = have.filter(y => y.done).map(y => y.t); });
     delete jbD.tpl[JB.stage]; JB.ckEdit = false; jbTouch(j); toast("Back to the book's list for new jobs.", 2200); return; }
-  if (a === "back"){ jbBack(); return; }
+  if (a === "back"){ JB.allJobs = false; jbBack(); return; }
+  if (a === "all-jobs"){ JB.allJobs = true; jbDraw(); return; }
   if (a === "new"){ jbNew(); JF.n = 0; jbDraw(); jbTop(); $("jb-n").focus(); return; }
   if (a === "e-new"){ const x = eGet(JB.view, "\u200b"); x.n = ""; jbSave(); JB.open = null; jbOpenEnt(JB.view, x.id); $("ef-n").focus(); return; }
   if (a === "e-del" && JB.ent){ const {t: et} = JB.ent, x = eCur(); if (!x || !jbAsk(`Delete ${x.n || "this " + ENT[et].one}? It comes off every job; notes that mention it stay.`)) return;
@@ -10048,7 +10089,7 @@ B.addEventListener("click", e => {
     const who = v("ji-who"); if (who) pGet(who, "Inspector");
     j.insp.push({id: jbId(), d, s: JB.stage, k: JB_SNAME[JB.stage], r: $("ji-r").value, who, n: v("ji-n")}); jbTouch(j); toast("Inspection added.", 1800); }
   else if (a === "hrs-add"){ const h = parseFloat($("jh-h").value), d = v("jh-d");
-    if (!(h > 0 && h <= 24) || !d){ toast("Enter the date and 0–24 hours."); return; }
+    if (!(h > 0 && h <= 24) || !d){ toast("Enter the date and the hours (more than 0, up to 24)."); return; }
     j.hrs.push({id: jbId(), d, s: JB.stage, h: Math.round(h * 100) / 100, n: v("jh-n")}); jbTouch(j); toast(`${jbHr(h)} hr logged.`, 1800); }
   else if (a === "ppl-add"){ const p = pGet(v("jpo-n"), $("jpo-r").value); if (!p){ toast("Type their name."); return; }
     if (!j.ppl.some(x => x.p === p.id)) j.ppl.push({id: jbId(), r: $("jpo-r").value, p: p.id}); jbTouch(j); }
@@ -10245,11 +10286,12 @@ async function jfRestore(file){
 }
 
 jbDraw(); try { homeDraw(); } catch(e){}
-} catch(e){ const b = document.getElementById("jb-body"); if (b) b.innerHTML = '<p class="note">My jobs hit an error: ' + String(e && e.message || e).replace(/</g, "&lt;") + "</p>"; if (window.console) console.error(e); }
+} catch(e){ const b = document.getElementById("jb-body"); if (b){ b.innerHTML = '<p class="note flag">My jobs hit an error: ' + String(e && e.message || e).replace(/</g, "&lt;") + '. Your jobs are still saved on this phone. Download them so they\'re safe, then send the file and this message to Deklan.</p><div class="set-btns jb-top"><button type="button" class="btn" id="jb-rescue">Download my jobs data</button></div>';
+  const r = document.getElementById("jb-rescue"); if (r) r.addEventListener("click", () => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([localStorage.getItem("jpb-jobs") || ""], {type: "application/json"})); a.download = "handbook-jobs-rescue.json"; document.body.appendChild(a); a.click(); a.remove(); }); } if (window.console) console.error(e); }
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-14m";
+var BUILD = "handbook-2026-11-15";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
