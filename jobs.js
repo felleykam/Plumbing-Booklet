@@ -6,6 +6,7 @@ try {
 const jbD = (x => { if (x && typeof x === "object" && Array.isArray(x.jobs)) return x;
   try { const raw = localStorage.getItem("jpb-jobs"); if (raw && raw !== "null") localStorage.setItem("jpb-jobs-unreadable", raw); } catch(e){}   /* never overwrite what we couldn't read */
   return {jobs: [], goal: 8000, before: 0}; })(store.get("jpb-jobs", null));
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}   /* ask iOS not to clear this app's storage when the phone is low on space */
 if (!Array.isArray(jbD.people)) jbD.people = []; if (!Array.isArray(jbD.builders)) jbD.builders = []; if (!Array.isArray(jbD.subs)) jbD.subs = [];
 const JB = {open: null, person: null, view: "jobs", show: "open", tag: null, edit: null, stage: null, back: null, ckEdit: false, ent: null, hist: []}, JF = {n: 0, cur: null, url: null};
 const JB_STG = [["under", "Underground"], ["rough", "Top-out (rough-in)"], ["gas", "Gas"], ["trim", "Finish (trim)"], ["final", "Final"], ["warr", "Warranty"]];
@@ -27,7 +28,8 @@ let jbFull = false;
 const jbSave = () => { clearTimeout(jbT); JB_IX = null; let ok = true;
   try { localStorage.setItem("jpb-jobs", JSON.stringify(jbD)); } catch(e){ ok = false; }
   if (!ok && !jbFull) toast("<b>Jobs didn't save:</b> this phone's space for them is full. Download a backup, then delete finished jobs.", 9000);
-  jbFull = !ok; IDX = null; try { homeDraw(); } catch(e){} };
+  jbFull = !ok; if (ok) try { localStorage.setItem("jpb-chg", String((+localStorage.getItem("jpb-chg") || 0) + 1)); } catch(e){}
+  IDX = null; try { homeDraw(); } catch(e){} };
 const jbBytes = () => { try { return (localStorage.getItem("jpb-jobs") || "").length; } catch(e){ return 0; } };
 const jbId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const jbDay = (n = new Date()) => new Date(n - n.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
@@ -39,7 +41,7 @@ const jbName = j => (j.name || "").trim() || (j.a || "").trim() || "Untitled job
 const jbNext = j => j.insp.filter(i => i.r === "booked").sort((a, b) => a.d < b.d ? -1 : 1)[0];
 const jbByDate = (a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : 0;
 const jfMB = n => n >= 1e6 ? (n / 1e6).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1e3)) + " KB";
-const jfSay = (t, c) => { const s = $("jf-say"); if (s){ s.textContent = t; s.className = "note " + (c || ""); } };
+const jfSay = (t, c) => { const s = $(JF.sayId || "jf-say"); if (s){ s.textContent = t; s.className = (s.id === "bk-status" ? "status " : "note ") + (c || ""); } };
 const jbOpts = (o, v) => Object.entries(o).map(([k, t]) => `<option value="${k}"${k === v ? " selected" : ""}>${t}</option>`).join("");
 const jbList = (a, v) => a.map(x => `<option${x === v ? " selected" : ""}>${esc(x)}</option>`).join("");
 const jbIn = (k, j) => k === "all" || (k === "done") === (j.st === "done");
@@ -94,6 +96,7 @@ function jbClean(){
   const isO = x => !!x && typeof x === "object" && !Array.isArray(x), arrO = a => Array.isArray(a) ? a.filter(isO) : [];
   const str = x => typeof x === "string" ? x : x == null ? "" : String(x);
   jbD.jobs = arrO(jbD.jobs);
+  jbD.bin = arrO(jbD.bin).filter(b => isO(b.item) && typeof b.at === "number");
   ["people", "builders", "subs"].forEach(k => { jbD[k] = arrO(jbD[k]); jbD[k].forEach(x => { x.id = str(x.id) || jbId(); x.n = str(x.n); }); });
   jbD.jobs.forEach(j => {
     j.id = str(j.id) || jbId(); ["name", "a", "who", "city", "draft"].forEach(k => { j[k] = str(j[k]); });
@@ -259,10 +262,11 @@ function jbListHtml(){
     <label for="jb-before">Hours before this app<input id="jb-before" type="number" inputmode="decimal" min="0" step="any" value="${+jbD.before || ""}" placeholder="0"></label></div>
     <p class="note">Your own count, so you can see where you stand. DOPL goes by the hours your sponsor reports, so keep those records too. The goals are the on-the-job hours in Learn → License → Path to a license.</p></div></details>
   ${jbBytes() > 15e5 ? `<div class="jb-in"><p class="note${jbBytes() > 35e5 ? " flag" : ""}">Jobs use about ${(jbBytes() / 1e6).toFixed(1)} MB of the roughly 5 MB this phone gives them. Download a backup and delete finished jobs before it fills: past that, new entries won't save.</p></div>` : ""}
-  <p class="card-h">Photos &amp; files backup</p>
-  <div class="jb-in"><p class="note" id="jf-use">Photos and files stay on this phone. They're too big for Settings → Download backup, so save them here now and then.</p>
-  <div class="set-btns"><button type="button" class="btn ghost" data-a="jf-save">Download photos &amp; files</button><label class="btn ghost">Restore photos &amp; files<input type="file" id="jf-restore" accept=".zip,application/zip" hidden></label></div>
-  <p class="note" id="jf-say" aria-live="polite"></p></div>`;
+  <p class="card-h" id="jb-bk">Backup</p>
+  <div class="jb-in"><p class="note">${jbLastBk()}</p>
+  <div class="set-btns"><button type="button" class="btn" data-a="bk-all">Back up everything</button><label class="btn ghost">Restore a backup<input type="file" id="jb-restore" accept=".zip,.json,application/zip,application/json" hidden></label></div>
+  <p class="note" id="jf-say" aria-live="polite"></p><p class="note" id="jf-use"></p></div>
+  ${jbBinHtml()}`;
 }
 
 function jbStageSum(j, k){
@@ -459,7 +463,7 @@ const B = $("jb-body");
 B.addEventListener("focusin", e => { if (e.target.classList.contains("jn-ta")) jnTa = e.target; });
 ["pointerdown", "mousedown"].forEach(ev => B.addEventListener(ev, e => { if (e.target.closest("[data-ins]")) e.preventDefault(); }));   /* keep the keyboard up */
 B.addEventListener("click", e => {
-  const t = e.target.closest("[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ent],[data-xadd],[data-xdel]"); if (!t) return;
+  const t = e.target.closest("[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ent],[data-xadd],[data-xdel],[data-binr]"); if (!t) return;
   const j = jbCur(), o = jnOwner(), a = t.dataset.a, v = id => $(id).value.trim(), st = j && j.stages[JB.stage];
   if (t.dataset.ins){ jnInsert(t.dataset.ins); return; }
   if (t.dataset.wl){ jnGo(t.dataset.wl); return; }
@@ -498,14 +502,23 @@ B.addEventListener("click", e => {
       s2.extra = have.filter(y => !bs.has(y.t)).map(y => ({id: jbId(), t: y.t, done: y.done})); s2.hide = book.filter(b => !have.some(y => y.t === b)); s2.done = have.filter(y => y.done).map(y => y.t); });
     delete jbD.tpl[JB.stage]; JB.ckEdit = false; jbTouch(j); toast("Back to the book's list for new jobs.", 2200); return; }
   if (a === "back"){ JB.allJobs = false; jbBack(); return; }
+  if (t.dataset.binr){ jbBinRestore(t.dataset.binr); return; }
+  if (a === "bin-empty"){ if (!jbAsk(`Delete the ${jbD.bin.length} item${jbD.bin.length === 1 ? "" : "s"} in Recently deleted for good? This can't be undone.`)) return; jbBinPurge(true); jbDraw(); toast("Emptied.", 1600); return; }
+  if (a === "bk-all"){ JF.sayId = "jf-say"; jbBackupAll(); return; }
+  if (a === "bk-share"){ jbShareReady(false); return; }
   if (a === "all-jobs"){ JB.allJobs = true; jbDraw(); return; }
   if (a === "new"){ jbNew(); JF.n = 0; jbDraw(); jbTop(); $("jb-n").focus(); return; }
   if (a === "e-new"){ const x = eGet(JB.view, "\u200b"); x.n = ""; jbSave(); JB.open = null; jbOpenEnt(JB.view, x.id); $("ef-n").focus(); return; }
-  if (a === "e-del" && JB.ent){ const {t: et} = JB.ent, x = eCur(); if (!x || !jbAsk(`Delete ${x.n || "this " + ENT[et].one}? It comes off every job; notes that mention it stay.`)) return;
+  if (a === "e-del" && JB.ent){ const {t: et} = JB.ent, x = eCur(); if (!x || !jbAsk(`Delete ${x.n || "this " + ENT[et].one}? It goes to Recently deleted for 30 days.`)) return;
+    const links = jbD.jobs.filter(j => j[et] === x.id).map(j => [j.id, et]).concat(et === "bld" ? jbD.subs.filter(s => s.bld === x.id).map(s => ["sub:" + s.id, "bld"]) : []);
+    jbBin(et, x, {links});
     jbD[ENT[et].list] = eList(et).filter(y => y !== x); jbD.jobs.forEach(j => { if (j[et] === x.id) j[et] = ""; }); if (et === "bld") jbD.subs.forEach(s => { if (s.bld === x.id) s.bld = ""; });
     jbGoBack(); return; }
   if (a === "p-new"){ const p = {id: jbId(), n: "", role: "Other", co: "", ph: "", em: "", log: [], draft: "", t: Date.now()}; jbD.people.push(p); jbSave(); JB.open = null; jbOpenPerson(p.id); $("pp-n").focus(); return; }
-  if (a === "p-del" && JB.person){ const p = pById(JB.person); if (!p || !jbAsk(`Delete ${p.n || "this person"}? They come off every job; notes that mention them stay.`)) return;
+  if (a === "p-del" && JB.person){ const p = pById(JB.person); if (!p || !jbAsk(`Delete ${p.n || "this person"}? They go to Recently deleted for 30 days.`)) return;
+    const links = []; jbD.jobs.forEach(x => { if (x.lead === p.id) links.push([x.id, "lead"]); if (x.sup === p.id) links.push([x.id, "sup"]);
+      x.ppl.filter(y => y.p === p.id).forEach(y => links.push([x.id, "ppl", y])); JB_STG.forEach(([k]) => { if (x.stages[k].lead === p.id) links.push([x.id, "stage", k]); }); });
+    jbBin("person", p, {links});
     jbD.people = jbD.people.filter(x => x !== p);
     jbD.jobs.forEach(x => { if (x.lead === p.id) x.lead = ""; if (x.sup === p.id) x.sup = ""; x.ppl = x.ppl.filter(y => y.p !== p.id); JB_STG.forEach(([k]) => { if (x.stages[k].lead === p.id) x.stages[k].lead = ""; }); });
     jbGoBack(); return; }
@@ -513,11 +526,13 @@ B.addEventListener("click", e => {
     o.log.push(Object.assign({id: jbId(), d: $("jn-d").value || jbDay(), at: Date.now(), b}, (JB.person || JB.ent) ? {} : {s: JB.stage})); o.draft = ""; jnTa = null; jbTouch(o); toast("Note added.", 1600); return; }
   if (a === "jn-save" && o){ const n = o.log.find(x => x.id === JB.edit); if (n){ n.b = $("jn-ed").value.trim() || n.b; n.d = $("jn-ed-d").value || n.d; } JB.edit = null; jnTa = null; jbTouch(o); return; }
   if (a === "jn-cancel"){ JB.edit = null; jnTa = null; jbDraw(); return; }
-  if (a === "jn-del" && o){ if (!jbAsk("Delete this note?")) return; o.log = o.log.filter(x => x.id !== JB.edit); JB.edit = null; jnTa = null; jbTouch(o); return; }
+  if (a === "jn-del" && o){ if (!jbAsk("Delete this note? It goes to Recently deleted for 30 days.")) return;
+    const n = o.log.find(x => x.id === JB.edit); if (n) jbBin("note", n, {owner: JB.ent ? JB.ent.t : JB.person ? "person" : "job", oid: o.id});
+    o.log = o.log.filter(x => x.id !== JB.edit); JB.edit = null; jnTa = null; jbTouch(o); return; }
   if (t.dataset.del && j){ const [k, id] = t.dataset.del.split("|");
     if (k !== "punch" && !jbAsk(k === "hrs" ? "Delete these hours?" : "Delete this inspection?")) return;
     j[k] = j[k].filter(x => x.id !== id); jbTouch(j); return; }
-  if (!j){ if (a === "jf-save") jfBackup(); return; }
+  if (!j) return;
   if (a === "ck-add" && st){ const x = v("jc-t"); if (!x) return; st.extra.push({id: jbId(), t: x, done: false}); jbTouch(j); $("jc-t").focus(); }
   else if (a === "insp-add"){ const d = v("ji-d"); if (!d){ toast("Pick a date."); return; }
     const who = v("ji-who"); if (who) pGet(who, "Inspector");
@@ -530,9 +545,9 @@ B.addEventListener("click", e => {
   else if (a === "punch-add"){ const x = v("jp-t"); if (!x) return; j.punch.push({id: jbId(), t: x, done: false}); jbTouch(j); $("jp-t").focus(); }
   else if (a === "punch-clear"){ j.punch = j.punch.filter(p => !p.done); jbTouch(j); }
   else if (a === "job-del"){
-    if (!jbAsk(`Delete "${jbName(j)}" with its timeline, notes, hours, photos and files? This can't be undone.`)) return;
-    jbD.jobs = jbD.jobs.filter(x => x !== j); jfAll(j.id).then(L => Promise.all(L.map(f => jfDel(f.id)))).catch(() => {});
-    JB.open = null; jbSave(); jbDraw(); jbTop(); toast("Job deleted.", 1800); }
+    if (!jbAsk(`Delete "${jbName(j)}"? It goes to Recently deleted for 30 days, photos and all, then it's gone for good.`)) return;
+    jbBin("job", j); jbD.jobs = jbD.jobs.filter(x => x !== j);   /* its photos stay until the bin is emptied */
+    JB.open = null; jbSave(); jbDraw(); jbTop(); toast("Job moved to Recently deleted.", 2200); }
 });
 B.addEventListener("keydown", e => { if (e.key !== "Enter") return; const btn = {"jp-t": "punch-add", "jc-t": "ck-add"}[e.target.id];
   if (btn){ e.preventDefault(); B.querySelector(`[data-a="${btn}"]`).click(); } });
@@ -563,7 +578,7 @@ B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.pers
   if (t.id === "jb-goal"){ jbD.goal = +t.value; jbSave(); jbDraw(); return; }
   if (t.id === "jb-before"){ jbD.before = Math.max(0, parseFloat(t.value) || 0); jbSave(); jbDraw(); return; }
   if (t.id === "jf-ph" || t.id === "jf-fi"){ jfAdd([...t.files], t.id === "jf-ph"); return; }
-  if (t.id === "jf-restore" && t.files[0]) jfRestore(t.files[0]);
+  if (t.id === "jb-restore" && t.files[0]) jbRestoreAll(t.files[0]);
 });
 
 /* Home: MY JOBS box (homeDraw calls this) */
@@ -572,10 +587,13 @@ window.jobsHome = () => {
   return `<p class="card-h">My jobs <button type="button" class="linkish" data-hj="all">All</button></p>`
     + (open.length ? `<div class="jb-list">${open.map(j => jbRow(j, "data-hj")).join("")}</div>`
       : `<p class="note"><button type="button" class="linkish" data-hj="new">Add a job</button>: a timeline from Underground to Final, with the blanks ready to fill in.</p>`)
-    + (H.wk ? `<p class="note">${jbHr(H.today)} hr today · ${jbHr(H.wk)} hr this week</p>` : "");
+    + (H.wk ? `<p class="note">${jbHr(H.today)} hr today · ${jbHr(H.wk)} hr this week</p>` : "")
+    + (jbBkDue() ? `<button type="button" class="renew-line" data-hj="backup"><b>${+store.get("jpb-lastbk", 0) ? "Last backup " + jbAgo(+store.get("jpb-lastbk", 0)) : "No backup yet"}</b> · Back up now ›</button>` : "");
 };
 $("home-body").addEventListener("click", e => { const b = e.target.closest("[data-hj]"); if (!b) return; const k = b.dataset.hj;
-  JF.n = 0; JB.edit = null; JB.person = null; JB.ent = null; JB.hist = []; JB.stage = null; JB.view = "jobs"; if (k === "new") jbNew(); else JB.open = k === "all" ? null : k;
+  JF.n = 0; JB.edit = null; JB.person = null; JB.ent = null; JB.hist = []; JB.stage = null; JB.view = "jobs";
+  if (k === "backup"){ JB.open = null; go("mine", "jobs"); jbDraw(); const h = $("jb-bk"); if (h) h.scrollIntoView({block: "start"}); JF.sayId = "jf-say"; jbBackupAll(); return; }
+  if (k === "new") jbNew(); else JB.open = k === "all" ? null : k;
   go("mine", "jobs"); jbDraw(); jbTop(); });
 
 /* ---- photos & files: IndexedDB */
@@ -608,8 +626,7 @@ async function jfDraw(job){
 }
 function jfUse(){
   jfAll().then(L => { const u = $("jf-use"); if (!u) return; const s = L.reduce((n, f) => n + (f.blob ? f.blob.size : 0), 0);
-    u.textContent = L.length ? `${L.length} photo${L.length === 1 ? "" : "s"} and file${L.length === 1 ? "" : "s"} in all, about ${jfMB(s)}, saved on this phone. They're too big for Settings → Download backup, so save them here now and then.`
-      : "Photos and files stay on this phone. They're too big for Settings → Download backup, so save them here now and then."; }).catch(() => {});
+    u.textContent = L.length ? `On this phone: ${L.length} photo${L.length === 1 ? "" : "s"} and file${L.length === 1 ? "" : "s"}, about ${jfMB(s)}. They're in the backup too.` : ""; }).catch(() => {});
 }
 /* one decode, two JPEGs: about 1600 px for the record, 240 px for the grid. The browser applies the phone's rotation. */
 async function jfImg(file){
@@ -692,33 +709,99 @@ function jfUnzip(buf){
   }
   return out;
 }
-async function jfBackup(){
-  let L; try { L = await jfAll(); } catch(e){ jfSay("Couldn't read the photos on this phone.", "err"); return; }
-  if (!L.length){ jfSay("No photos or files yet."); return; }
-  jfSay(`Packing ${L.length}…`);
+/* ---- Backup: one file with everything. handbook-backup.json is the same as Settings → Download backup (every jpb- item:
+   jobs, people, notes, pins, settings); manifest.json + files/ are the photos and files. The Share sheet saves it to iCloud
+   Drive or Files; where there's no Share sheet it downloads. */
+const jbAgo = ts => { const d = Math.floor((Date.now() - ts) / 864e5); return d <= 0 ? "today" : d === 1 ? "yesterday" : d + " days ago"; };
+const jbBkDue = () => { if (!jbD.jobs.length) return false; const lb = +store.get("jpb-lastbk", 0); return !lb || Date.now() - lb > 7 * 864e5 || +store.get("jpb-chg", 0) >= 40; };
+const jbLastBk = () => { const lb = +store.get("jpb-lastbk", 0);
+  return (lb ? `Last backup: <b>${jbAgo(lb)}</b>. ` : "<b>No backup yet.</b> ") + "One file with your jobs, people, notes, settings, photos and files. Save it to iCloud Drive or Files so it's off this phone: deleting the app from the Home Screen deletes everything in it."; };
+async function jfPack(){
+  let L = []; try { L = await jfAll(); } catch(e){}
   const man = L.map(f => ({id: f.id, job: f.job, s: f.s, jobName: (j0 => j0 ? jbName(j0) : "")(jbD.jobs.find(x => x.id === f.job)), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb,
     path: `files/${f.id}-${String(f.name).replace(/[^\w.\- ]+/g, "_").slice(-60)}`}));
-  try {
-    const zip = await jfZip([{name: "manifest.json", blob: new Blob([JSON.stringify({app: "utah-plumbers-handbook-files", v: 1, made: new Date().toISOString(), files: man})])},
-      ...L.map((f, i) => ({name: man[i].path, blob: f.blob}))]);
-    const a = document.createElement("a"); a.href = URL.createObjectURL(zip); a.download = `handbook-job-files-${jbDay()}.zip`; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
-    jfSay(`Made a ${jfMB(zip.size)} zip. Keep it in Files or iCloud Drive.`, "good");
-  } catch(e){ jfSay("Couldn't make the backup: " + (e && e.message || e), "err"); }
+  const zip = await jfZip([{name: "handbook-backup.json", blob: new Blob([bkDump()], {type: "application/json"})},
+    {name: "manifest.json", blob: new Blob([JSON.stringify({app: "utah-plumbers-handbook-files", v: 1, made: new Date().toISOString(), files: man})])},
+    ...L.map((f, i) => ({name: man[i].path, blob: f.blob}))]);
+  return {zip, n: L.length};
 }
-async function jfRestore(file){
+async function jbBackupAll(){
+  jbSave(); jfSay("Packing your backup…");
+  try { const {zip, n} = await jfPack(); JF.ready = new File([zip], `handbook-backup-${jbDay()}.zip`, {type: "application/zip"}); JF.readyN = n; await jbShareReady(true); }
+  catch(e){ jfSay("Couldn't make the backup: " + (e && e.message || e), "err"); }
+}
+window.jbBackupAll = () => { JF.sayId = "bk-status"; jbBackupAll(); };   /* Settings → Backup uses it too */
+async function jbShareReady(first){
+  const f = JF.ready; if (!f) return;
+  const done = how => { store.set("jpb-lastbk", Date.now()); store.set("jpb-chg", 0); JF.ready = null; const nj = jbD.jobs.length;
+    jfSay(`Backed up ${nj} job${nj === 1 ? "" : "s"}${JF.readyN ? ` and ${JF.readyN} photos & files` : ""} (${jfMB(f.size)}). ${how}`, "good"); try { homeDraw(); } catch(e){} jbReseat(); };
+  if (navigator.canShare && navigator.canShare({files: [f]})){
+    try { await navigator.share({files: [f]}); done("Keep it in iCloud Drive or Files."); return; }
+    catch(e){
+      if (e && e.name === "AbortError"){ jfSay("Not saved yet: tap Back up everything when you're ready."); jbReseat(); return; }
+      if (first && e && e.name === "NotAllowedError"){   /* packing took long enough that iOS wants a fresh tap */
+        const s = $(JF.sayId || "jf-say"); if (s){ s.className = s.id === "bk-status" ? "status" : "note"; s.innerHTML = `Backup ready (${jfMB(f.size)}). <button type="button" class="btn" data-a="bk-share">Save it</button>`;
+          const b = s.querySelector("[data-a=bk-share]"); if (b && s.id === "bk-status") b.addEventListener("click", () => jbShareReady(false)); }
+        return; } } }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+  done("It's in Downloads: move it to iCloud Drive so it's off this phone.");
+}
+async function jfRestoreZ(z){
+  const m = JSON.parse(new TextDecoder().decode(z["manifest.json"])); if (!m || m.app !== "utah-plumbers-handbook-files" || !Array.isArray(m.files)) return 0;
+  let n = 0;
+  for (const f of m.files){ const x = z[f.path]; if (!x) continue;
+    await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, f.s ? {s: f.s} : {})); n++; }
+  return n;
+}
+/* takes the new all-in-one .zip, an older photos-only .zip, or a Settings .json backup */
+async function jbRestoreAll(file){
+  JF.sayId = "jf-say";
   try {
-    const z = jfUnzip(await file.arrayBuffer()), m = JSON.parse(new TextDecoder().decode(z["manifest.json"]));
-    if (!m || m.app !== "utah-plumbers-handbook-files" || !Array.isArray(m.files)) throw 0;
-    let n = 0, lost = 0;
-    for (const f of m.files){ const x = z[f.path]; if (!x) continue;
-      await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, f.s ? {s: f.s} : {})); n++;
-      if (!jbD.jobs.some(j => j.id === f.job)) lost++; }
-    jfSay(`Restored ${n}.` + (lost ? ` ${lost} belong to jobs that aren't on this phone: restore Settings → backup first, then this file again.` : ""), "good"); jfUse();
-  } catch(e){ jfSay("That isn't a photos & files backup from this app.", "err"); }
-  const r = $("jf-restore"); if (r) r.value = "";
+    const buf = await file.arrayBuffer(), u8 = new Uint8Array(buf), dec = new TextDecoder(); let data = null, z = null;
+    if (u8[0] === 0x50 && u8[1] === 0x4b){ z = jfUnzip(buf); if (z["handbook-backup.json"]) data = JSON.parse(dec.decode(z["handbook-backup.json"])); }
+    else data = JSON.parse(dec.decode(u8));
+    const d = data && data.data, keys = d && typeof d === "object" ? Object.keys(d).filter(k => k.startsWith("jpb-") && typeof d[k] === "string") : [];
+    const photos = z && z["manifest.json"] ? ((JSON.parse(dec.decode(z["manifest.json"])) || {}).files || []).length : 0;
+    if (!keys.length && !photos) throw 0;
+    let n = 0; try { n = JSON.parse(d["jpb-jobs"] || "{}").jobs.length || 0; } catch(e){}
+    const when = data && data.saved ? " from " + new Date(data.saved).toLocaleDateString(undefined, {month: "short", day: "numeric", year: "numeric"}) : "";
+    if (!jbAsk(keys.length ? `Replace everything on this phone with the backup${when}? It has ${n} job${n === 1 ? "" : "s"}${photos ? ` and ${photos} photos & files` : ""}. Anything added since then will be gone.`
+      : `Add the ${photos} photos & files from this backup?`)){ const r = $("jb-restore"); if (r) r.value = ""; return; }
+    if (z && photos) await jfRestoreZ(z);
+    if (keys.length){ keys.forEach(k => localStorage.setItem(k, d[k])); jfSay("Restored. Reloading…", "good"); setTimeout(() => location.reload(), 900); }
+    else { jfSay(`Restored ${photos} photos & files.`, "good"); jfUse(); }
+  } catch(e){ jfSay("That isn't a backup from this app.", "err"); }
+  const r = $("jb-restore"); if (r) r.value = "";
 }
 
+/* ---- Recently deleted: jobs, people, builders, subdivisions and notes wait 30 days before they're gone */
+const JB_BIN_DAYS = 30, JB_BIN_NAME = {job: "Job", person: "Person", bld: "Builder", sub: "Subdivision", note: "Note"};
+function jbBin(kind, item, extra){ jbD.bin.unshift(Object.assign({id: jbId(), kind, at: Date.now(), item: JSON.parse(JSON.stringify(item))}, extra || {})); }
+const jbBinName = b => b.kind === "job" ? jbName(b.item) : b.kind === "note" ? String(b.item.b || "").split("\n").map(x => x.replace(/^[\s#>*!\-\[\]xX]+/, "").trim()).find(Boolean) || "Note" : (b.item.n || "No name");
+function jbBinPurge(all){
+  const cut = Date.now() - JB_BIN_DAYS * 864e5, gone = jbD.bin.filter(b => all || b.at < cut); if (!gone.length) return 0;
+  jbD.bin = jbD.bin.filter(b => !gone.includes(b));
+  gone.filter(b => b.kind === "job").forEach(b => jfAll(b.item.id).then(L => Promise.all(L.map(f => jfDel(f.id)))).catch(() => {}));   /* now its photos go */
+  jbSave(); return gone.length;
+}
+function jbBinRestore(id){
+  const b = jbD.bin.find(x => x.id === id); if (!b) return; const it = b.item;
+  if (b.kind === "job"){ if (jbD.jobs.some(j => j.id === it.id)) it.id = jbId(); jbFix(it); jbD.jobs.push(it); }
+  else if (b.kind === "person"){ jbD.people.push(it);
+    (b.links || []).forEach(([jid, f, x]) => { const j = jbD.jobs.find(y => y.id === jid); if (!j) return;
+      if (f === "lead" || f === "sup"){ if (!j[f]) j[f] = it.id; } else if (f === "ppl"){ if (!j.ppl.some(y => y.p === it.id)) j.ppl.push(x); } else if (f === "stage" && j.stages[x] && !j.stages[x].lead) j.stages[x].lead = it.id; }); }
+  else if (b.kind === "bld" || b.kind === "sub"){ eList(b.kind).push(it);
+    (b.links || []).forEach(([jid, f]) => { if (jid.startsWith("sub:")){ const sb = jbD.subs.find(y => y.id === jid.slice(4)); if (sb && !sb.bld) sb.bld = it.id; } else { const j = jbD.jobs.find(y => y.id === jid); if (j && !j[f]) j[f] = it.id; } }); }
+  else if (b.kind === "note"){ const o = b.owner === "job" ? jbD.jobs.find(j => j.id === b.oid) : b.owner === "person" ? pById(b.oid) : eById(b.owner, b.oid);
+    if (!o){ toast("The job or page it was on is gone. Restore that first, then this note."); return; } o.log.push(it); }
+  jbD.bin = jbD.bin.filter(x => x !== b); jbSave(); jbDraw(); toast(`${JB_BIN_NAME[b.kind]} restored.`, 2000);
+}
+const jbBinHtml = () => !jbD.bin.length ? "" : `<details class="explain"><summary>Recently deleted · ${jbD.bin.length}</summary><div>
+  <div class="jb-list">${jbD.bin.map(b => { const d = Math.max(0, JB_BIN_DAYS - Math.floor((Date.now() - b.at) / 864e5));
+    return `<div class="jp-row"><div class="jb-row jb-binrow"><b>${esc(jbBinName(b))}</b><span>${JB_BIN_NAME[b.kind]} · gone for good in ${d} day${d === 1 ? "" : "s"}</span></div><button type="button" class="btn ghost jp-call" data-binr="${b.id}">Restore</button></div>`; }).join("")}</div>
+  <div class="set-btns jb-top"><button type="button" class="del" data-a="bin-empty">Empty now</button></div></div></details>`;
+
+jbBinPurge(false);   /* past 30 days: gone for good */
 jbDraw(); try { homeDraw(); } catch(e){}
 } catch(e){ const b = document.getElementById("jb-body"); if (b){ b.innerHTML = '<p class="note flag">My jobs hit an error: ' + String(e && e.message || e).replace(/</g, "&lt;") + '. Your jobs are still saved on this phone. Download them so they\'re safe, then send the file and this message to Deklan.</p><div class="set-btns jb-top"><button type="button" class="btn" id="jb-rescue">Download my jobs data</button></div>';
   const r = document.getElementById("jb-rescue"); if (r) r.addEventListener("click", () => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([localStorage.getItem("jpb-jobs") || ""], {type: "application/json"})); a.download = "handbook-jobs-rescue.json"; document.body.appendChild(a); a.click(); a.remove(); }); } if (window.console) console.error(e); }
