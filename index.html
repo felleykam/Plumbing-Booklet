@@ -547,6 +547,7 @@ p.jb-gh{cursor:default}
 .jn-b .jn-prop{display:flex;gap:8px;align-items:baseline;margin:4px 0}
 .jn-prop b{flex:none;padding:0 8px;border-radius:6px;color:var(--pal-teal);background:color-mix(in srgb,var(--pal-teal) 13%,transparent);font-family:var(--mono);font-size:.92em}
 .jn-howto > div{padding:4px 12px 8px}
+.mviz{display:block;width:100%;max-width:520px;height:auto;margin:4px auto 8px;padding:0 12px;box-sizing:border-box}
 .job-hits{zoom:var(--zoom,1);margin-bottom:12px;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);padding:4px 0 8px}
 .job-hits-h{margin:4px 12px 6px}.job-hits-all{margin:6px 12px 0}
 .snap-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--rule)}
@@ -1394,6 +1395,13 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <button type="button" data-go="mech|heaters|Hot water that lasts"><b>Shower goes cold too soon</b><span>Service → Water heaters → Hot water that lasts</span></button>
       <button type="button" data-go="mech|hotwater|Expansion tank size"><b>What size expansion tank?</b><span>Service → Hot water → Expansion tank size</span></button>
       <button type="button" data-go="site|power|Circuits, wire &amp; bonding"><b>What breaker and wire for this water heater?</b><span>Jobsite → Electrical → Circuits, wire &amp; bonding</span></button>
+      <p class="card-h">Everyday math</p>
+      <button type="button" data-go="calc|math|Fractions"><b>Multiply, divide or add odd fractions</b><span>Math → Fractions</span></button>
+      <button type="button" data-go="calc|math|Percent"><b>Add 10% for waste, or what percent is done</b><span>Math → Percent</span></button>
+      <button type="button" data-go="calc|math|Area &amp; volume"><b>Square feet, cubic yards or gallons of any shape</b><span>Math → Area &amp; volume</span></button>
+      <button type="button" data-go="calc|math|Slope &amp; angle converter"><b>Turn ¼"/ft into %, degrees or 1 in 48</b><span>Math → Slope &amp; angle converter</span></button>
+      <button type="button" data-go="calc|math|Proportion"><b>3 bags cover 40 ft: how many for 110?</b><span>Math → Proportion</span></button>
+      <button type="button" data-go="calc|math|Time card"><b>Hours from clock in, clock out and lunch</b><span>Math → Time card</span></button>
       <p class="card-h">Plans, tests &amp; the jobsite</p>
       <button type="button" data-go="calc|plans|Scale a plan"><b>Measuring off a plan</b><span>Plans → Scale a plan</span></button>
       <button type="button" data-go="calc|plans|Plan take-off"><b>How much pipe is on this plan?</b><span>Plans → Plan take-off</span></button>
@@ -2172,6 +2180,170 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td><b>Friction, bigger or faster</b></td><td>Double the gpm → ≈ 3½× the friction. One size up (¾ → 1") → about ¼ the friction</td><td class="n">4 psi at 5 gpm → ≈ 14 psi at 10</td></tr>
 </tbody></table></div>
     <p class="note"><span class="badge why">WHY</span> Run the trick before you trust a calculator: if the screen says 34" and your head says 17", a digit slipped. Exact answers live in the calculators.</p>
+  </section>
+  <section data-sec="math" data-kw="fraction calculator add subtract multiply divide fractions mixed numbers simplify reduce lowest terms common denominator 16ths decimal">
+    <div class="sec-head"><h2>Fractions</h2><small>+ − × ÷ · simplified, decimal, nearest ¹⁄₁₆</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you need to multiply or divide fractions, or add odd ones like ⅔ + ⅝ that a tape doesn't show. For tape measurements in feet and inches, use <b>Calc → Layout → Feet-inch calculator</b>.</p><p><b>How:</b> type numbers like <code>3 1/2</code>, <code>7/8</code> or <code>2.25</code>, pick the sign.</p></div></details>
+    <div class="calc">
+      <label for="mf-a">First number<input id="mf-a" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="3 1/2"></label>
+      <label for="mf-b">Second number<input id="mf-b" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="5/8"></label>
+    </div>
+    <div class="mode" id="mf-op" role="group" aria-label="Sign"><button type="button" data-op="+" aria-pressed="true">+</button><button type="button" data-op="-" aria-pressed="false">−</button><button type="button" data-op="*" aria-pressed="false">×</button><button type="button" data-op="/" aria-pressed="false">÷</button></div>
+    <div class="calc"><div class="ans" id="mf-ans" role="status" aria-atomic="true"></div></div>
+    <svg class="mviz" id="mf-viz" viewBox="0 0 320 86" role="img" aria-label="The answer's fraction of an inch marked on a ruler with sixteenths"></svg>
+    <details class="math"><summary>Show the math</summary><ol id="mf-math"></ol></details>
+  </section>
+  <section data-sec="math" data-kw="percent percentage calculator what percent of markup discount waste add percent take off percent change increase decrease">
+    <div class="sec-head"><h2>Percent</h2><small>Of · what % · change · add or take off</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> it's a percent anything: 10% extra pipe for waste, how much a price went up, what share of the job is done.</p></div></details>
+    <div class="mode" id="mp-mode" role="group" aria-label="Which question"><button type="button" data-mp="of" aria-pressed="true">% of</button><button type="button" data-mp="what" aria-pressed="false">What %</button><button type="button" data-mp="chg" aria-pressed="false">Change</button><button type="button" data-mp="add" aria-pressed="false">Add / take off</button></div>
+    <div class="calc">
+      <label for="mp-a" id="mp-a-l">Percent<input id="mp-a" type="number" inputmode="decimal" step="any" value="10"></label>
+      <label for="mp-b" id="mp-b-l">Of<input id="mp-b" type="number" inputmode="decimal" step="any" value="240"></label>
+      <div class="ans" id="mp-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <svg class="mviz" id="mp-viz" viewBox="0 0 320 54" role="img" aria-label="A bar filled to the percent"></svg>
+    <details class="math"><summary>Show the math</summary><ol id="mp-math"></ol></details>
+  </section>
+  <section data-sec="math" data-kw="area volume calculator square feet cubic feet cubic yards gallons rectangle circle triangle box cylinder pipe tank pit trench floor shape">
+    <div class="sec-head"><h2>Area &amp; volume</h2><small>Any shape · ft², ft³, yards, gallons</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you need square feet (a floor, a pan), cubic yards (gravel for a trench) or gallons (a pit, a tank, a pipe). Type sizes the way the tape reads: <code>3' 4 1/2"</code>, <code>40'</code>, or plain inches.</p></div></details>
+    <div class="mode" id="ma-mode" role="group" aria-label="Shape"><button type="button" data-ma="rect" aria-pressed="true">Rectangle</button><button type="button" data-ma="circ" aria-pressed="false">Circle</button><button type="button" data-ma="tri" aria-pressed="false">Triangle</button><button type="button" data-ma="box" aria-pressed="false">Box</button><button type="button" data-ma="cyl" aria-pressed="false">Cylinder</button></div>
+    <div class="calc">
+      <label for="ma-a" id="ma-a-l">Length<input id="ma-a" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10'"></label>
+      <label for="ma-b" id="ma-b-l">Width<input id="ma-b" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="2'"></label>
+      <label for="ma-c" id="ma-c-l" hidden>Depth<input id="ma-c" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="18&quot;"></label>
+      <div class="ans" id="ma-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <svg class="mviz" id="ma-viz" viewBox="0 0 320 170" role="img" aria-label="The shape drawn to scale with its sizes"></svg>
+    <details class="math"><summary>Show the math</summary><ol id="ma-math"></ol></details>
+  </section>
+  <section data-sec="math" data-kw="slope angle converter degrees percent grade inches per foot ratio pitch roof pitch 1 in 48 rise over run">
+    <div class="sec-head"><h2>Slope &amp; angle converter</h2><small>in/ft ↔ % ↔ degrees ↔ 1 in X</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> two people (or a plan and a level) say the same slope in different ways: ¼"/ft is 2.08%, about 1.2°, or 1 in 48. Works for roof pitch too (6 in 12 = 6"/ft).</p></div></details>
+    <div class="mode" id="ms-mode" role="group" aria-label="What you have"><button type="button" data-ms="inft" aria-pressed="true">in / ft</button><button type="button" data-ms="pct" aria-pressed="false">%</button><button type="button" data-ms="deg" aria-pressed="false">Degrees</button><button type="button" data-ms="ratio" aria-pressed="false">1 in X</button></div>
+    <div class="calc">
+      <label for="ms-v" id="ms-v-l">Inches per foot<input id="ms-v" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="1/4"></label>
+    </div>
+    <div class="x"><table class="t out"><tbody id="ms-out"></tbody></table></div>
+    <svg class="mviz" id="ms-viz" viewBox="0 0 320 150" role="img" aria-label="A triangle drawn at the slope's real angle"></svg>
+  </section>
+  <section data-sec="math" data-kw="proportion ratio rule of three scale up scale down mix cross multiply if this then that">
+    <div class="sec-head"><h2>Proportion</h2><small>If A goes with B, what goes with C?</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> something scales: 3 bags cover 40 ft, how many for 110 ft? 2 oz of cleaner per gallon, how much for 7 gallons? It's cross-multiplying: ? = B × C ÷ A.</p></div></details>
+    <div class="calc">
+      <label for="mr-a">If this (A)<input id="mr-a" type="number" inputmode="decimal" step="any" value="40"></label>
+      <label for="mr-b">goes with (B)<input id="mr-b" type="number" inputmode="decimal" step="any" value="3"></label>
+      <label for="mr-c">then this (C)<input id="mr-c" type="number" inputmode="decimal" step="any" value="110"></label>
+      <div class="ans" id="mr-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <svg class="mviz" id="mr-viz" viewBox="0 0 320 70" role="img" aria-label="Two bars in the same ratio"></svg>
+    <details class="math"><summary>Show the math</summary><ol id="mr-math"></ol></details>
+  </section>
+  <section data-sec="math" data-kw="time card hours worked clock in clock out lunch break decimal hours timesheet overtime shift">
+    <div class="sec-head"><h2>Time card</h2><small>Clock in, out, break → hours</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you fill out a timesheet or log hours on a job: 7:15 to 3:45 with a 30-minute lunch is 8 hours. Past midnight works too.</p></div></details>
+    <div class="calc">
+      <label for="mt-a">Clock in<input id="mt-a" type="time" value="07:00"></label>
+      <label for="mt-b">Clock out<input id="mt-b" type="time" value="15:30"></label>
+      <label for="mt-c">Unpaid break (min)<input id="mt-c" type="number" inputmode="numeric" min="0" step="5" value="30"></label>
+      <div class="ans" id="mt-ans" role="status" aria-atomic="true"></div>
+    </div>
+    <svg class="mviz" id="mt-viz" viewBox="0 0 320 60" role="img" aria-label="The shift on a timeline of the day"></svg>
+    <p class="note">Log it on a job's stage in <b>Mine → Jobs</b>, so it counts toward your license hours.</p>
+  </section>
+  <section data-sec="math" data-kw="average mean min max range readings list numbers pressure readings temperatures sum total">
+    <div class="sec-head"><h2>Average</h2><small>A list of readings → average, low, high</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you have several readings and want the middle: pressure at different times, flow tests, temperatures. Type them with spaces, commas or one per line.</p></div></details>
+    <div class="calc">
+      <label for="mv-a" class="wide">Numbers<textarea id="mv-a" rows="2" spellcheck="false">62 58 71 65 60</textarea></label>
+    </div>
+    <div class="x"><table class="t out"><tbody id="mv-out"></tbody></table></div>
+    <svg class="mviz" id="mv-viz" viewBox="0 0 320 60" role="img" aria-label="Each reading as a dot, with the average marked"></svg>
+  </section>
+
+  <section data-sec="math" data-kw="order of operations pemdas parentheses exponents multiply divide add subtract math rules">
+    <div class="sec-head"><h2>Order of operations</h2><small>Which part of the math goes first</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The order</th><td><b>1</b> Parentheses · <b>2</b> Exponents (squares) · <b>3</b> × and ÷, left to right · <b>4</b> + and −, left to right. Memory aid: <b>PEMDAS</b>.</td></tr>
+        <tr><th>Example</th><td>0.7854 × 3² = 0.7854 × 9 = 7.07 (square first). Not (0.7854 × 3)² = 5.55.</td></tr>
+        <tr><th>Example</th><td>20 − 2 × 3 = 20 − 6 = <b>14</b>, not 54. Want 54? Write (20 − 2) × 3.</td></tr>
+        <tr><th><span class="badge why">WHY</span>On a phone</th><td>Most phone calculators do it in the right order, but some cheap ones just go left to right. When in doubt, do one step at a time and write the middle answers down.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="math" data-kw="fraction rules add subtract multiply divide common denominator flip simplify reduce mixed number improper">
+    <div class="sec-head"><h2>Fraction rules</h2><small>Add, subtract, multiply, divide</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Add or subtract</th><td>Make the bottoms match, then add the tops: ½ + ⅜ = 4⁄8 + 3⁄8 = 7⁄8. On a tape, everything is already 16ths: ½ = 8⁄16, ⅜ = 6⁄16.</td></tr>
+        <tr><th>Multiply</th><td>Top × top, bottom × bottom: ¾ × ½ = 3⁄8. A whole number is itself over 1: 3 × ⅝ = 15⁄8 = 1⅞.</td></tr>
+        <tr><th>Divide</th><td>Flip the second one and multiply: ¾ ÷ ½ = ¾ × 2⁄1 = 6⁄4 = 1½. Splitting 7⅝" in half: 61⁄8 × ½ = 61⁄16 = 3 13⁄16".</td></tr>
+        <tr><th>Mixed numbers</th><td>Turn 3½ into 7⁄2 before you multiply or divide (3 × 2 + 1 = 7, over 2). Turn it back at the end.</td></tr>
+        <tr><th>Simplify</th><td>Divide top and bottom by the same number: 12⁄16 = ¾ (both ÷ 4).</td></tr>
+        <tr><th>To a decimal</th><td>Top ÷ bottom: ⅝ = 5 ÷ 8 = 0.625. To 16ths: decimal × 16, round: 0.3 × 16 = 4.8 ≈ 5⁄16. Every 16th: <b>Calc → Units → Numbers to know</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="math" data-kw="rounding decimals significant measure accuracy nearest sixteenth tolerance round up round down">
+    <div class="sec-head"><h2>Rounding &amp; accuracy</h2><small>When to round, and which way</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Round at the end</th><td>Keep the full number through every step and round only the final answer. Rounding each step stacks the error: three cuts each ¹⁄₃₂" off is ³⁄₃₂" by the end.</td></tr>
+        <tr><th>The usual rule</th><td>5 and up rounds up, 4 and down rounds down: 2.35 → 2.4, 2.34 → 2.3.</td></tr>
+        <tr><th>Round the safe way</th><td>Sizing (pipe, a tank, a heater, gravel to order): round <b>up</b>. Something that has to fit in a space: round <b>down</b> or cut long and trim.</td></tr>
+        <tr><th>Tape accuracy</th><td>Most layout is to the nearest ¹⁄₁₆". Answers in this book round to your setting in Settings → Behavior (⅛, ¹⁄₁₆ or ¹⁄₃₂).</td></tr>
+        <tr><th><span class="badge why">WHY</span>Check it</th><td>Sanity-check any answer in your head before you cut: <b>Calc → Units → Do it in your head</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="math" data-kw="percent ratio rules percentage decimal convert markup discount ratio scale part whole">
+    <div class="sec-head"><h2>Percent &amp; ratio rules</h2><small>Part, whole, and how they move</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Percent means ÷ 100</th><td>10% = 0.10, 2.08% = 0.0208. Percent of something: multiply by the decimal: 10% of 240 = 0.10 × 240 = 24.</td></tr>
+        <tr><th>What percent</th><td>Part ÷ whole × 100: 18 of 24 done = 18 ÷ 24 × 100 = 75%.</td></tr>
+        <tr><th>Change</th><td>(New − old) ÷ old × 100: $40 to $46 = 6 ÷ 40 × 100 = 15% more.</td></tr>
+        <tr><th>Add a percent</th><td>× (1 + %): 240 ft plus 10% waste = 240 × 1.10 = 264 ft. Take one off: × (1 − %).</td></tr>
+        <tr><th>Trap</th><td>Up 10% then down 10% doesn't get you back: 100 → 110 → 99.</td></tr>
+        <tr><th>Ratios</th><td>A ratio is a fraction: ¼" = 1' on a plan is 1:48. Scale anything by multiplying both sides by the same number. Cross-multiply to solve: <b>Calc → Math → Proportion</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="math" data-kw="area volume formulas shapes rectangle triangle circle cylinder box cone pi 3.1416 0.7854 cubic gallons 231 7.48 cubic yard 27">
+    <div class="sec-head"><h2>Shape formulas</h2><small>Area, volume, and turning it into gallons</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Rectangle</th><td>Area = length × width</td></tr>
+        <tr><th>Triangle</th><td>Area = base × height ÷ 2</td></tr>
+        <tr><th>Circle</th><td>Area = 0.7854 × D² (same as π × r²). Around the outside = 3.1416 × D.</td></tr>
+        <tr><th>Box</th><td>Volume = length × width × height</td></tr>
+        <tr><th>Cylinder (pipe, tank)</th><td>Volume = 0.7854 × D² × length</td></tr>
+        <tr><th>Cone (a pile)</th><td>Volume = 0.2618 × D² × height (one third of a cylinder)</td></tr>
+        <tr><th>Into gallons</th><td>Cubic inches ÷ 231, or cubic feet × 7.48.</td></tr>
+        <tr><th>Into yards</th><td>Cubic feet ÷ 27 = cubic yards (gravel, sand, concrete are sold this way).</td></tr>
+        <tr><th><span class="badge why">WHY</span>Same units</th><td>Change everything to inches or everything to feet <b>before</b> you multiply. Area in feet² ÷ 144 if you started in inches²; volume ÷ 1,728.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="math" data-kw="triangle rules pythagorean theorem a2 b2 c2 sohcahtoa sine cosine tangent angles 180 degrees right angle hypotenuse travel offset run">
+    <div class="sec-head"><h2>Triangles &amp; angles</h2><small>The math under every offset</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Pythagoras</th><td>Right triangle: a² + b² = c². The long side (c) is the <b>travel</b>; a and b are the offset and run. 3-4-5 is the easy one.</td></tr>
+        <tr><th>SOH-CAH-TOA</th><td>Sin = opposite ÷ hypotenuse · Cos = adjacent ÷ hypotenuse · Tan = opposite ÷ adjacent. For an offset: sin(angle) = offset ÷ travel.</td></tr>
+        <tr><th>Angles add to 180°</th><td>In any triangle. A right triangle has a 90°, so the other two make 90° together: a 45° offset has two 45°s; a 22½° one has 22½° and 67½°.</td></tr>
+        <tr><th>Fitting multipliers</th><td>Travel = offset × 1 ÷ sin(angle): 1.414 for 45°, 2.613 for 22½°, 2.000 for 30°, 1.155 for 60°, 5.126 for 11¼°. Full table: <b>Calc → Layout → Offset multipliers</b>.</td></tr>
+        <tr><th>Degrees and slope</th><td>Degrees = arctan(rise ÷ run). ¼"/ft is about 1.19°. Converter: <b>Calc → Math → Slope &amp; angle converter</b>.</td></tr>
+        <tr><th><span class="badge why">WHY</span>Why it works</th><td><b>Learn → How it works → Why the pipe math works</b>.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section data-sec="math" data-kw="rearrange formula solve for algebra unknown both sides isolate btu gpm formula backwards">
+    <div class="sec-head"><h2>Turn a formula around</h2><small>Solve for the part you don't know</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The rule</th><td>Whatever you do to one side, do to the other. Undo things in reverse: undo × with ÷, + with −.</td></tr>
+        <tr><th>Example</th><td>BTU = gal × 8.34 × rise. Need gallons? Divide both sides by (8.34 × rise): <b>gal = BTU ÷ (8.34 × rise)</b>.</td></tr>
+        <tr><th>Example</th><td>psi = ft × 0.433. Need feet? <b>ft = psi ÷ 0.433</b> (that's psi × 2.31).</td></tr>
+        <tr><th>Example</th><td>Travel = offset × 1.414. Know the travel you have room for? <b>offset = travel ÷ 1.414</b>.</td></tr>
+        <tr><th>Check it</th><td>Put your answer back into the first formula. If both sides match, it's right.</td></tr>
+      </tbody></table></div>
   </section>
     
   <!-- ================= ROUGH ================= -->
@@ -4897,7 +5069,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 15, 2026</th><td><b>Learn is tidier:</b> Flashcards, Practice test and the Fact file are one page now, <b>Learn → Study</b> (8 pages down to 6). Pins, card notes and old links follow the cards. <b>Merge a backup:</b> keep a phone and an iPad matched without losing anything. AirDrop a backup over and tap <b>Merge a backup</b>: the newest copy of each job, person and note wins, and nothing new gets wiped (My jobs → Backup, or Settings → Backup). <b>Export hours</b> as a spreadsheet for your sponsor's records. <b>The search bar finds your jobs</b> above the cards. <b>Deleted photos and files</b> now wait in Recently deleted for 30 days. The unit converter got Copy, Share and Add to tape; Mine → Notes is now <b>Card notes</b>; the old Screen check test button is gone. <b>Weather → Plan the day:</b> today's work window (dry, above freezing, calm, before sunset), daylight left, tonight's low, tomorrow at 7 AM and frozen ground. New calls for thunderstorms, freezing rain, wind chill and dense fog. <b>Safer backups:</b> the app keeps a safety copy of your jobs from each of the last 7 days and from right before any restore, so a bad restore or a big mistake can be undone (Settings → Backup → Safety copies). Backups can be locked with a password. A lockdown rule lets the book talk only to the weather services it uses. <b>Tip jar</b> in Settings → About. <b>New in Learn → How it works:</b> how a shower valve works (pressure-balance vs thermostatic), how pumps lift water, how a gas burner stays lit, from the main to the sewer, why pipes sweat, how joints seal, valve types, and faucets &amp; flush valves, most with diagrams. <b>New in Jobsite → Safety:</b> ladders, concrete dust &amp; silica, torch &amp; hot work, and working in someone's house. <b>Learn:</b> a Power tools card and 32 new flashcards. <b>iPad and iPhone flicker:</b> cards no longer flicker or jump while you scroll. Safari was redrawing cards as they came on screen; now it draws them all. <b>How notes work, in depth:</b> the notes guide in My jobs is now six short lessons you open one at a time: the 3 steps, start-of-line vs anywhere marks, a picture of each mark (what you type → what you see → where it shows up), easy mistakes side by side, a full example note, and every mark with a try-it box. The guide remembers if you left it open or closed, and Notes on people, builder and subdivision pages fold too. <b>App scan:</b> cold-weather safety added to Jobsite → Safety (layers, spares, breaks, watch each other; CDC/NIOSH). "Settings → About" style references in cards now open Settings. Searching "sniff" or "smell" finds gas leak help. Home's label no longer mentions the removed My city. <b>Find a job:</b> a search box on My jobs looks through names, addresses, people, builders, notes, punch lists and inspections, and shows the matching note line. <b>Open on active jobs:</b> every unchecked box and open question across your jobs in one list; tap one to go to its note. <b>Mentioned in job notes:</b> a person, builder or subdivision page lists every note line that links to it. <b>📝 Day log</b> button lays out Did / Didn't, and why / Next. A booked inspection whose date has passed now asks for its result. <b>Job page flow:</b> the job's details fold under <b>Job details</b>; pin, icon and color moved to one <b>Look</b> section at the bottom, the icon picker folded; one notes help (30-second guide with every mark inside); when every stage is done the job offers <b>Mark the job Done</b>; failed or partial inspections show on the job's row; Colors moved to the bottom of the list. <b>New job icons:</b> 32 isometric black-and-white drawings (house, two-story, rambler, townhomes, cabin, church, warehouse, water heater, tankless, boiler, tub, toilet, valve, trench, truck…) replace the emoji, and they take on your theme's colors. <b>Subdivisions have icons too:</b> every job in a subdivision shows its icon unless the job has its own. <b>Spot a job fast:</b> pin a job to the top of the list (📌 on its page) and give it an icon (🏠 🔥 🚿 ⚠️…) next to its color, so you're not relying on color alone. The list is now A to Z by name (Lot 2 before Lot 12) instead of jumping around as you edit; "Open" is now <b>Active</b> (open and on hold); badges say what they count ("1 of 3 stages", "☐ 2 to do", "? 1 question", "📋 Inspection"); and the line under each job shows dates as 📅 and drops the raw marks. <b>More build cards:</b> Build → Drains → <b>Indirect waste &amp; air gaps</b>, <b>Backwater valves</b>, <b>Pans &amp; condensate</b>; Build → Water supply → <b>Water hammer arresters</b> (PDI sizes A–F). <b>More service cards:</b> Service → Water heaters → <b>Water heater repair: test it</b> (thermocouple mV, status lights, element ohms, flushing); Service → Error codes → <b>Noritz</b> and <b>Takagi</b>; Service → Troubleshoot → <b>Wells &amp; pressure tanks</b> and <b>Tying into old pipe</b>. <b>New cards:</b> Trim → <b>Toilet install, step by step</b>, <b>Kitchen hookups</b>, <b>Tub &amp; shower drains</b>, <b>Stops, supplies &amp; aerators</b>; Service → Troubleshoot → <b>Toilet problems</b> and <b>Service work: dos &amp; don'ts</b>. <b>Two themes for dark places</b> (Settings → Look): <b>Crawlspace</b>, dim amber on black for low glare, and <b>Headlamp</b>, crisp white and cyan that reads well by headlamp. Turn on Night (the moon button) for their dark versions. <b>Jobs as a tree:</b> the job list folds as Builder › Subdivision › job; tap a name to fold it. <b>Fold any section</b> of a job (People, Timeline, Checklist, Notes, Photos…) by tapping its heading; it stays that way. <b>More dates:</b> when each checklist and punch item was ticked, when a job was added and last changed, days in the current stage, and "edited" on changed notes. <b>New note marks:</b> <code>??</code> a blue question you tap when answered, <code>@Nov 20</code> a purple date (the next 7 days show on Home), and <code>Label: value</code> facts that collect at the top of the job. <b>How notes work</b> is now three colored steps with a color key, right above the note box. <b>Edit in place:</b> tap ✎ on an inspection, an hours entry, a punch item or one of your checklist items to change it (date, result, inspector, notes, hours…), then Save. <b>Your colors:</b> give each job a color (a stripe on it everywhere), and pick colors for stages and tags under <b>Colors: stages &amp; tags</b> on the Jobs page. <b>Explainers</b> on Supply demand, Unit converter, Before you call it in, Look up a city, My numbers and Circuits; stale "city" wording fixed in Pinned and Settings → Backup. <b>Colors in My jobs:</b> each stage has its own color (Underground brown, Top-out blue, Gas yellow, Finish green, Final purple, Warranty gray) on the timeline and in lists; links show what they open (👤 people orange, 🏗 builders teal, 🏘 subdivisions green, 🔧 jobs blue, 📖 book cards purple); each #tag keeps its own color; the toolbar buttons match. A live preview under the note box shows the note as you type, and <b>How to write notes</b> is a color cheat sheet with a Try it box. <b>Don't lose jobs:</b> <b>Back up everything</b> (Mine → Jobs, or Settings → Backup) makes one file with your jobs, people, notes, settings, photos and files, and the Share sheet saves it to iCloud Drive or Files. Home reminds you when it's been a week or after a lot of changes. Deleted jobs, people, builders, subdivisions and notes wait 30 days in <b>Recently deleted</b> before they're gone. The app also asks iOS not to clear its storage. <b>My jobs is its own file now</b> (jobs.js), saved for offline with the rest. Nothing looks different; an update to the book or to the tracker downloads only that part. <b>Sturdier My jobs:</b> damaged saved data is repaired instead of blanking the page (and if anything still breaks, a button downloads your jobs so they're safe); a save that fails because the phone's space is full now tells you, and the job list shows how full it's getting; restoring a backup asks first and says how many jobs it has; person and builder pages open faster with lots of jobs; <code>[[ ]]</code> with nothing in it stays plain text. <b>Bottom bar fixed:</b> the home-screen app no longer draws under the status bar, which is what made iOS float the bar after typing (re-add the app to the Home Screen to get it).</td></tr>
+        <tr><th>Nov 15, 2026</th><td><b>New page: Calc → Math.</b> Seven everyday calculators that draw as you type: Fractions (the answer marked on a ruler), Percent, Area &amp; volume (the shape to scale, in ft², yards and gallons), Slope &amp; angle converter (the triangle at its real angle), Proportion, Time card (your shift on a timeline) and Average. Plus math rules: order of operations, fractions, rounding, percent and ratios, shape formulas, triangles and angles, and turning a formula around. <b>Learn is tidier:</b> Flashcards, Practice test and the Fact file are one page now, <b>Learn → Study</b> (8 pages down to 6). Pins, card notes and old links follow the cards. <b>Merge a backup:</b> keep a phone and an iPad matched without losing anything. AirDrop a backup over and tap <b>Merge a backup</b>: the newest copy of each job, person and note wins, and nothing new gets wiped (My jobs → Backup, or Settings → Backup). <b>Export hours</b> as a spreadsheet for your sponsor's records. <b>The search bar finds your jobs</b> above the cards. <b>Deleted photos and files</b> now wait in Recently deleted for 30 days. The unit converter got Copy, Share and Add to tape; Mine → Notes is now <b>Card notes</b>; the old Screen check test button is gone. <b>Weather → Plan the day:</b> today's work window (dry, above freezing, calm, before sunset), daylight left, tonight's low, tomorrow at 7 AM and frozen ground. New calls for thunderstorms, freezing rain, wind chill and dense fog. <b>Safer backups:</b> the app keeps a safety copy of your jobs from each of the last 7 days and from right before any restore, so a bad restore or a big mistake can be undone (Settings → Backup → Safety copies). Backups can be locked with a password. A lockdown rule lets the book talk only to the weather services it uses. <b>Tip jar</b> in Settings → About. <b>New in Learn → How it works:</b> how a shower valve works (pressure-balance vs thermostatic), how pumps lift water, how a gas burner stays lit, from the main to the sewer, why pipes sweat, how joints seal, valve types, and faucets &amp; flush valves, most with diagrams. <b>New in Jobsite → Safety:</b> ladders, concrete dust &amp; silica, torch &amp; hot work, and working in someone's house. <b>Learn:</b> a Power tools card and 32 new flashcards. <b>iPad and iPhone flicker:</b> cards no longer flicker or jump while you scroll. Safari was redrawing cards as they came on screen; now it draws them all. <b>How notes work, in depth:</b> the notes guide in My jobs is now six short lessons you open one at a time: the 3 steps, start-of-line vs anywhere marks, a picture of each mark (what you type → what you see → where it shows up), easy mistakes side by side, a full example note, and every mark with a try-it box. The guide remembers if you left it open or closed, and Notes on people, builder and subdivision pages fold too. <b>App scan:</b> cold-weather safety added to Jobsite → Safety (layers, spares, breaks, watch each other; CDC/NIOSH). "Settings → About" style references in cards now open Settings. Searching "sniff" or "smell" finds gas leak help. Home's label no longer mentions the removed My city. <b>Find a job:</b> a search box on My jobs looks through names, addresses, people, builders, notes, punch lists and inspections, and shows the matching note line. <b>Open on active jobs:</b> every unchecked box and open question across your jobs in one list; tap one to go to its note. <b>Mentioned in job notes:</b> a person, builder or subdivision page lists every note line that links to it. <b>📝 Day log</b> button lays out Did / Didn't, and why / Next. A booked inspection whose date has passed now asks for its result. <b>Job page flow:</b> the job's details fold under <b>Job details</b>; pin, icon and color moved to one <b>Look</b> section at the bottom, the icon picker folded; one notes help (30-second guide with every mark inside); when every stage is done the job offers <b>Mark the job Done</b>; failed or partial inspections show on the job's row; Colors moved to the bottom of the list. <b>New job icons:</b> 32 isometric black-and-white drawings (house, two-story, rambler, townhomes, cabin, church, warehouse, water heater, tankless, boiler, tub, toilet, valve, trench, truck…) replace the emoji, and they take on your theme's colors. <b>Subdivisions have icons too:</b> every job in a subdivision shows its icon unless the job has its own. <b>Spot a job fast:</b> pin a job to the top of the list (📌 on its page) and give it an icon (🏠 🔥 🚿 ⚠️…) next to its color, so you're not relying on color alone. The list is now A to Z by name (Lot 2 before Lot 12) instead of jumping around as you edit; "Open" is now <b>Active</b> (open and on hold); badges say what they count ("1 of 3 stages", "☐ 2 to do", "? 1 question", "📋 Inspection"); and the line under each job shows dates as 📅 and drops the raw marks. <b>More build cards:</b> Build → Drains → <b>Indirect waste &amp; air gaps</b>, <b>Backwater valves</b>, <b>Pans &amp; condensate</b>; Build → Water supply → <b>Water hammer arresters</b> (PDI sizes A–F). <b>More service cards:</b> Service → Water heaters → <b>Water heater repair: test it</b> (thermocouple mV, status lights, element ohms, flushing); Service → Error codes → <b>Noritz</b> and <b>Takagi</b>; Service → Troubleshoot → <b>Wells &amp; pressure tanks</b> and <b>Tying into old pipe</b>. <b>New cards:</b> Trim → <b>Toilet install, step by step</b>, <b>Kitchen hookups</b>, <b>Tub &amp; shower drains</b>, <b>Stops, supplies &amp; aerators</b>; Service → Troubleshoot → <b>Toilet problems</b> and <b>Service work: dos &amp; don'ts</b>. <b>Two themes for dark places</b> (Settings → Look): <b>Crawlspace</b>, dim amber on black for low glare, and <b>Headlamp</b>, crisp white and cyan that reads well by headlamp. Turn on Night (the moon button) for their dark versions. <b>Jobs as a tree:</b> the job list folds as Builder › Subdivision › job; tap a name to fold it. <b>Fold any section</b> of a job (People, Timeline, Checklist, Notes, Photos…) by tapping its heading; it stays that way. <b>More dates:</b> when each checklist and punch item was ticked, when a job was added and last changed, days in the current stage, and "edited" on changed notes. <b>New note marks:</b> <code>??</code> a blue question you tap when answered, <code>@Nov 20</code> a purple date (the next 7 days show on Home), and <code>Label: value</code> facts that collect at the top of the job. <b>How notes work</b> is now three colored steps with a color key, right above the note box. <b>Edit in place:</b> tap ✎ on an inspection, an hours entry, a punch item or one of your checklist items to change it (date, result, inspector, notes, hours…), then Save. <b>Your colors:</b> give each job a color (a stripe on it everywhere), and pick colors for stages and tags under <b>Colors: stages &amp; tags</b> on the Jobs page. <b>Explainers</b> on Supply demand, Unit converter, Before you call it in, Look up a city, My numbers and Circuits; stale "city" wording fixed in Pinned and Settings → Backup. <b>Colors in My jobs:</b> each stage has its own color (Underground brown, Top-out blue, Gas yellow, Finish green, Final purple, Warranty gray) on the timeline and in lists; links show what they open (👤 people orange, 🏗 builders teal, 🏘 subdivisions green, 🔧 jobs blue, 📖 book cards purple); each #tag keeps its own color; the toolbar buttons match. A live preview under the note box shows the note as you type, and <b>How to write notes</b> is a color cheat sheet with a Try it box. <b>Don't lose jobs:</b> <b>Back up everything</b> (Mine → Jobs, or Settings → Backup) makes one file with your jobs, people, notes, settings, photos and files, and the Share sheet saves it to iCloud Drive or Files. Home reminds you when it's been a week or after a lot of changes. Deleted jobs, people, builders, subdivisions and notes wait 30 days in <b>Recently deleted</b> before they're gone. The app also asks iOS not to clear its storage. <b>My jobs is its own file now</b> (jobs.js), saved for offline with the rest. Nothing looks different; an update to the book or to the tracker downloads only that part. <b>Sturdier My jobs:</b> damaged saved data is repaired instead of blanking the page (and if anything still breaks, a button downloads your jobs so they're safe); a save that fails because the phone's space is full now tells you, and the job list shows how full it's getting; restoring a backup asks first and says how many jobs it has; person and builder pages open faster with lots of jobs; <code>[[ ]]</code> with nothing in it stays plain text. <b>Bottom bar fixed:</b> the home-screen app no longer draws under the status bar, which is what made iOS float the bar after typing (re-add the app to the Home Screen to get it).</td></tr>
         <tr><th>Nov 14, 2026</th><td><b>Bottom bar, the real fix (we hope):</b> the home-screen app no longer draws under the clock and battery strip. That mode is what iOS got wrong after the keyboard, leaving the app 59 points short. If it ever still comes back short, the bar drops its home-indicator padding so it sits snug. <b>Bottom bar:</b> no longer slides into the strip iOS leaves undrawn after the keyboard (that cut it off); instead the app asks iOS to re-measure, and Screen check logs each try. <b>My city is gone:</b> nothing saves a city now. Home drops the city box, first-time setup drops the city step, and the city details moved to <b>Inspect → Cities → Look up a city</b> (any town, nothing saved). <b>Sturdier notes:</b> indented lists nest, numbered lists keep their number, back-to-back quote lines join, <code>```</code> blocks show text exactly as typed, <code>[[Dave|the inspector]]</code> shows your own words, a backslash shows a mark as-is, and web links don't swallow the period after them. <b>Fewer stages by default:</b> every job has Underground, Top-out and Finish. Gas, Final and Warranty are extras: tap <b>+ Gas</b> (or Final, Warranty) under the timeline to add one, and <b>Remove stage</b> to take it off. Older jobs keep any extra that has something in it. <b>Bottom bar, again:</b> after the keyboard, iOS can leave the app drawn shorter than the screen. The app now checks once a second and stretches back to the real bottom, and Settings → Screen check keeps the last readings so a floating bar can be tracked down. <b>Builders and subdivisions have pages,</b> like people: a builder's office phone, website, their people and subdivisions; a subdivision's city, builder, gate code and water/sewer tie-in; notes and every job on each. Jobs pick a builder and subdivision (a subdivision fills in its city and builder), the customer is its own box, and the job list is grouped by builder. <code>[[ABC Homes]]</code> links to the page. Older jobs: what was in "Builder / customer" became a builder page. <b>Job page polish:</b> the timeline line no longer runs through the open stage, date boxes stay inside the card, a skipped stage isn't dimmed while open, the four status buttons sit in one row, and the notes toolbar is one swipeable row. <b>The bottom bar, rebuilt:</b> in the home-screen app the page itself no longer scrolls; the book scrolls inside it and the bar sits below, so the keyboard and pop-ups can't push the bar up. <b>Jobs have a name</b> separate from the address: the name shows in lists, the address feeds Directions, and <code>[[links]]</code> match either one. <b>Faster:</b> switching tabs is 2 to 10 times quicker on long pages (cards off the screen aren't drawn until you scroll to them), and on weak signal the app opens from its saved copy after 2 seconds instead of 4. <b>Your own checklists:</b> tap <b>Edit list</b> on a stage's checklist to remove items (the book's too) and add your own, then <b>Use this list on new jobs</b> to make it your starting list for that stage. <b>Back to the book's list</b> undoes it. <b>A job's city is its own:</b> new jobs start with no city instead of My city, the city only feeds Directions, and jobs no longer show the city's inspection booking (that stays in Inspect → Cities). <b>Each job is a timeline now:</b> Underground → Top-out (rough-in) → Gas → Finish (trim) → Final → Warranty, with the blanks ready. Tap a stage to fill it in: To do / Doing / Done / Skip, dates, who led it, a checklist that starts from the book's "Before you call it in" list, inspections, hours, notes and photos. Mark a stage Done and the next one opens. <b>People:</b> set the job's Lead and Superintendent; everyone gets a page with phone (Call / Text), company, notes and every job they're on, and <code>[[Dave]]</code> in a note links to it. <b>Directions</b> opens the address in Maps. The bottom bar no longer floats when you add something while the keyboard is up. <b>Job notes are a dated log now:</b> add as many notes to a job as you like, each with its date, newest first, and tap ✎ to change one. Write them with quick marks: <code>- [ ]</code> a checkbox (the job shows how many are open), <code>!!</code> a red heads-up, <code>#</code> headings, <code>**bold**</code>, <code>#tag</code> (tap to see every job with it), and <code>[[Lot 14]]</code> to link another job or a card in the book. Buttons above the box put them in for you, and phone numbers in notes are tappable. Old notes moved into the log. The bottom bar re-seats after the delete pop-up, the date wheel and the photo picker. <b>My jobs (Mine → Jobs):</b> each job keeps its address, builder or customer, city (with how to book its inspections), phase and status; its inspections (booked, pass, partial, fail) with the inspector and corrections; hours with today, this week, last week and a running count toward your license hours; a punch and materials list you check off; and photos (a note on each) and files like PDF plans. <b>MY JOBS</b> on Home shows your open jobs. Jobs go in Settings → Download backup; photos and files are too big for it and have their own backup at the bottom of the Jobs page.</td></tr>
         <tr><th>Nov 13, 2026</th><td><b>Find a city by typing:</b> the city menus (Contacts → Call → My city, and first-time setup) have a search box, so you don't scroll 259 names. <b>Every Utah city and town</b> is in the city picker now (259 places). The 227 new ones show their elevation. 24 of them (the rest of Utah County and the biggest cities nearby) also have how to book inspections and, where found, secondary water; the others say "not checked yet". <b>New home-screen icon:</b> bright lime on black, so it stays easy to see when the phone is in dark mode. An iPhone keeps the old picture until you delete the Handbook from the home screen and add it again (Safari → Share → Add to Home Screen). Your saved pins and notes stay. The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install. <b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
         <tr><th>Nov 12, 2026</th><td><b>Share the book</b> (Settings) shows its QR code with no signal now: the code is stored in the book instead of being fetched. <b>Bottom bar:</b> eight tables had started scrolling up and down a few pixels inside their own boxes, which can tug the iPhone bar loose: fixed. After the "Allow location" prompt the book now re-seats the bar. <b>Weather:</b> the first forecast shows in a few seconds even when the main service is slow, and picking a new place no longer blanks the card. A book left in the background over 6 hours reloads when you come back, so it picks up updates. <b>Weather fixed:</b> when the main forecast service doesn't answer, the card now switches to the National Weather Service forecast instead of sitting on "Loading". Every weather request gives up after 12 seconds and tries again. <b>New:</b> a weather button in the top corner shows the sky right now and the temperature; tap it for Jobsite → Weather. Turn it off in <b>Settings → Behavior → Weather in the header</b>. <b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them. <b>Water treatment</b> (Service → Treatment) grew: <b>Where treatment goes</b> (order in the line, hard water for hose bibbs, the softener loop rough-in), <b>Softener trouble</b> (no soft water, salt bridge, resin in the lines, low pressure), <b>How RO works</b>, <b>Treatment code</b> (the IPC and IRC sections for softeners and RO) and <b>Treatment brands</b>. <b>Contacts → Tech lines → Water treatment</b> has 14 makers' phone lines.</td></tr>
@@ -6322,7 +6494,7 @@ bindPn();
 /* ---------- 4 navigation, search, theme ---------- */
 const GROUPS = {
   home:    [["home","Home"]],
-  calc:    [["layout","Layout"],["grade","Grade"],["sizing","Sizing"],["water","Flow"],["plans","Plans"],["units","Units"]],
+  calc:    [["layout","Layout"],["grade","Grade"],["sizing","Sizing"],["water","Flow"],["plans","Plans"],["units","Units"],["math","Math"]],
   rough:   [["framing","Framing"],["drains","Drains"],["vents","Vents"],["supply","Water supply"],["fixtures","Fixtures"],["gas","Gas"],["materials","Materials"]],
   mech:    [["mechfix","Troubleshoot"],["codes","Error codes"],["mechmap","Room map"],["heaters","Water heaters"],["treat","Treatment"],["hotwater","Hot water"]],
   trim:    [["trim","Valves & trim"],["idhow","ID a part"],["threads","Threads & sizes"]],
@@ -9271,7 +9443,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-15u";
+{ const NEWS = "2026-11-15v";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -9454,6 +9626,142 @@ let TAPE = (a => Array.isArray(a) ? a.filter(x => x && typeof x.text === "string
 function tapeDraw(){
   $("tape-list").innerHTML = TAPE.length ? TAPE.map((x, i) => `<div class="tape-item"><p class="card-h">${esc(new Date(x.t).toLocaleString([], {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"}))}</p><pre>${esc(x.text)}</pre><div class="set-btns"><button type="button" class="btn ghost" data-tc="${i}">Copy</button><button type="button" class="del" data-td="${i}">Remove</button></div></div>`).join("")
     : `<p class="note">Nothing on the tape yet.</p>`;
+}
+/* ---------- Calc → Math: general calculators, each with a drawing that follows the numbers ---------- */
+{ const svgT = (x, y, t, a) => `<text x="${x}" y="${y}" font-size="12" fill="var(--d-text)"${a ? ` text-anchor="${a}"` : ""}>${t}</text>`;
+  const r2 = x => Math.round(x * 100) / 100;
+  /* fractions: exact, with whole numbers kept apart */
+  const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a || 1; };
+  const frac = raw => { const s = String(raw).trim().replace(/[″"]/g, ""); let m;
+    if ((m = s.match(/^(-?)(\d+)\s+(\d+)\/(\d+)$/))) return [(+m[2] * +m[4] + +m[3]) * (m[1] ? -1 : 1), +m[4]];
+    if ((m = s.match(/^(-?\d+)\/(\d+)$/))) return [+m[1], +m[2]];
+    if (/^-?\d*\.?\d+$/.test(s)){ const d = (s.split(".")[1] || "").length, den = Math.pow(10, Math.min(d, 6)); return [Math.round(parseFloat(s) * den), den]; }
+    return null; };
+  const red = ([n, d]) => { if (d < 0){ n = -n; d = -d; } const g = gcd(n, d); return [n / g, d / g]; };
+  const mixed = ([n, d]) => { const neg = n < 0, w = Math.floor(Math.abs(n) / d), r = Math.abs(n) % d; return (neg ? "−" : "") + (w ? w : "") + (r ? `${w ? " " : ""}${r}/${d}` : w ? "" : "0"); };
+  let fOp = "+";
+  function mf(){
+    const a = frac($("mf-a").value), b = frac($("mf-b").value), el = $("mf-ans");
+    if (!a || !b || !a[1] || !b[1]){ el.innerHTML = warn("Type numbers like 3 1/2, 7/8 or 2.25."); $("mf-viz").innerHTML = ""; return; }
+    if (fOp === "/" && b[0] === 0){ el.innerHTML = warn("Can't divide by zero."); $("mf-viz").innerHTML = ""; return; }
+    const r = red(fOp === "+" ? [a[0] * b[1] + b[0] * a[1], a[1] * b[1]] : fOp === "-" ? [a[0] * b[1] - b[0] * a[1], a[1] * b[1]] : fOp === "*" ? [a[0] * b[0], a[1] * b[1]] : [a[0] * b[1], a[1] * b[0]]);
+    const dec = r[0] / r[1], s16 = Math.round(dec * 16);
+    const opT = {"+": "+", "-": "−", "*": "×", "/": "÷"}[fOp];
+    el.innerHTML = `${mixed(r)}<small>${r[1] !== 1 && Math.abs(r[0]) > r[1] ? `${r[0]}/${r[1]} · ` : ""}${nf(dec, 4)}${r[1] > 16 || 16 % r[1] ? ` · nearest 16th: ${mixed(red([s16, 16]))}` : ""}</small>`;
+    mathOut("mf-math", [`As fractions: ${a[0]}/${a[1]} ${opT} ${b[0]}/${b[1]}`,
+      fOp === "+" || fOp === "-" ? `Same bottoms: ${a[0] * b[1]}/${a[1] * b[1]} ${opT} ${b[0] * a[1]}/${a[1] * b[1]}` : fOp === "*" ? `Top × top, bottom × bottom: ${a[0] * b[0]}/${a[1] * b[1]}` : `Flip the second and multiply: ${a[0]}/${a[1]} × ${b[1]}/${b[0]} = ${a[0] * b[1]}/${a[1] * b[0]}`,
+      `Simplified: <b>${r[0]}/${r[1]} = ${mixed(r)}</b>`, `Decimal: ${r[0]} ÷ ${r[1]} = ${nf(dec, 4)}`]);
+    /* the inch the answer ends in, on a ruler with 16ths */
+    const part = ((dec % 1) + 1) % 1, x0 = 20, w = 280; let g = "";
+    for (let i = 0; i <= 16; i++){ const h = i % 16 === 0 ? 30 : i % 8 === 0 ? 24 : i % 4 === 0 ? 18 : i % 2 === 0 ? 13 : 9; g += `<path d="M${x0 + i * w / 16} 14v${h}" stroke="var(--d-pipe)" stroke-width="${i % 4 ? 1.5 : 2.5}"/>`; }
+    const px = x0 + part * w;
+    $("mf-viz").innerHTML = `<rect x="${x0}" y="10" width="${w}" height="38" fill="none" stroke="var(--d-pipe)" stroke-width="2"/>${g}<rect x="${x0}" y="12" width="${part * w}" height="6" fill="var(--d-fit)" opacity=".6"/><path d="M${px} 8v44" stroke="var(--d-fit)" stroke-width="3"/>${svgT(x0, 64, Math.floor(Math.abs(dec)) + '"')}${svgT(x0 + w, 64, Math.floor(Math.abs(dec)) + 1 + '"', "end")}${svgT(Math.min(Math.max(px, 70), 250), 80, part ? mixed(red([Math.round(part * 16), 16])).replace(/^0 /, "") + '" past' : "on the inch", "middle")}`;
+  }
+  $("mf-op").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; fOp = b.dataset.op; press("#mf-op", x => x === b); mf(); });
+  ["mf-a", "mf-b"].forEach(id => $(id).addEventListener("input", mf)); mf();
+
+  /* percent */
+  let pMode = "of"; const PL = {of: ["Percent", "Of"], what: ["Part", "Whole"], chg: ["From", "To"], add: ["Percent", "Amount"]};
+  function mp(){
+    const a = val("mp-a"), b = val("mp-b"), el = $("mp-ans"); let pct = null, out = "", steps = [];
+    if (!isFinite(a) || !isFinite(b)){ el.innerHTML = warn("Type both numbers."); $("mp-viz").innerHTML = ""; return; }
+    if (pMode === "of"){ const v = a / 100 * b; out = `${nf(v, 3)}<small>${nf(a, 3)}% of ${nf(b, 3)}</small>`; pct = a; steps = [`${nf(a, 3)}% = ${nf(a / 100, 4)}`, `${nf(a / 100, 4)} × ${nf(b, 3)} = <b>${nf(v, 3)}</b>`]; }
+    else if (pMode === "what"){ if (!b){ el.innerHTML = warn("The whole can't be 0."); return; } pct = a / b * 100; out = `${nf(pct, 2)}%<small>${nf(a, 3)} is ${nf(pct, 2)}% of ${nf(b, 3)}</small>`; steps = [`Part ÷ whole × 100 = ${nf(a, 3)} ÷ ${nf(b, 3)} × 100 = <b>${nf(pct, 2)}%</b>`]; }
+    else if (pMode === "chg"){ if (!a){ el.innerHTML = warn("Start from a number other than 0."); return; } pct = (b - a) / a * 100; out = `${pct >= 0 ? "+" : "−"}${nf(Math.abs(pct), 2)}%<small>${pct >= 0 ? "up" : "down"} ${nf(Math.abs(b - a), 3)} from ${nf(a, 3)}</small>`; steps = [`(New − old) ÷ old × 100 = (${nf(b, 3)} − ${nf(a, 3)}) ÷ ${nf(a, 3)} × 100 = <b>${nf(pct, 2)}%</b>`]; }
+    else { const up = b * (1 + a / 100), dn = b * (1 - a / 100); pct = a; out = `${nf(up, 3)}<small>plus ${nf(a, 3)}% · minus ${nf(a, 3)}%: ${nf(dn, 3)}</small>`; steps = [`Add: ${nf(b, 3)} × ${nf(1 + a / 100, 4)} = <b>${nf(up, 3)}</b>`, `Take off: ${nf(b, 3)} × ${nf(1 - a / 100, 4)} = ${nf(dn, 3)}`]; }
+    el.innerHTML = out; mathOut("mp-math", steps);
+    const f = Math.max(0, Math.min(1, Math.abs(pct) / 100)), over = Math.abs(pct) > 100;
+    $("mp-viz").innerHTML = `<rect x="10" y="10" width="300" height="22" rx="4" fill="none" stroke="var(--d-pipe)" stroke-width="2"/><rect x="12" y="12" width="${296 * f}" height="18" rx="3" fill="${pMode === "chg" && pct < 0 ? "var(--d-cut)" : "var(--d-fit)"}"/>${[25, 50, 75].map(t => `<path d="M${10 + t * 3} 32v6" stroke="var(--d-pipe)" stroke-width="1.5"/>`).join("")}${svgT(10, 50, "0%")}${svgT(160, 50, "50%", "middle")}${svgT(310, 50, over ? "100%+" : "100%", "end")}`;
+  }
+  $("mp-mode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; pMode = b.dataset.mp; press("#mp-mode", x => x === b);
+    $("mp-a-l").firstChild.textContent = PL[pMode][0]; $("mp-b-l").firstChild.textContent = PL[pMode][1]; mp(); });
+  ["mp-a", "mp-b"].forEach(id => $(id).addEventListener("input", mp)); mp();
+
+  /* area & volume: sizes typed like a tape (inches unless marked ') */
+  let aShape = "rect"; const AL = {rect: ["Length", "Width"], circ: ["Diameter"], tri: ["Base", "Height"], box: ["Length", "Width", "Depth"], cyl: ["Diameter", "Length"]};
+  function ma(){
+    const L = AL[aShape], v = ["ma-a", "ma-b", "ma-c"].map(id => tapeIn($(id).value)), el = $("ma-ans");
+    ["ma-a-l", "ma-b-l", "ma-c-l"].forEach((id, i) => { $(id).hidden = !L[i]; if (L[i]) $(id).firstChild.textContent = L[i]; });
+    if (L.some((_, i) => !(v[i] > 0))){ el.innerHTML = warn("Type every size: 10', 3' 4 1/2\" or plain inches."); $("ma-viz").innerHTML = ""; return; }
+    const [a, b, c] = v, isVol = aShape === "box" || aShape === "cyl";
+    const area = aShape === "rect" ? a * b : aShape === "circ" ? 0.7854 * a * a : aShape === "tri" ? a * b / 2 : 0;
+    const vol = aShape === "box" ? a * b * c : aShape === "cyl" ? 0.7854 * a * a * b : 0;
+    if (isVol){ el.innerHTML = `${nf(vol / 1728, 2)} ft³<small>${nf(vol / 231, 1)} gal · ${nf(vol / 46656, 2)} yd³ · ${Math.round(vol / 231 * 8.34).toLocaleString()} lb if it's water</small>`;
+      mathOut("ma-math", [aShape === "box" ? `Length × width × depth = ${nf(a, 2)}" × ${nf(b, 2)}" × ${nf(c, 2)}" = ${nf(vol, 0)} in³` : `0.7854 × D² × length = 0.7854 × ${nf(a, 2)}² × ${nf(b, 2)}" = ${nf(vol, 0)} in³`, `÷ 1,728 = <b>${nf(vol / 1728, 2)} ft³</b> · ÷ 231 = ${nf(vol / 231, 1)} gal · ÷ 46,656 = ${nf(vol / 46656, 2)} yd³`]); }
+    else { el.innerHTML = `${nf(area / 144, 2)} ft²<small>${nf(area, 1)} in²${aShape === "circ" ? ` · around: ${ftInTxt(Math.PI * a / 12)}` : ""}</small>`;
+      mathOut("ma-math", [aShape === "rect" ? `Length × width = ${nf(a, 2)}" × ${nf(b, 2)}" = ${nf(area, 1)} in²` : aShape === "circ" ? `0.7854 × D² = 0.7854 × ${nf(a, 2)}² = ${nf(area, 1)} in²` : `Base × height ÷ 2 = ${nf(a, 2)}" × ${nf(b, 2)}" ÷ 2 = ${nf(area, 1)} in²`, `÷ 144 = <b>${nf(area / 144, 2)} ft²</b>`]); }
+    /* the drawing, to scale inside 300 × 120 */
+    const lab = x => ftInTxt(x / 12); let g = "";
+    if (aShape === "rect" || aShape === "box"){ const s = Math.min(220 / a, (aShape === "box" ? 100 : 110) / b), W = a * s, H = b * s, x = (320 - W) / 2 - (aShape === "box" ? 15 : 0), y = aShape === "box" ? 36 : 20;
+      if (aShape === "box"){ const dx = Math.min(40, c * s * 0.5), dy = -dx * 0.6; g += `<path d="M${x} ${y}l${dx} ${dy}h${W}v${H}l${-dx} ${-dy}M${x + W} ${y}l${dx} ${dy}" fill="none" stroke="var(--d-pipe)" stroke-width="2"/>`; }
+      g += `<rect x="${x}" y="${y}" width="${W}" height="${H}" fill="var(--d-cut)" fill-opacity=".18" stroke="var(--d-pipe)" stroke-width="2.5"/>${svgT(x + W / 2, y + H + 16, lab(a), "middle")}${svgT(x - 6, y + H / 2, lab(b), "end")}`;
+      if (aShape === "box") g += svgT(316, 12, lab(c) + " deep", "end"); }
+    else if (aShape === "circ" || aShape === "cyl"){ const r = aShape === "circ" ? 55 : 40, cx = aShape === "circ" ? 160 : 70, cy = 75;
+      if (aShape === "cyl"){ const Lw = Math.min(210, Math.max(40, b / a * r * 2)); g += `<path d="M${cx} ${cy - r}h${Lw}M${cx} ${cy + r}h${Lw}" stroke="var(--d-pipe)" stroke-width="2.5"/><ellipse cx="${cx + Lw}" cy="${cy}" rx="${r * 0.35}" ry="${r}" fill="none" stroke="var(--d-pipe)" stroke-width="2"/><rect x="${cx}" y="${cy - r}" width="${Lw}" height="${2 * r}" fill="var(--d-cut)" fill-opacity=".14"/>${svgT(cx + Lw / 2, cy + r + 16, lab(b) + " long", "middle")}`; }
+      g += `<ellipse cx="${cx}" cy="${cy}" rx="${aShape === "cyl" ? r * 0.35 : r}" ry="${r}" fill="var(--d-cut)" fill-opacity=".18" stroke="var(--d-pipe)" stroke-width="2.5"/><path d="M${cx} ${cy - r}V${cy + r}" stroke="var(--d-fit)" stroke-width="2" stroke-dasharray="5 4"/>${svgT(cx + 6, cy - 4, "D " + lab(a))}`; }
+    else { const s = Math.min(240 / a, 110 / b), W = a * s, H = b * s, x = (320 - W) / 2, y = 130;
+      g += `<path d="M${x} ${y}h${W}L${x + W * 0.35} ${y - H}Z" fill="var(--d-cut)" fill-opacity=".18" stroke="var(--d-pipe)" stroke-width="2.5"/><path d="M${x + W * 0.35} ${y - H}V${y}" stroke="var(--d-fit)" stroke-width="2" stroke-dasharray="5 4"/>${svgT(x + W / 2, y + 16, lab(a), "middle")}${svgT(x + W * 0.35 + 6, y - H / 2, lab(b))}`; }
+    $("ma-viz").innerHTML = g;
+  }
+  $("ma-mode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; aShape = b.dataset.ma; press("#ma-mode", x => x === b); ma(); });
+  ["ma-a", "ma-b", "ma-c"].forEach(id => $(id).addEventListener("input", ma)); ma();
+
+  /* slope & angle */
+  let sMode = "inft"; const SL = {inft: "Inches per foot", pct: "Percent grade", deg: "Degrees", ratio: "1 in X (X =)"};
+  function ms(){
+    const raw = $("ms-v").value, f = frac(raw), v = f ? f[0] / f[1] : NaN, out = $("ms-out");
+    if (!(v > 0) || (sMode === "deg" && v >= 90)){ out.innerHTML = `<tr><td>${warn(sMode === "deg" ? "Type an angle between 0 and 90." : "Type a number over 0, like 1/4 or 2.")}</td></tr>`; $("ms-viz").innerHTML = ""; return; }
+    const inft = sMode === "inft" ? v : sMode === "pct" ? v / 100 * 12 : sMode === "deg" ? Math.tan(v * Math.PI / 180) * 12 : 12 / v;
+    const pct = inft / 12 * 100, deg = Math.atan(inft / 12) * 180 / Math.PI, X = 12 / inft;
+    const rows = [["Inches per foot", `${toFrac16(inft)}<small>${nf(inft, 3)}"</small>`, sMode === "inft"], ["Percent grade", `${nf(pct, 2)}%`, sMode === "pct"], ["Degrees", `${nf(deg, 2)}°`, sMode === "deg"], ["Ratio", `1 in ${nf(X, 1)}`, sMode === "ratio"], ["Roof pitch", `${nf(inft, 2)} in 12`, false], ["Fall in 10 ft", toFrac16(inft * 10), false], ["Fall in 40 ft", toFrac16(inft * 40), false]];
+    out.innerHTML = rows.map(([a, b, h]) => `<tr${h ? "" : ' class="hit"'}><th>${a}</th><td class="big">${b}</td></tr>`).join("");
+    /* the triangle at its true angle (steep ones capped so they fit); a flat drain slope also gets a 10× taller copy so the shape shows */
+    const ang = Math.min(deg, 70) * Math.PI / 180, x0 = 30, y0 = 132, runD = Math.min(250, 110 / Math.tan(ang)), rise = runD * Math.tan(ang);
+    const ex = deg < 5, eR = Math.min(100, rise * 10);
+    $("ms-viz").innerHTML = (ex ? `<path d="M${x0} ${y0}L${x0 + runD} ${y0 - eR}V${y0}" fill="none" stroke="var(--d-tru)" stroke-width="2" stroke-dasharray="6 4"/>${svgT(x0 + runD - 4, y0 - eR - 6, "10× taller, to see the shape", "end")}` : "")
+      + `<path d="M${x0} ${y0}H${x0 + runD}V${y0 - rise}Z" fill="var(--d-cut)" fill-opacity=".15" stroke="var(--d-pipe)" stroke-width="2.5"/><path d="M${x0} ${y0}L${x0 + runD} ${y0 - rise}" stroke="var(--d-fit)" stroke-width="4"/>`
+      + `${svgT(x0 + runD / 2, y0 + 14, "run 12\"", "middle")}${runD < 160 ? svgT(x0 + runD + 8, y0 - rise / 2, "rise " + toFrac16(inft) + " · " + nf(deg, 1) + "°") : svgT(x0 + runD - 4, y0 - rise - (ex ? 22 : 6), "rise " + toFrac16(inft) + " · " + nf(deg, 1) + "°", "end")}${ex ? svgT(x0, 16, "Solid: true scale. A drain slope really is this flat.") : ""}`;
+  }
+  $("ms-mode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; sMode = b.dataset.ms; press("#ms-mode", x => x === b); $("ms-v-l").firstChild.textContent = SL[sMode];
+    $("ms-v").value = {inft: "1/4", pct: "2", deg: "1.2", ratio: "48"}[sMode]; ms(); });
+  $("ms-v").addEventListener("input", ms); ms();
+
+  /* proportion */
+  function mr(){
+    const a = val("mr-a"), b = val("mr-b"), c = val("mr-c"), el = $("mr-ans");
+    if (![a, b, c].every(isFinite) || !a){ el.innerHTML = warn("Type all three; A can't be 0."); $("mr-viz").innerHTML = ""; return; }
+    const x = b * c / a; el.innerHTML = `${nf(x, 3)}<small>${nf(a, 3)} → ${nf(b, 3)}, so ${nf(c, 3)} → ${nf(x, 3)}</small>`;
+    mathOut("mr-math", [`A ÷ B = C ÷ ?`, `? = B × C ÷ A = ${nf(b, 3)} × ${nf(c, 3)} ÷ ${nf(a, 3)} = <b>${nf(x, 3)}</b>`, `Rounding up if it's material to buy: ${Math.ceil(x - 1e-9)}`]);
+    const m = Math.max(Math.abs(a), Math.abs(c)), k = 260 / (m || 1);
+    $("mr-viz").innerHTML = `<rect x="40" y="8" width="${Math.abs(a) * k}" height="16" fill="var(--d-cut)" fill-opacity=".5"/><rect x="40" y="38" width="${Math.abs(c) * k}" height="16" fill="var(--d-fit)" fill-opacity=".7"/>${svgT(4, 21, "A")}${svgT(4, 51, "C")}${svgT(44 + Math.abs(a) * k, 21, "→ " + nf(b, 2))}${svgT(Math.min(44 + Math.abs(c) * k, 250), 51, "→ " + nf(x, 2))}`;
+  }
+  ["mr-a", "mr-b", "mr-c"].forEach(id => $(id).addEventListener("input", mr)); mr();
+
+  /* time card */
+  function mt(){
+    const tm = s => { const m = String(s).match(/^(\d{1,2}):(\d{2})/); return m ? +m[1] * 60 + +m[2] : NaN; };
+    const a = tm($("mt-a").value), b0 = tm($("mt-b").value), br = Math.max(0, val("mt-c") || 0), el = $("mt-ans");
+    if (!isFinite(a) || !isFinite(b0)){ el.innerHTML = warn("Pick both times."); $("mt-viz").innerHTML = ""; return; }
+    const b = b0 <= a ? b0 + 1440 : b0, mins = Math.max(0, b - a - br), h = Math.floor(mins / 60), mm = mins % 60;
+    el.innerHTML = `${r2(mins / 60)} hr<small>${h} h ${mm} min${b0 <= a ? " · past midnight" : ""}${br ? ` · after a ${br}-minute break` : ""}</small>`;
+    const X = t => 10 + (t % 1440) / 1440 * 300; let g = `<rect x="10" y="14" width="300" height="18" rx="3" fill="none" stroke="var(--d-pipe)" stroke-width="1.5"/>`;
+    const seg = (s, e, col) => { if (s >= 1440) return seg(s - 1440, e - 1440, col); if (e <= s) return ""; if (e <= 1440) return `<rect x="${X(s)}" y="16" width="${(e - s) / 1440 * 300}" height="14" fill="${col}"/>`; return seg(s, 1440, col) + `<rect x="10" y="16" width="${(e - 1440) / 1440 * 300}" height="14" fill="${col}"/>`; };
+    g += seg(a, b, "var(--d-fit)"); if (br){ const mid = a + (b - a) / 2 - br / 2; g += seg(mid, mid + br, "var(--d-bg)"); }
+    [0, 6, 12, 18, 24].forEach(hh => { g += `<path d="M${10 + hh * 12.5} 32v5" stroke="var(--d-pipe)"/>` + svgT(10 + hh * 12.5, 50, hh === 0 || hh === 24 ? "12a" : hh === 12 ? "12p" : hh < 12 ? hh + "a" : hh - 12 + "p", hh === 0 ? "start" : hh === 24 ? "end" : "middle"); });
+    $("mt-viz").innerHTML = g;
+  }
+  ["mt-a", "mt-b", "mt-c"].forEach(id => $(id).addEventListener("input", mt)); mt();
+
+  /* average */
+  function mv(){
+    const n = ($("mv-a").value.match(/-?\d*\.?\d+/g) || []).map(Number).filter(isFinite), out = $("mv-out");
+    if (!n.length){ out.innerHTML = `<tr><td>${warn("Type some numbers.")}</td></tr>`; $("mv-viz").innerHTML = ""; return; }
+    const sum = n.reduce((s, x) => s + x, 0), avg = sum / n.length, lo = Math.min(...n), hi = Math.max(...n), srt = [...n].sort((a, b) => a - b), med = n.length % 2 ? srt[(n.length - 1) / 2] : (srt[n.length / 2 - 1] + srt[n.length / 2]) / 2;
+    out.innerHTML = [["Average", nf(avg, 2), 1], ["Middle (median)", nf(med, 2)], ["Low · high", `${nf(lo, 2)} · ${nf(hi, 2)}`], ["Spread", nf(hi - lo, 2)], ["Count · total", `${n.length} · ${nf(sum, 2)}`]].map(([a, b, h]) => `<tr${h ? ' class="hit"' : ""}><th>${a}</th><td class="big">${b}</td></tr>`).join("");
+    const X = x => hi === lo ? 160 : 20 + (x - lo) / (hi - lo) * 280;
+    $("mv-viz").innerHTML = `<path d="M20 30H300" stroke="var(--d-pipe)" stroke-width="2"/>${n.map(x => `<circle cx="${X(x)}" cy="30" r="5" fill="var(--d-cut)" fill-opacity=".7"/>`).join("")}<path d="M${X(avg)} 17v28" stroke="var(--d-fit)" stroke-width="3"/>${svgT(Math.min(Math.max(X(avg), 30), 290), 13, "avg " + nf(avg, 1), "middle")}${svgT(20, 56, nf(lo, 1))}${svgT(300, 56, nf(hi, 1), "end")}`;
+  }
+  $("mv-a").addEventListener("input", mv); mv();
 }
 async function copyText(t, ok){ try { await navigator.clipboard.writeText(t); toast(ok || "Copied."); } catch(e){ prompt("Copy this:", t); } }
 SECTIONS.forEach(sec => {
@@ -10285,7 +10593,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-15u";
+var BUILD = "handbook-2026-11-15v";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
