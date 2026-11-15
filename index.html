@@ -380,8 +380,7 @@ details.math li::marker{font-weight:700;color:var(--muted)}
 .wx-place .sub{font-family:var(--mono);font-size:14px}
 .wx-searchrow{padding-top:6px}.wx-searchrow label{flex:1 1 100%}
 #wx-results{padding:0 12px 4px}#wx-results:empty{display:none}
-#mc-found{padding:0 12px 8px}#mc-found:empty,#setup-found:empty{display:none}
-#setup-found{margin:8px 0}
+#mc-found{padding:0 12px 8px}#mc-found:empty{display:none}
 input.find{display:block;width:100%;min-height:48px;margin:0 0 8px;padding:6px 12px;font:inherit;font-size:17px;color:var(--ink);background:var(--sheet);border:var(--bw) solid var(--ctl);border-radius:var(--r)}
 /* My jobs */
 /* phones: skip laying out and painting cards that are off-screen until you scroll near them (tab switches 2-10x faster);
@@ -448,6 +447,8 @@ p.jb-gh{cursor:default}
 .jn-b mark{background:var(--hv);color:var(--k);padding:0 2px;border-radius:2px}
 .jn-b code{font-family:var(--mono);font-size:.92em;padding:0 3px;background:var(--zebra);border-radius:3px}
 .jn-gap{height:6px}
+.jn-b .jn-d1{margin-left:18px}.jn-b .jn-d2{margin-left:36px}.jn-b .jn-d3{margin-left:54px}
+.jn-pre{margin:6px 0;padding:8px 10px;font-family:var(--mono);font-size:14.5px;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--zebra);border:1px solid var(--rule);border-radius:var(--r)}
 .jn-task{display:flex;gap:10px;align-items:flex-start;min-height:40px;padding:5px 0;cursor:pointer}
 .jn-task input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--k)}
 .jn-task input:checked+span{text-decoration:line-through;color:var(--muted)}
@@ -455,7 +456,7 @@ p.jb-gh{cursor:default}
 .jn-tag{text-decoration-style:dotted}
 .jn-e .calc{border-bottom:0}
 .jn-btns{padding:0 12px 12px}
-.jn-help code{font-family:var(--mono);font-size:14px}
+.jn-help code{font-family:var(--mono);font-size:14px}
 .jt{list-style:none;margin:0;padding:6px 12px 10px 12px;position:relative}
 .jt::before{content:"";position:absolute;left:29px;top:14px;bottom:14px;width:3px;background:var(--rule);border-radius:2px}
 .jt-i{position:relative;margin:0 0 8px}
@@ -470,7 +471,7 @@ p.jb-gh{cursor:default}
 .jt-txt span{font-size:14px;color:var(--muted);overflow-wrap:anywhere}
 .jt-open{z-index:1;margin:4px -12px 12px;padding:8px 0 4px;background:linear-gradient(var(--zebra),var(--zebra)),var(--sheet);border-top:var(--bw) solid var(--edge);border-bottom:var(--bw) solid var(--edge);scroll-margin-top:70px}
 .jt-head{display:flex;align-items:center;gap:12px;padding:4px 12px}
-.jt-head h3{margin:0;font-family:var(--display);font-size:21px}
+.jt-head h3{margin:0;font-family:var(--display);font-size:21px}
 .jt-head .jt-rm{margin-left:auto;padding:12px 0}
 .jt-add{padding:0 12px 10px}
 .jt-open .calc{border-bottom:0}
@@ -1110,7 +1111,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sheet-bar"><h2 id="more-title">More</h2><button type="button" class="close" id="more-close">Done</button></div>
     <div class="sheet-body"><div class="more-list" id="more-list">
       <button type="button" data-group="inspect" data-g="inspect"><b>Inspect</b><span>Tests · which code · city inspections</span></button>
-      <button type="button" data-group="contacts" data-g="contacts"><b>Contacts</b><span>Emergency · my city · utilities · tech lines · supply houses</span></button>
+      <button type="button" data-group="contacts" data-g="contacts"><b>Contacts</b><span>Emergency · utilities · tech lines · supply houses</span></button>
       <button type="button" data-group="site" data-g="site"><b>Jobsite</b><span>Weather go/no-go · safety · electrical</span></button>
       <button type="button" data-group="learn" data-g="learn"><b>Learn</b><span>How it works · flashcards · glossary · tools · license</span></button>
       <button type="button" data-group="mine" data-g="mine"><b>Mine</b><span>Jobs · pinned · notes · tape · shop</span></button>
@@ -1127,11 +1128,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <div class="set-grp"><h3>1 · Code I work under</h3>
         <div class="seg" id="setup-code" role="group" aria-label="Code I work under"><button type="button" data-code="ipc21">2021 IPC</button><button type="button" data-code="irc21">2021 IRC (houses)</button><button type="button" data-code="ipc24">2024 IPC</button></div>
         <p class="sample">Utah houses are inspected to the 2021 IRC with Utah amendments; other permits use the IPC.</p></div>
-      <div class="set-grp"><h3>2 · My city</h3><input id="setup-find" class="find" type="search" placeholder="Type to find your city" aria-label="Find a city" autocomplete="off" enterkeyhint="search">
-        <div class="chips pick" id="setup-found" aria-live="polite"></div>
-        <label class="sel"><select id="setup-city" aria-label="My city"></select></label>
-        <p class="sample">Sets inspection booking, trouble lines, hardness, frost depth and elevation for altitude derates.</p></div>
-      <div class="set-grp"><h3>3 · Text size</h3>
+      <div class="set-grp"><h3>2 · Text size</h3>
         <div class="seg" id="setup-size" role="group" aria-label="Text size"><button type="button" data-z="0.9">S</button><button type="button" data-z="1">M</button><button type="button" data-z="1.15">L</button><button type="button" data-z="1.3">XL</button><button type="button" data-z="1.45">XXL</button></div>
         <p class="sample">XL and up are for gloves and glare.</p></div>
       <div class="set-btns"><button type="button" class="btn" id="setup-done">Save &amp; start</button></div>
@@ -1184,7 +1181,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
 
   <!-- ================= CALC ================= -->
-    <section data-sec="home" id="home-card" data-kw="home start dashboard recent offline emergency my city">
+    <section data-sec="home" id="home-card" data-kw="home start dashboard recent offline emergency my jobs">
     <div class="sec-head"><h2>Home</h2><small>Your city · recent · pinned</small></div>
     <div id="home-body"></div>
     <button type="button" class="tip" id="tip" hidden aria-expanded="false"><span class="badge">TIP</span> <span id="tip-q"></span><span class="tip-a" id="tip-a" hidden></span></button>
@@ -3756,6 +3753,14 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>Code links</h2><small>Free read-only</small></div>
     <div class="x"><table class="t"><tbody id="list-code"></tbody></table></div>
   </section>
+  <section data-sec="utah" data-kw="look up a city any city town pick city inspection booking frost depth pi secondary water hardness phone building after hours water">
+    <div class="sec-head mc-head"><h2>Look up a city</h2><small>Any Utah city or town · nothing saved</small></div>
+    <div class="calc"><label for="mc-find" class="wide"><span>Find a city</span><input id="mc-find" type="search" placeholder="Type a name: Payson, Moab, Heber…" autocomplete="off" enterkeyhint="search"></label></div>
+    <div class="chips" id="mc-found" aria-live="polite"></div>
+    <div class="calc"><label for="mc-pick" class="wide"><span>Or pick from the list</span><select id="mc-pick"></select></label></div>
+    <div class="x"><table class="t wrap"><tbody id="mc-out"></tbody></table></div>
+    <p class="note">From the city sites, checked Oct 2026. Blank spots say so instead of guessing. When you get a number from the city, add it to <b>My numbers</b>.</p>
+  </section>
   <section data-sec="utah" data-kw="city inspection schedule provo spanish fork springville herriman lehi saratoga springs eagle mountain west jordan south jordan park city salt lake county msd utah county orem american fork vineyard highland lindon alpine santaquin cedar fort salem cedar hills payson mapleton bluffdale riverton draper">
     <div class="sec-head"><h2>City inspections</h2><small>How each city books them</small></div>
     <div class="x"><table class="t">
@@ -3799,7 +3804,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th colspan="2">Salt Lake City</th></tr>
         <tr><td><b>Salt Lake City</b></td><td><span class="sub">See <b>Contacts → Call → Utilities &amp; state lines</b>.</span></td></tr>
       </tbody></table></div>
-    <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct 2026; your super's schedule and the city site win. Pick your city once in <b>Contacts → Call → My city</b>.</p>
+    <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct 2026; your super's schedule and the city site win. Look any town up in <b>Inspect → Cities → Look up a city</b>.</p>
   </section>
   <section data-sec="utah" data-kw="secondary water pressurized irrigation pi purple non-potable cross connection culinary sprinkler green box meter rp backflow dual source rpz reduced pressure swing joint">
     <div class="sec-head"><h2>Secondary water (PI)</h2><small>Very Utah</small></div>
@@ -3891,26 +3896,18 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div></div>
 
   </section>
-<section data-sec="emergency" data-kw="my city pick city inspection booking frost depth pi secondary water hardness phone building after hours water">
-    <div class="sec-head mc-head"><h2>My city</h2><small>Pick once · saved on this phone</small></div>
-    <div class="calc"><label for="mc-find" class="wide"><span>Find a city</span><input id="mc-find" type="search" placeholder="Type a name: Payson, Moab, Heber…" autocomplete="off" enterkeyhint="search"></label></div>
-    <div class="chips" id="mc-found" aria-live="polite"></div>
-    <div class="calc"><label for="mc-pick" class="wide"><span>Or pick from the list</span><select id="mc-pick"></select></label></div>
-    <div class="x"><table class="t wrap"><tbody id="mc-out"></tbody></table></div>
-    <p class="note">From the city sites, checked Oct 2026. Blank spots say so instead of guessing. When you get a number from the city, add it to <b>My numbers</b>.</p>
-  </section>
   <section data-sec="emergency" data-kw="stuck help who do i call problem what now frozen meter no water sewer backup spill backflow code question part id i-joist injury unsafe paid wages license hours">
     <div class="sec-head"><h2>Problem? First call</h2><small>Problem → first call</small></div>
     <div class="x"><table class="t wrap">
       <thead><tr><th>When…</th><th>Call first</th></tr></thead>
       <tbody>
         <tr><td><b>You smell gas</b> or hit a gas line</td><td>Get out. From outside: <span class="pn">911</span> or Enbridge <span class="pn">1-800-767-1689</span><div class="sub">Then: your super. Don't go back in.</div></td></tr>
-        <tr><td><b>No water at the setter</b>, frozen or leaking meter, main break</td><td>The city's water department: <b>My city</b> below<div class="sub">Then: your super. SLC: <span class="pn">801-483-6700</span> (24 hr)</div></td></tr>
-        <tr><td><b>Sewer backing up</b> from the main or the lateral at the main</td><td>The city or sewer district: <b>My city</b><div class="sub">Then: your super, before you dig</div></td></tr>
+        <tr><td><b>No water at the setter</b>, frozen or leaking meter, main break</td><td>The city's water department: <b>Inspect → Cities → Look up a city</b><div class="sub">Then: your super. SLC: <span class="pn">801-483-6700</span> (24 hr)</div></td></tr>
+        <tr><td><b>Sewer backing up</b> from the main or the lateral at the main</td><td>The city or sewer district: <b>Inspect → Cities → Look up a city</b><div class="sub">Then: your super, before you dig</div></td></tr>
         <tr><td><b>Drinking water may be contaminated</b> (backflow event)</td><td>The city's water department<div class="sub">Then: Division of Drinking Water <span class="pn">801-536-4200</span> (business hours)</div></td></tr>
         <tr><td><b>Spill</b> (fuel, glycol, sewage) into a storm drain, ditch or creek</td><td>DEQ 24-hr incidents <span class="pn">801-536-4123</span><div class="sub">Then: Big or dangerous: <span class="pn">911</span>. Some need the National Response Center <span class="pn">1-800-424-8802</span></div></td></tr>
         <tr><td><b>Backflow tester</b> or cross-connection question</td><td>DDW cross-connection program <span class="pn">385-600-3378</span><div class="sub">Then: The water system's own backflow program</div></td></tr>
-        <tr><td><b>Code question</b></td><td>Your journeyman or super, then the city inspector or plans examiner (<b>My city</b>)<div class="sub">Then: Only the local building official can rule. ICC <span class="pn">1-888-422-7233</span> sells the books.</div></td></tr>
+        <tr><td><b>Code question</b></td><td>Your journeyman or super, then the city inspector or plans examiner (<b>Inspect → Cities → Look up a city</b>)<div class="sub">Then: Only the local building official can rule. ICC <span class="pn">1-888-422-7233</span> sells the books.</div></td></tr>
         <tr><td><b>Part ID</b>, error code, warranty</td><td>The maker's tech line: <b>Contacts → Tech lines</b><div class="sub">Then: Photo the rating plate first (model + serial)</div></td></tr>
         <tr><td><b>Hole through an I-joist</b>, LVL or truss</td><td>Joist maker: Weyerhaeuser <span class="pn">1-888-453-8358</span> · BCI <span class="pn">1-800-232-0788</span><div class="sub">Then: Trusses: never cut. The super gets the truss engineer.</div></td></tr>
         <tr><td><b>Power line down</b> or power out at the site</td><td>Rocky Mountain Power <span class="pn">1-877-508-5088</span><div class="sub">Then: Stay 35 ft away from a downed line</div></td></tr>
@@ -4440,7 +4437,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 14, 2026</th><td><b>Fewer stages by default:</b> every job has Underground, Top-out and Finish. Gas, Final and Warranty are extras: tap <b>+ Gas</b> (or Final, Warranty) under the timeline to add one, and <b>Remove stage</b> to take it off. Older jobs keep any extra that has something in it. <b>Bottom bar, again:</b> after the keyboard, iOS can leave the app drawn shorter than the screen. The app now checks once a second and stretches back to the real bottom, and Settings → Screen check keeps the last readings so a floating bar can be tracked down. <b>Builders and subdivisions have pages,</b> like people: a builder's office phone, website, their people and subdivisions; a subdivision's city, builder, gate code and water/sewer tie-in; notes and every job on each. Jobs pick a builder and subdivision (a subdivision fills in its city and builder), the customer is its own box, and the job list is grouped by builder. <code>[[Ivory Homes]]</code> links to the page. Older jobs: what was in "Builder / customer" became a builder page. <b>Job page polish:</b> the timeline line no longer runs through the open stage, date boxes stay inside the card, a skipped stage isn't dimmed while open, the four status buttons sit in one row, and the notes toolbar is one swipeable row. <b>The bottom bar, rebuilt:</b> in the home-screen app the page itself no longer scrolls; the book scrolls inside it and the bar sits below, so the keyboard and pop-ups can't push the bar up. <b>Jobs have a name</b> separate from the address: the name shows in lists, the address feeds Directions, and <code>[[links]]</code> match either one. <b>Faster:</b> switching tabs is 2 to 10 times quicker on long pages (cards off the screen aren't drawn until you scroll to them), and on weak signal the app opens from its saved copy after 2 seconds instead of 4. <b>Your own checklists:</b> tap <b>Edit list</b> on a stage's checklist to remove items (the book's too) and add your own, then <b>Use this list on new jobs</b> to make it your starting list for that stage. <b>Back to the book's list</b> undoes it. <b>A job's city is its own:</b> new jobs start with no city instead of My city, the city only feeds Directions, and jobs no longer show the city's inspection booking (that stays in Inspect → Cities and Contacts → My city). <b>Each job is a timeline now:</b> Underground → Top-out (rough-in) → Gas → Finish (trim) → Final → Warranty, with the blanks ready. Tap a stage to fill it in: To do / Doing / Done / Skip, dates, who led it, a checklist that starts from the book's "Before you call it in" list, inspections, hours, notes and photos. Mark a stage Done and the next one opens. <b>People:</b> set the job's Lead and Superintendent; everyone gets a page with phone (Call / Text), company, notes and every job they're on, and <code>[[Dave]]</code> in a note links to it. <b>Directions</b> opens the address in Maps. The bottom bar no longer floats when you add something while the keyboard is up. <b>Job notes are a dated log now:</b> add as many notes to a job as you like, each with its date, newest first, and tap ✎ to change one. Write them with quick marks: <code>- [ ]</code> a checkbox (the job shows how many are open), <code>!!</code> a red heads-up, <code>#</code> headings, <code>**bold**</code>, <code>#tag</code> (tap to see every job with it), and <code>[[Lot 14]]</code> to link another job or a card in the book. Buttons above the box put them in for you, and phone numbers in notes are tappable. Old notes moved into the log. The bottom bar re-seats after the delete pop-up, the date wheel and the photo picker. <b>My jobs (Mine → Jobs):</b> each job keeps its address, builder or customer, city (with how to book its inspections), phase and status; its inspections (booked, pass, partial, fail) with the inspector and corrections; hours with today, this week, last week and a running count toward your license hours; a punch and materials list you check off; and photos (a note on each) and files like PDF plans. <b>MY JOBS</b> on Home shows your open jobs. Jobs go in Settings → Download backup; photos and files are too big for it and have their own backup at the bottom of the Jobs page.</td></tr>
+        <tr><th>Nov 14, 2026</th><td><b>My city is gone:</b> nothing saves a city now. Home drops the city box, first-time setup drops the city step, and the city details moved to <b>Inspect → Cities → Look up a city</b> (any town, nothing saved). <b>Sturdier notes:</b> indented lists nest, numbered lists keep their number, back-to-back quote lines join, <code>```</code> blocks show text exactly as typed, <code>[[Dave|the inspector]]</code> shows your own words, a backslash shows a mark as-is, and web links don't swallow the period after them. <b>Fewer stages by default:</b> every job has Underground, Top-out and Finish. Gas, Final and Warranty are extras: tap <b>+ Gas</b> (or Final, Warranty) under the timeline to add one, and <b>Remove stage</b> to take it off. Older jobs keep any extra that has something in it. <b>Bottom bar, again:</b> after the keyboard, iOS can leave the app drawn shorter than the screen. The app now checks once a second and stretches back to the real bottom, and Settings → Screen check keeps the last readings so a floating bar can be tracked down. <b>Builders and subdivisions have pages,</b> like people: a builder's office phone, website, their people and subdivisions; a subdivision's city, builder, gate code and water/sewer tie-in; notes and every job on each. Jobs pick a builder and subdivision (a subdivision fills in its city and builder), the customer is its own box, and the job list is grouped by builder. <code>[[Ivory Homes]]</code> links to the page. Older jobs: what was in "Builder / customer" became a builder page. <b>Job page polish:</b> the timeline line no longer runs through the open stage, date boxes stay inside the card, a skipped stage isn't dimmed while open, the four status buttons sit in one row, and the notes toolbar is one swipeable row. <b>The bottom bar, rebuilt:</b> in the home-screen app the page itself no longer scrolls; the book scrolls inside it and the bar sits below, so the keyboard and pop-ups can't push the bar up. <b>Jobs have a name</b> separate from the address: the name shows in lists, the address feeds Directions, and <code>[[links]]</code> match either one. <b>Faster:</b> switching tabs is 2 to 10 times quicker on long pages (cards off the screen aren't drawn until you scroll to them), and on weak signal the app opens from its saved copy after 2 seconds instead of 4. <b>Your own checklists:</b> tap <b>Edit list</b> on a stage's checklist to remove items (the book's too) and add your own, then <b>Use this list on new jobs</b> to make it your starting list for that stage. <b>Back to the book's list</b> undoes it. <b>A job's city is its own:</b> new jobs start with no city instead of My city, the city only feeds Directions, and jobs no longer show the city's inspection booking (that stays in Inspect → Cities). <b>Each job is a timeline now:</b> Underground → Top-out (rough-in) → Gas → Finish (trim) → Final → Warranty, with the blanks ready. Tap a stage to fill it in: To do / Doing / Done / Skip, dates, who led it, a checklist that starts from the book's "Before you call it in" list, inspections, hours, notes and photos. Mark a stage Done and the next one opens. <b>People:</b> set the job's Lead and Superintendent; everyone gets a page with phone (Call / Text), company, notes and every job they're on, and <code>[[Dave]]</code> in a note links to it. <b>Directions</b> opens the address in Maps. The bottom bar no longer floats when you add something while the keyboard is up. <b>Job notes are a dated log now:</b> add as many notes to a job as you like, each with its date, newest first, and tap ✎ to change one. Write them with quick marks: <code>- [ ]</code> a checkbox (the job shows how many are open), <code>!!</code> a red heads-up, <code>#</code> headings, <code>**bold**</code>, <code>#tag</code> (tap to see every job with it), and <code>[[Lot 14]]</code> to link another job or a card in the book. Buttons above the box put them in for you, and phone numbers in notes are tappable. Old notes moved into the log. The bottom bar re-seats after the delete pop-up, the date wheel and the photo picker. <b>My jobs (Mine → Jobs):</b> each job keeps its address, builder or customer, city (with how to book its inspections), phase and status; its inspections (booked, pass, partial, fail) with the inspector and corrections; hours with today, this week, last week and a running count toward your license hours; a punch and materials list you check off; and photos (a note on each) and files like PDF plans. <b>MY JOBS</b> on Home shows your open jobs. Jobs go in Settings → Download backup; photos and files are too big for it and have their own backup at the bottom of the Jobs page.</td></tr>
         <tr><th>Nov 13, 2026</th><td><b>Find a city by typing:</b> the city menus (Contacts → Call → My city, and first-time setup) have a search box, so you don't scroll 259 names. <b>Every Utah city and town</b> is in the city picker now (259 places). The 227 new ones show their elevation. 24 of them (the rest of Utah County and the biggest cities nearby) also have how to book inspections and, where found, secondary water; the others say "not checked yet". <b>New home-screen icon:</b> bright lime on black, so it stays easy to see when the phone is in dark mode. An iPhone keeps the old picture until you delete the Handbook from the home screen and add it again (Safari → Share → Add to Home Screen). Your saved pins and notes stay. The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install. <b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
         <tr><th>Nov 12, 2026</th><td><b>Share the book</b> (Settings) shows its QR code with no signal now: the code is stored in the book instead of being fetched. <b>Bottom bar:</b> eight tables had started scrolling up and down a few pixels inside their own boxes, which can tug the iPhone bar loose: fixed. After the "Allow location" prompt the book now re-seats the bar. <b>Weather:</b> the first forecast shows in a few seconds even when the main service is slow, and picking a new place no longer blanks the card. A book left in the background over 6 hours reloads when you come back, so it picks up updates. <b>Weather fixed:</b> when the main forecast service doesn't answer, the card now switches to the National Weather Service forecast instead of sitting on "Loading". Every weather request gives up after 12 seconds and tries again. <b>New:</b> a weather button in the top corner shows the sky right now and the temperature; tap it for Jobsite → Weather. Turn it off in <b>Settings → Behavior → Weather in the header</b>. <b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them. <b>Water treatment</b> (Service → Treatment) grew: <b>Where treatment goes</b> (order in the line, hard water for hose bibbs, the softener loop rough-in), <b>Softener trouble</b> (no soft water, salt bridge, resin in the lines, low pressure), <b>How RO works</b>, <b>Treatment code</b> (the IPC and IRC sections for softeners and RO) and <b>Treatment brands</b>. <b>Contacts → Tech lines → Water treatment</b> has 14 makers' phone lines.</td></tr>
         <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "shower valve height") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Circuits, wire &amp; bonding. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow. <b>Reopening the book</b> lands where you were on the page, not at the top. <b>Fits the phone:</b> calculator answers and the Pressure at the fixture rows no longer run off the right edge, long dropdowns get a full row, and tech line numbers stack instead of scrolling sideways.</td></tr>
@@ -6076,7 +6073,7 @@ apply();  /* early, so tabs work even if a calculator below hits an error */
 /* pins: a star on each card's header puts it in Mine → Pinned. Keyed by the card's heading. */
 const slug = s => s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 /* cards that moved page or merged: old id → new id, so pins, notes and shop edits keep working (and old card links still open) */
-const PID_MOVED = {"heaters:electrical-for-plumbers": "power:circuits-wire-and-bonding", "power:electrical-for-plumbers": "power:circuits-wire-and-bonding",
+const PID_MOVED = {"emergency:my-city": "utah:look-up-a-city", "heaters:electrical-for-plumbers": "power:circuits-wire-and-bonding", "power:electrical-for-plumbers": "power:circuits-wire-and-bonding",
   "hotwater:expansion-tank": "hotwater:expansion-tank-size", "units:typical-fitting-take-offs": "layout:typical-fitting-take-offs", "units:my-take-offs": "layout:my-take-offs",
   "mechfix:water-heater-age": "heaters:water-heater-age", "finders:install-guides-and-part-finders": "idhow:install-guides-and-finders", "finders:id-help-and-parts-sources": "idhow:id-help-and-parts-sources",
   "vents:radon-pipe-isn-t-a-plumbing-vent": "vents:radon-pipe-is-not-a-vent", "codes:bradford-white-icon-status-light": "codes:bradford-white-icon-light", "mechfix:shutdowns-leaks-freezes-and-hammer": "mechfix:shutdowns-leaks-and-freezes", "trim:trim-out-a-shower-tub-valve": "trim:trim-a-shower-tub-valve", "trim:trim-out-finish-rest-of-the-house": "trim:trim-out-rest-of-the-house", "idhow:install-guides-and-part-finders": "idhow:install-guides-and-finders", "techlines:pipe-fittings-valves-framing": "techlines:pipe-valves-and-framing", "techlines:pumps-vents-flush-and-gas-tubing": "techlines:pumps-vents-and-gas-tubing", "safety:heat-asbestos-spillage-power": "safety:heat-asbestos-spillage", "how:six-ways-a-trap-loses-its-seal": "how:how-a-trap-loses-its-seal", "how:why-bigger-drains-get-less-slope": "how:why-big-drains-slope-less", "how:how-a-frost-free-hose-bibb-works": "how:how-a-frost-free-bibb-works", "how:altitude-what-changes-up-here": "how:altitude-what-changes"};
@@ -7924,7 +7921,7 @@ function setCode(c){
 $("code-pick").addEventListener("click", e => { const b = e.target.closest("button[data-code]"); if (b) setCode(b.dataset.code); });
 setCode(myCode);
 
-/* ---------- my city: pick once. Only what the city sites confirmed (Oct 2026); gaps say so. ---------- */
+/* ---------- city lookup (Inspect → Cities → Look up a city). Only what the city sites confirmed (Oct 2026); gaps say so. ---------- */
 const FROST_UC = "30\" design is the Utah County norm, so water service ≈36\". Confirm on the city's standard drawings.";
 const FROST_SL = "Not confirmed for this city. SLC designs to 30\" (service ≈36\"); confirm on the city's standard drawings.";
 const GAP = t => `<span class="mc-gap">${t}</span>`;
@@ -8016,20 +8013,18 @@ Object.keys(MORE_CITIES).forEach(county => {
     notes: "Same statewide code as every Utah city (houses: 2021 IRC with Utah amendments). Small towns often use the county's inspector: ask the town office who inspects and how to book. Call 811 before you dig."}, CITY_INFO[n] || {})));
 });
 const cityById = id => CITIES.find(c => c.id === id);
-let myCity = (id => cityById(id) ? id : "")(store.get("jpb-city", ""));
-$("mc-pick").innerHTML = `<option value="">Pick a city…</option>` + CITIES.reduce((h, c) => h + (Array.isArray(c) ? `${h.includes("<optgroup") ? "</optgroup>" : ""}<optgroup label="${esc(c[0])}">` : `<option value="${c.id}">${esc(c.n)}</option>`), "") + "</optgroup>";
+let myCity = "";   /* the city on Look up a city: nothing saves it */
+try { localStorage.removeItem("jpb-city"); } catch(e){}
+const CITY_OPTS = `<option value="">Pick a city…</option>` + CITIES.reduce((h, c) => h + (Array.isArray(c) ? `${h.includes("<optgroup") ? "</optgroup>" : ""}<optgroup label="${esc(c[0])}">` : `<option value="${c.id}">${esc(c.n)}</option>`), "") + "</optgroup>";
+$("mc-pick").innerHTML = CITY_OPTS;
 function drawCity(){
   $("mc-pick").value = myCity;
   const c = cityById(myCity);
-  $("mc-out").innerHTML = !c ? `<tr><td class="sub">Pick the city on your permit. It sticks until you change it.</td></tr>` : [
+  $("mc-out").innerHTML = !c ? `<tr><td class="sub">Pick or type any Utah city or town to see how to book inspections there, its trouble line, secondary water, hardness, frost depth and elevation.</td></tr>` : [
     ["Book inspections", c.book], ["Water / sewer trouble", c.after || NOAFTER], ["Secondary (PI)", esc(c.pi)], ["Hardness", c.h], ["Frost depth", c.f], ...(c.el ? [["Elevation", `About ${c.el.toLocaleString()} ft. Set gas appliances for it: <b>Service → Water heaters → Altitude settings</b>.`]] : []), ...(c.notes ? [["Watch for", esc(c.notes)]] : [])
-  ].map(([k,v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join("") +
-    `<tr><td colspan="2"><button type="button" class="linkish" id="mc-all">Compare cities: Inspect → Cities</button></td></tr>`;
+  ].map(([k,v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join("");
   bindPn($("mc-out")); IDX = null;
-  const all = $("mc-all"); if (all) all.addEventListener("click", () => go("inspect", "utah"));
 }
-/* My city also picks the elevation in Calc → Sizing → Altitude derate */
-function elevFromCity(){ const c = cityById(myCity), e = c && ELEV.find(([n]) => n === c.n); if (e){ $("g-elev").value = String(e[1]); gasCalc(); $("at-el").value = String(e[1]); $("at-el").dispatchEvent(new Event("input", {bubbles: true})); } }
 /* Test log: what the picked test must hold and for how long (same values as the Test values fold-out); air tests fill the start pressure */
 const TL_SPEC = {"DWV water test": ["10 ft of head (≈4.3 psi at the bottom), hold 15 min.", null],
   "DWV air test": ["5 psi, hold 15 min. UT plastic: only if water can't be used or would freeze, ≤6 psi, ≤15 min.", 5],
@@ -8040,8 +8035,8 @@ const TL_SPEC = {"DWV water test": ["10 ft of head (≈4.3 psi at the bottom), h
 function tlSpec(fill){ const x = TL_SPEC[$("tl-type").value]; if (!x) return; $("tl-spec").innerHTML = `<b>Must hold:</b> ${esc(x[0])}`;
   if (fill && x[1] != null){ $("at-p").value = String(x[1]); $("at-p").dispatchEvent(new Event("input", {bubbles: true})); } }
 $("tl-type").addEventListener("change", () => tlSpec(true)); tlSpec(false);
-$("mc-pick").addEventListener("change", e => { myCity = e.target.value; store.set("jpb-city", myCity); drawCity(); elevFromCity(); });
-drawCity(); elevFromCity();
+$("mc-pick").addEventListener("change", e => { myCity = e.target.value; drawCity(); });
+drawCity();
 
 /* ---------- my numbers: the super, the journeyman, the inspector's cell. Saved on this phone only. ---------- */
 let myNums = (a => Array.isArray(a) ? a.filter(x => x && typeof x.name === "string" && typeof x.num === "string").slice(0, 60) : [])(store.get("jpb-mynums", []));
@@ -8569,7 +8564,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-14j";
+{ const NEWS = "2026-11-14k";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8859,7 +8854,7 @@ window.noteAct = (c, sec) => {
 };
 $("shop-reset").addEventListener("click", () => { if (!Object.keys(SHOP).length || !confirm("Reset every shop edit back to typical?")) return; SHOP = {}; store.set("jpb-shop", SHOP); SECTIONS.forEach(s => { if (s.dataset.shop === "1") shopDraw(s); }); bindPn(); IDX = null; apply(); });
 
-/* ---------- Home: offline status, emergency, my city, pinned, recent ---------- */
+/* ---------- Home: offline status, emergency, my jobs, pinned, recent ---------- */
 function offState(){
   if (window.claude) return {cls: "off-warn", t: `Online copy (claude.ai). <a href="${BOOK_URL}" target="_blank" rel="noopener">The GitHub book ↗</a> saves itself for no-signal use.`};
   const c = "serviceWorker" in navigator && navigator.serviceWorker.controller;
@@ -8884,7 +8879,7 @@ const HOME_GO = {
 const HOME_GO_MAX = 5, HOME_GO_DEFAULT = ["calc","code","joist","city","phones"];
 const homeGoList = () => { const a = Array.isArray(PREFS.homeGo) ? PREFS.homeGo.filter(k => HOME_GO[k]) : []; return (a.length ? a : HOME_GO_DEFAULT).slice(0, HOME_GO_MAX); };
 function homeDraw(){
-  const c = cityById(myCity), off = offState();
+  const off = offState();
   const pins = SECTIONS.filter(s => s.dataset.pin === "1");
   const sub = (g, s) => (GROUPS[g] || []).find(([k]) => k === s);
   const places = RECENT.places.map(k => k.split("|")).filter(([g, s]) => sub(g, s));
@@ -8898,8 +8893,6 @@ function homeDraw(){
       ${homeGoList().map(k => `<button type="button" data-hg="${HOME_GO[k][0]}"><b>${HOME_GO[k][1]}</b><span>${HOME_GO[k][2]}</span></button>`).join("")}
     </div>
     ${(() => { try { return window.jobsHome ? jobsHome() : ""; } catch(e){ return ""; } })()}
-    ${c ? `<div class="home-city"><p class="card-h">My city · ${esc(c.n)} <button type="button" class="linkish" data-hg="contacts|emergency|My city">Change</button></p><table class="t wrap"><tbody><tr><th>Book inspections</th><td>${c.book}</td></tr><tr><th>Water / sewer trouble</th><td>${c.after || NOAFTER}</td></tr></tbody></table></div>`
-        : `<p class="note"><button type="button" class="linkish" data-hg="contacts|emergency|My city">Set my city</button> for inspection booking, trouble lines, hardness and frost depth.</p>`}
     ${TAPE.length ? `<p class="card-h">Last on the tape <button type="button" class="linkish" data-hg="mine|tape">All</button></p><pre class="tape-last">${esc(TAPE[0].text.split("\n").slice(0, 4).join("\n"))}</pre>` : ""}
     ${pins.length ? `<p class="card-h">Pinned</p><div class="chips home-chips">${pins.map(s => `<button type="button" data-see="${s.dataset.pid}">★ ${esc(s.querySelector("h2").textContent)}</button>`).join("")}</div>` : ""}
     ${places.length || RECENT.qs.length || recentCards.length ? `<p class="card-h">Recent</p><div class="chips home-chips">${recentCards.map(s => `<button type="button" data-see="${s.dataset.pid}">${esc(s.querySelector("h2").textContent)}</button>`).join("")}${places.map(([g, s]) => `<button type="button" data-hg="${g}|${s}">${GNAME[g]} › ${esc(sub(g, s)[1])}</button>`).join("")}${RECENT.qs.map(q => `<button type="button" data-hq="${esc(q)}">🔍 ${esc(q)}</button>`).join("")}</div>` : ""}`;
@@ -8926,7 +8919,6 @@ $("home-body").addEventListener("click", e => {
 });
 homeDraw();
 if ("serviceWorker" in navigator) navigator.serviceWorker.addEventListener("controllerchange", homeDraw);
-$("mc-pick").addEventListener("change", homeDraw);
 /* type-to-find for the two city menus: 259 places is a long list to scroll */
 function cityFind(inp, box, sel){
   const I = $(inp), B = $(box), S = $(sel);
@@ -8942,17 +8934,15 @@ function cityFind(inp, box, sel){
   });
   I.addEventListener("keydown", e => { if (e.key === "Enter"){ const b = B.querySelector("button"); if (b){ e.preventDefault(); b.click(); } } });
 }
-cityFind("mc-find", "mc-found", "mc-pick"); cityFind("setup-find", "setup-found", "setup-city");
-/* first run: code, city, text size */
+cityFind("mc-find", "mc-found", "mc-pick");
+/* first run: code, text size */
 function setupDraw(){
-  $("setup-city").innerHTML = $("mc-pick").innerHTML; $("setup-city").value = myCity;
   press("#setup-code", b => b.dataset.code === myCode);
   const z = String(+store.get("jpb-zoom", 1) || 1); press("#setup-size", b => b.dataset.z === z);
 }
 $("setup-code").addEventListener("click", e => { const b = e.target.closest("button[data-code]"); if (b) setCode(b.dataset.code); });
 $("setup-size").addEventListener("click", e => { const b = e.target.closest("button[data-z]"); if (!b) return; ROOT.style.setProperty("--zoom", b.dataset.z); store.set("jpb-zoom", +b.dataset.z); press("#setup-size", x => x === b); redrawArt(); });
 $("setup-done").addEventListener("click", () => {
-  const v = $("setup-city").value; if (v !== myCity){ myCity = v; store.set("jpb-city", v); drawCity(); elevFromCity(); }
   store.set("jpb-setup", 1); sheet("setup", false); homeDraw(); go("home"); toast("Set. Change any of it in <b>Settings</b>.", 2400);
 });
 $("setup-skip").addEventListener("click", () => { store.set("jpb-setup", 1); sheet("setup", false); });
@@ -9654,29 +9644,48 @@ const JN_TAG = /(^|[\s(])#([A-Za-z][\w-]*)/g;
 const jbTags = j => [...new Set(j.log.flatMap(e => [...e.b.matchAll(JN_TAG)].map(m => m[2].toLowerCase())))];
 const jbTasks = j => j.log.reduce((n, e) => n + (e.b.match(/^\s*[-*] \[ \]/gm) || []).length, 0);
 const jnSort = (a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : b.at - a.at;
+/* one line of note text → HTML. Order matters: code spans first (nothing inside them is touched), then a backslash
+   escapes the next mark (\* \# \[ shows the mark itself), then links, bold, italic, highlight, strike, web links, phones, tags. */
 function jnInline(s){
-  return s.split("`").map((part, i) => i % 2 ? `<code>${esc(part)}</code>` : esc(part)
-    .replace(/\[\[([^\]]+)\]\]/g, (m, x) => `<button type="button" class="jn-link" data-wl="${x}">${x}</button>`)
-    .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/(^|[^*\w])\*([^*\s][^*]*?)\*/g, "$1<i>$2</i>")
-    .replace(/==(.+?)==/g, "<mark>$1</mark>").replace(/~~(.+?)~~/g, "<s>$1</s>")
-    .replace(/\bhttps?:\/\/[^\s<]+/g, u => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`)
-    .replace(/(^|[^\d-])(\(?\d{3}\)?[-. ]\d{3}[-. ]\d{4})(?!\d)/g, '$1<span class="pn">$2</span>')
-    .replace(JN_TAG, (m, a, t) => `${a}<button type="button" class="jn-tag" data-tag="${t.toLowerCase()}">#${t}</button>`)).join("");
+  const keep = [], hold = h => "\u0001" + (keep.push(h) - 1) + "\u0002";
+  s = s.replace(/`([^`]+)`/g, (m, x) => hold(`<code>${esc(x)}</code>`)).replace(/\\([\\`*_=~#\[\]!>-])/g, (m, x) => hold(esc(x)));
+  s = esc(s)
+    .replace(/\[\[([^\]|]+?)(?:\|([^\]]+))?\]\]/g, (m, x, label) => hold(`<button type="button" class="jn-link" data-wl="${x.trim()}">${(label || x).trim()}</button>`))
+    .replace(/\*\*(?=\S)(.+?)\*\*/g, "<b>$1</b>").replace(/(^|[^*\w])\*(?=[^*\s])([^*]*?[^*\s])\*(?!\w)/g, "$1<i>$2</i>")
+    .replace(/==(?=\S)(.+?)==/g, "<mark>$1</mark>").replace(/~~(?=\S)(.+?)~~/g, "<s>$1</s>")
+    .replace(/\bhttps?:\/\/[^\s<]+?(?=[.,;:!?)]*(?:\s|$|<))/g, u => hold(`<a href="${u}" target="_blank" rel="noopener">${u}</a>`))
+    .replace(/(^|[^\d-])((?:\+?1[-. ]?)?\(?\d{3}\)?[-. ]\d{3}[-. ]\d{4})(?!\d)/g, (m, a, n) => a + hold(`<span class="pn">${n}</span>`))
+    .replace(JN_TAG, (m, a, t) => `${a}<button type="button" class="jn-tag" data-tag="${t.toLowerCase()}">#${t}</button>`);
+  return s.replace(/\u0001(\d+)\u0002/g, (m, i) => keep[+i]).replace(/\u0001(\d+)\u0002/g, (m, i) => keep[+i]);
 }
+/* a whole note → HTML, line by line, so each checkbox knows its own line to tick */
 function jnMd(src, eid){
-  let h = "", list = null; const close = () => { if (list){ h += `</${list}>`; list = null; } };
+  let h = "", list = null, quote = false, code = null, gap = false;
+  const close = () => { if (list){ h += `</${list.tag}>`; list = null; } if (quote){ h += "</blockquote>"; quote = false; } };
+  const item = (tag, depth, start, html) => {
+    if (quote){ h += "</blockquote>"; quote = false; }
+    if (!list || list.tag !== tag){ if (list) h += `</${list.tag}>`; h += `<${tag}${tag === "ol" && start !== 1 ? ` start="${start}"` : ""}>`; list = {tag}; }
+    h += `<li${depth ? ` class="jn-d${Math.min(depth, 3)}"` : ""}>${html}</li>`;
+  };
   String(src).replace(/\r/g, "").split("\n").forEach((ln, i) => { let m;
-    if ((m = ln.match(/^\s*[-*] \[( |x|X)\]\s?(.*)$/))){ close(); h += `<label class="jn-task"><input type="checkbox" data-tk="${eid}|${i}"${m[1] !== " " ? " checked" : ""}><span>${jnInline(m[2])}</span></label>`; }
-    else if ((m = ln.match(/^\s*[-*•]\s+(.*)$/))){ if (list !== "ul"){ close(); h += "<ul>"; list = "ul"; } h += `<li>${jnInline(m[1])}</li>`; }
-    else if ((m = ln.match(/^\s*\d+[.)]\s+(.*)$/))){ if (list !== "ol"){ close(); h += "<ol>"; list = "ol"; } h += `<li>${jnInline(m[1])}</li>`; }
-    else { close();
-      if ((m = ln.match(/^(#{1,3})\s+(.*)$/))) h += `<p class="jn-h jn-h${m[1].length}">${jnInline(m[2])}</p>`;
-      else if ((m = ln.match(/^!!\s*(.*)$/))) h += `<p class="flag jn-flag">${jnInline(m[1])}</p>`;
-      else if ((m = ln.match(/^>\s?(.*)$/))) h += `<blockquote>${jnInline(m[1])}</blockquote>`;
-      else if (/^\s*(-{3,}|_{3,})\s*$/.test(ln)) h += "<hr>";
-      else if (ln.trim()) h += `<p>${jnInline(ln)}</p>`;
-      else h += `<div class="jn-gap"></div>`; }
-  }); close(); return h;
+    if (code !== null){ if (/^\s*```/.test(ln)){ h += `<pre class="jn-pre">${esc(code.join("\n"))}</pre>`; code = null; } else code.push(ln); return; }
+    if (/^\s*```/.test(ln)){ close(); code = []; gap = false; return; }
+    const depth = Math.floor((ln.match(/^ */)[0].length) / 2);
+    if ((m = ln.match(/^\s*[-*+] \[( |x|X)\]\s?(.*)$/))){ close(); gap = false;
+      h += `<label class="jn-task${depth ? " jn-d" + Math.min(depth, 3) : ""}"><input type="checkbox" data-tk="${eid}|${i}"${m[1] !== " " ? " checked" : ""}><span>${jnInline(m[2])}</span></label>`; return; }
+    if ((m = ln.match(/^\s*[-*+•]\s+(.*)$/))){ gap = false; item("ul", depth, 1, jnInline(m[1])); return; }
+    if ((m = ln.match(/^\s*(\d+)[.)]\s+(.*)$/))){ gap = false; item("ol", depth, +m[1], jnInline(m[2])); return; }
+    if ((m = ln.match(/^>\s?(.*)$/))){ if (list){ h += `</${list.tag}>`; list = null; } if (!quote){ h += "<blockquote>"; quote = true; } else h += "<br>"; h += jnInline(m[1]); gap = false; return; }
+    close();
+    if ((m = ln.match(/^(#{1,3})\s+(.*)$/))) h += `<p class="jn-h jn-h${m[1].length}">${jnInline(m[2])}</p>`;
+    else if ((m = ln.match(/^!!\s*(.*)$/))) h += `<p class="flag jn-flag">${jnInline(m[1])}</p>`;
+    else if (/^\s*(-{3,}|_{3,}|\*{3,})\s*$/.test(ln)) h += "<hr>";
+    else if (ln.trim()) h += `<p>${jnInline(ln)}</p>`;
+    else { if (!gap) h += `<div class="jn-gap"></div>`; gap = true; return; }
+    gap = false;
+  });
+  if (code !== null) h += `<pre class="jn-pre">${esc(code.join("\n"))}</pre>`;   /* a ``` never closed still shows */
+  close(); return h;
 }
 const JN_TOOLS = `<div class="chips jn-tools">${[["- [ ] ", "☐ Task"], ["- ", "• List"], ["**", "Bold"], ["!! ", "Heads-up"], ["# ", "Heading"], ["#", "#tag"], ["[[", "[[link]]"], ["@date", "Date"]]
   .map(([k, t]) => `<button type="button" data-ins="${esc(k)}">${t}</button>`).join("")}</div>`;
@@ -9690,10 +9699,13 @@ const jnHelp = `<details class="explain"><summary>How to write notes</summary><d
   <tr><th><code>!! gas not tested</code></th><td>A red heads-up line.</td></tr>
   <tr><th><code># Heading</code></th><td>A heading. <code>##</code> for a smaller one.</td></tr>
   <tr><th><code>**bold**</code> <code>*italic*</code></th><td>Bold, italic. <code>==this==</code> highlights, <code>~~this~~</code> strikes out.</td></tr>
-  <tr><th><code>- item</code> <code>1. item</code></th><td>A list.</td></tr>
+  <tr><th><code>- item</code> <code>1. item</code></th><td>A list. Start a line with two spaces to put it under the one above.</td></tr>
   <tr><th><code>&gt; text</code></th><td>A quote: what the inspector said, word for word.</td></tr>
   <tr><th><code>#tag</code></th><td>A tag. Tap it to see every job that has it.</td></tr>
   <tr><th><code>[[Dave]]</code></th><td>A link to a person, another job (<code>[[Lot 14]]</code>) or a card in the book (<code>[[Offset calculator]]</code>). A person's page lists every job that mentions them.</td></tr>
+  <tr><th><code>[[Dave|the inspector]]</code></th><td>The same link, showing your own words.</td></tr>
+  <tr><th><code>&#96;&#96;&#96;</code></th><td>A line with just <code>&#96;&#96;&#96;</code> above and below: what's between shows exactly as typed (a cut list, a model number).</td></tr>
+  <tr><th><code>&#92;*</code></th><td>A backslash before a mark shows the mark itself: <code>&#92;*not italic&#92;*</code>.</td></tr>
   <tr><th>801-555-0100</th><td>Phone numbers and web links become tappable.</td></tr>
 </tbody></table></div></div></details>`;
 /* one notes block, for a job stage or a person */
@@ -9833,7 +9845,7 @@ function jbJobHtml(j){
     <label for="jb-bld" class="wide">Builder<input id="jb-bld" data-je="bld" list="jb-blds" type="text" autocomplete="off" value="${esc(eName("bld", j.bld))}" placeholder="Pick or type a new one"></label>
     <label for="jb-sub" class="wide">Subdivision<input id="jb-sub" data-je="sub" list="jb-subs" type="text" autocomplete="off" value="${esc(eName("sub", j.sub))}" placeholder="Pick or type a new one"></label>
     <label for="jb-who" class="wide">Customer / homeowner <i>(optional)</i><input id="jb-who" data-f="who" type="text" autocomplete="off" value="${esc(j.who)}" placeholder="For remodels and service"></label>
-    <label for="jb-city">City <i>(for Directions)</i><select id="jb-city" data-f="city">${$("mc-pick").innerHTML}</select></label>
+    <label for="jb-city">City <i>(for Directions)</i><select id="jb-city" data-f="city">${CITY_OPTS}</select></label>
     <label for="jb-st">Job status<select id="jb-st" data-f="st">${jbOpts(JB_ST, j.st)}</select></label>
   </div>
   ${addr ? `<div class="jb-in"><div class="set-btns"><a class="btn ghost" href="https://maps.apple.com/?daddr=${q}" target="_blank" rel="noopener">Directions</a></div></div>` : ""}
@@ -9885,7 +9897,7 @@ function jbPersonHtml(p){
 
 function jbEntHtml(t, x){
   const C = ENT[t], jobs = eJobs(t, x), tel = (x.ph || "").replace(/[^\d+]/g, ""), web = (x.web || "").trim();
-  const fld = ([k, label, type, ph]) => type === "city" ? `<label for="ef-city">${label}<select id="ef-city" data-ef="city">${$("mc-pick").innerHTML}</select></label>`
+  const fld = ([k, label, type, ph]) => type === "city" ? `<label for="ef-city">${label}<select id="ef-city" data-ef="city">${CITY_OPTS}</select></label>`
     : `<label for="ef-${k}"${type === "text" ? ' class="wide"' : ""}>${label}<input id="ef-${k}" data-ef="${k}" type="${type === "bld" ? "text" : type}"${type === "bld" ? ' list="jb-blds"' : ""}${type === "tel" ? ' inputmode="tel"' : ""} autocomplete="off" value="${esc(type === "bld" ? eName("bld", x[k]) : x[k] || "")}" placeholder="${esc(ph)}"></label>`;
   const nm = x.n.trim().toLowerCase(), ppl = t === "bld" ? jbD.people.filter(p => (p.co || "").trim().toLowerCase() === nm || jbD.jobs.some(j => j.bld === x.id && (j.sup === p.id))) : [];
   const subs = t === "bld" ? jbD.subs.filter(s => s.bld === x.id) : [];
@@ -10223,7 +10235,7 @@ jbDraw(); try { homeDraw(); } catch(e){}
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-14j";
+var BUILD = "handbook-2026-11-14k";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
