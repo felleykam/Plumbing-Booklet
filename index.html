@@ -376,6 +376,40 @@ details.math li::marker{font-weight:700;color:var(--muted)}
 #mc-found{padding:0 12px 8px}#mc-found:empty,#setup-found:empty{display:none}
 #setup-found{margin:8px 0}
 input.find{display:block;width:100%;min-height:48px;margin:0 0 8px;padding:6px 12px;font:inherit;font-size:17px;color:var(--ink);background:var(--sheet);border:var(--bw) solid var(--ctl);border-radius:var(--r)}
+/* My jobs */
+.jb-list{display:flex;flex-direction:column;gap:6px;padding:8px 12px}
+.jb-row{appearance:none;display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;min-height:52px;padding:8px 12px;text-align:left;font:inherit;color:var(--ink);background:var(--zebra);border:var(--bw) solid var(--edge);border-radius:var(--r);cursor:pointer}
+.jb-row b{font-family:var(--display);font-size:17px;overflow-wrap:anywhere}
+.jb-row>span{font-size:14.5px;color:var(--muted);overflow-wrap:anywhere}
+.jb-tags .badge{margin-right:6px}
+.jb-seg{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px 0}
+.jb-top{padding:10px 12px 0}
+.jb-bar{height:10px;margin-top:6px;background:var(--zebra);border:1px solid var(--rule);border-radius:99px;overflow:hidden}
+.jb-bar i{display:block;height:100%;background:var(--k)}
+:root[data-theme="dark"] .jb-bar i{background:var(--hv)}
+.jb-x{appearance:none;min-width:44px;min-height:44px;font-size:24px;line-height:1;background:none;border:0;color:var(--muted);cursor:pointer}
+.jb-t td:last-child{width:44px;padding:0;text-align:center}
+.jb-t select{font:inherit;font-size:16px;min-height:44px;padding:4px 6px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r)}
+.jb-punch{list-style:none;margin:0;padding:4px 12px 8px}
+.jb-punch li{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--rule)}
+.jb-punch label{flex:1;display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;overflow-wrap:anywhere}
+.jb-punch input{width:22px;height:22px;flex:none;accent-color:var(--k)}
+.jb-punch input:checked+span{text-decoration:line-through;color:var(--muted)}
+.jb-end{padding:16px 12px 12px}
+.jb-in .set-btns,.jb-in>.note{padding:4px 12px 8px}
+.calc textarea{font-family:var(--body);font-weight:500;font-size:17px;text-transform:none;letter-spacing:0;padding:8px 10px;min-height:80px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%;resize:vertical}
+.jf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;padding:8px 12px}
+.jf-grid>.note{grid-column:1/-1;padding:0}
+.jf-th{appearance:none;padding:0;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--zebra);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;text-align:left;color:var(--ink);font:inherit;min-width:0}
+.jf-th img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.jf-th b{display:grid;place-items:center;aspect-ratio:1}
+.jf-th span{font-size:12.5px;padding:3px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+dialog.jf-dlg{width:min(720px,calc(100vw - 24px));max-height:calc(100dvh - 24px);padding:0;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);color:var(--ink);overflow:auto}
+dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
+.jf-dlg img{display:block;max-width:100%;max-height:60dvh;margin:0 auto;object-fit:contain}
+.jf-dlg .calc{border:0}
+.jf-btns{padding:0 12px 12px}
+.jf-fname{padding:16px 12px 0;margin:0;overflow-wrap:anywhere}
 .wx-hero{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 14px;margin:8px 12px 10px;background:var(--k);color:var(--on-k);border-left:10px solid var(--hv);border-radius:var(--r)}
 .wx-hero a{color:var(--hv);font-weight:700}
 a[href^="mailto:"]{overflow-wrap:anywhere}
@@ -860,6 +894,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 <noscript><div style="padding:12px;margin:12px;border:3px solid #000;background:#CCFF00;color:#000;font:16px/1.4 system-ui,sans-serif"><b>Calculators and tabs are off.</b> This viewer isn't running scripts. Open the book in Safari or Chrome.</div></noscript>
 <div id="sr-status" role="status" class="sr-only"></div>
 <canvas id="fx" aria-hidden="true" hidden></canvas>
+<dialog id="jf-dlg" class="jf-dlg" aria-label="Photo or file"><div id="jf-dlg-body"></div>
+  <div class="calc"><label for="jf-note" class="wide">Note<textarea id="jf-note" rows="3" placeholder="What this shows: 3/4 stub-out at 8 in left of center"></textarea></label></div>
+  <div class="set-btns jf-btns"><button type="button" class="btn" id="jf-open">Open</button><button type="button" class="btn ghost" id="jf-share">Share / save</button><button type="button" class="btn ghost" id="jf-close">Close</button><button type="button" class="del" id="jf-del">Delete</button></div>
+</dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <header class="tb">
@@ -1004,7 +1042,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <button type="button" data-group="contacts" data-g="contacts"><b>Contacts</b><span>Emergency · my city · utilities · tech lines · supply houses</span></button>
       <button type="button" data-group="site" data-g="site"><b>Jobsite</b><span>Weather go/no-go · safety · electrical</span></button>
       <button type="button" data-group="learn" data-g="learn"><b>Learn</b><span>How it works · flashcards · glossary · tools · license</span></button>
-      <button type="button" data-group="mine" data-g="mine"><b>Mine</b><span>Pinned · notes · tape · my shop</span></button>
+      <button type="button" data-group="mine" data-g="mine"><b>Mine</b><span>Jobs · pinned · notes · tape · shop</span></button>
       <button type="button" data-act="share"><b>Share the book</b><span>QR code for a coworker's phone</span></button>
       <button type="button" data-act="settings"><b>Settings</b><span>Look · text size · code · backup · about</span></button>
     </div></div></div>
@@ -1057,6 +1095,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <section data-sec="notes" id="notes-help" data-kw="my notes card notes">
     <div class="sec-head"><h2>My notes</h2><small>Your notes on any card · saved on this device</small></div>
     <p class="note" id="notes-note">Open any card's <b>⋯</b> menu and pick <b>Add a note</b>: "Lehi inspector wants the test cap visible." Notes show on the card, turn up in search and go in your backup.</p>
+  </section>
+  <section data-sec="jobs" id="jobs-card" data-kw="my jobs job tracker jobs list address lot builder customer phase status inspections booked pass fail partial hours log apprentice hours license punch list materials photos pictures files pdf plans">
+    <div class="sec-head"><h2>My jobs</h2><small>Jobs · inspections · hours · photos · on this phone only</small></div>
+    <div id="jb-body"></div>
   </section>
   <section data-sec="tape" id="tape-card" data-kw="results tape history saved results calculator answers copy share">
     <div class="sec-head"><h2>Results tape</h2><small>Calculator answers you saved</small></div>
@@ -4327,6 +4369,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 14, 2026</th><td><b>My jobs (Mine → Jobs):</b> each job keeps its address, builder or customer, city (with how to book its inspections), phase and status; its inspections (booked, pass, partial, fail) with the inspector and corrections; hours with today, this week, last week and a running count toward your license hours; a punch and materials list you check off; and photos (a note on each) and files like PDF plans. <b>MY JOBS</b> on Home shows your open jobs. Jobs go in Settings → Download backup; photos and files are too big for it and have their own backup at the bottom of the Jobs page.</td></tr>
         <tr><th>Nov 13, 2026</th><td><b>Find a city by typing:</b> the city menus (Contacts → Call → My city, and first-time setup) have a search box, so you don't scroll 259 names. <b>Every Utah city and town</b> is in the city picker now (259 places). The 227 new ones show their elevation. 24 of them (the rest of Utah County and the biggest cities nearby) also have how to book inspections and, where found, secondary water; the others say "not checked yet". <b>New home-screen icon:</b> bright lime on black, so it stays easy to see when the phone is in dark mode. An iPhone keeps the old picture until you delete the Handbook from the home screen and add it again (Safari → Share → Add to Home Screen). Your saved pins and notes stay. The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install. <b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
         <tr><th>Nov 12, 2026</th><td><b>Share the book</b> (Settings) shows its QR code with no signal now: the code is stored in the book instead of being fetched. <b>Bottom bar:</b> eight tables had started scrolling up and down a few pixels inside their own boxes, which can tug the iPhone bar loose: fixed. After the "Allow location" prompt the book now re-seats the bar. <b>Weather:</b> the first forecast shows in a few seconds even when the main service is slow, and picking a new place no longer blanks the card. A book left in the background over 6 hours reloads when you come back, so it picks up updates. <b>Weather fixed:</b> when the main forecast service doesn't answer, the card now switches to the National Weather Service forecast instead of sitting on "Loading". Every weather request gives up after 12 seconds and tries again. <b>New:</b> a weather button in the top corner shows the sky right now and the temperature; tap it for Jobsite → Weather. Turn it off in <b>Settings → Behavior → Weather in the header</b>. <b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them. <b>Water treatment</b> (Service → Treatment) grew: <b>Where treatment goes</b> (order in the line, hard water for hose bibbs, the softener loop rough-in), <b>Softener trouble</b> (no soft water, salt bridge, resin in the lines, low pressure), <b>How RO works</b>, <b>Treatment code</b> (the IPC and IRC sections for softeners and RO) and <b>Treatment brands</b>. <b>Contacts → Tech lines → Water treatment</b> has 14 makers' phone lines.</td></tr>
         <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "shower valve height") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Circuits, wire &amp; bonding. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow. <b>Reopening the book</b> lands where you were on the page, not at the top. <b>Fits the phone:</b> calculator answers and the Pressure at the fixture rows no longer run off the right edge, long dropdowns get a full row, and tech line numbers stack instead of scrolling sideways.</td></tr>
@@ -5599,7 +5642,7 @@ const GROUPS = {
   contacts:[["emergency","Call"],["techlines","Tech lines"],["houses","Supply houses"]],
   site:    [["wxnow","Weather"],["safety","Safety"],["power","Electrical"]],
   learn:   [["start","Start here"],["how","How it works"],["facts","Fact file"],["study","Flashcards"],["exam","Practice test"],["words","Glossary"],["tools","Tools"],["career","License"]],
-  mine:    [["pins","Pinned"],["notes","Notes"],["tape","Tape"],["shop","My shop"]]
+  mine:    [["jobs","Jobs"],["pins","Pinned"],["notes","Notes"],["tape","Tape"],["shop","My shop"]]
 };
 const GNAME = {home:"Home",calc:"Calc",rough:"Build",mech:"Service",trim:"Trim",inspect:"Inspect",contacts:"Contacts",site:"Jobsite",learn:"Learn",mine:"Mine"};
 let MORE_G = ["inspect","contacts","site","learn","mine"];   /* phones: these live behind More (Settings → Tabs can change it) */
@@ -5670,6 +5713,7 @@ function inView(sec){
     if (nav.sub === "notes") return sec.dataset.note === "1" || sec.id === "notes-help";
     if (nav.sub === "shop") return sec.dataset.shop === "1" || sec.id === "shop-help";
     if (nav.sub === "tape") return sec.dataset.sec === "tape";
+    if (nav.sub === "jobs") return sec.dataset.sec === "jobs";
     return sec.dataset.pin === "1" || sec.dataset.sec === "pins";
   }
   return sec.dataset.g === nav.group && nav.sub === sec.dataset.sec;
@@ -8429,7 +8473,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-13e";
+{ const NEWS = "2026-11-14";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -8757,6 +8801,7 @@ function homeDraw(){
       <button type="button" class="hg-em" data-hg="contacts|emergency"><b>Emergency</b><span>Gas, 911, water main</span></button>
       ${homeGoList().map(k => `<button type="button" data-hg="${HOME_GO[k][0]}"><b>${HOME_GO[k][1]}</b><span>${HOME_GO[k][2]}</span></button>`).join("")}
     </div>
+    ${(() => { try { return window.jobsHome ? jobsHome() : ""; } catch(e){ return ""; } })()}
     ${c ? `<div class="home-city"><p class="card-h">My city · ${esc(c.n)} <button type="button" class="linkish" data-hg="contacts|emergency|My city">Change</button></p><table class="t wrap"><tbody><tr><th>Book inspections</th><td>${c.book}</td></tr><tr><th>Water / sewer trouble</th><td>${c.after || NOAFTER}</td></tr></tbody></table></div>`
         : `<p class="note"><button type="button" class="linkish" data-hg="contacts|emergency|My city">Set my city</button> for inspection booking, trouble lines, hardness and frost depth.</p>`}
     ${TAPE.length ? `<p class="card-h">Last on the tape <button type="button" class="linkish" data-hg="mine|tape">All</button></p><pre class="tape-last">${esc(TAPE[0].text.split("\n").slice(0, 4).join("\n"))}</pre>` : ""}
@@ -9415,9 +9460,326 @@ const WX = (() => {
 window.wxRender = WX.render;
 </script>
 
+<script>/* ---------- My jobs (Mine → Jobs). Jobs, inspections, hours and punch lists live in jpb-jobs, so Settings → Download backup
+   carries them. Photos and files live in IndexedDB "jpb-files" (localStorage is ~5 MB) and have their own zip backup.
+   Its own script block, all inside try: a bug here can't stop the rest of the book. */
+try {
+const jbD = (x => x && Array.isArray(x.jobs) ? x : {jobs: [], goal: 8000, before: 0})(store.get("jpb-jobs", null));
+const JB = {open: null, show: "open"}, JF = {n: 0, cur: null, url: null};
+const JB_PH = ["Underground", "Rough-in", "Top-out", "Gas", "Trim", "Final", "Service", "Warranty"];
+const JB_IT = ["Underground", "Rough / 4-way", "Top-out", "Gas", "Shower pan", "Water heater", "Final", "Other"];
+const JB_IDEF = {"Underground": "Underground", "Rough-in": "Rough / 4-way", "Top-out": "Top-out", "Gas": "Gas", "Trim": "Final", "Final": "Final"};
+const JB_RES = {booked: "Booked", pass: "Pass", partial: "Partial", fail: "Fail"};
+const JB_ST = {open: "Open", hold: "On hold", done: "Done"};
+let jbT, jfNT;
+const jbSave = () => { clearTimeout(jbT); store.set("jpb-jobs", jbD); IDX = null; try { homeDraw(); } catch(e){} };
+const jbId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const jbDay = (n = new Date()) => new Date(n - n.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+const jbWk = s => { const x = new Date(s + "T12:00:00"); x.setDate(x.getDate() - (x.getDay() + 6) % 7); return jbDay(x); };   /* weeks start Monday */
+const jbNice = s => { const x = new Date(s + "T12:00:00"); return isNaN(x) ? esc(s) : x.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}); };
+const jbHr = x => (Math.round(x * 100) / 100).toLocaleString();
+const jbCur = () => jbD.jobs.find(j => j.id === JB.open);
+const jbName = j => (j.a || "").trim() || "Untitled job";
+const jbNext = j => j.insp.filter(i => i.r === "booked").sort((a, b) => a.d < b.d ? -1 : 1)[0];
+const jfMB = n => n >= 1e6 ? (n / 1e6).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1e3)) + " KB";
+const jfSay = (t, c) => { const s = $("jf-say"); if (s){ s.textContent = t; s.className = "note " + (c || ""); } };
+const jbOpts = (o, v) => Object.entries(o).map(([k, t]) => `<option value="${k}"${k === v ? " selected" : ""}>${t}</option>`).join("");
+const jbList = (a, v) => a.map(x => `<option${x === v ? " selected" : ""}>${esc(x)}</option>`).join("");
+const jbIn = (k, j) => k === "all" || (k === "done") === (j.st === "done");
+
+function jbHours(){
+  const all = jbD.jobs.flatMap(j => j.hrs), now = jbDay(), wk = jbWk(now), lx = new Date(wk + "T12:00:00"); lx.setDate(lx.getDate() - 7);
+  const lw = jbDay(lx), sum = f => all.filter(f).reduce((n, h) => n + (+h.h || 0), 0);
+  return {today: sum(h => h.d === now), wk: sum(h => jbWk(h.d) === wk), lw: sum(h => jbWk(h.d) === lw), all: sum(() => true)};
+}
+function jbNew(){
+  const j = {id: jbId(), a: "", who: "", city: myCity || "", ph: "Rough-in", st: "open", note: "", t: Date.now(), insp: [], hrs: [], punch: []};
+  jbD.jobs.push(j); JB.open = j.id; jbSave(); return j;
+}
+const jbRow = (j, attr = "data-open") => { const n = jbNext(j), c = cityById(j.city);
+  return `<button type="button" class="jb-row" ${attr}="${j.id}"><b>${esc(jbName(j))}</b><span>${[j.who, c && c.n].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
+    + `<span class="jb-tags"><span class="badge">${esc(j.ph)}</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${n ? `Inspection ${jbNice(n.d)}` : ""}</span></button>`; };
+
+function jbListHtml(){
+  const L = jbD.jobs.filter(j => jbIn(JB.show, j)).sort((a, b) => b.t - a.t), H = jbHours();
+  const goal = +jbD.goal === 6000 ? 6000 : 8000, have = H.all + (+jbD.before || 0), pct = Math.min(100, have / goal * 100);
+  return `<div class="set-btns jb-top"><button type="button" class="btn" data-a="new">+ New job</button></div>
+  <div class="seg jb-seg" role="group" aria-label="Show">${[["open", "Open"], ["done", "Done"], ["all", "All"]].map(([k, t]) => `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}">${t} · ${jbD.jobs.filter(j => jbIn(k, j)).length}</button>`).join("")}</div>
+  <div class="jb-list">${L.map(j => jbRow(j)).join("") || `<p class="note">${jbD.jobs.length ? "Nothing here." : "No jobs yet. Tap <b>+ New job</b>: the address, builder and phase, then its inspections, hours, punch list and photos."}</p>`}</div>
+  <p class="card-h">Hours</p>
+  <div class="x"><table class="t wrap"><tbody>
+    <tr><th>Today</th><td>${jbHr(H.today)} hr</td></tr>
+    <tr><th>This week</th><td>${jbHr(H.wk)} hr <span class="sub">(Mon–Sun)</span></td></tr>
+    <tr><th>Last week</th><td>${jbHr(H.lw)} hr</td></tr>
+    <tr><th>Toward license</th><td>${jbHr(have)} of ${goal.toLocaleString()} hr · ${Math.floor(pct)}%<div class="jb-bar" aria-hidden="true"><i style="width:${pct}%"></i></div></td></tr>
+  </tbody></table></div>
+  <details class="explain"><summary>Set the license goal</summary><div>
+    <div class="calc"><label for="jb-goal">Goal<select id="jb-goal"><option value="6000">Residential journeyman · 6,000 hr</option><option value="8000">Journeyman · 8,000 hr</option></select></label>
+    <label for="jb-before">Hours before this app<input id="jb-before" type="number" inputmode="decimal" min="0" step="any" value="${+jbD.before || ""}" placeholder="0"></label></div>
+    <p class="note">Your own count, so you can see where you stand. DOPL goes by the hours your sponsor reports, so keep those records too. The goals are the on-the-job hours in Learn → License → Path to a license.</p></div></details>
+  <p class="card-h">Photos &amp; files backup</p>
+  <div class="jb-in"><p class="note" id="jf-use">Photos and files stay on this phone. They're too big for Settings → Download backup, so save them here now and then.</p>
+  <div class="set-btns"><button type="button" class="btn ghost" data-a="jf-save">Download photos &amp; files</button><label class="btn ghost">Restore photos &amp; files<input type="file" id="jf-restore" accept=".zip,application/zip" hidden></label></div>
+  <p class="note" id="jf-say" aria-live="polite"></p></div>`;
+}
+
+function jbJobHtml(j){
+  const c = cityById(j.city), hrs = j.hrs.reduce((n, h) => n + (+h.h || 0), 0), byDate = (a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : 0;
+  return `<div class="set-btns jb-top"><button type="button" class="btn ghost" data-a="back">‹ All jobs</button></div>
+  <div class="calc">
+    <label for="jb-a" class="wide">Address / lot<input id="jb-a" data-f="a" type="text" autocomplete="off" value="${esc(j.a)}" placeholder="Lot 12 · 123 N Main"></label>
+    <label for="jb-who" class="wide">Builder / customer<input id="jb-who" data-f="who" type="text" autocomplete="off" value="${esc(j.who)}" placeholder="Builder, customer, super's number"></label>
+    <label for="jb-city">City<select id="jb-city" data-f="city">${$("mc-pick").innerHTML}</select></label>
+    <label for="jb-ph">Phase<select id="jb-ph" data-f="ph">${jbList(JB_PH, j.ph)}</select></label>
+    <label for="jb-st">Status<select id="jb-st" data-f="st">${jbOpts(JB_ST, j.st)}</select></label>
+    <label for="jb-note" class="wide">Notes<textarea id="jb-note" data-f="note" rows="3" placeholder="Gate code, where the meter is, what the super wants">${esc(j.note)}</textarea></label>
+  </div>
+  ${c ? `<div class="x"><table class="t wrap"><tbody><tr><th>Book inspections · ${esc(c.n)}</th><td>${c.book}</td></tr></tbody></table></div>` : ""}
+
+  <p class="card-h">Inspections</p>
+  ${j.insp.length ? `<div class="x"><table class="t wrap jb-t"><tbody>${j.insp.slice().sort(byDate).map(i => `<tr><td><b>${jbNice(i.d)}</b> · ${esc(i.k)}${i.who ? `<div class="sub">${esc(i.who)}</div>` : ""}${i.n ? `<div class="sub">${esc(i.n)}</div>` : ""}</td><td><select data-ir="${i.id}" aria-label="Result">${jbOpts(JB_RES, i.r)}</select></td><td><button type="button" class="jb-x" data-del="insp|${i.id}" aria-label="Delete this inspection">×</button></td></tr>`).join("")}</tbody></table></div>` : `<div class="jb-in"><p class="note">None yet.</p></div>`}
+  <details class="explain"><summary>+ Add an inspection</summary><div><div class="calc">
+    <label for="ji-d">Date<input id="ji-d" type="date" value="${jbDay()}"></label>
+    <label for="ji-k">Inspection<select id="ji-k">${jbList(JB_IT, JB_IDEF[j.ph] || "Other")}</select></label>
+    <label for="ji-r">Result<select id="ji-r">${jbOpts(JB_RES, "booked")}</select></label>
+    <label for="ji-who">Inspector <i>(optional)</i><input id="ji-who" type="text" autocomplete="off"></label>
+    <label for="ji-n" class="wide">Notes / corrections <i>(optional)</i><input id="ji-n" type="text" autocomplete="off" placeholder="Strap the 3/4 in the garage"></label>
+  </div><div class="set-btns jb-top"><button type="button" class="btn" data-a="insp-add">Add inspection</button></div></div></details>
+
+  <p class="card-h">Hours on this job · ${jbHr(hrs)} hr</p>
+  <div class="calc">
+    <label for="jh-d">Date<input id="jh-d" type="date" value="${jbDay()}"></label>
+    <label for="jh-h">Hours<input id="jh-h" type="number" inputmode="decimal" min="0" max="24" step="any" placeholder="8"></label>
+    <label for="jh-n" class="wide">What you did <i>(optional)</i><input id="jh-n" type="text" autocomplete="off" placeholder="Set tubs, ran vents"></label>
+  </div>
+  <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-a="hrs-add">Log hours</button></div></div>
+  ${j.hrs.length ? `<div class="x"><table class="t wrap jb-t"><tbody>${j.hrs.slice().sort(byDate).map(h => `<tr><td>${jbNice(h.d)}${h.n ? `<div class="sub">${esc(h.n)}</div>` : ""}</td><td class="n">${jbHr(+h.h)} hr</td><td><button type="button" class="jb-x" data-del="hrs|${h.id}" aria-label="Delete these hours">×</button></td></tr>`).join("")}</tbody></table></div>` : ""}
+
+  <p class="card-h">Punch list &amp; materials</p>
+  <div class="calc"><label for="jp-t" class="wide">Add an item<input id="jp-t" type="text" autocomplete="off" enterkeyhint="done" placeholder="Nail plates, 2 × 1/2 PEX stub-outs"></label></div>
+  <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-a="punch-add">Add</button>${j.punch.some(p => p.done) ? `<button type="button" class="btn ghost" data-a="punch-clear">Clear checked</button>` : ""}</div></div>
+  ${j.punch.length ? `<ul class="jb-punch">${j.punch.map(p => `<li><label><input type="checkbox" data-pk="${p.id}"${p.done ? " checked" : ""}><span>${esc(p.t)}</span></label><button type="button" class="jb-x" data-del="punch|${p.id}" aria-label="Delete ${esc(p.t)}">×</button></li>`).join("")}</ul>` : ""}
+
+  <p class="card-h">Photos</p>
+  <div class="jb-in"><div class="set-btns"><label class="btn">Add photos<input type="file" id="jf-ph" accept="image/*" multiple hidden></label></div></div>
+  <div class="jf-grid" id="jf-photos"></div>
+  <p class="card-h">Files</p>
+  <div class="jb-in"><div class="set-btns"><label class="btn ghost">Add files (PDF, plans)<input type="file" id="jf-fi" multiple hidden></label></div></div>
+  <div class="jb-list" id="jf-files"></div>
+  <div class="set-btns jb-end"><button type="button" class="del" data-a="job-del">Delete this job</button></div>`;
+}
+
+function jbDraw(){
+  const j = jbCur(); if (JB.open && !j) JB.open = null;
+  $("jb-body").innerHTML = j ? jbJobHtml(j) : jbListHtml();
+  if (j){ $("jb-city").value = j.city || ""; jfDraw(j.id); }
+  else { $("jb-goal").value = String(+jbD.goal === 6000 ? 6000 : 8000); jfUse(); }
+  bindPn($("jb-body"));
+}
+const jbTouch = j => { j.t = Date.now(); jbSave(); jbDraw(); };
+const jbTop = () => { const c = $("jobs-card"); if (c) c.scrollIntoView({block: "start"}); };
+function jbBack(){
+  const j = jbCur();
+  if (j && !jbName(j).replace("Untitled job", "") && !j.who.trim() && !j.note.trim() && !j.insp.length && !j.hrs.length && !j.punch.length && !JF.n)
+    jbD.jobs = jbD.jobs.filter(x => x !== j);   /* a new job left blank isn't kept */
+  JB.open = null; jbSave(); jbDraw(); jbTop();
+}
+
+const B = $("jb-body");
+B.addEventListener("click", e => {
+  const t = e.target.closest("[data-a],[data-open],[data-show],[data-del],[data-v]"); if (!t) return;
+  const j = jbCur(), a = t.dataset.a, v = id => $(id).value.trim();
+  if (t.dataset.open){ JB.open = t.dataset.open; JF.n = 0; jbDraw(); jbTop(); return; }
+  if (t.dataset.show){ JB.show = t.dataset.show; jbDraw(); return; }
+  if (t.dataset.v){ jfView(t.dataset.v); return; }
+  if (t.dataset.del && j){ const [k, id] = t.dataset.del.split("|");
+    if (k !== "punch" && !confirm(k === "hrs" ? "Delete these hours?" : "Delete this inspection?")) return;
+    j[k] = j[k].filter(x => x.id !== id); jbTouch(j); return; }
+  if (a === "new"){ jbNew(); JF.n = 0; jbDraw(); jbTop(); $("jb-a").focus(); }
+  else if (a === "back") jbBack();
+  else if (a === "insp-add" && j){ const d = v("ji-d"); if (!d){ toast("Pick a date."); return; }
+    j.insp.push({id: jbId(), d, k: v("ji-k"), r: $("ji-r").value, who: v("ji-who"), n: v("ji-n")}); jbTouch(j); toast("Inspection added.", 1800); }
+  else if (a === "hrs-add" && j){ const h = parseFloat($("jh-h").value), d = v("jh-d");
+    if (!(h > 0 && h <= 24) || !d){ toast("Enter the date and 0–24 hours."); return; }
+    j.hrs.push({id: jbId(), d, h: Math.round(h * 100) / 100, n: v("jh-n")}); jbTouch(j); toast(`${jbHr(h)} hr logged.`, 1800); }
+  else if (a === "punch-add" && j){ const x = v("jp-t"); if (!x) return; j.punch.push({id: jbId(), t: x, done: false}); jbTouch(j); $("jp-t").focus(); }
+  else if (a === "punch-clear" && j){ j.punch = j.punch.filter(p => !p.done); jbTouch(j); }
+  else if (a === "job-del" && j){
+    if (!confirm(`Delete "${jbName(j)}" with its inspections, hours, photos and files? This can't be undone.`)) return;
+    jbD.jobs = jbD.jobs.filter(x => x !== j); jfAll(j.id).then(L => Promise.all(L.map(f => jfDel(f.id)))).catch(() => {});
+    JB.open = null; jbSave(); jbDraw(); jbTop(); toast("Job deleted.", 1800); }
+  else if (a === "jf-save") jfBackup();
+});
+B.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "jp-t"){ e.preventDefault(); B.querySelector('[data-a="punch-add"]').click(); } });
+B.addEventListener("input", e => { const t = e.target, j = jbCur();
+  if (j && t.dataset.f && t.tagName !== "SELECT"){ j[t.dataset.f] = t.value; j.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); } });
+B.addEventListener("change", e => { const t = e.target, j = jbCur();
+  if (j && t.dataset.f){ if (t.tagName === "SELECT"){ j[t.dataset.f] = t.value; jbTouch(j); } else jbSave(); return; }
+  if (j && t.dataset.ir){ const i = j.insp.find(x => x.id === t.dataset.ir); if (i){ i.r = t.value; jbTouch(j); } return; }
+  if (j && t.dataset.pk){ const p = j.punch.find(x => x.id === t.dataset.pk); if (p){ p.done = t.checked; jbTouch(j); } return; }
+  if (t.id === "jb-goal"){ jbD.goal = +t.value; jbSave(); jbDraw(); return; }
+  if (t.id === "jb-before"){ jbD.before = Math.max(0, parseFloat(t.value) || 0); jbSave(); jbDraw(); return; }
+  if (t.id === "jf-ph" || t.id === "jf-fi"){ jfAdd([...t.files], t.id === "jf-ph"); return; }
+  if (t.id === "jf-restore" && t.files[0]) jfRestore(t.files[0]);
+});
+
+/* Home: MY JOBS box (homeDraw calls this) */
+window.jobsHome = () => {
+  const open = jbD.jobs.filter(j => j.st === "open").sort((a, b) => b.t - a.t).slice(0, 3), H = jbHours();
+  return `<p class="card-h">My jobs <button type="button" class="linkish" data-hj="all">All</button></p>`
+    + (open.length ? `<div class="jb-list">${open.map(j => jbRow(j, "data-hj")).join("")}</div>`
+      : `<p class="note"><button type="button" class="linkish" data-hj="new">Add a job</button> to track its phase, inspections, hours and photos.</p>`)
+    + (H.wk ? `<p class="note">${jbHr(H.today)} hr today · ${jbHr(H.wk)} hr this week</p>` : "");
+};
+$("home-body").addEventListener("click", e => { const b = e.target.closest("[data-hj]"); if (!b) return; const k = b.dataset.hj;
+  JF.n = 0; if (k === "new") jbNew(); else JB.open = k === "all" ? null : k;
+  go("mine", "jobs"); jbDraw(); jbTop(); });
+
+/* ---- photos & files: IndexedDB */
+let jfDbP = null;
+const jfDb = () => jfDbP || (jfDbP = new Promise((ok, no) => {
+  const r = indexedDB.open("jpb-files", 1);
+  r.onupgradeneeded = () => r.result.createObjectStore("files", {keyPath: "id"}).createIndex("job", "job");
+  r.onsuccess = () => ok(r.result); r.onerror = () => { jfDbP = null; no(r.error); };
+}));
+const jfTx = (mode, fn) => jfDb().then(db => new Promise((ok, no) => {
+  const t = db.transaction("files", mode), r = fn(t.objectStore("files")); let out;
+  if (r) r.onsuccess = () => { out = r.result; };
+  t.oncomplete = () => ok(out); t.onerror = () => no(t.error); t.onabort = () => no(t.error);
+}));
+const jfAll = job => jfTx("readonly", s => job ? s.index("job").getAll(job) : s.getAll());
+const jfPut = rec => jfTx("readwrite", s => s.put(rec));
+const jfDel = id => jfTx("readwrite", s => s.delete(id));
+
+async function jfDraw(job){
+  let L; try { L = await jfAll(job); } catch(e){ const p = $("jf-photos"); if (p) p.innerHTML = `<p class="note">This browser won't store photos here.</p>`; return; }
+  if (JB.open !== job || !$("jf-photos")) return;
+  L.sort((a, b) => a.t - b.t); JF.n = L.length;
+  const P = L.filter(f => f.kind === "photo"), F = L.filter(f => f.kind !== "photo");
+  $("jf-photos").innerHTML = P.map(f => `<button type="button" class="jf-th" data-v="${f.id}" aria-label="Photo${f.note ? ": " + esc(f.note) : ""}">${f.thumb ? `<img src="${f.thumb}" alt="">` : "<b>Photo</b>"}${f.note ? `<span>${esc(f.note)}</span>` : ""}</button>`).join("")
+    || `<p class="note">None yet. Rating plates, stub-outs before drywall, what the inspector flagged.</p>`;
+  $("jf-files").innerHTML = F.map(f => `<button type="button" class="jb-row" data-v="${f.id}"><b>${esc(f.name)}</b><span>${jfMB(f.blob.size)}${f.note ? " · " + esc(f.note) : ""}</span></button>`).join("")
+    || `<p class="note">None yet. Plans, the permit, spec sheets.</p>`;
+}
+function jfUse(){
+  jfAll().then(L => { const u = $("jf-use"); if (!u) return; const s = L.reduce((n, f) => n + (f.blob ? f.blob.size : 0), 0);
+    u.textContent = L.length ? `${L.length} photo${L.length === 1 ? "" : "s"} and file${L.length === 1 ? "" : "s"} in all, about ${jfMB(s)}, saved on this phone. They're too big for Settings → Download backup, so save them here now and then.`
+      : "Photos and files stay on this phone. They're too big for Settings → Download backup, so save them here now and then."; }).catch(() => {});
+}
+/* one decode, two JPEGs: about 1600 px for the record, 240 px for the grid. The browser applies the phone's rotation. */
+async function jfImg(file){
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => no(new Error("decode")); i.src = url; });
+    const draw = (max, q) => new Promise((ok, no) => {
+      const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement("canvas");
+      c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); c.toBlob(b => b ? ok(b) : no(new Error("encode")), "image/jpeg", q); });
+    const big = await draw(1600, .82), small = await draw(240, .7);
+    const thumb = await new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = no; r.readAsDataURL(small); });
+    return {big, thumb};
+  } finally { URL.revokeObjectURL(url); }
+}
+async function jfAdd(files, photos){
+  const j = jbCur(); if (!j || !files.length) return;
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}   /* ask the phone not to clear them */
+  toast(`Saving ${files.length}…`, 9000);
+  let n = 0, bad = 0;
+  for (const f of files){
+    try {
+      const img = photos && /^image\//.test(f.type); let blob = f, thumb = "", type = f.type || "application/octet-stream";
+      if (img){ try { const x = await jfImg(f); blob = x.big; thumb = x.thumb; type = "image/jpeg"; } catch(e){} }
+      await jfPut({id: jbId(), job: j.id, kind: img ? "photo" : "file", name: f.name || (img ? "photo.jpg" : "file"), type, blob, thumb, note: "", t: Date.now()}); n++;
+    } catch(e){ bad++; }
+  }
+  toast(bad ? `Saved ${n}. ${bad} couldn't be saved: the phone may be out of space.` : `Saved ${n}.`, 2400);
+  j.t = Date.now(); jbSave(); jfDraw(j.id);
+  const inp = $(photos ? "jf-ph" : "jf-fi"); if (inp) inp.value = "";
+}
+async function jfView(id){
+  const f = await jfTx("readonly", s => s.get(id)).catch(() => null); if (!f) return;
+  JF.cur = f; if (JF.url) URL.revokeObjectURL(JF.url); JF.url = URL.createObjectURL(f.blob);
+  $("jf-dlg-body").innerHTML = f.kind === "photo" ? `<img src="${JF.url}" alt="Job photo">` : `<p class="jf-fname"><b>${esc(f.name)}</b><br>${jfMB(f.blob.size)}</p>`;
+  $("jf-note").value = f.note || ""; $("jf-dlg").showModal();
+}
+$("jf-note").addEventListener("input", () => { if (!JF.cur) return; JF.cur.note = $("jf-note").value; clearTimeout(jfNT); jfNT = setTimeout(() => jfPut(JF.cur).catch(() => {}), 400); });
+$("jf-close").addEventListener("click", () => $("jf-dlg").close());
+$("jf-dlg").addEventListener("close", () => { const c = JF.cur; JF.cur = null; clearTimeout(jfNT);
+  if (c) jfPut(c).catch(() => {}).then(() => { if (JB.open === c.job) jfDraw(c.job); }); });
+$("jf-open").addEventListener("click", () => { if (!JF.url) return; const a = document.createElement("a"); a.href = JF.url; a.target = "_blank"; a.rel = "noopener"; document.body.appendChild(a); a.click(); a.remove(); });
+$("jf-share").addEventListener("click", async () => { const c = JF.cur; if (!c) return;
+  const f = new File([c.blob], c.kind === "photo" ? c.name.replace(/\.[^.]*$/, "") + ".jpg" : c.name, {type: c.type});
+  try { if (navigator.canShare && navigator.canShare({files: [f]})){ await navigator.share({files: [f]}); return; } } catch(e){ if (e && e.name === "AbortError") return; }
+  const a = document.createElement("a"); a.href = JF.url; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); });
+$("jf-del").addEventListener("click", async () => { const c = JF.cur; if (!c || !confirm(`Delete this ${c.kind === "photo" ? "photo" : "file"}?`)) return;
+  JF.cur = null; await jfDel(c.id).catch(() => {}); $("jf-dlg").close(); jfDraw(c.job); });
+
+/* ---- photos & files backup: a plain (stored, not compressed) zip with manifest.json; JPEGs and PDFs don't shrink anyway */
+const JF_CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++){ let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const jfCrc = u => { let c = -1; for (let i = 0; i < u.length; i++) c = JF_CRC[(c ^ u[i]) & 255] ^ (c >>> 8); return (c ^ -1) >>> 0; };
+async function jfZip(list){
+  const enc = new TextEncoder(), parts = [], cd = []; let off = 0;
+  for (const e of list){
+    const nm = enc.encode(e.name), data = new Uint8Array(await e.blob.arrayBuffer()), crc = jfCrc(data), sz = data.length;
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(12, 0x21, true);
+    h.setUint32(14, crc, true); h.setUint32(18, sz, true); h.setUint32(22, sz, true); h.setUint16(26, nm.length, true);
+    parts.push(h.buffer, nm, e.blob);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(14, 0x21, true);
+    c.setUint32(16, crc, true); c.setUint32(20, sz, true); c.setUint32(24, sz, true); c.setUint16(28, nm.length, true); c.setUint32(42, off, true);
+    cd.push(c.buffer, nm); off += 30 + nm.length + sz;
+  }
+  const cs = cd.reduce((n, p) => n + p.byteLength, 0), z = new DataView(new ArrayBuffer(22));
+  z.setUint32(0, 0x06054b50, true); z.setUint16(8, list.length, true); z.setUint16(10, list.length, true); z.setUint32(12, cs, true); z.setUint32(16, off, true);
+  return new Blob([...parts, ...cd, z.buffer], {type: "application/zip"});
+}
+function jfUnzip(buf){
+  const v = new DataView(buf), u = new Uint8Array(buf), dec = new TextDecoder(), out = {};
+  let e = buf.byteLength - 22; while (e >= 0 && v.getUint32(e, true) !== 0x06054b50) e--; if (e < 0) throw new Error("not a zip");
+  let p = v.getUint32(e + 16, true);
+  for (let i = 0, n = v.getUint16(e + 10, true); i < n; i++){
+    if (v.getUint32(p, true) !== 0x02014b50) throw new Error("bad zip");
+    const meth = v.getUint16(p + 10, true), sz = v.getUint32(p + 20, true), nl = v.getUint16(p + 28, true), xl = v.getUint16(p + 30, true), cl = v.getUint16(p + 32, true), lo = v.getUint32(p + 42, true);
+    const name = dec.decode(u.subarray(p + 46, p + 46 + nl)), s = lo + 30 + v.getUint16(lo + 26, true) + v.getUint16(lo + 28, true);
+    if (meth === 0) out[name] = u.subarray(s, s + sz);
+    p += 46 + nl + xl + cl;
+  }
+  return out;
+}
+async function jfBackup(){
+  let L; try { L = await jfAll(); } catch(e){ jfSay("Couldn't read the photos on this phone.", "err"); return; }
+  if (!L.length){ jfSay("No photos or files yet."); return; }
+  jfSay(`Packing ${L.length}…`);
+  const man = L.map(f => ({id: f.id, job: f.job, jobName: ((jbD.jobs.find(x => x.id === f.job) || {}).a || ""), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb,
+    path: `files/${f.id}-${String(f.name).replace(/[^\w.\- ]+/g, "_").slice(-60)}`}));
+  try {
+    const zip = await jfZip([{name: "manifest.json", blob: new Blob([JSON.stringify({app: "utah-plumbers-handbook-files", v: 1, made: new Date().toISOString(), files: man})])},
+      ...L.map((f, i) => ({name: man[i].path, blob: f.blob}))]);
+    const a = document.createElement("a"); a.href = URL.createObjectURL(zip); a.download = `handbook-job-files-${jbDay()}.zip`; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    jfSay(`Made a ${jfMB(zip.size)} zip. Keep it in Files or iCloud Drive.`, "good");
+  } catch(e){ jfSay("Couldn't make the backup: " + (e && e.message || e), "err"); }
+}
+async function jfRestore(file){
+  try {
+    const z = jfUnzip(await file.arrayBuffer()), m = JSON.parse(new TextDecoder().decode(z["manifest.json"]));
+    if (!m || m.app !== "utah-plumbers-handbook-files" || !Array.isArray(m.files)) throw 0;
+    let n = 0, lost = 0;
+    for (const f of m.files){ const x = z[f.path]; if (!x) continue;
+      await jfPut({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}); n++;
+      if (!jbD.jobs.some(j => j.id === f.job)) lost++; }
+    jfSay(`Restored ${n}.` + (lost ? ` ${lost} belong to jobs that aren't on this phone: restore Settings → backup first, then this file again.` : ""), "good"); jfUse();
+  } catch(e){ jfSay("That isn't a photos & files backup from this app.", "err"); }
+  const r = $("jf-restore"); if (r) r.value = "";
+}
+
+jbDraw(); try { homeDraw(); } catch(e){}
+} catch(e){ const b = document.getElementById("jb-body"); if (b) b.innerHTML = '<p class="note">My jobs hit an error: ' + String(e && e.message || e).replace(/</g, "&lt;") + "</p>"; if (window.console) console.error(e); }
+</script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-13e";
+var BUILD = "handbook-2026-11-14";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
