@@ -132,16 +132,28 @@ const jbTasks = j => j.log.reduce((n, e) => n + (e.b.match(/^\s*[-*] \[ \]/gm) |
 const jnSort = (a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : b.at - a.at;
 /* one line of note text → HTML. Order matters: code spans first (nothing inside them is touched), then a backslash
    escapes the next mark (\* \# \[ shows the mark itself), then links, bold, italic, highlight, strike, web links, phones, tags. */
+/* what a [[link]] opens decides its color and icon: person, builder, subdivision, job, book card, or nothing yet */
+let JN_CARDS = null, jnForce = null;
+const JN_ICON = {person: "👤", bld: "🏗", sub: "🏘", job: "🔧", card: "📖", none: "＋"};
+function jnLinkType(x){
+  const q = String(x).trim().toLowerCase(); if (jnForce && jnForce[q]) return jnForce[q];
+  if (pByName(q)) return "person"; if (eByName("bld", q)) return "bld"; if (eByName("sub", q)) return "sub";
+  if (jbD.jobs.some(j => [j.name, j.a].some(v => (v || "").trim().toLowerCase() === q))) return "job";
+  if (!JN_CARDS) JN_CARDS = SECTIONS.map(sec => ((sec.querySelector("h2") || {}).textContent || "").trim().toLowerCase());
+  return JN_CARDS.some(t => t === q || (q.length > 3 && t.includes(q))) ? "card" : "none";
+}
+const jnHue = t => { let h = 7; for (const c of t.toLowerCase()) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };   /* a tag keeps its color everywhere */
 function jnInline(s){
   const keep = [], hold = h => "\u0001" + (keep.push(h) - 1) + "\u0002";
   s = s.replace(/`([^`]+)`/g, (m, x) => hold(`<code>${esc(x)}</code>`)).replace(/\\([\\`*_=~#\[\]!>-])/g, (m, x) => hold(esc(x)));
   s = esc(s)
-    .replace(/\[\[([^\]|]+?)(?:\|([^\]]+))?\]\]/g, (m, x, label) => !x.trim() ? m : hold(`<button type="button" class="jn-link" data-wl="${x.trim()}">${(label || x).trim()}</button>`))
+    .replace(/\[\[([^\]|]+?)(?:\|([^\]]+))?\]\]/g, (m, x, label) => { if (!x.trim()) return m; const ty = jnLinkType(x.replace(/&amp;/g, "&"));
+      return hold(`<button type="button" class="jn-link jn-l-${ty}" data-wl="${x.trim()}"><span class="jn-ico" aria-hidden="true">${JN_ICON[ty]}</span>${(label || x).trim()}</button>`); })
     .replace(/\*\*(?=\S)(.+?)\*\*/g, "<b>$1</b>").replace(/(^|[^*\w])\*(?=[^*\s])([^*]*?[^*\s])\*(?!\w)/g, "$1<i>$2</i>")
     .replace(/==(?=\S)(.+?)==/g, "<mark>$1</mark>").replace(/~~(?=\S)(.+?)~~/g, "<s>$1</s>")
     .replace(/\bhttps?:\/\/[^\s<]+?(?=[.,;:!?)]*(?:\s|$|<))/g, u => hold(`<a href="${u}" target="_blank" rel="noopener">${u}</a>`))
     .replace(/(^|[^\d-])((?:\+?1[-. ]?)?\(?\d{3}\)?[-. ]\d{3}[-. ]\d{4})(?!\d)/g, (m, a, n) => a + hold(`<span class="pn">${n}</span>`))
-    .replace(JN_TAG, (m, a, t) => `${a}<button type="button" class="jn-tag" data-tag="${t.toLowerCase()}">#${t}</button>`);
+    .replace(JN_TAG, (m, a, t) => `${a}<button type="button" class="jn-tag" style="--h:${jnHue(t)}" data-tag="${t.toLowerCase()}">#${t}</button>`);
   return s.replace(/\u0001(\d+)\u0002/g, (m, i) => keep[+i]).replace(/\u0001(\d+)\u0002/g, (m, i) => keep[+i]);
 }
 /* a whole note → HTML, line by line, so each checkbox knows its own line to tick */
@@ -173,34 +185,45 @@ function jnMd(src, eid){
   if (code !== null) h += `<pre class="jn-pre">${esc(code.join("\n"))}</pre>`;   /* a ``` never closed still shows */
   close(); return h;
 }
-const JN_TOOLS = `<div class="chips jn-tools">${[["- [ ] ", "☐ Task"], ["- ", "• List"], ["**", "Bold"], ["!! ", "Heads-up"], ["# ", "Heading"], ["#", "#tag"], ["[[", "[[link]]"], ["@date", "Date"]]
-  .map(([k, t]) => `<button type="button" data-ins="${esc(k)}">${t}</button>`).join("")}</div>`;
+const JN_TOOLS = `<div class="chips jn-tools">${[["- [ ] ", "☐ Task", "task"], ["!! ", "⚠ Heads-up", "flag"], ["#", "# Tag", "tag"], ["[[", "[[ Link ]]", "link"], ["- ", "• List", ""], ["# ", "Heading", ""], ["**", "Bold", ""], ["@date", "Date", ""]]
+  .map(([k, t, c]) => `<button type="button" data-ins="${esc(k)}"${c ? ` class="t-${c}"` : ""}>${t}</button>`).join("")}</div>`;
 const jnWhen = e => { const t = new Date(e.at); return jbNice(e.d) + (jbDay(t) === e.d ? " · " + t.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"}) : ""); };
 const jnEntry = e => JB.edit === e.id
   ? `<article class="jn-e"><div class="calc"><label for="jn-ed-d">Date<input id="jn-ed-d" type="date" value="${esc(e.d)}"></label><label for="jn-ed" class="wide">Note<textarea id="jn-ed" class="jn-ta" rows="6">${esc(e.b)}</textarea></label></div>${JN_TOOLS}
      <div class="set-btns jn-btns"><button type="button" class="btn" data-a="jn-save">Save</button><button type="button" class="btn ghost" data-a="jn-cancel">Cancel</button><button type="button" class="del" data-a="jn-del">Delete</button></div></article>`
   : `<article class="jn-e"><header><span>${jnWhen(e)}</span><button type="button" class="jb-x" data-edit="${e.id}" aria-label="Edit this note">✎</button></header><div class="jn-b">${jnMd(e.b, e.id)}</div></article>`;
-const jnHelp = `<details class="explain"><summary>How to write notes</summary><div><div class="x"><table class="t wrap jn-help"><tbody>
-  <tr><th><code>- [ ] call super</code></th><td>A checkbox you tap off. The job shows how many are still open.</td></tr>
-  <tr><th><code>!! gas not tested</code></th><td>A red heads-up line.</td></tr>
-  <tr><th><code># Heading</code></th><td>A heading. <code>##</code> for a smaller one.</td></tr>
-  <tr><th><code>**bold**</code> <code>*italic*</code></th><td>Bold, italic. <code>==this==</code> highlights, <code>~~this~~</code> strikes out.</td></tr>
-  <tr><th><code>- item</code> <code>1. item</code></th><td>A list. Start a line with two spaces to put it under the one above.</td></tr>
-  <tr><th><code>&gt; text</code></th><td>A quote: what the inspector said, word for word.</td></tr>
-  <tr><th><code>#tag</code></th><td>A tag. Tap it to see every job that has it.</td></tr>
-  <tr><th><code>[[Dave]]</code></th><td>A link to a person, another job (<code>[[Lot 14]]</code>) or a card in the book (<code>[[Offset calculator]]</code>). A person's page lists every job that mentions them.</td></tr>
-  <tr><th><code>[[Dave|the inspector]]</code></th><td>The same link, showing your own words.</td></tr>
-  <tr><th><code>&#96;&#96;&#96;</code></th><td>A line with just <code>&#96;&#96;&#96;</code> above and below: what's between shows exactly as typed (a cut list, a model number).</td></tr>
-  <tr><th><code>&#92;*</code></th><td>A backslash before a mark shows the mark itself: <code>&#92;*not italic&#92;*</code>.</td></tr>
-  <tr><th>801-555-0100</th><td>Phone numbers and web links become tappable.</td></tr>
-</tbody></table></div></div></details>`;
+const JN_CHEAT = [
+  ["- [ ] call the super", "A checkbox. Tap it off when it's done; the job counts the open ones."],
+  ["!! gas not tested yet", "A red heads-up line. For anything that can't be missed."],
+  ["#warranty #callback", "Tags. Each tag keeps its own color everywhere. Tap one to see every job with it."],
+  ["[[Omar]] [[Ivory Homes]] [[Holbrook Farms]] [[Lot 12]] [[Offset calculator]]", "Links. The color and icon say what it opens: 👤 a person, 🏗 a builder, 🏘 a subdivision, 🔧 another job, 📖 a card in the book. A gray ＋ means nothing has that name yet: tap it to make a person page."],
+  ["[[Omar|the lead]]", "A link that shows your own words."],
+  ["# Top-out walk", "A heading. Two ## for a smaller one."],
+  ["**bold** *italic* ==highlight== ~~done~~", "Bold, italic, highlighted, struck out."],
+  ["- 3/4 PEX\n  - 2 elbows\n1. first\n2. second", "Lists. Two spaces in front tuck a line under the one above; numbers keep their order."],
+  ["> strap the 3/4 in the garage", "A quote: what the inspector said, word for word."],
+  ["```\n3/4 x 8' 6\"\n1/2 x 4'\n```", "Three backticks above and below: shows exactly as typed (cut lists, model numbers)."],
+  ["801-555-0100", "Phone numbers and web links are tappable."]];
+function jnHelpHtml(){
+  jnForce = {"omar": "person", "ivory homes": "bld", "holbrook farms": "sub", "lot 12": "job", "offset calculator": "card"};   /* the examples always show every color */
+  const rows = JN_CHEAT.map(([src, what]) => `<div class="jn-cr"><code class="jn-src">${esc(src)}</code><div class="jn-b jn-out">${jnMd(src, "cheat")}</div><p class="jn-what">${what}</p></div>`).join("");
+  jnForce = null;
+  const tryIt = "- [ ] call [[Omar]] #warranty\n!! gas not tested";
+  return `<details class="explain"><summary>How to write notes: colors &amp; marks</summary><div>
+    <p class="note jn-lead">Type the marks on the left; the note shows what's on the right. The buttons above the box put them in for you, in the same colors.</p>
+    <div class="jn-cheat">${rows}</div>
+    <p class="card-h">Try it</p>
+    <div class="calc"><label for="jn-try" class="wide">Type here: nothing is saved<textarea id="jn-try" rows="3">${esc(tryIt)}</textarea></label></div>
+    <div class="jn-b jn-prev" id="jn-tryout">${jnMd(tryIt, "try")}</div></div></details>`;
+}
 /* one notes block, for a job stage or a person */
 const jnOwner = () => eCur() || (JB.person ? pById(JB.person) : jbCur());
 const jnBlock = (o, list, ph) => `<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label>
     <label for="jn-d">Date<input id="jn-d" type="date" value="${jbDay()}"></label></div>
   ${JN_TOOLS}
+  <div class="jn-b jn-prev" id="jn-prev"${o.draft.trim() ? "" : " hidden"}><p class="jn-prevh">Preview</p>${o.draft.trim() ? jnMd(o.draft, "prev") : ""}</div>
   <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-a="jn-add">Add note</button></div></div>
-  ${jnHelp}
+  ${jnHelpHtml()}
   ${list.length ? `<div class="jn-log">${list.slice().sort(jnSort).map(jnEntry).join("")}</div>` : ""}`;
 
 function jbHours(){
@@ -218,7 +241,7 @@ const jbRow = (j, attr = "data-open") => { const n = jbNext(j), c = cityById(j.c
   const gist = last ? last.b.split("\n").map(x => x.replace(/^\s*([-*] \[[ xX]\]|[-*•]|\d+[.)]|#{1,3}|!!|>)\s*/, "").replace(/\*\*|==|~~|\[\[|\]\]|`/g, "").trim()).find(Boolean) || "" : "";
   return `<button type="button" class="jb-row" ${attr}="${j.id}"><b>${esc(jbName(j))}</b><span>${[(j.name || "").trim() && j.a, eName("sub", j.sub), j.who, c && c.n, pName(j.lead) && "Lead " + pName(j.lead)].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
     + (gist ? `<span class="jb-gist">${esc(gist.slice(0, 90))}</span>` : "")
-    + `<span class="jb-tags"><span class="badge">${esc(JB_SNAME[cs])}</span><span class="badge">${done}/${act.length}</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${tk ? `<span class="badge">☐ ${tk}</span>` : ""}${n ? `Inspection ${jbNice(n.d)}` : ""}</span></button>`; };
+    + `<span class="jb-tags"><span class="badge jb-sbadge jt-k-${cs}">${esc(JB_SNAME[cs])}</span><span class="badge">${done}/${act.length}</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${tk ? `<span class="badge">☐ ${tk}</span>` : ""}${n ? `Inspection ${jbNice(n.d)}` : ""}</span></button>`; };
 const eRow = (t, x) => { const n = eJobs(t, x).length, c = t === "sub" && cityById(x.city);
   const sub = t === "bld" ? [x.ph, (n2 => `${n2 || "no"} subdivision${n2 === 1 ? "" : "s"}`)(jbD.subs.filter(s => s.bld === x.id).length)] : [c && c.n, eName("bld", x.bld)];
   return `<button type="button" class="jb-row" data-ent="${t}|${x.id}"><b>${esc(x.n || "No name")}</b><span>${[...sub, `${n} job${n === 1 ? "" : "s"}`].filter(Boolean).map(esc).join(" · ")}</span></button>`; };
@@ -248,7 +271,7 @@ function jbListHtml(){
   const goal = +jbD.goal === 6000 ? 6000 : 8000, have = H.all + (+jbD.before || 0), pct = Math.min(100, have / goal * 100);
   return `${viewSeg}<div class="set-btns jb-top"><button type="button" class="btn" data-a="new">+ New job</button></div>
   <div class="seg jb-seg" role="group" aria-label="Show">${[["open", "Open"], ["done", "Done"], ["all", "All"]].map(([k, t]) => `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}">${t} · ${jbD.jobs.filter(j => jbIn(k, j)).length}</button>`).join("")}</div>
-  ${tags.length ? `<div class="chips jn-tagbar">${JB.tag ? `<button type="button" data-tagclr="1" aria-pressed="true">#${esc(JB.tag)} ✕ show all</button>` : tags.map(t => `<button type="button" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")}</div>` : ""}
+  ${tags.length ? `<div class="chips jn-tagbar">${JB.tag ? `<button type="button" data-tagclr="1" aria-pressed="true">#${esc(JB.tag)} ✕ show all</button>` : tags.map(t => `<button type="button" class="jn-tagchip" style="--h:${jnHue(t)}" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")}</div>` : ""}
   ${L.length ? jbGroups(L) : `<div class="jb-list"><p class="note">${jbD.jobs.length ? "Nothing here." : "No jobs yet. Tap <b>+ New job</b>. Each job is a timeline, Underground to Final, with the blanks ready to fill in as you go."}</p></div>`}
   <p class="card-h">Hours</p>
   <div class="x"><table class="t wrap"><tbody>
@@ -350,8 +373,8 @@ function jbJobHtml(j){
 
   <p class="card-h">Timeline${tk ? ` · ☐ ${tk} open` : ""}</p>
   <ol class="jt">${jbStages(j).map(([k, name]) => { const s = j.stages[k];
-    return k === sel ? `<li class="jt-i jt-${s.st} jt-open" id="jt-open">${jbStageHtml(j, k)}</li>`
-      : `<li class="jt-i jt-${s.st}"><button type="button" class="jt-sum" data-stage="${k}"><span class="jt-dot" aria-hidden="true">${JB_ICON[s.st]}</span><span class="jt-txt"><b>${name}</b><span>${jbStageSum(j, k)}</span></span></button></li>`; }).join("")}</ol>
+    return k === sel ? `<li class="jt-i jt-${s.st} jt-k-${k} jt-open" id="jt-open">${jbStageHtml(j, k)}</li>`
+      : `<li class="jt-i jt-${s.st} jt-k-${k}"><button type="button" class="jt-sum" data-stage="${k}"><span class="jt-dot" aria-hidden="true">${JB_ICON[s.st]}</span><span class="jt-txt"><b>${name}</b><span>${jbStageSum(j, k)}</span></span></button></li>`; }).join("")}</ol>
   ${JB_XTRA.some(k => !j.xs.includes(k)) ? `<div class="chips jn-tagbar jt-add" aria-label="Add a stage">${JB_XTRA.filter(k => !j.xs.includes(k)).map(k => `<button type="button" data-xadd="${k}">+ ${JB_SNAME[k]}</button>`).join("")}</div>` : ""}
 
   <p class="card-h">Punch list &amp; materials</p>
@@ -404,7 +427,7 @@ function jbEntHtml(t, x){
   <div class="set-btns jb-end"><button type="button" class="del" data-a="e-del">Delete this ${C.one}</button></div>`;
 }
 function jbDraw(){
-  JB_IX = null;
+  JB_IX = null; JN_CARDS = null;
   const body = $("jb-body"), ae = document.activeElement, had = !!ae && ae !== document.body && body.contains(ae);
   if (had) ae.blur();   /* a box removed while the keyboard is up never says so, and the bar floats: close it properly first */
   const en = eCur(), j = jbCur(), p = JB.person && pById(JB.person); if (JB.open && !j) JB.open = null; if (JB.person && !p) JB.person = null; if (JB.ent && !en) JB.ent = null;
@@ -555,7 +578,9 @@ B.addEventListener("input", e => { const t = e.target, j = jbCur(), p = JB.perso
   if (en && t.dataset.ef && t.tagName !== "SELECT" && t.dataset.ef !== "bld"){ en[t.dataset.ef] = t.value; en.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
   if (j && t.dataset.f && t.tagName !== "SELECT"){ j[t.dataset.f] = t.value; j.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
   if (p && t.dataset.pf && t.tagName !== "SELECT"){ p[t.dataset.pf] = t.value; p.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
-  if (t.id === "jn-new"){ const o = jnOwner(); if (o){ o.draft = t.value; clearTimeout(jbT); jbT = setTimeout(() => store.set("jpb-jobs", jbD), 500); } } });   /* a half-written note survives leaving the page */
+  if (t.id === "jn-try"){ const out = $("jn-tryout"); if (out) out.innerHTML = jnMd(t.value, "try"); return; }
+  if (t.id === "jn-new"){ const pv = $("jn-prev"); if (pv){ pv.hidden = !t.value.trim(); pv.innerHTML = '<p class="jn-prevh">Preview</p>' + jnMd(t.value, "prev"); }
+    const o = jnOwner(); if (o){ o.draft = t.value; clearTimeout(jbT); jbT = setTimeout(() => store.set("jpb-jobs", jbD), 500); } } });   /* a half-written note survives leaving the page */
 B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.person && pById(JB.person), st = j && j.stages[JB.stage], en = eCur();
   if (en && t.dataset.ef){ const k = t.dataset.ef; if (k === "bld"){ const b = eGet("bld", t.value); en.bld = b ? b.id : ""; } else en[k] = t.value.trim(); if (k !== "n" || en.n) jbTouch(en); return; }
   if (j && t.dataset.je){ const k = t.dataset.je, x = eGet(k, t.value); j[k] = x ? x.id : "";
