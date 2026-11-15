@@ -34,7 +34,7 @@ const JB_RES = {booked: "Booked", pass: "Pass", partial: "Partial", fail: "Fail"
 const JB_ST = {open: "Open", hold: "On hold", done: "Done"};
 let jbT, jfNT;
 let jbFull = false;
-const jbSave = () => { clearTimeout(jbT); JB_IX = null; let ok = true;
+const jbSave = () => { clearTimeout(jbT); if (window.RESTORING) return; JB_IX = null; let ok = true;
   try { localStorage.setItem("jpb-jobs", JSON.stringify(jbD)); } catch(e){ ok = false; }
   if (!ok && !jbFull) toast("<b>Jobs didn't save:</b> this phone's space for them is full. Download a backup, then delete finished jobs.", 9000);
   jbFull = !ok; if (ok) try { localStorage.setItem("jpb-chg", String((+localStorage.getItem("jpb-chg") || 0) + 1)); } catch(e){}
@@ -460,6 +460,11 @@ function jbListHtml(){
   <div class="jb-in"><p class="note">${jbLastBk()}</p>
   <div class="set-btns"><button type="button" class="btn" data-a="bk-all">Back up everything</button><label class="btn ghost">Restore a backup<input type="file" id="jb-restore" accept=".zip,.json,application/zip,application/json" hidden></label></div>
   <p class="note" id="jf-say" aria-live="polite"></p><p class="note" id="jf-use"></p></div>
+  <details class="explain"><summary>Back up with a password</summary><div>
+    <p class="note">Locks the file, so names, addresses and phone numbers stay private if it gets texted, emailed or kept in the cloud. <b>Write the password down.</b> Without it nobody can open that file, and there's no reset.</p>
+    <div class="calc"><label for="jb-pw">Password<input id="jb-pw" type="password" autocomplete="new-password"></label><label for="jb-pw2">Same again<input id="jb-pw2" type="password" autocomplete="new-password"></label></div>
+    <div class="set-btns jb-top"><button type="button" class="btn" data-a="bk-lock">Back up everything, locked</button></div></div></details>
+  <div class="jb-in"><p class="note">Restored the wrong file, or made a big mistake? The app keeps a safety copy from each of the last 7 days and from right before any restore. <button type="button" class="linkish" data-a="bk-snaps">Safety copies ›</button></p></div>
   ${jbBinHtml()}
   <details class="explain"${JB.colOpen ? " open" : ""}><summary>Colors: stages &amp; tags</summary><div>
     <p class="note jn-lead">Pick a color for each stage and tag, or leave it on Auto. Each job's own color is on the job's page.</p>
@@ -754,6 +759,12 @@ B.addEventListener("click", e => {
   if (a === "bin-empty"){ if (!jbAsk(`Delete the ${jbD.bin.length} item${jbD.bin.length === 1 ? "" : "s"} in Recently deleted for good? This can't be undone.`)) return; jbBinPurge(true); jbDraw(); toast("Emptied.", 1600); return; }
   if (a === "bk-all"){ JF.sayId = "jf-say"; jbBackupAll(); return; }
   if (a === "bk-share"){ jbShareReady(false); return; }
+  if (a === "bk-lock"){ const p1 = $("jb-pw").value, p2 = $("jb-pw2").value; JF.sayId = "jf-say";
+    if (!window.LOCK || !LOCK.ok){ jfSay("This browser can't lock files. Open the installed app.", "err"); return; }
+    if (p1.length < 6){ jfSay("Use a password of 6 or more characters.", "err"); return; }
+    if (p1 !== p2){ jfSay("The two passwords don't match.", "err"); return; }
+    $("jb-pw").value = $("jb-pw2").value = ""; jbBackupLocked(p1, "jf-say"); return; }
+  if (a === "bk-snaps"){ $("look-btn").click(); setTimeout(() => { const d = $("snap-d"); if (d){ d.open = true; d.scrollIntoView({block: "start"}); } }, 250); return; }
   if (a === "all-jobs"){ JB.allJobs = true; jbDraw(); return; }
   if (a === "new"){ jbNew(); JF.n = 0; jbDraw(); jbTop(); $("jb-n").focus(); return; }
   if (a === "e-new"){ const x = eGet(JB.view, "\u200b"); x.n = ""; jbSave(); JB.open = null; jbOpenEnt(JB.view, x.id); $("ef-n").focus(); return; }
@@ -996,6 +1007,14 @@ async function jbBackupAll(){
   catch(e){ jfSay("Couldn't make the backup: " + (e && e.message || e), "err"); }
 }
 window.jbBackupAll = () => { JF.sayId = "bk-status"; jbBackupAll(); };   /* Settings → Backup uses it too */
+/* the same backup, locked with a password (Settings and My jobs) */
+async function jbBackupLocked(pw, sayId){
+  JF.sayId = sayId || "jf-say"; jbSave(); jfSay("Packing and locking your backup…");
+  try { const {zip, n} = await jfPack(), txt = await LOCK.lock(zip, pw);
+    JF.ready = new File([txt], `handbook-backup-${jbDay()}-locked.json`, {type: "application/json"}); JF.readyN = n; await jbShareReady(true); }
+  catch(e){ jfSay("Couldn't make the locked backup: " + (e && e.message || e), "err"); }
+}
+window.jbBackupLocked = jbBackupLocked;
 async function jbShareReady(first){
   const f = JF.ready; if (!f) return;
   const done = how => { store.set("jpb-lastbk", Date.now()); store.set("jpb-chg", 0); JF.ready = null; const nj = jbD.jobs.length;
@@ -1019,10 +1038,18 @@ async function jfRestoreZ(z){
   return n;
 }
 /* takes the new all-in-one .zip, an older photos-only .zip, or a Settings .json backup */
-async function jbRestoreAll(file){
-  JF.sayId = "jf-say";
+async function jbRestoreAll(file, sayId){
+  JF.sayId = sayId || "jf-say";
+  const clear = () => { const r = $("jb-restore"); if (r) r.value = ""; };
   try {
-    const buf = await file.arrayBuffer(), u8 = new Uint8Array(buf), dec = new TextDecoder(); let data = null, z = null;
+    let buf = await file.arrayBuffer(), u8 = new Uint8Array(buf); const dec = new TextDecoder(); let data = null, z = null;
+    if (u8[0] === 0x7b){ let o = null; try { o = JSON.parse(dec.decode(u8)); } catch(e){}   /* a locked backup: ask for its password */
+      if (o && o.app === "utah-plumbers-handbook-locked"){
+        if (!window.LOCK || !LOCK.ok){ jfSay("This browser can't open locked files. Open the installed app.", "err"); clear(); return; }
+        const pw = prompt("This backup is locked. Type its password:"); jbReseat(); if (!pw){ clear(); return; }
+        jfSay("Unlocking…");
+        try { buf = await LOCK.unlock(o, pw); } catch(e){ jfSay("Wrong password, or the file is damaged.", "err"); clear(); return; }
+        u8 = new Uint8Array(buf); } }
     if (u8[0] === 0x50 && u8[1] === 0x4b){ z = jfUnzip(buf); if (z["handbook-backup.json"]) data = JSON.parse(dec.decode(z["handbook-backup.json"])); }
     else data = JSON.parse(dec.decode(u8));
     const d = data && data.data, keys = d && typeof d === "object" ? Object.keys(d).filter(k => k.startsWith("jpb-") && typeof d[k] === "string") : [];
@@ -1032,12 +1059,14 @@ async function jbRestoreAll(file){
     const when = data && data.saved ? " from " + new Date(data.saved).toLocaleDateString(undefined, {month: "short", day: "numeric", year: "numeric"}) : "";
     if (!jbAsk(keys.length ? `Replace everything on this phone with the backup${when}? It has ${n} job${n === 1 ? "" : "s"}${photos ? ` and ${photos} photos & files` : ""}. Anything added since then will be gone.`
       : `Add the ${photos} photos & files from this backup?`)){ const r = $("jb-restore"); if (r) r.value = ""; return; }
+    if (keys.length) try { await SNAP.put("undo"); } catch(e){}   /* so this restore can be undone: Settings → Backup → Safety copies */
     if (z && photos) await jfRestoreZ(z);
-    if (keys.length){ keys.forEach(k => localStorage.setItem(k, d[k])); jfSay("Restored. Reloading…", "good"); setTimeout(() => location.reload(), 900); }
+    if (keys.length){ bkApply(d); jfSay("Restored. Reloading…", "good"); setTimeout(() => location.reload(), 900); }
     else { jfSay(`Restored ${photos} photos & files.`, "good"); jfUse(); }
   } catch(e){ jfSay("That isn't a backup from this app.", "err"); }
-  const r = $("jb-restore"); if (r) r.value = "";
+  clear();
 }
+window.jbRestoreAll = jbRestoreAll;
 
 /* ---- Recently deleted: jobs, people, builders, subdivisions and notes wait 30 days before they're gone */
 const JB_BIN_DAYS = 30, JB_BIN_NAME = {job: "Job", person: "Person", bld: "Builder", sub: "Subdivision", note: "Note"};
