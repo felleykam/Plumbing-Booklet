@@ -263,14 +263,70 @@ function jnHelpHtml(){
 }
 /* one notes block, for a job stage or a person */
 const jnOwner = () => eCur() || (JB.person ? pById(JB.person) : jbCur());
-const jnIntro = n => `<details class="explain jn-howto"${n < 3 ? " open" : ""}><summary>How notes work (30 seconds) · every mark</summary><div>
-  <p class="jn-step"><span class="jn-num">1</span><span>Type what happened in plain words: <i>"Set tubs. Inspector moved to Thursday."</i> That's a note. No marks needed.</span></p>
-  <p class="jn-step"><span class="jn-num">2</span><span>Want a checkbox, a warning or a date? Tap a <b>colored button</b> under the box; it types the mark for you. The color you see in the note matches the button.</span></p>
-  <p class="jn-step"><span class="jn-num">3</span><span>Tap <b>Add note</b>. It's saved here with today's date, newest on top. Tap <b>✎</b> on a note to fix it later.</span></p>
-  <div class="jn-key" aria-label="Color key"><span class="k k-task">☐ Task: to do</span><span class="k k-flag">⚠ Heads-up: don't miss</span><span class="k k-q">? Question: ask someone</span><span class="k k-tag"># Tag: group jobs</span><span class="k k-link">👤 Link: a person or page</span><span class="k k-date">📅 Date: coming up</span><span class="k k-prop">Label: fact: PSI, serial</span></div>
-  ${jnHelpHtml()}
+/* the notes guide: one fold that remembers open or shut (open by default for your first few notes), short lessons inside */
+const JN_ANAT = [   /* [color, the mark, an example line, what it is, where it shows up] */
+  ["task", "- [ ]", "- [ ] call the super", "A checkbox. Tap it when it's done.", "☐ count on the job's row and on Timeline · in <b>Open on active jobs</b> under the job list"],
+  ["flag", "!!", "!! gas not tested yet", "A red heads-up line, so it can't be missed.", "Right there in the note, in red"],
+  ["q", "??", "?? vent through the roof or the wall", "A blue question. Tap it when you get the answer: it turns into ?✓.", "? count on the job's row · in <b>Open on active jobs</b>"],
+  ["prop", "Label: value", "PSI: 80", "A fact. The words before the colon are its name.", "The <b>From your notes</b> table near the top of the job. A newer note with the same label replaces the old value."],
+  ["date", "@", "inspection @fri", "A purple date, counted from the note's own date.", "The job's <b>Coming up</b> list · Home's <b>Coming up</b> (next 7 days)"],
+  ["tag", "#", "#warranty", "A colored tag. Same tag, same color, everywhere.", "The tag bar over the job list: tap a tag to see every job that has it"],
+  ["link", "[[ ]]", "call [[Sam]]", "A link to a person, builder, subdivision, job or book card.", "Tap it to open that page. Their page lists the line under <b>Mentioned in job notes</b>"]];
+const JN_OOPS = [   /* [wrong, right, why] */
+  ["-[ ] call the super", "- [ ] call the super", "Dash, space, [ ], space. Without the space it stays plain text."],
+  ["call the super - [ ]", "- [ ] call the super", "Checkbox, !!, ?? and Label: only work at the very start of a line."],
+  ["PSI:80", "PSI: 80", "A fact needs a space after the colon."],
+  ["Water heater - Rheem 50", "Water heater: Rheem 50", "Facts use a colon, not a dash."],
+  ["# warranty", "#warranty", "No space after # for a tag. With a space it's a heading."],
+  ["final @11-20", "final @11/20", "Dates take a slash (@11/20) or a month (@Nov 20)."],
+  ["call [[Sammy]]", "call [[Sam|Sammy]]", "A gray ＋ link means no page has that exact name. Fix the spelling, or keep the page name and show your word after a | bar."]];
+function jnIntro(n){
+  const st = jbD.fold["jn-help"], open = st === "open" || (st !== "shut" && n < 3);
+  jnForce = {"sam": "person", "abc homes": "bld", "sunny acres": "sub", "lot 12": "job", "offset calculator": "card"};
+  const anat = JN_ANAT.map(([c, mk, ex, what, where]) => `<div class="jn-an k-${c}"><p class="jn-anh"><code>${esc(mk)}</code> ${what}</p>
+      <div class="jn-flow"><code class="jn-src">${esc(ex)}</code><span class="jn-arrow" aria-label="becomes">→</span><div class="jn-b jn-out">${jnMd(ex, "cheat")}</div></div>
+      <p class="jn-where"><span class="jn-wl">Shows up</span> ${where}</p></div>`).join("");
+  const oops = JN_OOPS.map(([bad, good, why]) => `<div class="jn-ox"><div class="jn-o jn-bad"><span class="jn-ol">✗ Typed</span><code class="jn-src">${esc(bad)}</code><div class="jn-b jn-out">${jnMd(bad, "cheat")}</div></div>
+      <div class="jn-o jn-good"><span class="jn-ol">✓ Type</span><code class="jn-src">${esc(good)}</code><div class="jn-b jn-out">${jnMd(good, "cheat")}</div></div><p class="jn-what">${why}</p></div>`).join("");
+  jnForce = null;
+  return `<details class="explain jn-howto" data-help="1"${open ? " open" : ""}><summary>How notes work${n ? "" : ": start here"}</summary><div>
+  <p class="note jn-lead"><b>A note is just what you'd text your lead.</b> Plain words work. A few marks make a line do more: a checkbox you can tick, a warning, a date that shows up on Home. Type them, or tap the colored buttons under the box and they type it for you. Each mark has its own color, and the button is the same color.</p>
+  <div class="jn-key" aria-label="Color key"><span class="k k-task">☐ To do</span><span class="k k-flag">⚠ Heads-up</span><span class="k k-q">? Question</span><span class="k k-prop">Label: fact</span><span class="k k-date">📅 Date</span><span class="k k-tag"># Tag</span><span class="k k-link">👤 Link</span></div>
+
+  <details class="explain jn-les"><summary>1 · The 3 steps</summary><div>
+    <p class="jn-step"><span class="jn-num">1</span><span>Type what happened: <i>"Set tubs. Inspector moved to Thursday."</i> That's a whole note. No marks needed.</span></p>
+    <p class="jn-step"><span class="jn-num">2</span><span>Want a checkbox, a warning or a date? Tap a <b>colored button</b> under the box, then type after it. The <b>Preview</b> under the box shows how it'll look before you save.</span></p>
+    <p class="jn-step"><span class="jn-num">3</span><span>Tap <b>Add note</b>. It's saved with the date in the date box (today, unless you change it), newest on top. Tap <b>✎</b> on a note to fix it.</span></p>
+    <p class="note"><b>Where a note lives:</b> a note added while a stage is open belongs to that stage (Top-out notes stay on Top-out). People, builders and subdivisions have their own notes on their pages.</p></div></details>
+
+  <details class="explain jn-les"><summary>2 · Start of a line, or anywhere?</summary><div>
+    <p class="note jn-lead">This is the rule that matters most. Some marks only work as the <b>first thing on a line</b>. The rest work anywhere.</p>
+    <div class="jn-zones">
+      <div class="jn-zone"><p class="jn-zh">At the start of a line, then a space</p><p class="jn-lineart"><span class="jn-here">- [ ]</span> call the super</p>
+        <p><code>- [ ]</code> checkbox · <code>!!</code> heads-up · <code>??</code> question · <code>Label:</code> fact · <code>-</code> list · <code>1.</code> numbered · <code>#</code> heading · <code>&gt;</code> quote</p></div>
+      <div class="jn-zone"><p class="jn-zh">Anywhere in a line</p><p class="jn-lineart">call <span class="jn-here">[[Sam]]</span> about the vent <span class="jn-here">@fri</span> <span class="jn-here">#warranty</span></p>
+        <p><code>#tag</code> · <code>[[link]]</code> · <code>@date</code> · <code>**bold**</code> · <code>*italic*</code> · <code>==highlight==</code> · <code>~~strike~~</code></p></div>
+    </div>
+    <p class="note"><b>One thing per line.</b> Two to-dos? Two lines, each starting with <code>- [ ]</code>. A line can still mix in-line marks: <code>- [ ] call [[Sam]] @fri #warranty</code> is a checkbox with a link, a date and a tag.</p></div></details>
+
+  <details class="explain jn-les"><summary>3 · What each mark does, and where it shows up</summary><div>
+    <p class="note jn-lead">Left: what you type. Middle: what the note shows. Bottom: where else the app uses it.</p>
+    <div class="jn-cheat">${anat}</div></div></details>
+
+  <details class="explain jn-les"><summary>4 · Easy mistakes, side by side</summary><div>
+    <p class="note jn-lead">If a mark didn't do anything, it's almost always one of these.</p>
+    <div class="jn-cheat">${oops}</div></div></details>
+
+  <details class="explain jn-les"><summary>5 · A full note, start to finish</summary><div>
+    <p class="note jn-lead">A day on a top-out, the way you'd write it. Each line is a different mark.</p>
+    ${(() => { const ex = "## Did\n- set tubs and both shower valves\n## Didn't, and why\n- no water heater on site yet\n!! gas not tested\n?? does the super want the vent through the roof\n## Next\n- [ ] call [[Sam]] about the heater @tomorrow\nPSI: 80\n#callback"; jnForce = {"sam": "person"}; const out = jnMd(ex, "cheat"); jnForce = null;
+      return `<div class="jn-flow jn-flow2"><code class="jn-src">${esc(ex)}</code><div class="jn-b jn-out">${out}</div></div>`; })()}
+    <p class="note">The <b>📝 Day log</b> button types the three headings for you.</p></div></details>
+
+  ${jnHelpHtml().replace('<details class="explain">', '<details class="explain jn-les">').replace("<summary>Every mark, with examples</summary>", "<summary>6 · Every mark, plus a box to try them</summary>")}
   <p class="note"><b>Good notes are short, same-day and specific:</b> what got done, what didn't and why (delays!), who said what (use a <code>&gt;</code> quote), and a photo of anything that'll be hidden behind drywall. Every model and serial you install: write it as <code>Serial: …</code> so it's there for a warranty call.</p>
 </div></details>`;
+}
 const jnBlock = (o, list, ph) => `${jnIntro(list.length)}<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label>
     <label for="jn-d">Date<input id="jn-d" type="date" value="${jbDay()}"></label></div>
   ${JN_TOOLS}
@@ -549,7 +605,7 @@ function jbPersonHtml(p){
   <p class="card-h">Jobs · ${jobs.length}</p>
   <div class="jb-list">${jbFew(jobs) || `<p class="note">Not on a job yet. Add them as a lead, super or someone else on a job, or write [[${esc(p.n || "their name")}]] in a job's notes.</p>`}</div>
   ${jbMentionHtml(p.n)}
-  <p class="card-h">Notes</p>
+  <p class="card-h" data-fold="p-notes">Notes</p>
   ${jnBlock(p, p.log, "How they like things done. - [ ] send them the test photos")}
   <div class="set-btns jb-end"><button type="button" class="del" data-a="p-del">Delete this person</button></div>`;
 }
@@ -572,7 +628,7 @@ function jbEntHtml(t, x){
   <p class="card-h">Jobs · ${jobs.length}</p>
   <div class="jb-list">${jbFew(jobs) || `<p class="note">No jobs yet. Pick ${esc(x.n || `this ${C.one}`)} on a job, or write [[${esc(x.n || "its name")}]] in a job's notes.</p>`}</div>
   ${jbMentionHtml(x.n)}
-  <p class="card-h">Notes</p>
+  <p class="card-h" data-fold="e-notes">Notes</p>
   ${jnBlock(x, x.log, t === "bld" ? "How they want things done. Who pays. - [ ] get the new super's number" : "Where the meters are, HOA rules, which lots are left")}
   <div class="set-btns jb-end"><button type="button" class="del" data-a="e-del">Delete this ${C.one}</button></div>`;
 }
@@ -590,7 +646,7 @@ function jbDraw(){
   else if (JB.view === "jobs"){ $("jb-goal").value = String(+jbD.goal === 6000 ? 6000 : 8000); jfUse(); }
   body.querySelectorAll(".card-h[data-fold]").forEach(h => { const f = !!jbD.fold[h.dataset.fold];
     h.classList.add("jb-fh"); h.classList.toggle("jb-folded", f); h.setAttribute("role", "button"); h.tabIndex = 0; h.setAttribute("aria-expanded", String(!f));
-    for (let n = h.nextElementSibling; n && !n.matches(".card-h"); n = n.nextElementSibling) n.hidden = f; });
+    for (let n = h.nextElementSibling; n && !n.matches(".card-h, .jb-end"); n = n.nextElementSibling) n.hidden = f; });
   bindPn(body);
   if (had) jbReseat();
 }
@@ -638,6 +694,8 @@ function jnInsert(k){
 }
 
 const B = $("jb-body");
+B.addEventListener("toggle", e => { const d = e.target; if (!d.matches || !d.matches("details[data-help]")) return; const v = d.open ? "open" : "shut";
+  if (jbD.fold["jn-help"] !== v){ jbD.fold["jn-help"] = v; store.set("jpb-jobs", jbD); } }, true);
 B.addEventListener("focusin", e => { if (e.target.classList.contains("jn-ta")) jnTa = e.target; });
 ["pointerdown", "mousedown"].forEach(ev => B.addEventListener(ev, e => { if (e.target.closest("[data-ins]")) e.preventDefault(); }));   /* keep the keyboard up */
 B.addEventListener("click", e => {
