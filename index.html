@@ -179,7 +179,8 @@ section{break-inside:avoid;display:block;background:var(--sheet);border:var(--bw
 .sec-head h2{font-family:var(--display);font-weight:800;font-size:21px;text-wrap:balance;line-height:1.1;text-transform:uppercase;letter-spacing:.04em;margin:0;grid-column:1}
 .sec-head small{font-size:14px;font-weight:700;grid-column:1}
 .where-go{display:none}
-body.searching .where-go,body.mixed .where-go{display:block;grid-column:1 / -1;justify-self:start;font-family:var(--display);font-size:13.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:none;border:0;padding:2px 0;margin:0;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-align:left}
+#jobs-card .where-go{display:none!important}   /* "Mine › Jobs" on the Jobs page itself says nothing */
+body.searching .where-go,body.mixed .where-go{display:block;grid-column:1 / -1;justify-self:start;font-family:var(--display);font-size:13.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:none;border:0;padding:12px 0;margin:-10px 0;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-align:left}
 .note{font-size:15px;color:var(--muted);padding:8px 12px;margin:0;border-top:1px solid var(--rule)}
 .ftecho{display:block;font-size:14px;font-weight:700;color:var(--danger);margin-top:4px}
 .ftecho b{color:var(--ink)}
@@ -421,7 +422,16 @@ dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .jf-btns{padding:0 12px 12px}
 .jf-fname{padding:16px 12px 0;margin:0;overflow-wrap:anywhere}
 .jb-gist{font-style:italic}
-.jn-tools{padding:0 12px 8px;gap:6px}
+.jn-tools{padding:0 12px 8px;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.jn-tools::-webkit-scrollbar{display:none}
+.jn-tools button{flex:none}
+.jb-views{display:grid;grid-template-columns:1fr 1fr}
+.jb-views button{font-size:15px;padding:4px 6px}
+.jb-gh{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;min-height:44px;margin:12px 0 0;padding:6px 12px 2px;border:0;border-top:2px solid var(--edge);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.jb-gh b{font-family:var(--display);font-size:18px;text-transform:uppercase;letter-spacing:.05em;overflow-wrap:anywhere}
+.jb-gh span{flex:none;color:var(--muted);font-weight:700}
+p.jb-gh{cursor:default}
+.jn-tools{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);padding-right:40px}
 .jn-tools button{min-height:44px}
 .jn-tagbar{padding:8px 12px 0;gap:6px}
 .jn-log{display:flex;flex-direction:column;gap:10px;padding:8px 12px 12px}
@@ -453,19 +463,22 @@ dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .jt-done .jt-dot{background:var(--k);color:var(--hv);border-color:var(--k)}
 :root[data-theme="dark"] .jt-done .jt-dot{background:var(--hv);color:var(--k);border-color:var(--hv)}
 .jt-doing .jt-dot{border-color:var(--acc,var(--k));box-shadow:0 0 0 3px var(--acc,var(--k)) inset}
-.jt-skip{opacity:.6}
+.jt-skip:not(.jt-open){opacity:.6}
 .jt-sum{appearance:none;display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:4px 0;text-align:left;font:inherit;color:var(--ink);background:none;border:0;cursor:pointer}
 .jt-txt{display:flex;flex-direction:column;min-width:0}
 .jt-txt b{font-family:var(--display);font-size:17px}
 .jt-txt span{font-size:14px;color:var(--muted);overflow-wrap:anywhere}
-.jt-open{margin:4px -12px 12px;padding:8px 0 4px;background:var(--zebra);border-top:var(--bw) solid var(--edge);border-bottom:var(--bw) solid var(--edge);scroll-margin-top:70px}
+.jt-open{z-index:1;margin:4px -12px 12px;padding:8px 0 4px;background:linear-gradient(var(--zebra),var(--zebra)),var(--sheet);border-top:var(--bw) solid var(--edge);border-bottom:var(--bw) solid var(--edge);scroll-margin-top:70px}
 .jt-head{display:flex;align-items:center;gap:12px;padding:4px 12px}
 .jt-head h3{margin:0;font-family:var(--display);font-size:21px}
 .jt-open .calc{border-bottom:0}
 .jp-row{display:flex;gap:6px;align-items:stretch}
 .jp-row .jb-row{flex:1;min-width:0}
 .jp-call{display:grid;place-items:center;padding:0 14px;text-decoration:none}
-#jb-body input[type="date"]{font-size:16px;padding:6px 4px;min-width:0}
+#jb-body input[type="date"]{-webkit-appearance:none;appearance:none;display:block;width:100%;max-width:100%;min-width:0;font-size:16px;padding:6px 8px;text-align:left}
+#jb-body input[type="date"]::-webkit-date-and-time-value{text-align:left}
+.jt-open .jb-seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.jt-open .jb-seg button{padding:4px 2px;font-size:15px;letter-spacing:.02em}
 .wx-hero{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 14px;margin:8px 12px 10px;background:var(--k);color:var(--on-k);border-left:10px solid var(--hv);border-radius:var(--r)}
 .wx-hero a{color:var(--hv);font-weight:700}
 a[href^="mailto:"]{overflow-wrap:anywhere}
@@ -4425,7 +4438,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 14, 2026</th><td><b>The bottom bar, rebuilt:</b> in the home-screen app the page itself no longer scrolls; the book scrolls inside it and the bar sits below, so the keyboard and pop-ups can't push the bar up. <b>Jobs have a name</b> separate from the address: the name shows in lists, the address feeds Directions, and <code>[[links]]</code> match either one. <b>Faster:</b> switching tabs is 2 to 10 times quicker on long pages (cards off the screen aren't drawn until you scroll to them), and on weak signal the app opens from its saved copy after 2 seconds instead of 4. <b>Your own checklists:</b> tap <b>Edit list</b> on a stage's checklist to remove items (the book's too) and add your own, then <b>Use this list on new jobs</b> to make it your starting list for that stage. <b>Back to the book's list</b> undoes it. <b>A job's city is its own:</b> new jobs start with no city instead of My city, the city only feeds Directions, and jobs no longer show the city's inspection booking (that stays in Inspect → Cities and Contacts → My city). <b>Each job is a timeline now:</b> Underground → Top-out (rough-in) → Gas → Finish (trim) → Final → Warranty, with the blanks ready. Tap a stage to fill it in: To do / Doing / Done / Skip, dates, who led it, a checklist that starts from the book's "Before you call it in" list, inspections, hours, notes and photos. Mark a stage Done and the next one opens. <b>People:</b> set the job's Lead and Superintendent; everyone gets a page with phone (Call / Text), company, notes and every job they're on, and <code>[[Dave]]</code> in a note links to it. <b>Directions</b> opens the address in Maps. The bottom bar no longer floats when you add something while the keyboard is up. <b>Job notes are a dated log now:</b> add as many notes to a job as you like, each with its date, newest first, and tap ✎ to change one. Write them with quick marks: <code>- [ ]</code> a checkbox (the job shows how many are open), <code>!!</code> a red heads-up, <code>#</code> headings, <code>**bold**</code>, <code>#tag</code> (tap to see every job with it), and <code>[[Lot 14]]</code> to link another job or a card in the book. Buttons above the box put them in for you, and phone numbers in notes are tappable. Old notes moved into the log. The bottom bar re-seats after the delete pop-up, the date wheel and the photo picker. <b>My jobs (Mine → Jobs):</b> each job keeps its address, builder or customer, city (with how to book its inspections), phase and status; its inspections (booked, pass, partial, fail) with the inspector and corrections; hours with today, this week, last week and a running count toward your license hours; a punch and materials list you check off; and photos (a note on each) and files like PDF plans. <b>MY JOBS</b> on Home shows your open jobs. Jobs go in Settings → Download backup; photos and files are too big for it and have their own backup at the bottom of the Jobs page.</td></tr>
+        <tr><th>Nov 14, 2026</th><td><b>Builders and subdivisions have pages,</b> like people: a builder's office phone, website, their people and subdivisions; a subdivision's city, builder, gate code and water/sewer tie-in; notes and every job on each. Jobs pick a builder and subdivision (a subdivision fills in its city and builder), the customer is its own box, and the job list is grouped by builder. <code>[[Ivory Homes]]</code> links to the page. Older jobs: what was in "Builder / customer" became a builder page. <b>Job page polish:</b> the timeline line no longer runs through the open stage, date boxes stay inside the card, a skipped stage isn't dimmed while open, the four status buttons sit in one row, and the notes toolbar is one swipeable row. <b>The bottom bar, rebuilt:</b> in the home-screen app the page itself no longer scrolls; the book scrolls inside it and the bar sits below, so the keyboard and pop-ups can't push the bar up. <b>Jobs have a name</b> separate from the address: the name shows in lists, the address feeds Directions, and <code>[[links]]</code> match either one. <b>Faster:</b> switching tabs is 2 to 10 times quicker on long pages (cards off the screen aren't drawn until you scroll to them), and on weak signal the app opens from its saved copy after 2 seconds instead of 4. <b>Your own checklists:</b> tap <b>Edit list</b> on a stage's checklist to remove items (the book's too) and add your own, then <b>Use this list on new jobs</b> to make it your starting list for that stage. <b>Back to the book's list</b> undoes it. <b>A job's city is its own:</b> new jobs start with no city instead of My city, the city only feeds Directions, and jobs no longer show the city's inspection booking (that stays in Inspect → Cities and Contacts → My city). <b>Each job is a timeline now:</b> Underground → Top-out (rough-in) → Gas → Finish (trim) → Final → Warranty, with the blanks ready. Tap a stage to fill it in: To do / Doing / Done / Skip, dates, who led it, a checklist that starts from the book's "Before you call it in" list, inspections, hours, notes and photos. Mark a stage Done and the next one opens. <b>People:</b> set the job's Lead and Superintendent; everyone gets a page with phone (Call / Text), company, notes and every job they're on, and <code>[[Dave]]</code> in a note links to it. <b>Directions</b> opens the address in Maps. The bottom bar no longer floats when you add something while the keyboard is up. <b>Job notes are a dated log now:</b> add as many notes to a job as you like, each with its date, newest first, and tap ✎ to change one. Write them with quick marks: <code>- [ ]</code> a checkbox (the job shows how many are open), <code>!!</code> a red heads-up, <code>#</code> headings, <code>**bold**</code>, <code>#tag</code> (tap to see every job with it), and <code>[[Lot 14]]</code> to link another job or a card in the book. Buttons above the box put them in for you, and phone numbers in notes are tappable. Old notes moved into the log. The bottom bar re-seats after the delete pop-up, the date wheel and the photo picker. <b>My jobs (Mine → Jobs):</b> each job keeps its address, builder or customer, city (with how to book its inspections), phase and status; its inspections (booked, pass, partial, fail) with the inspector and corrections; hours with today, this week, last week and a running count toward your license hours; a punch and materials list you check off; and photos (a note on each) and files like PDF plans. <b>MY JOBS</b> on Home shows your open jobs. Jobs go in Settings → Download backup; photos and files are too big for it and have their own backup at the bottom of the Jobs page.</td></tr>
         <tr><th>Nov 13, 2026</th><td><b>Find a city by typing:</b> the city menus (Contacts → Call → My city, and first-time setup) have a search box, so you don't scroll 259 names. <b>Every Utah city and town</b> is in the city picker now (259 places). The 227 new ones show their elevation. 24 of them (the rest of Utah County and the biggest cities nearby) also have how to book inspections and, where found, secondary water; the others say "not checked yet". <b>New home-screen icon:</b> bright lime on black, so it stays easy to see when the phone is in dark mode. An iPhone keeps the old picture until you delete the Handbook from the home screen and add it again (Safari → Share → Add to Home Screen). Your saved pins and notes stay. The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install. <b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
         <tr><th>Nov 12, 2026</th><td><b>Share the book</b> (Settings) shows its QR code with no signal now: the code is stored in the book instead of being fetched. <b>Bottom bar:</b> eight tables had started scrolling up and down a few pixels inside their own boxes, which can tug the iPhone bar loose: fixed. After the "Allow location" prompt the book now re-seats the bar. <b>Weather:</b> the first forecast shows in a few seconds even when the main service is slow, and picking a new place no longer blanks the card. A book left in the background over 6 hours reloads when you come back, so it picks up updates. <b>Weather fixed:</b> when the main forecast service doesn't answer, the card now switches to the National Weather Service forecast instead of sitting on "Loading". Every weather request gives up after 12 seconds and tries again. <b>New:</b> a weather button in the top corner shows the sky right now and the temperature; tap it for Jobsite → Weather. Turn it off in <b>Settings → Behavior → Weather in the header</b>. <b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them. <b>Water treatment</b> (Service → Treatment) grew: <b>Where treatment goes</b> (order in the line, hard water for hose bibbs, the softener loop rough-in), <b>Softener trouble</b> (no soft water, salt bridge, resin in the lines, low pressure), <b>How RO works</b>, <b>Treatment code</b> (the IPC and IRC sections for softeners and RO) and <b>Treatment brands</b>. <b>Contacts → Tech lines → Water treatment</b> has 14 makers' phone lines.</td></tr>
         <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "shower valve height") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Circuits, wire &amp; bonding. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow. <b>Reopening the book</b> lands where you were on the page, not at the top. <b>Fits the phone:</b> calculator answers and the Pressure at the fixture rows no longer run off the right edge, long dropdowns get a full row, and tech line numbers stack instead of scrolling sideways.</td></tr>
@@ -8541,7 +8554,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-14g";
+{ const NEWS = "2026-11-14h";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -9534,8 +9547,8 @@ window.wxRender = WX.render;
    and files live in IndexedDB "jpb-files" with their own zip backup. Own script block, all inside try. */
 try {
 const jbD = (x => x && Array.isArray(x.jobs) ? x : {jobs: [], goal: 8000, before: 0})(store.get("jpb-jobs", null));
-if (!Array.isArray(jbD.people)) jbD.people = [];
-const JB = {open: null, person: null, view: "jobs", show: "open", tag: null, edit: null, stage: null, back: null, ckEdit: false}, JF = {n: 0, cur: null, url: null};
+if (!Array.isArray(jbD.people)) jbD.people = []; if (!Array.isArray(jbD.builders)) jbD.builders = []; if (!Array.isArray(jbD.subs)) jbD.subs = [];
+const JB = {open: null, person: null, view: "jobs", show: "open", tag: null, edit: null, stage: null, back: null, ckEdit: false, ent: null, hist: []}, JF = {n: 0, cur: null, url: null};
 const JB_STG = [["under", "Underground"], ["rough", "Top-out (rough-in)"], ["gas", "Gas"], ["trim", "Finish (trim)"], ["final", "Final"], ["warr", "Warranty"]];
 const JB_SNAME = Object.fromEntries(JB_STG);
 const JB_SST = {todo: "To do", doing: "Doing", done: "Done", skip: "Skip"};
@@ -9578,12 +9591,26 @@ const pTel = p => (p.ph || "").replace(/[^\d+]/g, "");
 const pJobs = p => { const L = "[[" + p.n.trim().toLowerCase() + "]]";
   return jbD.jobs.filter(j => j.lead === p.id || j.sup === p.id || j.ppl.some(x => x.p === p.id) || JB_STG.some(([k]) => j.stages[k].lead === p.id) || j.log.some(e => e.b.toLowerCase().includes(L))); };
 
+/* builders and subdivisions: saved once, picked on any job, each with a page (fields, notes, every job) */
+const ENT = {
+  bld: {list: "builders", one: "builder", Title: "Builder", ph: "Ivory Homes", fields: [["ph", "Office phone", "tel", "801-555-0100"], ["web", "Website", "url", "ivoryhomes.com"], ["addr", "Office address", "text", ""]]},
+  sub: {list: "subs", one: "subdivision", Title: "Subdivision", ph: "Holbrook Farms", fields: [["city", "City", "city", ""], ["bld", "Builder", "bld", "Ivory Homes"], ["gate", "Access / gate code", "text", "Gate 1234#"], ["tie", "Water & sewer tie-in", "text", "Sewer stub 9 ft deep, east lot line"]]}};
+const eList = t => jbD[ENT[t].list];
+const eById = (t, id) => id ? eList(t).find(x => x.id === id) : null;
+const eByName = (t, n) => { const q = String(n).trim().toLowerCase(); return q ? eList(t).find(x => x.n.trim().toLowerCase() === q) : null; };
+const eName = (t, id) => (eById(t, id) || {}).n || "";
+function eGet(t, name){ const n = String(name).trim(); if (!n) return null; let x = eByName(t, n);
+  if (!x){ x = {id: jbId(), n, log: [], draft: "", t: Date.now()}; ENT[t].fields.forEach(([k]) => { x[k] = ""; }); eList(t).push(x); } return x; }
+const eJobs = (t, x) => { const L = "[[" + x.n.trim().toLowerCase() + "]]"; return jbD.jobs.filter(j => j[t] === x.id || j.log.some(e => e.b.toLowerCase().includes(L))); };
+const eCur = () => JB.ent && eById(JB.ent.t, JB.ent.id);
 /* jobs from earlier builds: notes into the log, phase into stages */
 function jbFix(j){
   if (!Array.isArray(j.log)){ j.log = (j.note || "").trim() ? [{id: jbId(), d: jbDay(new Date(j.t || Date.now())), at: j.t || Date.now(), b: j.note}] : []; delete j.note; }
   if (typeof j.draft !== "string") j.draft = ""; if (typeof j.name !== "string") j.name = "";
   ["insp", "hrs", "punch", "ppl"].forEach(k => { if (!Array.isArray(j[k])) j[k] = []; });
   if (j.lead === undefined) j.lead = ""; if (j.sup === undefined) j.sup = "";
+  if (typeof j.bld !== "string"){ const b = (j.who || "").trim() ? eGet("bld", j.who) : null; j.bld = b ? b.id : ""; if (b) j.who = ""; }   /* "Builder / customer" becomes a builder page */
+  if (typeof j.sub !== "string") j.sub = "";
   if (!j.stages){
     const map = {"Underground": "under", "Rough-in": "rough", "Top-out": "rough", "Gas": "gas", "Trim": "trim", "Final": "final", "Service": "warr", "Warranty": "warr"};
     const cur = map[j.ph] || "under", ci = JB_STG.findIndex(([k]) => k === cur);
@@ -9594,7 +9621,7 @@ function jbFix(j){
   }
 }
 jbD.jobs.forEach(jbFix);
-jbD.people.forEach(p => { if (!Array.isArray(p.log)) p.log = []; if (typeof p.draft !== "string") p.draft = ""; });
+[...jbD.people, ...jbD.builders, ...jbD.subs].forEach(p => { if (!Array.isArray(p.log)) p.log = []; if (typeof p.draft !== "string") p.draft = ""; });
 const jbStageNow = j => (JB_STG.find(([k]) => j.stages[k].st === "doing") || JB_STG.find(([k]) => j.stages[k].st === "todo") || JB_STG[JB_STG.length - 1])[0];
 const jbTpl = k => Array.isArray((jbD.tpl || {})[k]) ? jbD.tpl[k] : JB_TPL[k]();   /* your saved list for a stage, else the book's */
 function jbCk(j, k){ const s = j.stages[k], dn = new Set(s.done), hide = new Set(s.hide || []), T = jbTpl(k), TS = new Set(T);
@@ -9650,7 +9677,7 @@ const jnHelp = `<details class="explain"><summary>How to write notes</summary><d
   <tr><th>801-555-0100</th><td>Phone numbers and web links become tappable.</td></tr>
 </tbody></table></div></div></details>`;
 /* one notes block, for a job stage or a person */
-const jnOwner = () => JB.person ? pById(JB.person) : jbCur();
+const jnOwner = () => eCur() || (JB.person ? pById(JB.person) : jbCur());
 const jnBlock = (o, list, ph) => `<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label>
     <label for="jn-d">Date<input id="jn-d" type="date" value="${jbDay()}"></label></div>
   ${JN_TOOLS}
@@ -9664,21 +9691,35 @@ function jbHours(){
   return {today: sum(h => h.d === now), wk: sum(h => jbWk(h.d) === wk), lw: sum(h => jbWk(h.d) === lw), all: sum(() => true)};
 }
 function jbNew(){
-  const j = {id: jbId(), name: "", a: "", who: "", city: "", st: "open", lead: "", sup: "", ppl: [], log: [], draft: "", t: Date.now(), insp: [], hrs: [], punch: [], stages: {}};
+  const j = {id: jbId(), name: "", a: "", who: "", bld: "", sub: "", city: "", st: "open", lead: "", sup: "", ppl: [], log: [], draft: "", t: Date.now(), insp: [], hrs: [], punch: [], stages: {}};
   JB_STG.forEach(([k], i) => { j.stages[k] = {st: i ? "todo" : "doing", d0: "", d1: "", lead: "", done: [], extra: []}; });
-  jbD.jobs.push(j); JB.open = j.id; JB.person = null; JB.edit = null; JB.stage = null; jbSave(); return j;
+  jbD.jobs.push(j); JB.open = j.id; JB.person = null; JB.ent = null; JB.edit = null; JB.stage = null; jbSave(); return j;
 }
 const jbRow = (j, attr = "data-open") => { const n = jbNext(j), c = cityById(j.city), tk = jbTasks(j), cs = jbStageNow(j), last = j.log.slice().sort(jnSort)[0];
   const act = JB_STG.filter(([k]) => j.stages[k].st !== "skip"), done = act.filter(([k]) => j.stages[k].st === "done").length;
   const gist = last ? last.b.split("\n").map(x => x.replace(/^\s*([-*] \[[ xX]\]|[-*•]|\d+[.)]|#{1,3}|!!|>)\s*/, "").replace(/\*\*|==|~~|\[\[|\]\]|`/g, "").trim()).find(Boolean) || "" : "";
-  return `<button type="button" class="jb-row" ${attr}="${j.id}"><b>${esc(jbName(j))}</b><span>${[(j.name || "").trim() && j.a, j.who, c && c.n, pName(j.lead) && "Lead " + pName(j.lead)].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
+  return `<button type="button" class="jb-row" ${attr}="${j.id}"><b>${esc(jbName(j))}</b><span>${[(j.name || "").trim() && j.a, eName("sub", j.sub), j.who, c && c.n, pName(j.lead) && "Lead " + pName(j.lead)].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
     + (gist ? `<span class="jb-gist">${esc(gist.slice(0, 90))}</span>` : "")
     + `<span class="jb-tags"><span class="badge">${esc(JB_SNAME[cs])}</span><span class="badge">${done}/${act.length}</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${tk ? `<span class="badge">☐ ${tk}</span>` : ""}${n ? `Inspection ${jbNice(n.d)}` : ""}</span></button>`; };
+const eRow = (t, x) => { const n = eJobs(t, x).length, c = t === "sub" && cityById(x.city);
+  const sub = t === "bld" ? [x.ph, (n2 => `${n2 || "no"} subdivision${n2 === 1 ? "" : "s"}`)(jbD.subs.filter(s => s.bld === x.id).length)] : [c && c.n, eName("bld", x.bld)];
+  return `<button type="button" class="jb-row" data-ent="${t}|${x.id}"><b>${esc(x.n || "No name")}</b><span>${[...sub, `${n} job${n === 1 ? "" : "s"}`].filter(Boolean).map(esc).join(" · ")}</span></button>`; };
 const pRow = p => { const n = pJobs(p).length;
   return `<div class="jp-row"><button type="button" class="jb-row" data-person="${p.id}"><b>${esc(p.n || "No name")}</b><span>${[p.role, p.co].filter(Boolean).map(esc).join(" · ")}${n ? ` · ${n} job${n === 1 ? "" : "s"}` : ""}</span></button>${pTel(p) ? `<a class="btn ghost jp-call" href="tel:${pTel(p)}" aria-label="Call ${esc(p.n)}">Call</a>` : ""}</div>`; };
 
+/* the job list, grouped under each builder (A to Z), jobs with no builder last */
+function jbGroups(L){
+  const G = new Map(); L.forEach(j => { const k = eById("bld", j.bld) ? j.bld : ""; if (!G.has(k)) G.set(k, []); G.get(k).push(j); });
+  return [...G.keys()].sort((a, b) => !a ? 1 : !b ? -1 : eName("bld", a).localeCompare(eName("bld", b))).map(k =>
+    `<div class="jb-grp">${k ? `<button type="button" class="jb-gh" data-ent="bld|${k}"><b>${esc(eName("bld", k))}</b><span>${G.get(k).length} ›</span></button>` : `<p class="jb-gh"><b>No builder</b><span>${G.get(k).length}</span></p>`}
+    <div class="jb-list">${G.get(k).map(j => jbRow(j)).join("")}</div></div>`).join("");
+}
 function jbListHtml(){
-  const viewSeg = `<div class="seg jb-seg" role="group" aria-label="Jobs or people"><button type="button" data-view="jobs" aria-pressed="${JB.view === "jobs"}">Jobs · ${jbD.jobs.length}</button><button type="button" data-view="people" aria-pressed="${JB.view === "people"}">People · ${jbD.people.length}</button></div>`;
+  const viewSeg = `<div class="seg jb-seg jb-views" role="group" aria-label="Show">${[["jobs", "Jobs", jbD.jobs], ["people", "People", jbD.people], ["bld", "Builders", jbD.builders], ["sub", "Subdivisions", jbD.subs]]
+    .map(([k, t, L]) => `<button type="button" data-view="${k}" aria-pressed="${JB.view === k}">${t} · ${L.length}</button>`).join("")}</div>`;
+  if (JB.view === "bld" || JB.view === "sub"){ const t = JB.view, C = ENT[t], E = eList(t).slice().sort((a, b) => a.n.localeCompare(b.n));
+    return `${viewSeg}<div class="set-btns jb-top"><button type="button" class="btn" data-a="e-new">+ New ${C.one}</button></div>
+    <div class="jb-list">${E.map(x => eRow(t, x)).join("") || `<p class="note">None yet. They show up here when you pick a ${C.one} on a job, or tap <b>+ New ${C.one}</b>. Each has a page: ${t === "bld" ? "office phone, website, their people and subdivisions" : "city, builder, gate code, where water and sewer tie in"}, notes, and every job.</p>`}</div>`; }
   if (JB.view === "people"){
     const P = jbD.people.slice().sort((a, b) => a.n.localeCompare(b.n));
     return `${viewSeg}<div class="set-btns jb-top"><button type="button" class="btn" data-a="p-new">+ New person</button></div>
@@ -9690,7 +9731,7 @@ function jbListHtml(){
   return `${viewSeg}<div class="set-btns jb-top"><button type="button" class="btn" data-a="new">+ New job</button></div>
   <div class="seg jb-seg" role="group" aria-label="Show">${[["open", "Open"], ["done", "Done"], ["all", "All"]].map(([k, t]) => `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}">${t} · ${jbD.jobs.filter(j => jbIn(k, j)).length}</button>`).join("")}</div>
   ${tags.length ? `<div class="chips jn-tagbar">${JB.tag ? `<button type="button" data-tagclr="1" aria-pressed="true">#${esc(JB.tag)} ✕ show all</button>` : tags.map(t => `<button type="button" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")}</div>` : ""}
-  <div class="jb-list">${L.map(j => jbRow(j)).join("") || `<p class="note">${jbD.jobs.length ? "Nothing here." : "No jobs yet. Tap <b>+ New job</b>. Each job is a timeline, Underground to Final, with the blanks ready to fill in as you go."}</p>`}</div>
+  ${L.length ? jbGroups(L) : `<div class="jb-list"><p class="note">${jbD.jobs.length ? "Nothing here." : "No jobs yet. Tap <b>+ New job</b>. Each job is a timeline, Underground to Final, with the blanks ready to fill in as you go."}</p></div>`}
   <p class="card-h">Hours</p>
   <div class="x"><table class="t wrap"><tbody>
     <tr><th>Today</th><td>${jbHr(H.today)} hr</td></tr>
@@ -9769,11 +9810,15 @@ function jbJobHtml(j){
   <div class="calc">
     <label for="jb-n" class="wide">Job name<input id="jb-n" data-f="name" type="text" autocomplete="off" value="${esc(j.name)}" placeholder="Lot 12 Ivory · Smith basement"></label>
     <label for="jb-a" class="wide">Address<input id="jb-a" data-f="a" type="text" autocomplete="off" value="${esc(j.a)}" placeholder="123 N Main St"></label>
-    <label for="jb-who" class="wide">Builder / customer<input id="jb-who" data-f="who" type="text" autocomplete="off" value="${esc(j.who)}" placeholder="Builder or homeowner"></label>
+    <label for="jb-bld" class="wide">Builder<input id="jb-bld" data-je="bld" list="jb-blds" type="text" autocomplete="off" value="${esc(eName("bld", j.bld))}" placeholder="Pick or type a new one"></label>
+    <label for="jb-sub" class="wide">Subdivision<input id="jb-sub" data-je="sub" list="jb-subs" type="text" autocomplete="off" value="${esc(eName("sub", j.sub))}" placeholder="Pick or type a new one"></label>
+    <label for="jb-who" class="wide">Customer / homeowner <i>(optional)</i><input id="jb-who" data-f="who" type="text" autocomplete="off" value="${esc(j.who)}" placeholder="For remodels and service"></label>
     <label for="jb-city">City <i>(for Directions)</i><select id="jb-city" data-f="city">${$("mc-pick").innerHTML}</select></label>
     <label for="jb-st">Job status<select id="jb-st" data-f="st">${jbOpts(JB_ST, j.st)}</select></label>
   </div>
   ${addr ? `<div class="jb-in"><div class="set-btns"><a class="btn ghost" href="https://maps.apple.com/?daddr=${q}" target="_blank" rel="noopener">Directions</a></div></div>` : ""}
+  ${eById("bld", j.bld) || eById("sub", j.sub) ? `<div class="jb-list">${[["bld", j.bld], ["sub", j.sub]].filter(([t, id]) => eById(t, id)).map(([t, id]) => eRow(t, eById(t, id))).join("")}</div>` : ""}
+  ${eById("sub", j.sub) && eById("sub", j.sub).gate ? `<div class="jb-in"><p class="note"><b>Gate:</b> ${esc(eById("sub", j.sub).gate)}</p></div>` : ""}
 
   <p class="card-h">People</p>
   <div class="calc">${slot("jp-lead", "Lead", "lead", "Who's leading for your company")}${slot("jp-sup", "Superintendent", "sup", "The builder's super")}</div>
@@ -9805,7 +9850,7 @@ function jbPersonHtml(p){
   <div class="calc">
     ${f("pp-n", "n", "Name", "text", "Dave Smith", true)}
     <label for="pp-role">Role<select id="pp-role" data-pf="role">${jbList(JB_ROLES, p.role)}</select></label>
-    ${f("pp-co", "co", "Company", "text", "Company or city", false)}
+    <label for="pp-co">Company<input id="pp-co" data-pf="co" list="jb-blds" type="text" autocomplete="off" value="${esc(p.co || "")}" placeholder="Builder, city or shop"></label>
     ${f("pp-ph", "ph", "Phone", "tel", "801-555-0100", false)}
     ${f("pp-em", "em", "Email", "email", "", false)}
   </div>
@@ -9817,13 +9862,32 @@ function jbPersonHtml(p){
   <div class="set-btns jb-end"><button type="button" class="del" data-a="p-del">Delete this person</button></div>`;
 }
 
+function jbEntHtml(t, x){
+  const C = ENT[t], jobs = eJobs(t, x), tel = (x.ph || "").replace(/[^\d+]/g, ""), web = (x.web || "").trim();
+  const fld = ([k, label, type, ph]) => type === "city" ? `<label for="ef-city">${label}<select id="ef-city" data-ef="city">${$("mc-pick").innerHTML}</select></label>`
+    : `<label for="ef-${k}"${type === "text" ? ' class="wide"' : ""}>${label}<input id="ef-${k}" data-ef="${k}" type="${type === "bld" ? "text" : type}"${type === "bld" ? ' list="jb-blds"' : ""}${type === "tel" ? ' inputmode="tel"' : ""} autocomplete="off" value="${esc(type === "bld" ? eName("bld", x[k]) : x[k] || "")}" placeholder="${esc(ph)}"></label>`;
+  const nm = x.n.trim().toLowerCase(), ppl = t === "bld" ? jbD.people.filter(p => (p.co || "").trim().toLowerCase() === nm || jbD.jobs.some(j => j.bld === x.id && (j.sup === p.id))) : [];
+  const subs = t === "bld" ? jbD.subs.filter(s => s.bld === x.id) : [];
+  return `<div class="set-btns jb-top"><button type="button" class="btn ghost" data-a="back">‹ Back</button></div>
+  <div class="calc"><label for="ef-n" class="wide">${C.Title}<input id="ef-n" data-ef="n" type="text" autocomplete="off" value="${esc(x.n)}" placeholder="${C.ph}"></label>${C.fields.map(fld).join("")}</div>
+  ${tel || web ? `<div class="jb-in"><div class="set-btns">${tel ? `<a class="btn" href="tel:${tel}">Call</a><a class="btn ghost" href="sms:${tel}">Text</a>` : ""}${web ? `<a class="btn ghost" href="${esc(/^https?:/i.test(web) ? web : "https://" + web)}" target="_blank" rel="noopener">Website</a>` : ""}</div></div>` : ""}
+  ${t === "bld" ? `<p class="card-h">People · ${ppl.length}</p><div class="jb-list">${ppl.map(pRow).join("") || `<p class="note">Their supers and office people show up here: set a person's company to ${esc(x.n || "this builder")}, or make someone the super on one of their jobs.</p>`}</div>
+  <p class="card-h">Subdivisions · ${subs.length}</p><div class="jb-list">${subs.map(s => eRow("sub", s)).join("") || `<p class="note">None yet. Pick this builder on a subdivision's page.</p>`}</div>` : ""}
+  <p class="card-h">Jobs · ${jobs.length}</p>
+  <div class="jb-list">${jobs.map(j => jbRow(j)).join("") || `<p class="note">No jobs yet. Pick ${esc(x.n || `this ${C.one}`)} on a job, or write [[${esc(x.n || "its name")}]] in a job's notes.</p>`}</div>
+  <p class="card-h">Notes</p>
+  ${jnBlock(x, x.log, t === "bld" ? "How they want things done. Who pays. - [ ] get the new super's number" : "Where the meters are, HOA rules, which lots are left")}
+  <div class="set-btns jb-end"><button type="button" class="del" data-a="e-del">Delete this ${C.one}</button></div>`;
+}
 function jbDraw(){
   const body = $("jb-body"), ae = document.activeElement, had = !!ae && ae !== document.body && body.contains(ae);
   if (had) ae.blur();   /* a box removed while the keyboard is up never says so, and the bar floats: close it properly first */
-  const j = jbCur(), p = JB.person && pById(JB.person); if (JB.open && !j) JB.open = null; if (JB.person && !p) JB.person = null;
-  const dl = `<datalist id="jb-ppl">${jbD.people.map(x => `<option value="${esc(x.n)}">${esc(x.role)}</option>`).join("")}</datalist>`;
-  body.innerHTML = (p ? jbPersonHtml(p) : j ? jbJobHtml(j) : jbListHtml()) + dl;
-  if (p){}
+  const en = eCur(), j = jbCur(), p = JB.person && pById(JB.person); if (JB.open && !j) JB.open = null; if (JB.person && !p) JB.person = null; if (JB.ent && !en) JB.ent = null;
+  const dl = `<datalist id="jb-ppl">${jbD.people.map(x => `<option value="${esc(x.n)}">${esc(x.role)}</option>`).join("")}</datalist>`
+    + ["bld", "sub"].map(t => `<datalist id="jb-${t}s">${eList(t).map(x => `<option value="${esc(x.n)}"></option>`).join("")}</datalist>`).join("");
+  body.innerHTML = (en ? jbEntHtml(JB.ent.t, en) : p ? jbPersonHtml(p) : j ? jbJobHtml(j) : jbListHtml()) + dl;
+  if (en){ if ($("ef-city")) $("ef-city").value = en.city || ""; }
+  else if (p){}
   else if (j){ $("jb-city").value = j.city || ""; jfDraw(j.id); }
   else if (JB.view === "jobs"){ $("jb-goal").value = String(+jbD.goal === 6000 ? 6000 : 8000); jfUse(); }
   bindPn(body);
@@ -9832,26 +9896,32 @@ function jbDraw(){
 const jbTouch = o => { o.t = Date.now(); jbSave(); jbDraw(); };
 const jbTop = () => { const c = $("jobs-card"); if (c) c.scrollIntoView({block: "start"}); };
 const jbOpenStage = () => { const o = $("jt-open"); if (o) o.scrollIntoView({block: "start"}); };
-function jbOpenPerson(id){ JB.back = {open: JB.open, stage: JB.stage}; JB.person = id; JB.edit = null; jbDraw(); jbTop(); }
+const jbState = () => ({open: JB.open, stage: JB.stage, person: JB.person, ent: JB.ent});
+const jbPush = () => { if (JB.open || JB.person || JB.ent) JB.hist.push(jbState()); };
+function jbOpenPerson(id){ jbPush(); JB.ent = null; JB.person = id; JB.edit = null; jbDraw(); jbTop(); }
+function jbOpenEnt(t, id){ jbPush(); JB.person = null; JB.ent = {t, id}; JB.edit = null; jbDraw(); jbTop(); }
+function jbGoBack(){ const b = JB.hist.pop() || {open: null, stage: null, person: null, ent: null}; Object.assign(JB, b); JB.edit = null; JB.ckEdit = false; jbSave(); jbDraw(); jbTop(); }
 function jbBack(){
+  const en = eCur(); if (en){ if (!en.n.trim() && !en.log.length && !eJobs(JB.ent.t, en).length) jbD[ENT[JB.ent.t].list] = eList(JB.ent.t).filter(x => x !== en); jbGoBack(); return; }   /* a new page left blank isn't kept */
   if (JB.person){ const p = pById(JB.person);
-    if (p && !p.n.trim() && !p.log.length && !pJobs(p).length) jbD.people = jbD.people.filter(x => x !== p);   /* a new person left blank isn't kept */
-    JB.person = null; JB.edit = null; const b = JB.back || {}; JB.open = b.open || null; JB.stage = b.stage || null; JB.back = null; jbSave(); jbDraw(); jbTop(); return; }
+    if (p && !p.n.trim() && !p.log.length && !pJobs(p).length) jbD.people = jbD.people.filter(x => x !== p);
+    jbGoBack(); return; }
   const j = jbCur();
-  if (j && !(j.a || "").trim() && !(j.name || "").trim() && !j.who.trim() && !j.log.length && !j.draft.trim() && !j.insp.length && !j.hrs.length && !j.punch.length && !j.lead && !j.sup && !JF.n)
+  if (j && !(j.a || "").trim() && !(j.name || "").trim() && !j.who.trim() && !j.bld && !j.sub && !j.log.length && !j.draft.trim() && !j.insp.length && !j.hrs.length && !j.punch.length && !j.lead && !j.sup && !JF.n)
     jbD.jobs = jbD.jobs.filter(x => x !== j);   /* a new job left blank isn't kept */
-  JB.open = null; JB.edit = null; JB.stage = null; jbSave(); jbDraw(); jbTop();
+  jbGoBack();
 }
 /* [[link]]: a person, another job by its address, else a card in the book by its title */
 function jnGo(x){
   const per = pByName(x); if (per){ jbOpenPerson(per.id); return; }
+  for (const t of ["bld", "sub"]){ const e = eByName(t, x); if (e){ jbOpenEnt(t, e.id); return; } }
   const q = x.trim().toLowerCase(), nm = j => [j.name, j.a].map(v => (v || "").trim().toLowerCase()).filter(Boolean);   /* by name or address */
   const job = jbD.jobs.find(j => nm(j).includes(q)) || jbD.jobs.find(j => nm(j).some(v => v.includes(q)));
-  if (job){ JB.person = null; JB.open = job.id; JB.edit = null; JB.stage = null; JF.n = 0; jbDraw(); jbTop(); return; }
+  if (job){ jbPush(); JB.person = null; JB.ent = null; JB.open = job.id; JB.edit = null; JB.stage = null; JF.n = 0; jbDraw(); jbTop(); return; }
   const secs = SECTIONS.filter(s => s.dataset.sec !== "jobs" && s.querySelector("h2")), h = s => s.querySelector("h2").textContent.trim().toLowerCase();
   const sec = secs.find(s => h(s) === q) || secs.find(s => h(s).includes(q));
   if (sec) jumpToSec(sec);
-  else if (jbAsk(`No one, no job and no card called "${x}". Make a page for a person named ${x}?`)){ const p = pGet(x, "Other"); jbSave(); jbOpenPerson(p.id); }
+  else if (jbAsk(`No person, builder, subdivision, job or card called "${x}". Make a page for a person named ${x}?`)){ const p = pGet(x, "Other"); jbSave(); jbOpenPerson(p.id); }
 }
 /* toolbar: put the markup in for you, at the cursor or at the start of the line */
 let jnTa = null;
@@ -9868,16 +9938,17 @@ const B = $("jb-body");
 B.addEventListener("focusin", e => { if (e.target.classList.contains("jn-ta")) jnTa = e.target; });
 ["pointerdown", "mousedown"].forEach(ev => B.addEventListener(ev, e => { if (e.target.closest("[data-ins]")) e.preventDefault(); }));   /* keep the keyboard up */
 B.addEventListener("click", e => {
-  const t = e.target.closest("[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel]"); if (!t) return;
+  const t = e.target.closest("[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ent]"); if (!t) return;
   const j = jbCur(), o = jnOwner(), a = t.dataset.a, v = id => $(id).value.trim(), st = j && j.stages[JB.stage];
   if (t.dataset.ins){ jnInsert(t.dataset.ins); return; }
   if (t.dataset.wl){ jnGo(t.dataset.wl); return; }
-  if (t.dataset.tag){ JB.tag = t.dataset.tag; JB.view = "jobs"; JB.show = "all"; JB.open = null; JB.person = null; JB.edit = null; jbDraw(); jbTop(); return; }
+  if (t.dataset.ent){ const [et, id] = t.dataset.ent.split("|"); jbOpenEnt(et, id); return; }
+  if (t.dataset.tag){ JB.tag = t.dataset.tag; JB.view = "jobs"; JB.show = "all"; JB.open = null; JB.person = null; JB.ent = null; JB.hist = []; JB.edit = null; jbDraw(); jbTop(); return; }
   if (t.dataset.tagclr){ JB.tag = null; jbDraw(); return; }
   if (t.dataset.view){ JB.view = t.dataset.view; jbDraw(); return; }
   if (t.dataset.person){ jbOpenPerson(t.dataset.person); return; }
   if (t.dataset.edit){ JB.edit = t.dataset.edit; jbDraw(); const ta = $("jn-ed"); if (ta){ ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } return; }
-  if (t.dataset.open){ JB.person = null; JB.open = t.dataset.open; JB.edit = null; JB.stage = null; JF.n = 0; jbDraw(); jbTop(); return; }
+  if (t.dataset.open){ jbPush(); JB.person = null; JB.ent = null; JB.open = t.dataset.open; JB.edit = null; JB.stage = null; JF.n = 0; jbDraw(); jbTop(); return; }
   if (t.dataset.show){ JB.show = t.dataset.show; jbDraw(); return; }
   if (t.dataset.v){ jfView(t.dataset.v); return; }
   if (t.dataset.stage && j){ JB.stage = t.dataset.stage; JB.edit = null; JB.ckEdit = false; jbDraw(); jbOpenStage(); return; }
@@ -9904,13 +9975,17 @@ B.addEventListener("click", e => {
     delete jbD.tpl[JB.stage]; JB.ckEdit = false; jbTouch(j); toast("Back to the book's list for new jobs.", 2200); return; }
   if (a === "back"){ jbBack(); return; }
   if (a === "new"){ jbNew(); JF.n = 0; jbDraw(); jbTop(); $("jb-n").focus(); return; }
+  if (a === "e-new"){ const x = eGet(JB.view, "\u200b"); x.n = ""; jbSave(); JB.open = null; jbOpenEnt(JB.view, x.id); $("ef-n").focus(); return; }
+  if (a === "e-del" && JB.ent){ const {t: et} = JB.ent, x = eCur(); if (!x || !jbAsk(`Delete ${x.n || "this " + ENT[et].one}? It comes off every job; notes that mention it stay.`)) return;
+    jbD[ENT[et].list] = eList(et).filter(y => y !== x); jbD.jobs.forEach(j => { if (j[et] === x.id) j[et] = ""; }); if (et === "bld") jbD.subs.forEach(s => { if (s.bld === x.id) s.bld = ""; });
+    jbGoBack(); return; }
   if (a === "p-new"){ const p = {id: jbId(), n: "", role: "Other", co: "", ph: "", em: "", log: [], draft: "", t: Date.now()}; jbD.people.push(p); jbSave(); JB.open = null; jbOpenPerson(p.id); $("pp-n").focus(); return; }
   if (a === "p-del" && JB.person){ const p = pById(JB.person); if (!p || !jbAsk(`Delete ${p.n || "this person"}? They come off every job; notes that mention them stay.`)) return;
     jbD.people = jbD.people.filter(x => x !== p);
     jbD.jobs.forEach(x => { if (x.lead === p.id) x.lead = ""; if (x.sup === p.id) x.sup = ""; x.ppl = x.ppl.filter(y => y.p !== p.id); JB_STG.forEach(([k]) => { if (x.stages[k].lead === p.id) x.stages[k].lead = ""; }); });
-    JB.person = null; const b = JB.back || {}; JB.open = b.open || null; JB.stage = b.stage || null; JB.back = null; jbSave(); jbDraw(); jbTop(); return; }
+    jbGoBack(); return; }
   if (a === "jn-add" && o){ const b = $("jn-new").value.trim(); if (!b){ toast("Write the note first."); return; }
-    o.log.push(Object.assign({id: jbId(), d: $("jn-d").value || jbDay(), at: Date.now(), b}, JB.person ? {} : {s: JB.stage})); o.draft = ""; jnTa = null; jbTouch(o); toast("Note added.", 1600); return; }
+    o.log.push(Object.assign({id: jbId(), d: $("jn-d").value || jbDay(), at: Date.now(), b}, (JB.person || JB.ent) ? {} : {s: JB.stage})); o.draft = ""; jnTa = null; jbTouch(o); toast("Note added.", 1600); return; }
   if (a === "jn-save" && o){ const n = o.log.find(x => x.id === JB.edit); if (n){ n.b = $("jn-ed").value.trim() || n.b; n.d = $("jn-ed-d").value || n.d; } JB.edit = null; jnTa = null; jbTouch(o); return; }
   if (a === "jn-cancel"){ JB.edit = null; jnTa = null; jbDraw(); return; }
   if (a === "jn-del" && o){ if (!jbAsk("Delete this note?")) return; o.log = o.log.filter(x => x.id !== JB.edit); JB.edit = null; jnTa = null; jbTouch(o); return; }
@@ -9936,11 +10011,16 @@ B.addEventListener("click", e => {
 });
 B.addEventListener("keydown", e => { if (e.key !== "Enter") return; const btn = {"jp-t": "punch-add", "jc-t": "ck-add"}[e.target.id];
   if (btn){ e.preventDefault(); B.querySelector(`[data-a="${btn}"]`).click(); } });
-B.addEventListener("input", e => { const t = e.target, j = jbCur(), p = JB.person && pById(JB.person);
+B.addEventListener("input", e => { const t = e.target, j = jbCur(), p = JB.person && pById(JB.person), en = eCur();
+  if (en && t.dataset.ef && t.tagName !== "SELECT" && t.dataset.ef !== "bld"){ en[t.dataset.ef] = t.value; en.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
   if (j && t.dataset.f && t.tagName !== "SELECT"){ j[t.dataset.f] = t.value; j.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
   if (p && t.dataset.pf && t.tagName !== "SELECT"){ p[t.dataset.pf] = t.value; p.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
   if (t.id === "jn-new"){ const o = jnOwner(); if (o){ o.draft = t.value; clearTimeout(jbT); jbT = setTimeout(() => store.set("jpb-jobs", jbD), 500); } } });   /* a half-written note survives leaving the page */
-B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.person && pById(JB.person), st = j && j.stages[JB.stage];
+B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.person && pById(JB.person), st = j && j.stages[JB.stage], en = eCur();
+  if (en && t.dataset.ef){ const k = t.dataset.ef; if (k === "bld"){ const b = eGet("bld", t.value); en.bld = b ? b.id : ""; } else en[k] = t.value.trim(); if (k !== "n" || en.n) jbTouch(en); return; }
+  if (j && t.dataset.je){ const k = t.dataset.je, x = eGet(k, t.value); j[k] = x ? x.id : "";
+    if (k === "sub" && x){ if (!j.city && x.city) j.city = x.city; if (!j.bld && x.bld) j.bld = x.bld; }   /* a subdivision fills in its city and builder */
+    jbTouch(j); return; }
   if (t.tagName === "SELECT" || /^(date|file)$/.test(t.type)) jbReseat();   /* a picker wheel or the photo sheet just closed */
   if (p && t.dataset.pf){ p[t.dataset.pf] = t.value.trim(); jbTouch(p); return; }
   if (t.dataset.tk){ const o = jnOwner(), [eid, i] = t.dataset.tk.split("|"), n = o && o.log.find(x => x.id === eid);
@@ -9970,7 +10050,7 @@ window.jobsHome = () => {
     + (H.wk ? `<p class="note">${jbHr(H.today)} hr today · ${jbHr(H.wk)} hr this week</p>` : "");
 };
 $("home-body").addEventListener("click", e => { const b = e.target.closest("[data-hj]"); if (!b) return; const k = b.dataset.hj;
-  JF.n = 0; JB.edit = null; JB.person = null; JB.stage = null; JB.view = "jobs"; if (k === "new") jbNew(); else JB.open = k === "all" ? null : k;
+  JF.n = 0; JB.edit = null; JB.person = null; JB.ent = null; JB.hist = []; JB.stage = null; JB.view = "jobs"; if (k === "new") jbNew(); else JB.open = k === "all" ? null : k;
   go("mine", "jobs"); jbDraw(); jbTop(); });
 
 /* ---- photos & files: IndexedDB */
@@ -9991,7 +10071,7 @@ const jfDel = id => jfTx("readwrite", s => s.delete(id));
 
 async function jfDraw(job){
   let L; try { L = await jfAll(job); } catch(e){ const p = $("jf-photos"); if (p) p.innerHTML = `<p class="note">This browser won't store photos here.</p>`; return; }
-  const j = jbCur(); if (!j || JB.open !== job || JB.person) return;
+  const j = jbCur(); if (!j || JB.open !== job || JB.person || JB.ent) return;
   L.sort((a, b) => a.t - b.t); JF.n = L.length;
   for (const f of L) if (f.kind === "photo" && !f.s){ f.s = jbStageNow(j); jfPut(f).catch(() => {}); }   /* photos from before stages */
   const P = L.filter(f => f.kind === "photo" && f.s === JB.stage), F = L.filter(f => f.kind !== "photo");
@@ -10119,7 +10199,7 @@ jbDraw(); try { homeDraw(); } catch(e){}
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-14g";
+var BUILD = "handbook-2026-11-14h";
 (function(){
   var foot = document.querySelector("footer");
   var note = document.createElement("div"); note.id = "offline-status";
