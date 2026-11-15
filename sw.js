@@ -2,7 +2,7 @@
    The version comes from BUILD in index.html (registered as sw.js?v=BUILD), so bumping BUILD
    is the only step needed to push an update to phones. */
 const CACHE = "jpb-" + (new URL(location).searchParams.get("v") || "dev");
-const CORE = ["./index.html", "./manifest.webmanifest"];                      /* must succeed */
+const CORE = ["./index.html", "./manifest.webmanifest", "./jobs.js?v=" + encodeURIComponent(new URL(location).searchParams.get("v") || "dev")];   /* jobs.js under the same build name index.html asks for */                      /* must succeed */
 const EXTRA = ["./icon-180.png", "./icon-192.png", "./icon-512.png"];         /* nice to have: a missing icon never blocks the offline copy */
 
 /* install: download fresh copies (skip the browser's HTTP cache) and take over right away */
