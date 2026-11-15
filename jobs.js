@@ -74,8 +74,8 @@ const jbMentions = (x, n) => { const L = "[[" + n.trim().toLowerCase(); return !
 
 /* builders and subdivisions: saved once, picked on any job, each with a page (fields, notes, every job) */
 const ENT = {
-  bld: {list: "builders", one: "builder", Title: "Builder", ph: "Ivory Homes", fields: [["ph", "Office phone", "tel", "801-555-0100"], ["web", "Website", "url", "ivoryhomes.com"], ["addr", "Office address", "text", ""]]},
-  sub: {list: "subs", one: "subdivision", Title: "Subdivision", ph: "Holbrook Farms", fields: [["city", "City", "city", ""], ["bld", "Builder", "bld", "Ivory Homes"], ["gate", "Access / gate code", "text", "Gate 1234#"], ["tie", "Water & sewer tie-in", "text", "Sewer stub 9 ft deep, east lot line"]]}};
+  bld: {list: "builders", one: "builder", Title: "Builder", ph: "ABC Homes", fields: [["ph", "Office phone", "tel", "801-555-0100"], ["web", "Website", "url", "builder.com"], ["addr", "Office address", "text", ""]]},
+  sub: {list: "subs", one: "subdivision", Title: "Subdivision", ph: "Sunny Acres", fields: [["city", "City", "city", ""], ["bld", "Builder", "bld", "ABC Homes"], ["gate", "Access / gate code", "text", "Gate 1234#"], ["tie", "Water & sewer tie-in", "text", "Sewer stub 9 ft deep, east lot line"]]}};
 const eList = t => jbD[ENT[t].list];
 const eById = (t, id) => id ? eList(t).find(x => x.id === id) : null;
 const eByName = (t, n) => { const q = String(n).trim().toLowerCase(); return q ? eList(t).find(x => x.n.trim().toLowerCase() === q) : null; };
@@ -240,8 +240,8 @@ const JN_CHEAT = [
   ["call inspector @tomorrow, final @Nov 20", "A purple date. @today, @tomorrow, @fri, @Nov 20, @11/20 all work, counted from the note's date. The next 7 days show on Home under My jobs."],
   ["PSI: 80\nWater heater: Rheem XG50T06EC36U1\nSerial: Q041912345", "Facts. A line like Label: value shows as a fact, and the job collects them all at the top (From your notes): pressure, serials, gate codes, model numbers."],
   ["#warranty #callback", "Tags. Each tag keeps its own color everywhere. Tap one to see every job with it."],
-  ["[[Omar]] [[Ivory Homes]] [[Holbrook Farms]] [[Lot 12]] [[Offset calculator]]", "Links. The color and icon say what it opens: 👤 a person, 🏗 a builder, 🏘 a subdivision, 🔧 another job, 📖 a card in the book. A gray ＋ means nothing has that name yet: tap it to make a person page."],
-  ["[[Omar|the lead]]", "A link that shows your own words."],
+  ["[[Sam]] [[ABC Homes]] [[Sunny Acres]] [[Lot 12]] [[Offset calculator]]", "Links. The color and icon say what it opens: 👤 a person, 🏗 a builder, 🏘 a subdivision, 🔧 another job, 📖 a card in the book. A gray ＋ means nothing has that name yet: tap it to make a person page."],
+  ["[[Sam|the lead]]", "A link that shows your own words."],
   ["# Top-out walk", "A heading. Two ## for a smaller one."],
   ["**bold** *italic* ==highlight== ~~done~~", "Bold, italic, highlighted, struck out."],
   ["- 3/4 PEX\n  - 2 elbows\n1. first\n2. second", "Lists. Two spaces in front tuck a line under the one above; numbers keep their order."],
@@ -249,10 +249,10 @@ const JN_CHEAT = [
   ["```\n3/4 x 8' 6\"\n1/2 x 4'\n```", "Three backticks above and below: shows exactly as typed (cut lists, model numbers)."],
   ["801-555-0100", "Phone numbers and web links are tappable."]];
 function jnHelpHtml(){
-  jnForce = {"omar": "person", "ivory homes": "bld", "holbrook farms": "sub", "lot 12": "job", "offset calculator": "card"};   /* the examples always show every color */
+  jnForce = {"sam": "person", "abc homes": "bld", "sunny acres": "sub", "lot 12": "job", "offset calculator": "card"};   /* the examples always show every color */
   const rows = JN_CHEAT.map(([src, what]) => `<div class="jn-cr"><code class="jn-src">${esc(src)}</code><div class="jn-b jn-out">${jnMd(src, "cheat")}</div><p class="jn-what">${what}</p></div>`).join("");
   jnForce = null;
-  const tryIt = "- [ ] call [[Omar]] #warranty\n!! gas not tested\n?? vent through roof or wall\nfinal @Nov 20\nPSI: 80";
+  const tryIt = "- [ ] call [[Sam]] #warranty\n!! gas not tested\n?? vent through roof or wall\nfinal @Nov 20\nPSI: 80";
   return `<details class="explain"><summary>Every mark, with examples</summary><div>
     <p class="note jn-lead">Type the marks on the left; the note shows what's on the right. The buttons above the box put them in for you, in the same colors.</p>
     <div class="jn-cheat">${rows}</div>
@@ -441,7 +441,7 @@ function jbJobHtml(j){
   ${j.st !== "done" && jbStages(j).filter(([k]) => j.stages[k].st !== "skip").every(([k]) => j.stages[k].st === "done") ? `<div class="jb-in"><p class="note jb-donebar">✓ <b>Every stage is done.</b> Finished with this job?</p><div class="set-btns"><button type="button" class="btn" data-a="job-done">Mark the job Done</button></div></div>` : ""}
   <p class="card-h" data-fold="details">Job details</p>
   <div class="calc">
-    <label for="jb-n" class="wide">Job name<input id="jb-n" data-f="name" type="text" autocomplete="off" value="${esc(j.name)}" placeholder="Lot 12 Ivory · Smith basement"></label>
+    <label for="jb-n" class="wide">Job name<input id="jb-n" data-f="name" type="text" autocomplete="off" value="${esc(j.name)}" placeholder="Lot 12 ABC · Smith basement"></label>
     <label for="jb-a" class="wide">Address<input id="jb-a" data-f="a" type="text" autocomplete="off" value="${esc(j.a)}" placeholder="123 N Main St"></label>
     <label for="jb-bld" class="wide">Builder<input id="jb-bld" data-je="bld" list="jb-blds" type="text" autocomplete="off" value="${esc(eName("bld", j.bld))}" placeholder="Pick or type a new one"></label>
     <label for="jb-sub" class="wide">Subdivision<input id="jb-sub" data-je="sub" list="jb-subs" type="text" autocomplete="off" value="${esc(eName("sub", j.sub))}" placeholder="Pick or type a new one"></label>
