@@ -139,9 +139,19 @@ const jbStageNow = j => { const S = jbStages(j); return (S.find(([k]) => j.stage
 const jbTpl = k => Array.isArray((jbD.tpl || {})[k]) ? jbD.tpl[k] : JB_TPL[k]();   /* your saved list for a stage, else the book's */
 function jbCk(j, k){ const s = j.stages[k], dn = new Set(s.done), hide = new Set(s.hide || []), T = jbTpl(k), TS = new Set(T);
   const at = s.doneAt || {};
-  const items = [...T.map((t, i) => ({key: "t" + i, t, done: dn.has(t), tpl: true, at: at[t]})).filter(x => !hide.has(x.t)),
-    ...s.extra.filter(x => !TS.has(x.t)).map(x => ({key: "x" + x.id, t: x.t, done: x.done, id: x.id, at: x.at}))];
+  let items = [...T.map(t => ({key: "t" + t, t, done: dn.has(t), tpl: true, at: at[t]})).filter(x => !hide.has(x.t)),
+    ...s.extra.filter(x => !TS.has(x.t) || hide.has(x.t)).map(x => ({key: "x" + x.id, t: x.t, done: x.done, id: x.id, at: x.at}))];
+  const rank = new Map((s.ord || []).map((key, i) => [key, i]));   /* the order you set; anything new goes last */
+  if (rank.size) items = items.map((x, i) => ({x, i})).sort((a, b) => (rank.has(a.x.key) ? rank.get(a.x.key) : 1e6 + a.i) - (rank.has(b.x.key) ? rank.get(b.x.key) : 1e6 + b.i)).map(o => o.x);
   return {items, total: items.length, done: items.filter(x => x.done).length}; }
+const jbCurKeys = (j, k) => jbCk(j, k).items.map(x => x.key);
+const jbCkRow = (x, i, n) => {
+  if (!x.tpl && jbIsEd("ck", x.id)) return `<li class="jb-liedit">${jbTextEd(x.t)}</li>`;
+  const ed = x.tpl ? (JB.ckEdit ? `<button type="button" class="jb-x" data-ckconv="${esc(x.key)}" aria-label="Edit ${esc(x.t)}">✎</button>` : "") : jbEdBtn("ck", x.id, esc(x.t));
+  const mv = JB.ckEdit ? `<button type="button" class="jb-x" data-ckmv="${esc(x.key)}" data-dir="-1" aria-label="Move ${esc(x.t)} up"${i === 0 ? " disabled" : ""}>↑</button><button type="button" class="jb-x" data-ckmv="${esc(x.key)}" data-dir="1" aria-label="Move ${esc(x.t)} down"${i === n - 1 ? " disabled" : ""}>↓</button>` : "";
+  const del = x.tpl && !JB.ckEdit ? "" : `<button type="button" class="jb-x" data-ckdel="${esc(x.key)}" aria-label="Remove ${esc(x.t)}">×</button>`;
+  return `<li><label><input type="checkbox" data-ck="${esc(x.key)}"${x.done ? " checked" : ""}><span>${esc(x.t)}${x.done && x.at ? `<small class="jb-when">✓ ${jbShort(x.at)}</small>` : ""}</span></label>${mv}${ed}${del}</li>`;
+};
 
 /* notes: a dated log with our own light markup (see "How to write notes") */
 const JN_TAG = /(^|[\s(])#([A-Za-z][\w-]*)/g;
@@ -510,7 +520,7 @@ function jbStageHtml(j, k){
     <label for="js-lead" class="wide">Lead on this stage<input id="js-lead" data-sp="1" list="jb-ppl" type="text" autocomplete="off" value="${esc(pName(s.lead))}" placeholder="${esc(pName(j.lead) || "Who ran it")}"></label>
   </div>
   <p class="card-h" data-fold="s-check">Checklist · ${C.done} of ${C.total} <button type="button" class="linkish" data-a="ck-edit" aria-pressed="${JB.ckEdit}">${JB.ckEdit ? "Done editing" : "Edit list"}</button></p>
-  ${C.items.length ? `<ul class="jb-punch">${C.items.map(x => !x.tpl && jbIsEd("ck", x.id) ? `<li class="jb-liedit">${jbTextEd(x.t)}</li>` : `<li><label><input type="checkbox" data-ck="${x.key}"${x.done ? " checked" : ""}><span>${esc(x.t)}${x.done && x.at ? `<small class="jb-when">✓ ${jbShort(x.at)}</small>` : ""}</span></label>${x.tpl ? "" : jbEdBtn("ck", x.id, esc(x.t))}${x.tpl && !JB.ckEdit ? "" : `<button type="button" class="jb-x" data-ckdel="${x.key}" aria-label="Remove ${esc(x.t)}">×</button>`}</li>`).join("")}</ul>` : `<div class="jb-in"><p class="note">Empty. Add what this stage needs below.</p></div>`}
+  ${C.items.length ? `<ul class="jb-punch">${C.items.map((x, i) => jbCkRow(x, i, C.items.length)).join("")}</ul>` : `<div class="jb-in"><p class="note">Empty. Add what this stage needs below.</p></div>`}
   ${JB.ckEdit ? `<div class="jb-in"><p class="note">Remove what you don't use and add your own. Then save it as your list for ${JB_SNAME[k]} on every new job.${Array.isArray((jbD.tpl || {})[k]) ? " You're using your own list for this stage." : " Right now it starts from the book's list."}</p>
     <div class="set-btns"><button type="button" class="btn" data-a="ck-save">Use this list on new jobs</button>${Array.isArray((jbD.tpl || {})[k]) ? `<button type="button" class="btn ghost" data-a="ck-book">Back to the book's list</button>` : ""}</div></div>` : ""}
   <div class="calc"><label for="jc-t" class="wide">Add to the checklist<input id="jc-t" type="text" autocomplete="off" enterkeyhint="done" placeholder="Something your lead or city wants"></label></div>
@@ -712,7 +722,7 @@ B.addEventListener("click", e => {
   const fh = e.target.closest(".card-h[data-fold]");
   if (fh && !e.target.closest("button, a, input, select, label")){ const k = fh.dataset.fold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(); jbDraw(); return; }   /* fold or open a section; remembered */
   const tf = e.target.closest("[data-tfold]"); if (tf){ const k = tf.dataset.tfold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(); jbDraw(); return; }
-  const t = e.target.closest("[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ent],[data-xadd],[data-xdel],[data-binr],[data-redit],[data-col],[data-tfold],[data-ico]"); if (!t) return;
+  const t = e.target.closest("[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ckmv],[data-ckconv],[data-ent],[data-xadd],[data-xdel],[data-binr],[data-redit],[data-col],[data-tfold],[data-ico]"); if (!t) return;
   const j = jbCur(), o = jnOwner(), a = t.dataset.a, v = id => $(id).value.trim(), st = j && j.stages[JB.stage];
   if (t.dataset.ins){ jnInsert(t.dataset.ins); return; }
   if (t.dataset.wl){ jnGo(t.dataset.wl); return; }
@@ -736,19 +746,29 @@ B.addEventListener("click", e => {
       if (nx){ const n = j.stages[nx[0]]; n.st = "doing"; if (!n.d0) n.d0 = jbDay(); toast(`${JB_SNAME[JB.stage]} done. ${JB_SNAME[nx[0]]} is next.`, 2400); JB.stage = nx[0]; jbTouch(j); jbOpenStage(); return; } }
     jbTouch(j); return; }
   if (t.dataset.pdel && j){ j.ppl = j.ppl.filter(x => x.id !== t.dataset.pdel); jbTouch(j); return; }
-  if (t.dataset.ckdel && st){ const k = t.dataset.ckdel;
-    if (k[0] === "t"){ const txt = jbTpl(JB.stage)[+k.slice(1)]; st.hide = [...new Set([...(st.hide || []), txt])]; }
+  if (t.dataset.ckdel && st){ const k = t.dataset.ckdel, di = jbCk(j, JB.stage).items.find(y => y.key === k);
+    if (di && !jbAsk(`Delete "${di.t}"?${di.done && di.at ? ` It's checked off (${jbShort(di.at)}), and that date goes with it.` : ""} This can't be undone.`)) return;
+    if (k[0] === "t"){ const txt = k.slice(1); st.hide = [...new Set([...(st.hide || []), txt])]; }
     else st.extra = st.extra.filter(x => "x" + x.id !== k);
     jbTouch(j); return; }
+  if (t.dataset.ckmv && st){ const keys = jbCurKeys(j, JB.stage), i = keys.indexOf(t.dataset.ckmv), n = i + (+t.dataset.dir);
+    if (i < 0 || n < 0 || n >= keys.length) return;
+    [keys[i], keys[n]] = [keys[n], keys[i]]; st.ord = keys; jbTouch(j); return; }
+  if (t.dataset.ckconv && st){ const key = t.dataset.ckconv, x = jbCk(j, JB.stage).items.find(y => y.key === key); if (!x) return;
+    if (!jbAsk(`Edit "${x.t}"?${x.done && x.at ? ` It's checked off (${jbShort(x.at)}). Changing the words keeps the check and its date.` : ""}`)) return;
+    const id = jbId(), keys = jbCurKeys(j, JB.stage);   /* a book item becomes your own line, same spot, so you can change its words */
+    st.hide = [...new Set([...(st.hide || []), x.t])]; st.done = (st.done || []).filter(d => d !== x.t);
+    st.extra.push({id, t: x.t, done: x.done, at: x.at}); keys[keys.indexOf(key)] = "x" + id; st.ord = keys;
+    JB.rowEdit = "ck|" + id; jbTouch(j); return; }
   if (a === "ck-edit"){ JB.ckEdit = !JB.ckEdit; jbDraw(); jbOpenStage(); return; }
   if (a === "ck-save" && st){ const C = jbCk(j, JB.stage), list = C.items.map(x => x.t);
     jbD.tpl = Object.assign({}, jbD.tpl, {[JB.stage]: list});
-    st.done = C.items.filter(x => x.done).map(x => x.t); st.hide = []; st.extra = [];   /* this job now runs on the saved list */
+    st.done = C.items.filter(x => x.done).map(x => x.t); st.hide = []; st.extra = []; st.ord = [];   /* this job now runs on the saved list */
     JB.ckEdit = false; jbTouch(j); toast(`Saved. New jobs start ${JB_SNAME[JB.stage]} with these ${list.length} items.`, 2600); return; }
   if (a === "ck-book" && st){ if (!jbAsk(`Go back to the book's list for ${JB_SNAME[JB.stage]} on new jobs? Jobs you already have keep what they show now.`)) return;
     const book = JB_TPL[JB.stage](), bs = new Set(book);
     jbD.jobs.forEach(x => { const s2 = x.stages[JB.stage], have = jbCk(x, JB.stage).items;
-      s2.extra = have.filter(y => !bs.has(y.t)).map(y => ({id: jbId(), t: y.t, done: y.done})); s2.hide = book.filter(b => !have.some(y => y.t === b)); s2.done = have.filter(y => y.done).map(y => y.t); });
+      s2.extra = have.filter(y => !bs.has(y.t)).map(y => ({id: jbId(), t: y.t, done: y.done})); s2.hide = book.filter(b => !have.some(y => y.t === b)); s2.done = have.filter(y => y.done).map(y => y.t); s2.ord = []; });
     delete jbD.tpl[JB.stage]; JB.ckEdit = false; jbTouch(j); toast("Back to the book's list for new jobs.", 2200); return; }
   if (a === "back"){ JB.allJobs = false; JB.rowEdit = null; JB.colOpen = false; jbBack(); return; }
   if (t.dataset.ico != null){ const v = JB_ICONS.includes(t.dataset.ico) ? t.dataset.ico : "", en2 = eCur(), jj = jbCur();
@@ -759,7 +779,9 @@ B.addEventListener("click", e => {
     else { const o = what === "stage" ? jbD.stageCol : jbD.tagCol; if (c) o[which] = c; else delete o[which]; JB.colOpen = true; }
     jbSave(); jbApplyColors(); jbDraw(); return; }
   if (a === "row-cancel"){ JB.rowEdit = null; jbDraw(); return; }
-  if (t.dataset.redit){ JB.rowEdit = t.dataset.redit; jbDraw(); const f = document.querySelector("#re-t, #re-h, #re-who"); if (f) f.focus(); return; }
+  if (t.dataset.redit){ const [rk, rid] = t.dataset.redit.split("|"), ri = rk === "ck" && st && st.extra.find(y => y.id === rid);
+    if (ri && !jbAsk(`Edit "${ri.t}"?${ri.done && ri.at ? ` It's checked off (${jbShort(ri.at)}). Changing the words keeps the check and its date.` : ""}`)) return;
+    JB.rowEdit = t.dataset.redit; jbDraw(); const f = document.querySelector("#re-t, #re-h, #re-who"); if (f) f.focus(); return; }
   if (a === "bin-empty"){ if (!jbAsk(`Delete the ${jbD.bin.length} item${jbD.bin.length === 1 ? "" : "s"} in Recently deleted for good? This can't be undone.`)) return; jbBinPurge(true); jbDraw(); toast("Emptied.", 1600); return; }
   if (a === "bk-all"){ JF.sayId = "jf-say"; jbBackupAll(); return; }
   if (a === "bk-share"){ jbShareReady(false); return; }
@@ -847,7 +869,7 @@ B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.pers
   if (st && t.dataset.sp){ const per = pGet(t.value, "Lead"); st.lead = per ? per.id : ""; jbTouch(j); return; }
   if (st && t.dataset.sf){ st[t.dataset.sf] = t.value; jbTouch(j); return; }
   if (st && t.dataset.ck){ const k = t.dataset.ck;
-    if (k[0] === "t"){ const txt = jbTpl(JB.stage)[+k.slice(1)], s = new Set(st.done); t.checked ? s.add(txt) : s.delete(txt); st.done = [...s];
+    if (k[0] === "t"){ const txt = k.slice(1), s = new Set(st.done); t.checked ? s.add(txt) : s.delete(txt); st.done = [...s];
       st.doneAt = st.doneAt || {}; if (t.checked) st.doneAt[txt] = Date.now(); else delete st.doneAt[txt]; }
     else { const x = st.extra.find(y => "x" + y.id === k); if (x){ x.done = t.checked; x.at = t.checked ? Date.now() : undefined; } }
     jbTouch(j); return; }
