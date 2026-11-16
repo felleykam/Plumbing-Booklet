@@ -117,7 +117,7 @@ function jbClean(){
   jbD.bin = arrO(jbD.bin).filter(b => isO(b.item) && typeof b.at === "number");
   jbD.binOut = Array.isArray(jbD.binOut) ? jbD.binOut.filter(x => typeof x === "string").slice(0, 1000) : [];
   if (!isO(jbD.fold)) jbD.fold = {};
-  jbD.rules = str(jbD.rules);
+  jbD.rules = str(jbD.rules); jbD.jnFull = jbD.jnFull === true;
   if (jbD.tpl != null && !isO(jbD.tpl)) jbD.tpl = {}; if (jbD.tpl) Object.keys(jbD.tpl).forEach(k => { if (!JB_SNAME[k] || !Array.isArray(jbD.tpl[k])) delete jbD.tpl[k]; else jbD.tpl[k] = jbD.tpl[k].map(str).filter(Boolean); });
   jbD.subs.forEach(x => { if (!JB_ICONS.includes(x.icon)) x.icon = ""; });
   ['stageCol', 'tagCol'].forEach(k => { const o = isO(jbD[k]) ? jbD[k] : {}; jbD[k] = {}; Object.keys(o).forEach(x => { if (JB_PAL.includes(o[x])) jbD[k][x] = o[x]; }); });
@@ -257,10 +257,16 @@ function jnMd(src, eid, base){
 const JN_TOOLS = `<div class="chips jn-tools">${[["- [ ] ", "☐ Task", "task"], ["!! ", "⚠ Heads-up", "flag"], ["?? ", "? Question", "q"], ["#", "# Tag", "tag"], ["[[", "[[ Link ]]", "link"], ["@date", "📅 Date", "date"], ["@fact", "Label: fact", "prop"], ["- ", "• List", ""], ["# ", "Heading", ""], ["**", "Bold", ""], ["day", "📝 Day log", ""]]
   .map(([k, t, c]) => `<button type="button" data-ins="${esc(k)}"${c ? ` class="t-${c}"` : ""}>${t}</button>`).join("")}</div>`;
 const jnWhen = e => { const t = new Date(e.at); return jbNice(e.d) + (jbDay(t) === e.d ? " · " + t.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"}) : ""); };
-const jnEntry = e => JB.edit === e.id
+/* compact notes: one line each (title, a preview, the date); tap to open the whole note, ▴ to fold it again */
+const JN_OPENED = new Set();
+const jnMark = ln => /^\s*[-*+] \[ \]/.test(ln) ? "☐ " : /^\s*[-*+] \[[xX]\]/.test(ln) ? "☑ " : /^\s*!!/.test(ln) ? "⚠ " : /^\s*\?\?/.test(ln) ? "? " : /^\s*\?✓/.test(ln) ? "✔ " : "";
+const jnRow = e => { const L = String(e.b || "").split("\n").filter(x => x.trim()), t = L[0] || "", rest = jnGist({b: L.slice(1).join("\n"), d: e.d}, 3);
+  const open = L.filter(x => JN_OPEN.test(x)).length;
+  return `<button type="button" class="jn-row" data-jnx="${e.id}" aria-expanded="false"><span class="jn-rt">${esc(jnMark(t) + (jnPlain(t, e.d) || "Note"))}</span><span class="jn-rd">${esc(jbNice(e.d))}${open ? ` · ☐ ${open}` : ""}</span>${rest ? `<span class="jn-rp">${esc(rest.slice(0, 120))}</span>` : ""}</button>`; };
+const jnEntry = e => !jbD.jnFull && JB.edit !== e.id && !JN_OPENED.has(e.id) ? jnRow(e) : JB.edit === e.id
   ? `<article class="jn-e"><div class="calc"><label for="jn-ed-d">Date<input id="jn-ed-d" type="date" value="${esc(e.d)}"></label><label for="jn-ed" class="wide">Note<textarea id="jn-ed" class="jn-ta" rows="6">${esc(e.b)}</textarea></label></div>${JN_TOOLS}
      <div class="set-btns jn-btns"><button type="button" class="btn" data-a="jn-save">Save</button><button type="button" class="btn ghost" data-a="jn-cancel">Cancel</button><button type="button" class="del" data-a="jn-del">Delete</button></div></article>`
-  : `<article class="jn-e"><header><span>${jnWhen(e)}${e.ed ? ` · edited ${jbShort(e.ed)}` : ""}</span><button type="button" class="jb-x" data-edit="${e.id}" aria-label="Edit this note">✎</button></header><div class="jn-b">${jnMd(e.b, e.id, e.d)}</div></article>`;
+  : `<article class="jn-e"><header><span>${jnWhen(e)}${e.ed ? ` · edited ${jbShort(e.ed)}` : ""}</span><span class="jn-hb">${jbD.jnFull ? "" : `<button type="button" class="jb-x" data-jnx="${e.id}" aria-expanded="true" aria-label="Fold this note">▴</button>`}<button type="button" class="jb-x" data-edit="${e.id}" aria-label="Edit this note">✎</button></span></header><div class="jn-b">${jnMd(e.b, e.id, e.d)}</div></article>`;
 const JN_CHEAT = [
   ["- [ ] call the super", "A checkbox. Tap it off when it's done; the job counts the open ones."],
   ["!! gas not tested yet", "A red heads-up line. For anything that can't be missed."],
@@ -363,7 +369,8 @@ const jnBlock = (o, list, ph) => `${jnIntro(list.length)}<div class="calc"><labe
   ${JN_TOOLS}
   <div class="jn-b jn-prev" id="jn-prev"${o.draft.trim() ? "" : " hidden"}><p class="jn-prevh">Preview: how it'll look</p>${o.draft.trim() ? jnMd(o.draft, "prev") : ""}</div>
   <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-a="jn-add">Add note</button></div></div>
-  ${list.length ? `<div class="jn-log">${list.slice().sort(jnSort).map(jnEntry).join("")}</div>` : ""}`;
+  ${list.length ? `<div class="jn-mode"><span>${list.length} note${list.length === 1 ? "" : "s"}</span><div class="seg jb-seg" role="group" aria-label="How notes show"><button type="button" data-jnmode="c" aria-pressed="${!jbD.jnFull}">Compact</button><button type="button" data-jnmode="f" aria-pressed="${!!jbD.jnFull}">Full</button></div></div>
+  <div class="jn-log${jbD.jnFull ? "" : " jn-compact"}">${list.slice().sort(jnSort).map(jnEntry).join("")}</div>` : ""}`;
 
 /* a row of color dots; "None"/"Auto" first. data-col = what|which|color */
 const jbSwatches = (what, which, cur, none) => `<div class="jb-sw" role="group" aria-label="Color">${none ? `<button type="button" class="jb-swa" data-col="${what}|${which}|" aria-pressed="${!cur}">${none}</button>` : ""}${JB_PAL.map(c => `<button type="button" data-col="${what}|${which}|${c}" aria-pressed="${cur === c}" style="--sw:var(--pal-${c})" aria-label="${c}"></button>`).join("")}</div>`;
@@ -384,12 +391,15 @@ function jbNew(){
 const jnPlain = (x, base) => x.replace(/^\s*([-*+] \[[ xX]\]|[-*+•](?=\s)|\d+[.)](?=\s)|#{1,3}(?=\s)|!!|>|\?\?|\?✓)\s*/, "")
   .replace(JN_DATE, (m, a, tok) => { const iso = jnResolve(tok, base); return iso ? a + "📅 " + jbShort(new Date(iso + "T12:00:00").getTime()) : m; })
   .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, "$2").replace(/\*\*|==|~~|\[\[|\]\]|`/g, "").trim();
+/* a note in one line: its content lines (headings skipped, unless that's all there is), joined with dots */
+const jnGist = (e, n = 3) => { const L = String(e.b || "").split("\n"), body = L.filter(x => !/^\s*#{1,3}\s/.test(x)).map(x => jnPlain(x, e.d)).filter(Boolean);
+  return (body.length ? body : L.map(x => jnPlain(x, e.d)).filter(Boolean)).slice(0, n).join(" · "); };
 const jbRow = (j, attr = "data-open", extra = "") => { const n = jbNext(j), c = cityById(j.city), tk = jbTasks(j), qs = jbQs(j), cs = jbStageNow(j), last = j.log.slice().sort(jnSort)[0];
   const act = jbStages(j).filter(([k]) => j.stages[k].st !== "skip"), done = act.filter(([k]) => j.stages[k].st === "done").length;
-  const gist = last ? last.b.split("\n").map(x => jnPlain(x, last.d)).find(Boolean) || "" : "";
+  const gist = last ? jnGist(last) : "";
   return `<button type="button" class="jb-row${j.color ? " jb-colored" : ""}"${j.color ? ` style="--jc:var(--pal-${j.color})"` : ""} ${attr}="${j.id}"><b>${j.pin ? '<span class="jb-pin" aria-label="Pinned">📌</span> ' : ""}${jbIco(jbIcon(j))}${esc(jbName(j))}</b><span>${[(j.name || "").trim() && j.a, eName("sub", j.sub), j.who, c && c.n, pName(j.lead) && "Lead " + pName(j.lead)].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
     + (extra || (gist ? `<span class="jb-gist">${esc(gist.slice(0, 90))}</span>` : ""))
-    + `<span class="jb-tags"><span class="badge jb-sbadge jt-k-${cs}">${esc(JB_SNAME[cs])}</span><span class="badge">${done} of ${act.length} stages</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${jbArch(j) ? `<span class="badge">🗄 Archived</span>` : ""}${tk ? `<span class="badge">☐ ${tk} to do</span>` : ""}${qs ? `<span class="badge jb-qb">? ${qs} question${qs === 1 ? "" : "s"}</span>` : ""}${(li => li && li.r === "fail" ? `<span class="badge jb-fail">✗ Failed inspection</span>` : li && li.r === "partial" ? `<span class="badge jb-fail">◐ Partial inspection</span>` : "")(j.insp.filter(i => i.r !== "booked").sort(jbByDate)[0])}${n ? n.d < jbDay() ? `<span class="badge jb-fail">📋 Inspection ${jbNice(n.d)}: result?</span>` : `<span class="jb-insp">📋 Inspection ${jbNice(n.d)}</span>` : ""}</span></button>`; };
+    + `<span class="jb-tags"><span class="badge jb-sbadge jt-k-${cs}">${esc(JB_SNAME[cs])}</span><span class="badge">${done} of ${act.length} stages</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${jbArch(j) ? `<span class="badge">🗄 Archived</span>` : ""}${tk ? `<span class="badge">☐ ${tk} to do</span>` : ""}${qs ? `<span class="badge jb-qb">? ${qs} question${qs === 1 ? "" : "s"}</span>` : ""}${(li => li && li.r === "fail" ? `<span class="badge jb-fail">✗ Failed inspection</span>` : li && li.r === "partial" ? `<span class="badge jb-fail">◐ Partial inspection</span>` : "")(j.insp.filter(i => i.r !== "booked").sort(jbByDate)[0])}${n ? n.d < jbDay() ? `<span class="badge jb-fail">📋 Inspection ${jbNice(n.d)}: result?</span>` : `<span class="jb-insp">📋 Inspection ${jbNice(n.d)}</span>` : ""}</span><span class="jb-peek" data-peek="${j.id}" title="Quick view" aria-hidden="true">⇤</span></button>`; };
 const eRow = (t, x) => { const n = eJobs(t, x).length, c = t === "sub" && cityById(x.city);
   const sub = t === "bld" ? [x.ph, (n2 => `${n2 || "no"} subdivision${n2 === 1 ? "" : "s"}`)(jbD.subs.filter(s => s.bld === x.id).length)] : [c && c.n, eName("bld", x.bld)];
   return `<button type="button" class="jb-row" data-ent="${t}|${x.id}"><b>${t === "sub" ? jbIco(x.icon) : ""}${esc(x.n || "No name")}</b><span>${[...sub, `${n} job${n === 1 ? "" : "s"}`].filter(Boolean).map(esc).join(" · ")}</span></button>`; };
@@ -889,6 +899,10 @@ B.addEventListener("click", e => {
     const bid = jbBin("job", j); jbD.jobs = jbD.jobs.filter(x => x !== j);   /* its photos stay until the bin is emptied */
     JB.open = null; jbSave(); jbDraw(); jbTop(); jbUndo(bid); }
 });
+B.addEventListener("click", e => { const x = e.target.closest("[data-jnx]"), m = e.target.closest("[data-jnmode]");
+  if (m){ jbD.jnFull = m.dataset.jnmode === "f"; JN_OPENED.clear(); jbSave(true); jbDraw(); return; }
+  if (!x) return; const id = x.dataset.jnx; JN_OPENED.has(id) ? JN_OPENED.delete(id) : JN_OPENED.add(id); jbDraw();
+  const f = B.querySelector(`[data-jnx="${CSS.escape(id)}"]`); if (f) f.focus({preventScroll: true}); });
 B.addEventListener("keydown", e => { if (e.key !== "Enter") return;
   if (e.target.matches(".card-h[data-fold]")){ e.preventDefault(); e.target.click(); return; } const btn = {"jp-t": "punch-add", "jc-t": "ck-add"}[e.target.id];
   if (btn){ e.preventDefault(); B.querySelector(`[data-a="${btn}"]`).click(); } });
@@ -934,6 +948,52 @@ B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.pers
   if (t.id === "jb-restore" && t.files[0]) jbRestoreAll(t.files[0]);
   if (t.id === "jb-merge" && t.files[0]) jbRestoreAll(t.files[0], "jf-say", true);
 });
+
+/* ---- Quick view: a panel that slides in from the side with a job's essentials. Open it with the ⇤ on a job's row, or by
+   swiping the row left (list, Home, search). It counts as opening the job (keeps it out of Archived). */
+function jbQuickHtml(j){
+  const k = jbStageNow(j), lead = pById(j.stages[k].lead) || pById(j.lead), addr = (j.a || "").trim(), c = cityById(j.city);
+  const q = encodeURIComponent([addr.replace(/^lot\s*\w+\s*[·,\-–]\s*/i, ""), c && c.n, "UT"].filter(Boolean).join(", "));
+  const notes = j.log.slice().sort(jnSort), glance = notes.find(e => /^\s*#{1,3}\s*(job\s+)?at\s+a\s+glance/i.test(e.b));
+  const items = notes.flatMap(e => e.b.split("\n").filter(ln => JN_OPEN.test(ln) || /^\s*!!/.test(ln)).map(ln => jnMark(ln) + jnPlain(ln, e.d))).filter(x => x.trim());
+  const C = jbCk(j, k), n = jbNext(j), done = jbStages(j).filter(([x]) => j.stages[x].st === "done").length;
+  return `<div class="jq-top"><h2 id="jq-h">${jbIco(jbIcon(j))}${esc(jbName(j))}</h2><button type="button" class="jb-x" data-qa="close" aria-label="Close quick view">✕</button></div>
+  <p class="jq-sub">${esc([JB_SNAME[k], `${done} of ${jbStages(j).length} stages`, lead && "Lead " + lead.n].filter(Boolean).join(" · "))}${jbArch(j) ? " · 🗄 Archived" : ""}</p>
+  ${addr ? `<p class="jq-addr">${esc(addr)}</p>` : ""}
+  <div class="set-btns jq-acts">${lead && pTel(lead) ? `<a class="btn ghost" href="tel:${pTel(lead)}">📞 Call ${esc(lead.n.split(" ")[0])}</a>` : ""}${addr ? `<a class="btn ghost" href="https://maps.apple.com/?daddr=${q}" target="_blank" rel="noopener">Directions</a>` : ""}<button type="button" class="btn ghost" data-qa="proof">📷 Proof photo</button></div>
+  ${glance ? `<p class="jq-h">At a glance</p><p class="jq-p">${esc(jnGist(glance, 6))}</p>` : ""}
+  ${items.length ? `<p class="jq-h">Open · ${items.length}</p><ul class="jq-list">${items.slice(0, 6).map(t => `<li>${esc(t)}</li>`).join("")}${items.length > 6 ? `<li class="jq-more">+${items.length - 6} more</li>` : ""}</ul>` : ""}
+  <p class="jq-h">Next</p><p class="jq-p">${n ? `📋 Inspection ${esc(jbNice(n.d))}${n.k ? " · " + esc(n.k) : ""}` : "No inspection booked"} · ${esc(JB_SNAME[k])} checklist ${C.done} of ${C.total}</p>
+  ${notes.length ? `<p class="jq-h">Latest notes</p><ul class="jq-list jq-notes">${notes.slice(0, 2).map(e => `<li><b>${esc(jbNice(e.d))}</b> ${esc(jnGist(e, 2) || "Note")}</li>`).join("")}</ul>` : ""}
+  <div class="set-btns jq-open"><button type="button" class="btn" data-qa="open">Open the whole job ›</button></div>`;
+}
+const JQ = document.createElement("div"); JQ.className = "jq"; JQ.hidden = true;
+JQ.innerHTML = `<div class="jq-scrim" data-qa="close"></div><aside class="jq-panel" role="dialog" aria-modal="true" aria-labelledby="jq-h" tabindex="-1"><div id="jq-body"></div></aside>`;
+document.body.appendChild(JQ);
+let jqId = null, jqBack = null, jqT = null;
+function jbQuick(id){ const j = jbD.jobs.find(x => x.id === id); if (!j) return;
+  jqId = id; jqBack = document.activeElement; $("jq-body").innerHTML = jbQuickHtml(j); bindPn(JQ);
+  JQ.hidden = false; void JQ.offsetWidth; JQ.classList.add("on");   /* a forced layout, not a frame wait: a paused frame left an invisible cover over the page */
+  JQ.querySelector(".jq-panel").focus({preventScroll: true});
+  if (!jbArch(j) && Date.now() - (+j.seen || 0) > 36e5){ j.seen = Date.now(); jbSave(true); } }
+function jbQuickClose(){ if (JQ.hidden) return; JQ.classList.remove("on"); jqId = null; setTimeout(() => { if (!JQ.classList.contains("on")) JQ.hidden = true; }, 220);
+  if (jqBack && jqBack.isConnected && jqBack.focus) jqBack.focus({preventScroll: true}); }
+const jbGoJob = (id, stage) => { JF.n = 0; JB.edit = null; JB.person = null; JB.ent = null; JB.hist = []; JB.view = "jobs"; JB.rowEdit = null; JB.open = id; JB.stage = stage || null;
+  go("mine", "jobs"); jbDraw(); if (stage) jbOpenStage(); else jbTop(); };
+JQ.addEventListener("click", e => { const b = e.target.closest("[data-qa]"); if (!b) return; const id = jqId, a = b.dataset.qa;
+  if (a === "close"){ jbQuickClose(); return; }
+  const j = jbD.jobs.find(x => x.id === id); jbQuickClose(); if (!j) return;
+  if (a === "open") jbGoJob(id);
+  else if (a === "proof"){ jbGoJob(id, jbStageNow(j)); const inp = $("jf-proof"); if (inp) inp.click(); } });   /* same tap, so the camera may open */
+document.addEventListener("click", e => { const p = e.target.closest("[data-peek]"); if (!p) return; e.preventDefault(); e.stopPropagation(); jbQuick(p.dataset.peek); }, true);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !JQ.hidden) jbQuickClose(); });
+/* swipe a job row left to peek; swipe the panel right to close */
+document.addEventListener("touchstart", e => { if (e.touches.length !== 1){ jqT = null; return; }
+  const r = e.target.closest(".jb-row[data-open], .jb-row[data-hj], .jb-row[data-hjob], .jq-panel"); jqT = r ? {r, x: e.touches[0].clientX, y: e.touches[0].clientY} : null; }, {passive: true});
+document.addEventListener("touchend", e => { if (!jqT) return; const t = e.changedTouches[0], dx = t.clientX - jqT.x, dy = t.clientY - jqT.y, r = jqT.r; jqT = null;
+  if (Math.abs(dy) > 40) return;
+  if (r.classList.contains("jq-panel")){ if (dx > 70) jbQuickClose(); return; }
+  const id = r.dataset.open || r.dataset.hj || r.dataset.hjob; if (dx < -60 && id && jbD.jobs.some(j => j.id === id)) jbQuick(id); }, {passive: true});
 
 /* Home: MY JOBS box (homeDraw calls this) */
 window.jobsHome = () => {
