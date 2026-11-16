@@ -230,6 +230,9 @@ body.searching .where-go,body.mixed .where-go{display:block;grid-column:1 / -1;j
 .tick input:checked{background:var(--hv);border-color:var(--k)}
 .tick input:checked::after{content:"✓";font-weight:800;color:var(--k);font-size:20px;line-height:1}
 .tick input:checked+span{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--muted)}
+.tick li.ck-ed{display:flex;align-items:center}
+.tick li.ck-ed label{flex:1;min-width:0}
+.tick li.ck-row{padding:6px 0}
 .tick-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 12px;border-top:var(--bw) solid var(--rule);font-size:15px;color:var(--muted)}
 
 /* ===== calculators ===== */
@@ -4188,14 +4191,19 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="phases" data-kw="checklist ready for inspection before you call inspector punch list pre-inspection underground rough final">
     <div class="sec-head"><h2>Before you call it in</h2><small>Tap to check · saved on this device</small></div>
-    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you are about to call for an inspection.</p><p><b>How:</b> pick the inspection (Underground, Top-out, Final) and tick each item as you check it on site. Ticks stay on this phone until you tap Uncheck all. These are typical items: your city's list and your lead win. For one job's own checklist, use Mine → Jobs, where every stage has its own.</p></div></details>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you are about to call for an inspection.</p><p><b>How:</b> pick the inspection (Underground, Top-out, Final) and tick each item as you check it on site. Ticks stay on this phone until you tap Uncheck all. Tap <b>Edit or reorder</b> to move items, change their words, take some off or add your own. These are typical items: your city's list and your lead win. For one job's own checklist, use Mine → Jobs, where every stage has its own.</p></div></details>
     <div class="seg" id="ck-phase" role="group" aria-label="Which inspection">
       <button type="button" data-ph="under" aria-pressed="true">Underground</button>
       <button type="button" data-ph="rough" aria-pressed="false">Top-out</button>
       <button type="button" data-ph="final" aria-pressed="false">Final</button>
     </div>
     <ul class="tick" id="ck-list"></ul>
-    <div class="tick-foot"><span id="ck-count" aria-live="polite"></span><button type="button" class="linkish" id="ck-clear">Uncheck all</button></div>
+    <div class="tick-foot"><span id="ck-count" aria-live="polite"></span><span><button type="button" class="linkish" id="ck-edit" aria-pressed="false">Edit or reorder</button> · <button type="button" class="linkish" id="ck-clear">Uncheck all</button></span></div>
+    <div id="ck-edbox" hidden>
+      <p class="note">↑ ↓ change the order, ✎ changes the words, × takes it off. Your list is saved on this phone.</p>
+      <div class="calc"><label for="ck-new" class="wide">Add to this list<input id="ck-new" type="text" autocomplete="off" enterkeyhint="done" placeholder="Something your city or lead wants"></label></div>
+      <div class="set-btns"><button type="button" class="btn ghost" id="ck-add">Add item</button><button type="button" class="btn ghost" id="ck-book" hidden>Back to the book's list</button></div>
+    </div>
     <p class="note">Typical items. Your city's list and your lead win.</p>
   </section>
     <section data-sec="phases" data-kw="test log record pressure test hold time start stop dwv water supply gas vacuum test values how long psi head what must hold leak or just cold air test temperature cold drop gauge falling leak overnight winter shell pressure correction gas test">
@@ -8773,23 +8781,60 @@ const CK = {
   rough: ["Permit card and approved plans on site","Shower valves: UP on top, tub port down, hot on the left, strapped solid","Test plugs rated for the head; plugs blocked on air tests","DWV under test (water, air or vacuum, whatever your city takes) and holding","Water under test at the city's pressure; stub-outs capped","Vents: 6\" above flood rim before going flat, through the roof at the right height, AAVs accessible","Trap arms within length, vents off the top of the drain","Nail plates on every pipe under 1¼\" from the edge (gas: under 1½\")","Top plates cut over 50% are strapped","Supports and strap spacing; mid-story guides on 2\" and smaller plastic","Tubs and showers set; shower pans water-tested if required","Valves at the right depth, plaster guards on, hot on the left","Washer box, ice maker box, hose bibbs, gas stubs in","Gas under test; sediment traps planned; CSST bonded","Water heater spot ready: pan, T&P route, venting, combustion air","Firestop at rated penetrations"],
   final: ["Cap count is zero: every vent cap, test ball and plug out; each roof vent looked at from the street","Crossover check: cold valve at the heater off, open each hot tap: a trickle that dies out is fine, steady flow is a crossover","Every drain run hard, each toilet flushed 3 times, tub filled into the overflow and checked below","Every fixture set and secured; supplies tight, no weeps after 10 minutes","Shower and tub limit stops set to 120°F or less","Water heater: T&P line run right, straps, expansion tank charged, drip leg, venting, pan","Gas appliances lit and connectors leak-checked","Backflow devices tested and tagged; hose bibb vacuum breakers on","Aerators flushed and back on; disposer knockout out if there's a dishwasher","Cleanouts and access panels reachable","Install instructions left on site; permit card signed"]
 };
+/* your own version of a phase's list (order, words, added and removed items), else the book's */
+let ckMy = store.get("jpb-ck-my", {}); if (!ckMy || typeof ckMy !== "object" || Array.isArray(ckMy)) ckMy = {};
+for (const k in ckMy) if (!CK[k] || !Array.isArray(ckMy[k])) delete ckMy[k]; else ckMy[k] = ckMy[k].filter(t => typeof t === "string" && t.trim());
+const ckList = k => Array.isArray(ckMy[k]) ? ckMy[k] : CK[k];
+const ckMine = () => (ckMy[ckPh] = [...ckList(ckPh)]);   /* copy before changing, so the book's list stays as it is */
+const ckSaveMy = () => store.set("jpb-ck-my", ckMy);
+let ckEd = false, ckRow = -1;
 let ckPh = store.get("jpb-ck-ph", "under"), ckDone = store.get("jpb-ck", {}); if (!CK[ckPh]) ckPh = "under";
 if (!ckDone || typeof ckDone !== "object" || Array.isArray(ckDone)) ckDone = {};
-for (const k in ckDone) ckDone[k] = Array.isArray(ckDone[k]) ? ckDone[k].filter(t => typeof t === "string" && CK[k] && CK[k].includes(t)) : [];
+for (const k in ckDone) ckDone[k] = Array.isArray(ckDone[k]) ? ckDone[k].filter(t => typeof t === "string" && CK[k] && ckList(k).includes(t)) : [];
+const ckCount = (L, s) => { $("ck-count").textContent = `${L.filter(t => s.has(t)).length} of ${L.length} done`; };
 function ckDraw(){
   press("#ck-phase", x => x.dataset.ph === ckPh);
-  const done = new Set(ckDone[ckPh] || []);
-  $("ck-list").innerHTML = CK[ckPh].map((t,i) => `<li><label><input type="checkbox" data-i="${i}"${done.has(t) ? " checked" : ""}><span>${esc(t)}</span></label></li>`).join("");
-  $("ck-count").textContent = `${done.size} of ${CK[ckPh].length} done`;
+  const L = ckList(ckPh), done = new Set(ckDone[ckPh] || []), n = L.length;
+  $("ck-list").innerHTML = L.map((t, i) => ckEd && i === ckRow
+    ? `<li class="ck-row"><div class="calc"><label for="ck-re" class="wide">Change it<input id="ck-re" type="text" autocomplete="off" enterkeyhint="done" value="${esc(t)}"></label></div><div class="set-btns"><button type="button" class="btn" data-ck="save">Save</button><button type="button" class="btn ghost" data-ck="cancel">Cancel</button></div></li>`
+    : `<li${ckEd ? ' class="ck-ed"' : ""}><label><input type="checkbox" data-i="${i}"${done.has(t) ? " checked" : ""}><span>${esc(t)}</span></label>${ckEd ? `<button type="button" class="jb-x" data-ck="up" data-i="${i}" aria-label="Move ${esc(t)} up"${i === 0 ? " disabled" : ""}>↑</button><button type="button" class="jb-x" data-ck="down" data-i="${i}" aria-label="Move ${esc(t)} down"${i === n - 1 ? " disabled" : ""}>↓</button><button type="button" class="jb-x" data-ck="edit" data-i="${i}" aria-label="Edit ${esc(t)}">✎</button><button type="button" class="jb-x" data-ck="del" data-i="${i}" aria-label="Remove ${esc(t)}">×</button>` : ""}</li>`).join("");
+  ckCount(L, done);
+  $("ck-edit").textContent = ckEd ? "Done editing" : "Edit or reorder"; $("ck-edit").setAttribute("aria-pressed", String(ckEd));
+  $("ck-edbox").hidden = !ckEd; $("ck-book").hidden = !Array.isArray(ckMy[ckPh]);
   IDX = null;
 }
-$("ck-list").addEventListener("change", e => {
-  const i = +e.target.dataset.i, s = new Set(ckDone[ckPh] || []);
-  const t = CK[ckPh][i]; e.target.checked ? s.add(t) : s.delete(t); ckDone[ckPh] = [...s]; store.set("jpb-ck", ckDone);
-  $("ck-count").textContent = `${s.size} of ${CK[ckPh].length} done`;
+$("ck-list").addEventListener("change", e => { if (e.target.type !== "checkbox") return;
+  const L = ckList(ckPh), t = L[+e.target.dataset.i], s = new Set(ckDone[ckPh] || []); if (t == null) return;
+  e.target.checked ? s.add(t) : s.delete(t); ckDone[ckPh] = [...s]; store.set("jpb-ck", ckDone); ckCount(L, s);
 });
+$("ck-list").addEventListener("click", e => { const b = e.target.closest("button[data-ck]"); if (!b) return;
+  const act = b.dataset.ck, i = +b.dataset.i, L = ckList(ckPh), t = L[i], done = new Set(ckDone[ckPh] || []);
+  const keepDone = () => { ckDone[ckPh] = [...done]; store.set("jpb-ck", ckDone); };
+  if (act === "up" || act === "down"){ const n = i + (act === "up" ? -1 : 1); if (n < 0 || n >= L.length) return;
+    const M = ckMine(); [M[i], M[n]] = [M[n], M[i]]; ckRow = -1; ckSaveMy(); ckDraw();
+    const f = $("ck-list").querySelectorAll(`button[data-ck="${act}"]`)[n]; if (f && !f.disabled) f.focus(); return; }
+  if (act === "edit"){ if (!confirm(`Edit "${t}"?${done.has(t) ? " It's checked off. It stays checked." : ""}`)) return;
+    ckRow = i; ckDraw(); const f = $("ck-re"); if (f){ f.focus(); f.select(); } return; }
+  if (act === "cancel"){ ckRow = -1; ckDraw(); return; }
+  if (act === "save"){ const old = L[ckRow], v = $("ck-re").value.trim(); if (old == null){ ckRow = -1; ckDraw(); return; }
+    if (!v){ toast("Type the item, or tap Cancel."); return; }
+    if (v !== old && L.includes(v)){ toast("That's already on the list."); return; }
+    const M = ckMine(); M[ckRow] = v; if (done.has(old)){ done.delete(old); done.add(v); keepDone(); }
+    ckRow = -1; ckSaveMy(); ckDraw(); toast("Saved.", 1400); return; }
+  if (act === "del"){ if (!confirm(`Delete "${t}"?${done.has(t) ? " It's checked off." : ""} Back to the book's list brings the book's items back; your own are gone for good.`)) return;
+    const M = ckMine(); M.splice(i, 1); done.delete(t); keepDone(); ckRow = -1; ckSaveMy(); ckDraw(); }
+});
+$("ck-list").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "ck-re"){ e.preventDefault(); $("ck-list").querySelector('[data-ck="save"]').click(); } });
+$("ck-edit").addEventListener("click", () => { ckEd = !ckEd; ckRow = -1; ckDraw(); });
+$("ck-add").addEventListener("click", () => { const v = $("ck-new").value.trim(); if (!v) return;
+  if (ckList(ckPh).includes(v)){ toast("That's already on the list."); return; }
+  ckMine().push(v); ckSaveMy(); $("ck-new").value = ""; ckDraw(); $("ck-new").focus(); });
+$("ck-new").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); $("ck-add").click(); } });
+$("ck-book").addEventListener("click", () => { const nm = (document.querySelector(`#ck-phase [data-ph="${ckPh}"]`) || {}).textContent || "";
+  if (!confirm(`Go back to the book's ${nm} list? Your order, wording and added items for ${nm} are lost.`)) return;
+  delete ckMy[ckPh]; ckSaveMy(); ckDone[ckPh] = (ckDone[ckPh] || []).filter(t => CK[ckPh].includes(t)); store.set("jpb-ck", ckDone); ckRow = -1; ckDraw(); });
 document.querySelectorAll("#ck-phase button").forEach(b => b.addEventListener("click", () => {
-  ckPh = b.dataset.ph; store.set("jpb-ck-ph", ckPh); ckDraw(); apply();
+  ckPh = b.dataset.ph; ckRow = -1; store.set("jpb-ck-ph", ckPh); ckDraw(); apply();
 }));
 if (!CK[ckPh]) ckPh = "under";
 $("ck-list").closest("section").dataset.extra = Object.values(CK).flat().join(" ");  /* other phases' items: searchable, ranked low */
@@ -10730,7 +10775,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-15w";
+var BUILD = "handbook-2026-11-15x";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
