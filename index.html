@@ -415,6 +415,15 @@ section[data-sec]{content-visibility:auto;contain-intrinsic-size:auto 500px}
 .jn-rp{grid-column:1/-1;font-size:14.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .jn-compact .jn-e{margin:6px 0}
 .jn-hb{display:flex}
+.jb-cam{opacity:.75}
+.jn-hist{margin:0 10px 8px;font-size:15px}
+.jn-hist summary{cursor:pointer;color:var(--muted);font-weight:700;min-height:36px;display:flex;align-items:center}
+.jn-hv{border-left:3px dashed var(--rule);padding:2px 0 2px 10px;margin:6px 0}
+.jn-hvh{margin:0;font-size:13.5px;color:var(--muted)}
+.jb-act{list-style:none;margin:0;padding:4px 12px 10px;font-size:15px}
+.jb-act li{padding:6px 0;border-bottom:1px solid var(--rule);overflow-wrap:anywhere}
+.jb-act time{display:block;font-size:13px;color:var(--muted);font-weight:700}
+.jb-acts{color:var(--muted)}
 /* quick view: a panel that slides in from the right over everything (bottom bar included) */
 .jq{position:fixed;inset:0;z-index:66}
 .jq-scrim{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:opacity .2s}
@@ -5173,6 +5182,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 16, 2026</th><td><b>Proof you can show:</b> every job now keeps an <b>activity log</b>: each check and uncheck (with the date it had), stage change, note added, edited or deleted, inspection, hours entry, punch item, photo and delete is written down with its date and time, and the log can't be edited (on the job page under <b>Proof: job report and activity log</b>). <b>Notes keep their earlier versions:</b> edit a note and the old words stay under it in <b>Earlier versions</b>, with when they changed. <b>Check off with a proof photo:</b> the 📷 on any checklist or punch item opens the camera; the photo is stamped with the item, checks it off, and the item's 📷 opens that photo after. <b>Make a job report:</b> one file with the whole job (details, every stage's checklist with check-off times, inspections, hours, punch list, notes with earlier versions, proof photos with GPS and fingerprints, and the activity log) to text or email to your bosses. Send it right away: the text or email's own time stamp backs up when it was made.</td></tr>
         <tr><th>Nov 15, 2026 · colors</th><td><b>More job colors:</b> 18 now, up from 10 (maroon, tan, olive, lime, sky, navy, indigo and magenta join the rest), for jobs, stages and tags. <b>12 new job icons</b> in the same drawn style: pool / spa, sewer / manhole, gas meter, hydrant / fire line, laundry, pipe elbow, shower, RV / camper, empty lot / pad, medical / clinic, school and drum / barrel.</td></tr>
         <tr><th>Nov 15, 2026 · quick view</th><td><b>Quick view:</b> tap the ⇤ on the right of any job (in My jobs, on Home or in search results), or swipe the job left, and a panel slides in with the essentials: stage, Call the lead, Directions, Proof photo, your "at a glance" lines, open to-dos and heads-ups, the next inspection, the checklist count and the last two notes. Tap outside it, the ✕, or swipe it right to close; <b>Open the whole job</b> goes in. <b>Compact notes:</b> a job's notes now show one line each (the title, a preview and the date, with ☐ for open boxes); tap one to open it, ▴ to fold it again. <b>Compact · Full</b> above the notes switches back to full notes. <b>The line under each job</b> now shows what your newest note says, not its heading.</td></tr>
         <tr><th>Nov 15, 2026 · last</th><td><b>Phone polish from the review panel:</b> at text size S, tapping a box no longer zooms the page in. Night theme's box borders and dividers are easier to see in the dark. After 6 hours away the app still updates itself, but not while you're writing a card note, editing your shop, typing, or in a practice test. A number like 801-555-1234 ext 22 dials the number, waits, then dials 22. "Back to typical" on one card's shop values has Undo. Switching towns with no signal and back shows the saved forecast again. The app icons are saved for offline. <b>Calculators:</b> Average reads "3 1/2" as one number, "1,250" as a thousand-plus and "62-58" as two readings; Time card says when start and end are the same instead of 24 hours; the bore line flags a hole cut into the bottom plate. <b>Wording:</b> star help says "filled ★" and tells you to turn stars on if they're off; the share note says to open the app once with signal; iPhone menu names match today's iOS; the license renewal line no longer goes stale after 2026.</td></tr>
@@ -9631,7 +9641,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-15z6";
+{ const NEWS = "2026-11-16a";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -10876,7 +10886,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-15z6";
+var BUILD = "handbook-2026-11-16a";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
