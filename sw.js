@@ -26,7 +26,11 @@ self.addEventListener("fetch", e => {
     let saved = Promise.resolve();
     const net = fetch(req).then(r => {
       if (!r.ok) throw r;
-      const c = r.clone(); saved = caches.open(CACHE).then(x => x.put("./index.html", c));
+      /* save the new page only once the jobs.js it asks for is saved too, or offline it would open with My jobs missing */
+      const c1 = r.clone(), c2 = r.clone();
+      saved = c1.text().then(html => { const m = html.match(/var BUILD = "([^"]+)"/), js = m && "./jobs.js?v=" + encodeURIComponent(m[1]);
+        return caches.open(CACHE).then(x => (js ? caches.match(js).then(hit => hit || fetch(js, {cache: "reload"}).then(j => { if (!j.ok) throw j; return x.put(js, j); })) : null)
+          .then(() => x.put("./index.html", c2))); }).catch(() => {});
       return r;
     });
     e.waitUntil(net.then(() => saved, () => {}));
