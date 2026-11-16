@@ -56,8 +56,9 @@ const jfSay = (t, c) => { const s = $(JF.sayId || "jf-say"); if (s){ s.textConte
 const jbOpts = (o, v) => Object.entries(o).map(([k, t]) => `<option value="${k}"${k === v ? " selected" : ""}>${t}</option>`).join("");
 const jbList = (a, v) => a.map(x => `<option${x === v ? " selected" : ""}>${esc(x)}</option>`).join("");
 /* Archived: a job you haven't opened or changed in 30 days (or put there yourself). Pinned jobs never go.
-   It leaves Active, Done, Home and Coming up; opening it doesn't bring it back, changing it or "Bring back" does. */
+   It leaves Active, Done, Home and Coming up; opening it doesn't bring it back, changing it or "Bring it back" does. */
 const JB_ARCH_DAYS = 30;
+const jbBump = o => { o.t = Math.max(Date.now(), (+o.arch || 0) + 1); };   /* a change: later than any hand archive, so it brings the job back */
 const jbLast = j => Math.max(+j.t || 0, +j.seen || 0, +j.made || 0);
 const jbArchMe = j => +j.arch > 0 && +j.arch >= (+j.t || 0);   /* archived by hand, and nothing changed since */
 const jbArch = j => !j.pin && (jbArchMe(j) || Date.now() - jbLast(j) > JB_ARCH_DAYS * 864e5);
@@ -469,7 +470,7 @@ function jbListHtml(){
   <div id="jb-main"${fq ? " hidden" : ""}>
   <div class="seg jb-seg" role="group" aria-label="Show">${[["open", "Active"], ["done", "Done"], ["arch", "Archived"], ["all", "All"]].map(([k, t]) => `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}">${t} · ${jbD.jobs.filter(j => jbIn(k, j)).length}</button>`).join("")}</div>
   ${tags.length ? `<div class="chips jn-tagbar">${JB.tag ? `<button type="button" data-tagclr="1" aria-pressed="true">#${esc(JB.tag)} ✕ show all</button>` : tags.map(t => `<button type="button" class="jn-tagchip" style="${jbTagStyle(t)}" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")}</div>` : ""}
-  <p class="note jb-sortnote">${JB.show === "open" ? "Active = open and on hold. " : JB.show === "arch" ? "Jobs you haven't opened or changed in 30 days, and ones you archived. Change one, or tap Bring back on its page, and it's active again. " : ""}A to Z by name (Lot 2 before Lot 12). Pin a job from its page to keep it on top${JB.show === "arch" ? "" : ". Jobs you don't open or change for 30 days move to Archived; pinned ones never do"}.</p>
+  <p class="note jb-sortnote">${JB.show === "open" ? "Active = open and on hold. " : JB.show === "arch" ? "Jobs you haven't opened or changed in 30 days, and ones you archived. Change one, or tap Bring it back on its page, and it's active again. " : ""}A to Z by name (Lot 2 before Lot 12). Pin a job from its page to keep it on top${JB.show === "arch" ? "" : ". Jobs you don't open or change for 30 days move to Archived; pinned ones never do"}.</p>
   ${PIN.length ? `<div class="jb-grp"><div class="jb-th jb-th1"><span class="jb-tf"><b>📌 Pinned</b><span class="jb-tn">${PIN.length}</span></span></div><div class="jb-list">${PIN.map(j => jbRow(j)).join("")}</div></div>` : ""}
   ${L.length ? (L.length > PIN.length ? jbGroups(L.filter(j => !j.pin)) : "") : `<div class="jb-list"><p class="note">${jbD.jobs.length ? `No ${({open: "active ", done: "done ", arch: "archived "})[JB.show] || ""}jobs${JB.tag ? ` tagged <b>#${esc(JB.tag)}</b>` : ""}. ${JB.tag ? "Tap the tag above to show all." : JB.show !== "all" ? "Tap <b>All</b> to see every job." : ""}` : "No jobs yet. Tap <b>+ New job</b>. Each job is a timeline, Underground to Final, with the blanks ready to fill in as you go."}</p></div>`}
   ${jbOpenHtml()}
@@ -696,7 +697,7 @@ function jbDraw(){
   bindPn(body);
   if (had) jbReseat();
 }
-const jbTouch = o => { o.t = Math.max(Date.now(), (+o.arch || 0) + 1); jbSave(); jbDraw(); };   /* later than any hand archive, so a change brings it back */
+const jbTouch = o => { jbBump(o); jbSave(); jbDraw(); };
 const jbTop = () => { const c = $("jobs-card"); if (c) c.scrollIntoView({block: "start"}); };
 const jbOpenStage = () => { const o = $("jt-open"); if (o) o.scrollIntoView({block: "start"}); };
 const jbState = () => ({open: JB.open, stage: JB.stage, person: JB.person, ent: JB.ent});
@@ -893,7 +894,7 @@ B.addEventListener("keydown", e => { if (e.key !== "Enter") return;
   if (btn){ e.preventDefault(); B.querySelector(`[data-a="${btn}"]`).click(); } });
 B.addEventListener("input", e => { const t = e.target, j = jbCur(), p = JB.person && pById(JB.person), en = eCur();
   if (en && t.dataset.ef && t.tagName !== "SELECT" && t.dataset.ef !== "bld"){ en[t.dataset.ef] = t.value; en.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
-  if (j && t.dataset.f && t.tagName !== "SELECT"){ j[t.dataset.f] = t.value; j.t = Math.max(Date.now(), (+j.arch || 0) + 1); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
+  if (j && t.dataset.f && t.tagName !== "SELECT"){ j[t.dataset.f] = t.value; jbBump(j); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
   if (p && t.dataset.pf && t.tagName !== "SELECT"){ p[t.dataset.pf] = t.value; p.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
   if (t.id === "jb-rules"){ jbD.rules = t.value; clearTimeout(jbT); jbT = setTimeout(jbSave, 500); return; }
   if (t.id === "jb-q"){ JB.q = t.value; const r = $("jb-res"), m = $("jb-main"), fq = t.value.trim(); if (r) r.innerHTML = fq ? jbFindHtml(fq) : ""; if (m) m.hidden = !!fq; return; }
@@ -1015,9 +1016,10 @@ document.addEventListener("click", e => { if (!e.target.closest("#jf-proof-l") |
   navigator.permissions.query({name: "geolocation"}).then(s => { if (s.state === "granted") jfGeoP = jfGeo(); }).catch(() => {}); });
 const jfHash = async blob => { try { return [...new Uint8Array(await crypto.subtle.digest("SHA-256", await blob.arrayBuffer()))].map(b => b.toString(16).padStart(2, "0")).join(""); } catch(e){ return ""; } };
 const jfWhen = ts => new Date(ts).toLocaleString(undefined, {weekday: "short", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", second: "2-digit", timeZoneName: "short"});
+const jfAlt = p => p.alt != null && Number.isFinite(+p.alt);   /* elevation, when the phone gave one */
 const jfLL = p => `${Math.abs(p.lat).toFixed(5)}° ${p.lat >= 0 ? "N" : "S"}, ${Math.abs(p.lon).toFixed(5)}° ${p.lon >= 0 ? "E" : "W"}`;
 const jfStampLines = P => [(P.late ? "Stamped " : "") + jfWhen(P.at),
-  P.lat != null ? `GPS ${jfLL(P)} (±${P.acc} m)${P.alt != null ? ` · ${P.alt.toLocaleString()} ft` : ""}` : "GPS: no location",
+  P.lat != null ? `GPS ${jfLL(P)} (±${P.acc} m)${jfAlt(P) ? ` · ${(+P.alt).toLocaleString()} ft` : ""}` : "GPS: no location",
   [P.job, P.addr, P.stage].filter(Boolean).join(" · "), P.late ? `Photo file from ${jfWhen(P.ft)}` : ""].filter(Boolean);
 function jfStamp(ctx, w, h, lines){
   const fs = Math.max(14, Math.round(Math.min(w, h * 1.4) / 40)), pad = Math.round(fs * .6), lh = Math.round(fs * 1.3), bh = pad * 2 + lh * lines.length;
@@ -1038,8 +1040,8 @@ async function jfProof(file){
   try {
     if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
     const x = await jfImg(file, jfStampLines(P)); P.hash = await jfHash(x.big);
-    await jfPut({id: jbId(), job: j.id, kind: "photo", name: `proof-${new Date(P.at).toISOString().slice(0, 19).replace(/[T:]/g, "-")}.jpg`, type: "image/jpeg", blob: x.big, thumb: x.thumb, note: "", t: Date.now(), s: stage, proof: P});
-    j.t = Math.max(Date.now(), (+j.arch || 0) + 1); jbSave(); jfDraw(j.id);
+    await jfPut({id: jbId(), job: j.id, kind: "photo", name: `proof-${jbDay(new Date(P.at))}-${new Date(P.at).toTimeString().slice(0, 8).replace(/:/g, "")}.jpg`,   /* local date and time, e.g. proof-2026-11-15-181347 */ type: "image/jpeg", blob: x.big, thumb: x.thumb, note: "", t: Date.now(), s: stage, proof: P});
+    jbBump(j); jbSave(); jfDraw(j.id);
     toast(geo.err ? `Saved, stamped with the date and job. <b>No GPS:</b> ${esc(geo.err)}` : `Proof photo saved · GPS ±${P.acc} m.`, geo.err ? 6000 : 2400);
   } catch(e){ toast("Couldn't save the photo. The phone may be out of space.", 4000); }
   const inp = $("jf-proof"); if (inp) inp.value = ""; jbReseat();
@@ -1057,7 +1059,7 @@ async function jfAdd(files, photos){
     } catch(e){ bad++; }
   }
   toast(bad ? `Saved ${n}. ${bad} couldn't be saved: the phone may be out of space.` : `Saved ${n}.`, 2400);
-  j.t = Date.now(); jbSave(); jfDraw(j.id); jbReseat();
+  jbBump(j); jbSave(); jfDraw(j.id); jbReseat();
   const inp = $(photos ? "jf-ph" : "jf-fi"); if (inp) inp.value = "";
 }
 /* under a proof photo: what was recorded, a Maps link for the spot, and a check that the photo is the same one that was stamped */
@@ -1066,10 +1068,46 @@ const jfProofHtml = f => { const P = f.proof; if (!P || typeof P !== "object") r
   return `<div class="jf-proof"><p class="jf-proofh">📍 Proof photo</p><table class="t wrap"><tbody>
     <tr><th>${P.late ? "Stamped" : "Taken"}</th><td>${esc(jfWhen(+P.at))}${P.tz ? `<div class="sub">${esc(P.tz)}</div>` : ""}</td></tr>
     ${P.late && +P.ft ? `<tr><th>Photo file</th><td>${esc(jfWhen(+P.ft))}<div class="sub">An older picture, not straight from the camera.</div></td></tr>` : ""}
-    <tr><th>Where</th><td>${gps ? `<a href="https://maps.apple.com/?ll=${+P.lat},${+P.lon}&q=${encodeURIComponent(P.job || "Proof photo")}" target="_blank" rel="noopener">${esc(jfLL(P))}</a><div class="sub">Within ${esc(+P.acc)} m${n(P.alt) && P.alt !== null ? ` · ${esc((+P.alt).toLocaleString())} ft up` : ""}</div>` : esc(P.gpsErr || "No location")}</td></tr>
+    <tr><th>Where</th><td>${gps ? `<a href="https://maps.apple.com/?ll=${+P.lat},${+P.lon}&q=${encodeURIComponent(P.job || "Proof photo")}" target="_blank" rel="noopener">${esc(jfLL(P))}</a><div class="sub">Within ${esc(+P.acc)} m${jfAlt(P) ? ` · ${esc((+P.alt).toLocaleString())} ft up` : ""}</div>` : esc(P.gpsErr || "No location")}</td></tr>
     <tr><th>Job</th><td>${esc([P.job, P.addr, P.stage].filter(Boolean).join(" · "))}</td></tr>
     ${P.hash ? `<tr><th>Fingerprint</th><td><code class="jf-hash">${esc(String(P.hash).slice(0, 16))}…</code> <button type="button" class="linkish" id="jf-verify">Check it</button><div class="sub" id="jf-vres" aria-live="polite"></div></td></tr>` : ""}
-  </tbody></table></div>`; };
+  </tbody></table>
+  <div class="set-btns jf-cardb"><button type="button" class="btn" id="jf-card">Save proof card</button></div>
+  <p class="note">One picture with the photo on top and all of this under it, to text, email or keep in Photos. Share / save below sends the stamped photo alone.</p></div>`; };
+/* the proof card: the stamped photo with the full record printed under it, as one JPEG */
+const jfWrap = (ctx, text, w) => { const out = []; String(text).split(/\n/).forEach(par => { let line = "";
+  par.split(/(\s+)/).forEach(word => { const t = line + word; if (ctx.measureText(t).width > w && line.trim()){ out.push(line.trim()); line = word.trimStart(); } else line = t; });
+  while (ctx.measureText(line).width > w && line.length > 1){ let k = line.length; while (k > 1 && ctx.measureText(line.slice(0, k)).width > w) k--; out.push(line.slice(0, k)); line = line.slice(k); }   /* a fingerprint has no spaces: break it anywhere */
+  out.push(line.trim()); }); return out; };
+async function jfCard(f){
+  const P = f.proof, img = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = JF.url; });
+  const W = Math.min(1600, Math.max(900, img.naturalWidth)), ph = Math.round(img.naturalHeight * W / img.naturalWidth), fs = Math.round(W / 38), pad = Math.round(fs * 1.1), lh = Math.round(fs * 1.35);
+  const gps = Number.isFinite(+P.lat) && Number.isFinite(+P.lon);
+  const rows = [[P.late ? "Stamped" : "Taken", jfWhen(+P.at) + (P.tz ? ` (${P.tz})` : "")], ...(P.late && +P.ft ? [["Photo file", jfWhen(+P.ft) + " · an older picture, not straight from the camera"]] : []),
+    ["Where", gps ? `${jfLL(P)}, within ${+P.acc} m${jfAlt(P) ? `, ${(+P.alt).toLocaleString()} ft up` : ""}\nmaps.apple.com/?ll=${+P.lat},${+P.lon}` : (P.gpsErr || "No location")],
+    ["Job", [P.job, P.addr, P.stage].filter(Boolean).join(" · ")], ...(f.note ? [["Note", f.note]] : []),
+    ...(P.hash ? [["Fingerprint", `SHA-256 of the stamped photo:\n${P.hash}`]] : [])];
+  const c = document.createElement("canvas"), ctx = c.getContext("2d"), kw = Math.round(W * .24), vw = W - pad * 3 - kw;
+  ctx.font = `500 ${fs}px -apple-system, system-ui, sans-serif`; const lines = rows.map(([k, v]) => [k, jfWrap(ctx, v, vw)]);
+  const head = Math.round(fs * 2.4), body = lines.reduce((n, [, L]) => n + L.length * lh + Math.round(fs * .6), 0), foot = Math.round(fs * 2);
+  c.width = W; c.height = ph + head + body + foot + pad;
+  ctx.fillStyle = "#111"; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, W, ph);
+  ctx.fillStyle = "#c8ff00"; ctx.fillRect(0, ph, W, Math.max(4, Math.round(fs / 4)));
+  ctx.textBaseline = "top"; let y = ph + Math.round(fs * .8);
+  ctx.fillStyle = "#fff"; ctx.font = `800 ${Math.round(fs * 1.2)}px -apple-system, system-ui, sans-serif`; ctx.fillText("Proof photo", pad, y); y = ph + head;
+  lines.forEach(([k, L]) => { ctx.fillStyle = "#c8ff00"; ctx.font = `700 ${fs}px -apple-system, system-ui, sans-serif`; ctx.fillText(k, pad, y);
+    ctx.fillStyle = "#fff"; ctx.font = `${k === "Fingerprint" ? 400 : 500} ${k === "Fingerprint" ? Math.round(fs * .85) : fs}px ${k === "Fingerprint" ? "ui-monospace, Menlo, monospace" : "-apple-system, system-ui, sans-serif"}`;
+    L.forEach((t, i) => ctx.fillText(t, pad * 2 + kw, y + i * lh)); y += L.length * lh + Math.round(fs * .6); });
+  ctx.fillStyle = "#9a9a9a"; ctx.font = `500 ${Math.round(fs * .8)}px -apple-system, system-ui, sans-serif`;
+  ctx.fillText("Made with the Utah Plumbers Handbook. Check the fingerprint against the stamped photo.", pad, c.height - foot);
+  const blob = await new Promise((ok, no) => c.toBlob(b => b ? ok(b) : no(new Error("encode")), "image/jpeg", .9));
+  return new File([blob], (f.name || "proof.jpg").replace(/^proof-/, "proof-card-").replace(/\.[^.]*$/, "") + ".jpg", {type: "image/jpeg"});
+}
+document.addEventListener("click", async e => { if (!e.target.closest("#jf-card")) return; const f = JF.cur; if (!f || !f.proof) return;
+  let file; try { file = await jfCard(f); } catch(err){ toast("Couldn't make the proof card.", 2600); return; }
+  try { if (navigator.canShare && navigator.canShare({files: [file]})){ await navigator.share({files: [file]}); jbReseat(); return; } } catch(err){ if (err && err.name === "AbortError"){ jbReseat(); return; } }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+  toast("Proof card saved. It's in Downloads.", 2400); });
 document.addEventListener("click", async e => { if (!e.target.closest("#jf-verify")) return; const c = JF.cur, out = $("jf-vres"); if (!c || !c.proof || !out) return;
   out.textContent = "Checking…"; const h = await jfHash(c.blob);
   out.innerHTML = !h ? "This browser can't check it." : h === c.proof.hash ? "<b>✓ Unchanged</b> since it was stamped." : "<b>✗ Doesn't match.</b> This photo isn't the one that was stamped."; });
@@ -1313,7 +1351,7 @@ function jbBinRestore(id, quiet){
         if (!it.id && Array.isArray(S.ord)) S.ord = S.ord.map(k => k === "t" + it.t ? "x" + nid : k); }   /* keeps its place in your order */
       if (JB_XTRA.includes(b.s) && !oj.xs.includes(b.s)) oj.xs.push(b.s); }
     else if (!oj[b.kind].some(x => x.id === it.id)) oj[b.kind].splice(b.i >= 0 ? Math.min(b.i, oj[b.kind].length) : oj[b.kind].length, 0, it);   /* back where it was */
-    oj.t = Date.now(); }
+    jbBump(oj); }
   if (b.kind === "job"){ if (jbD.jobs.some(j => j.id === it.id)) it.id = jbId(); jbFix(it); jbD.jobs.push(it); }
   else if (b.kind === "person"){ jbD.people.push(it);
     (b.links || []).forEach(([jid, f, x]) => { const j = jbD.jobs.find(y => y.id === jid); if (!j) return;
