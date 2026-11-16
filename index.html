@@ -556,9 +556,9 @@ p.jb-gh{cursor:default}
 .jn-b.jn-prev{margin:0 12px 8px;padding:6px 10px;border:2px dashed var(--rule);border-radius:var(--r);pointer-events:none}
 .jn-prevh{margin:0 0 2px;font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 /* the palette you pick job, stage and tag colors from: 4.5:1 or better on cards, light and dark; Night stays red */
-:root{--pal-red:#b3261e;--pal-orange:#b23c00;--pal-yellow:#7a5d00;--pal-green:#11602e;--pal-teal:#0b6b7a;--pal-blue:#1d4fd1;--pal-purple:#6d2fc4;--pal-pink:#a8235a;--pal-brown:#8a4b14;--pal-gray:#5c5c5c}
-:root[data-theme="dark"]{--pal-red:#ff8a80;--pal-orange:#ffab66;--pal-yellow:#ffd24a;--pal-green:#6be08f;--pal-teal:#5fd4e6;--pal-blue:#8fb4ff;--pal-purple:#c9a6ff;--pal-pink:#ff8fc0;--pal-brown:#e3a467;--pal-gray:#bdbdbd}
-:root[data-skin="night"]{--pal-red:var(--ink);--pal-orange:var(--ink);--pal-yellow:var(--ink);--pal-green:var(--ink);--pal-teal:var(--ink);--pal-blue:var(--ink);--pal-purple:var(--ink);--pal-pink:var(--ink);--pal-brown:var(--ink);--pal-gray:var(--ink)}
+:root{--pal-red:#b3261e;--pal-orange:#b23c00;--pal-yellow:#7a5d00;--pal-green:#11602e;--pal-teal:#0b6b7a;--pal-blue:#1d4fd1;--pal-purple:#6d2fc4;--pal-pink:#a8235a;--pal-brown:#8a4b14;--pal-gray:#5c5c5c;--pal-maroon:#7a1f2b;--pal-tan:#7a5a3a;--pal-olive:#5b6300;--pal-lime:#3d7a00;--pal-sky:#00658f;--pal-navy:#1b2a6b;--pal-indigo:#4338ca;--pal-magenta:#a0189a}
+:root[data-theme="dark"]{--pal-red:#ff8a80;--pal-orange:#ffab66;--pal-yellow:#ffd24a;--pal-green:#6be08f;--pal-teal:#5fd4e6;--pal-blue:#8fb4ff;--pal-purple:#c9a6ff;--pal-pink:#ff8fc0;--pal-brown:#e3a467;--pal-gray:#bdbdbd;--pal-maroon:#e89aa3;--pal-tan:#d9b88f;--pal-olive:#c8cf6a;--pal-lime:#a6e35c;--pal-sky:#45c8ff;--pal-navy:#5f7fe8;--pal-indigo:#9b82ff;--pal-magenta:#f28be8}
+:root[data-skin="night"]{--pal-red:var(--ink);--pal-orange:var(--ink);--pal-yellow:var(--ink);--pal-green:var(--ink);--pal-teal:var(--ink);--pal-blue:var(--ink);--pal-purple:var(--ink);--pal-pink:var(--ink);--pal-brown:var(--ink);--pal-gray:var(--ink);--pal-maroon:var(--ink);--pal-tan:var(--ink);--pal-olive:var(--ink);--pal-lime:var(--ink);--pal-sky:var(--ink);--pal-navy:var(--ink);--pal-indigo:var(--ink);--pal-magenta:var(--ink)}
 .jn-tag,.jn-tagbar .jn-tagchip{color:var(--tc,hsl(var(--h,200) 80% var(--tag-l)))}
 .jn-tag{background:color-mix(in srgb,currentColor 13%,transparent)}
 .jn-tagbar .jn-tagchip{border-color:currentColor}
@@ -5173,6 +5173,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 15, 2026 · colors</th><td><b>More job colors:</b> 18 now, up from 10 (maroon, tan, olive, lime, sky, navy, indigo and magenta join the rest), for jobs, stages and tags. <b>12 new job icons</b> in the same drawn style: pool / spa, sewer / manhole, gas meter, hydrant / fire line, laundry, pipe elbow, shower, RV / camper, empty lot / pad, medical / clinic, school and drum / barrel.</td></tr>
         <tr><th>Nov 15, 2026 · quick view</th><td><b>Quick view:</b> tap the ⇤ on the right of any job (in My jobs, on Home or in search results), or swipe the job left, and a panel slides in with the essentials: stage, Call the lead, Directions, Proof photo, your "at a glance" lines, open to-dos and heads-ups, the next inspection, the checklist count and the last two notes. Tap outside it, the ✕, or swipe it right to close; <b>Open the whole job</b> goes in. <b>Compact notes:</b> a job's notes now show one line each (the title, a preview and the date, with ☐ for open boxes); tap one to open it, ▴ to fold it again. <b>Compact · Full</b> above the notes switches back to full notes. <b>The line under each job</b> now shows what your newest note says, not its heading.</td></tr>
         <tr><th>Nov 15, 2026 · last</th><td><b>Phone polish from the review panel:</b> at text size S, tapping a box no longer zooms the page in. Night theme's box borders and dividers are easier to see in the dark. After 6 hours away the app still updates itself, but not while you're writing a card note, editing your shop, typing, or in a practice test. A number like 801-555-1234 ext 22 dials the number, waits, then dials 22. "Back to typical" on one card's shop values has Undo. Switching towns with no signal and back shows the saved forecast again. The app icons are saved for offline. <b>Calculators:</b> Average reads "3 1/2" as one number, "1,250" as a thousand-plus and "62-58" as two readings; Time card says when start and end are the same instead of 24 hours; the bore line flags a hole cut into the bottom plate. <b>Wording:</b> star help says "filled ★" and tells you to turn stars on if they're off; the share note says to open the app once with signal; iPhone menu names match today's iOS; the license renewal line no longer goes stale after 2026.</td></tr>
         <tr><th>Nov 15, 2026 · late</th><td><b>Feet boxes take feet:</b> in every box that asks for a run, height or length in feet, a plain number now means feet (60 = 60 ft). For inches, add the " mark (720"). Before, a plain number was inches, and the gas sizer could pick a pipe a size too small. This also fixes Pressure at the far fixture (section lengths and fixture height) and the Ejector's lift and discharge length. <b>Safer erasing:</b> "Erase everything" asks once with a real yes/no that says how many jobs go, and now really erases (photos, files and safety copies too). <b>A full phone is no longer silent:</b> if a save fails because the app's space is full, it says so. <b>Minus temperatures:</b> the unit converter and the air test take a minus sign. <b>Fixes:</b> old CPVC: cut with a wheel cutter or fine saw, never a ratchet cutter; arresters go a size up above about 65 psi flowing (one card said 55); the water test holds at least 15 minutes; water and sewer in one trench follows the IPC 603.2 exceptions and your city's drawing; straps, Legionella, PE-RT and CSST bonding numbers corrected; ABS comes first for drains, with ABS foam core (F628) added and a warning that foam core is never for flue venting; the code you work under starts at the 2021 IRC (houses); slope shows the exact in/ft so the verdict and the number agree; the expansion tank starts at 125 psi max (under the 150 relief) and says when the heater temp is the problem. Two What's new notes about re-adding the app now say to back up first.</td></tr>
@@ -9630,7 +9631,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-15z5";
+{ const NEWS = "2026-11-15z6";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -10875,7 +10876,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-15z5";
+var BUILD = "handbook-2026-11-15z6";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
