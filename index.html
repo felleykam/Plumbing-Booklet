@@ -1727,7 +1727,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <button type="button" data-sl="grade" aria-pressed="false">Check grade</button>
     </div>
     <div class="calc">
-      <label for="sl-run">Run <i>(30' or 360")</i><input id="sl-run" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="30'"></label>
+      <label for="sl-run">Run, feet <i>(30, or 360" in inches)</i><input id="sl-run" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="30'"></label>
       <label for="sl-pitch" id="sl-pitch-l">Slope<select id="sl-pitch">
         <option value="0.0625">¹⁄₁₆" / ft</option><option value="0.125">⅛" / ft</option>
         <option value="0.25" selected>¼" / ft</option><option value="0.5">½" / ft</option></select></label>
@@ -1751,7 +1751,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="calc">
       <label for="lr-start">Rod at the start <i>(ft, like 4.52)</i><input id="lr-start" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="4.52"></label>
       <label for="lr-slope">Slope<select id="lr-slope"><option value="0.0625">¹⁄₁₆" / ft</option><option value="0.125">⅛" / ft</option><option value="0.25" selected>¼" / ft</option><option value="0.5">½" / ft</option></select></label>
-      <label for="lr-dist">Distance <i>(25' or 300")</i><input id="lr-dist" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="25'"></label>
+      <label for="lr-dist">Distance, feet <i>(25, or 300" in inches)</i><input id="lr-dist" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="25'"></label>
       <label for="lr-step">Table every<select id="lr-step"><option value="1">1 ft</option><option value="2">2 ft</option><option value="5" selected>5 ft</option><option value="10">10 ft</option></select></label>
       <div class="ans" id="lr-ans" role="status" aria-atomic="true"></div>
     </div>
@@ -1812,7 +1812,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <thead><tr><th>Appliance</th><th>Nameplate BTU/h</th></tr></thead>
       <tbody id="gl-rows"></tbody></table></div>
     <div class="calc">
-      <label for="gl-len">Longest run <i>meter to the farthest appliance (60' or 720")</i><input id="gl-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="60'"></label>
+      <label for="gl-len">Longest run, feet <i>meter to the farthest appliance (60, or 720" in inches)</i><input id="gl-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="60'"></label>
       <button type="button" class="btn2" id="gl-reset">Reset list</button>
     </div>
     <div class="x"><table class="t out">
@@ -1834,9 +1834,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <label for="ej-pd">Pump-down <i>(on to off)</i><input id="ej-pd" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10"></label>
       <label for="ej-q">Pump flow (gpm)<input id="ej-q" type="number" inputmode="decimal" min="0" step="any" value="30"></label>
       <label for="ej-in">Inflow (gpm) <i>while it runs</i><input id="ej-in" type="number" inputmode="decimal" min="0" step="any" value="5"></label>
-      <label for="ej-lift">Static lift <i>(low water to the high point)</i><input id="ej-lift" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="8'"></label>
+      <label for="ej-lift">Static lift, feet <i>(low water to the high point)</i><input id="ej-lift" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="8'"></label>
       <label for="ej-pipe">Discharge (PVC Sch 40)<select id="ej-pipe"><option value="1.380">1¼"</option><option value="1.610">1½"</option><option value="2.067" selected>2"</option><option value="3.068">3"</option></select></label>
-      <label for="ej-len">Discharge length<input id="ej-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="40'"></label>
+      <label for="ej-len">Discharge length, feet<input id="ej-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="40'"></label>
       <label for="ej-90">90s<input id="ej-90" type="number" inputmode="numeric" min="0" step="1" value="3"></label>
       <label for="ej-45">45s<input id="ej-45" type="number" inputmode="numeric" min="0" step="1" value="0"></label>
       <label for="ej-ck">Check valves<input id="ej-ck" type="number" inputmode="numeric" min="0" step="1" value="1"></label>
@@ -1870,7 +1870,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>Pressure vs. height</h2><small>1 ft = 0.433 psi · 1 psi = 2.31 ft</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> a fixture sits above or below where you read the gauge: an upstairs shower, a hose bibb down the hill, a standpipe on a water test.</p><p><b>The idea:</b> every foot of height costs 0.433 psi going up and adds it going down. Ten feet up is about 4.3 psi less, before any friction.</p></div></details>
     <div class="calc">
-      <label for="h-ft">Height <i>(20' or 240")</i><input id="h-ft" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="20'"></label>
+      <label for="h-ft">Height, feet <i>(20, or 240" in inches)</i><input id="h-ft" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="20'"></label>
       <div class="ans" id="h-ans" role="status" aria-atomic="true"></div>
     </div>
     <svg id="psi-chart" viewBox="0 0 400 190" role="img" aria-label="Line chart: static water pressure lost rises 0.433 psi per foot of height, from 0 psi at 0 feet to 43.3 psi at 100 feet."></svg>
@@ -1881,7 +1881,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> a fixture is far away or up high (a detached garage, a third floor, a long run) and you want to know if it'll have enough pressure.</p><p><b>The idea:</b> you start with house pressure, lose 0.433 psi for every foot up, and lose more to friction in pipe and fittings (faster water and smaller pipe lose more). What's left has to beat what the fixture needs.</p></div></details>
     <div class="calc">
       <label for="pf-start">Start pressure (psi) <i>static, after the PRV</i><input id="pf-start" type="number" inputmode="decimal" min="0" step="any" value="60"></label>
-      <label for="pf-rise">Fixture is higher by <i>0 if level, minus if lower</i><input id="pf-rise" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10'"></label>
+      <label for="pf-rise">Fixture is higher by, feet <i>0 if level, minus if lower</i><input id="pf-rise" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10'"></label>
       <label for="pf-other">Other losses (psi) <i>meter, backflow, filter</i><input id="pf-other" type="number" inputmode="decimal" min="0" step="any" value="0"></label>
       <label for="pf-need" class="wide">Fixture needs<select id="pf-need"></select></label>
     </div>
@@ -1905,7 +1905,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you want to know how much water a run holds: how long the hot takes to show up, how much drains down, how heavy a full pipe is.</p><p><b>The idea:</b> gallons = the pipe's inside area × its length. The wait for hot water is the gallons sitting in the line ÷ the faucet's gpm.</p></div></details>
     <div class="calc">
       <label for="p-size">Pipe<select id="p-size"></select></label>
-      <label for="p-len">Length <i>(50' or 600")</i><input id="p-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="50'"></label>
+      <label for="p-len">Length, feet <i>(50, or 600" in inches)</i><input id="p-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="50'"></label>
       <label for="p-gpm">Faucet flow (gpm) <i>for hot-water wait</i><input id="p-gpm" type="number" inputmode="decimal" min="0" step="any" value="1.5"></label>
       <div class="ans" id="p-ans" role="status" aria-atomic="true"></div>
     </div>
@@ -1954,7 +1954,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> a long hot run needs slack, a loop or an offset, or a pipe ticks and pulls on its hangers when it heats up.</p><p><b>The idea:</b> pipe grows as it warms: its length × the temperature change × the material's rate. Plastic grows several times more than copper.</p></div></details>
     <div class="calc">
       <label for="te-mat">Pipe<select id="te-mat"></select></label>
-      <label for="te-len">Run <i>(50' or 600")</i><input id="te-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="50'"></label>
+      <label for="te-len">Run, feet <i>(50, or 600" in inches)</i><input id="te-len" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="50'"></label>
       <label for="te-dt">Temp change (°F)<input id="te-dt" type="number" inputmode="decimal" step="any" value="80"></label>
       <div class="ans" id="te-ans" role="status" aria-atomic="true"></div>
     </div>
@@ -2145,7 +2145,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </div>
     <div class="x"><table class="t"><tbody id="pk-rows"></tbody></table></div>
     <div class="set-btns" style="padding:0 12px 12px"><button type="button" class="btn" id="pk-copy">Copy pick list</button><button type="button" class="btn ghost" id="pk-share">Share</button><button type="button" class="del" id="pk-clear">Clear fittings</button></div>
-    <p class="note">The pick list = pipe to order (sticks), these fittings, and a strap count from the support spacing (horizontal: PVC/ABS 4 ft, CPVC 3 ft, copper 6 ft up to 1¼", PEX 32"; IPC Table 308.5). Text it to the supply house.</p>
+    <p class="note">The pick list = pipe to order (sticks), these fittings, and a strap count from the support spacing (horizontal: ABS/PVC 4 ft, CPVC 3 ft, copper 6 ft up to 1¼", PEX 32"; IPC Table 308.5). Text it to the supply house.</p>
   </section>
   <section data-sec="plans" data-kw="plan abbreviation symbol blueprint drawing legend">
     <div class="sec-head"><h2>Plan abbreviations</h2><small>Reading plumbing plans</small></div>
@@ -2179,7 +2179,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <button type="button" data-kind="heat" aria-pressed="false">Heat</button>
     </div>
     <div class="calc">
-      <label for="c-val">Amount<input id="c-val" type="number" inputmode="decimal" value="1" step="any"></label>
+      <label for="c-val">Amount<input id="c-val" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="1"></label>
       <label for="c-from">From<select id="c-from"></select></label>
     </div>
     <div class="x"><table class="t num"><tbody id="c-out" aria-live="polite"></tbody></table></div>
@@ -2483,7 +2483,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tbody>
         <tr><th>Water service depth</th><td>At least <b>12" deep and 6" below the frost line</b> (IRC P2603.5 / IPC 305.4). SLC, Provo, Springville and Lehi all design to a 30" frost line, so plan on <b>36"</b>. Many water providers want more (North Salt Lake: 42"); theirs wins.</td></tr>
         <tr><th>Water service size</th><td>¾" minimum (IPC 603.1). Bigger for a long run or a big fixture load.</td></tr>
-        <tr><th>Water + sewer</th><td>5 ft apart, or in the same trench with the water line on a solid shelf at least 12" above the top of the sewer (IPC 603.2).</td></tr>
+        <tr><th>Water + sewer</th><td>5 ft of undisturbed or compacted earth apart (IPC 603.2). Closer only by an exception: the water line's bottom at least 12" above the top of the sewer within those 5 ft, or a shared trench when the sewer pipe is a material the code allows for that. Many cities also want the water on a shelf to one side. <b>The city's standard drawing wins:</b> check it before you dig.</td></tr>
         <tr><th>Through the foundation</th><td>Sleeve two pipe sizes bigger, or a relieving arch, so the wall can settle without crushing the pipe.</td></tr>
         <tr><th>Bedding &amp; backfill</th><td>Pipe on firm, continuous bedding: no bricks or blocks under it. No rocks or construction debris against the pipe; tamp backfill in layers.</td></tr>
         <tr><th>Under the slab</th><td>PEX water lines: one continuous run, no fittings under the slab, sleeved where they leave the concrete (<b>Build → Materials → PEX install</b>).</td></tr>
@@ -2832,12 +2832,13 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td>PEX expansion</td><td class="n">F1960</td><td>Mostly PEX-a, PEX ring.</td></tr>
         <tr><td>PEX crimp</td><td class="n">F1807/F2159</td><td>Mostly PEX-b.</td></tr>
         <tr><td>CPVC</td><td class="n">D2846</td><td>Hot and cold supply.</td></tr>
-        <tr><td>PVC DWV</td><td class="n">D2665</td><td>Primer F656 (purple) + cement D2564.</td></tr>
-        <tr><td>ABS DWV</td><td class="n">D2661</td><td>Cement D2235.</td></tr>
+        <tr><td>ABS DWV</td><td class="n">D2661</td><td>Solid wall. Cement D2235. The drain pipe here.</td></tr>
+        <tr><td>ABS foam core</td><td class="n">F628</td><td>Cellular-core ABS: the black DWV most crews run. Drains and vents <b>only</b>, never appliance venting.</td></tr>
+        <tr><td>PVC DWV</td><td class="n">D2665</td><td>Solid-core. Here it's mostly for appliance flue venting (per the heater or furnace manual). Primer F656 (purple) + cement D2564.</td></tr>
         <tr><td>ABS ↔ PVC</td><td>Transition fitting</td><td>Transition cement (D3138, green) only at drain-to-sewer joint. Check 2024 IPC 705.</td></tr>
         <tr><td>Copper</td><td class="n">B88</td><td>K green · L blue · M red · DWV yellow.</td></tr>
               <tr><td>PEX code<div class="sub">4 digits, like 5106</div></td><td class="n">F876</td><td><b>1st digit = chlorine:</b> 5 = OK 100% of the time at 140°F (recirc lines), 1 = only 25%. <b>2nd digit = sun:</b> 1 = 1 month, 3 = 6 months. <span class="badge why">WHY</span> Our water is chlorinated, and a recirc loop is hot all day.</td></tr>
-        <tr><td>PE-RT</td><td class="n">F2769</td><td>Raised-temperature polyethylene: <b>not</b> cross-linked, but rated like PEX (100 psi at 180°F, 200 at 73°F). Crimp, clamp or press fittings listed for it; <b>not</b> PEX-a expansion (F1960) fittings. Ask your inspector before you swap it in (PPI, SupplyHouse).</td></tr>
+        <tr><td>PE-RT</td><td class="n">F2769</td><td>Raised-temperature polyethylene: <b>not</b> cross-linked, but rated like PEX (100 psi at 180°F; 160 to 200 psi at 73°F depending on the brand: read the print). Crimp, clamp or press fittings listed for it; <b>not</b> PEX-a expansion (F1960) fittings. Ask your inspector before you swap it in (PPI, SupplyHouse).</td></tr>
 </tbody></table></div>
   </section>
   <section data-sec="materials" data-kw="pex uponor viega zurn sharkbite bend radius uv pex crimp ring clamp cinch go no-go gauge expansion propex joint">
@@ -3015,7 +3016,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tbody>
         <tr><th>T&amp;P line</th><td>Full size of the valve outlet, one line per valve. No valves, tees or threaded end. Drains by gravity, no sags or traps. Ends through an air gap <b>in the same room</b>, in plain view, ≤ 6" above the floor or a receptor; never piped straight into a drain. <b>PEX or PE-RT: one size bigger</b> than the valve outlet, end fastened (IRC P2804.6.1). <span class="badge ut">UT</span> ≤ 180° of total bends.</td></tr>
         <tr><th>Pan</th><td>Where a leak would do damage (attic, upper floor, finished space): 1½" deep, ¾" drain to an indirect receptor or outside 6"–24" above grade. <span class="badge ut">UT</span> With the code official's OK, the pan may drain into a stack or branch: individually trapped and vented, never connected to any vent, heater discharge only (Utah P2801.6.2–.3).</td></tr>
-        <tr><th>Seismic straps</th><td><span class="badge ut">UT</span> Upper and lower third of the tank (Utah P2801.8). Model IRC also keeps the lower strap ≥ 4" above the controls; doing both is never wrong.</td></tr>
+        <tr><th>Seismic straps</th><td>Upper and lower third of the tank, the lower strap at least 4" above the controls (IRC P2801.8). Utah is seismic: inspectors look for both straps.</td></tr>
         <tr><th><span class="badge ut">UT</span>Ultra-low NOx</th><td>In the Wasatch Front and Uinta Basin pollution (nonattainment) areas, a new gas water heater must be ultra-low NOx: <b>10 ng/J</b> at 75,000 BTU/h or less, 14 above (Utah Code 15A-6-102). The areas don't follow city lines: <a href="https://utahdeq.maps.arcgis.com/apps/instant/lookup/index.html?appid=030663dce9d54d6c9141e348ff980902" target="_blank" rel="noopener">check the address ↗</a>. The NOx number is on the label.</td></tr>
         <tr><th>Cold shutoff</th><td>Full-open valve on the cold supply at the heater.</td></tr>
         <tr><th>Expansion tank</th><td>Closed system (PRV, check or backflow device): yes. Set its air charge to house pressure with the water off.</td></tr>
@@ -3035,7 +3036,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <thead><tr><th>Type</th><th>Air &amp; vent</th><th>Needs</th></tr></thead>
       <tbody>
         <tr><td data-label="Type"><b>Atmospheric</b><br><span class="sub">natural draft</span></td><td data-label="Air &amp; vent">Room air in. Hot exhaust rises through a draft hood into B-vent or a lined chimney, ¼"/ft up.</td><td data-label="Needs">Combustion air, a vertical path. No power: works in an outage.</td></tr>
-        <tr><td data-label="Type"><b>Power vent</b></td><td data-label="Air &amp; vent">Room air in. A blower pushes exhaust out PVC/CPVC/ABS, sidewall or roof.</td><td data-label="Needs">120V outlet. Combustion air. Max vent length and elbows per manual.</td></tr>
+        <tr><td data-label="Type"><b>Power vent</b></td><td data-label="Air &amp; vent">Room air in. A blower pushes exhaust out solid-core Sch 40 PVC or CPVC per the manual (a few allow ABS; never foam core), sidewall or roof.</td><td data-label="Needs">120V outlet. Combustion air. Max vent length and elbows per manual.</td></tr>
         <tr><td data-label="Type"><b>Direct vent</b></td><td data-label="Air &amp; vent">Sealed. Outside air in, exhaust out, through the wall (coaxial or two pipes). No blower.</td><td data-label="Needs">Close to an outside wall.</td></tr>
         <tr><td data-label="Type"><b>Power direct vent</b></td><td data-label="Air &amp; vent">Sealed, two pipes, with a blower: long runs, no room air.</td><td data-label="Needs">120V. Tight houses and closets.</td></tr>
         <tr><td data-label="Type"><b>Condensing tank</b></td><td data-label="Air &amp; vent">Squeezes heat until exhaust condenses: PVC vent, acidic condensate.</td><td data-label="Needs">120V, condensate drain. Gas tanks over 55 gal since 2015.</td></tr>
@@ -3494,7 +3495,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Controls</th><td>Running 24/7 wastes heat. Energy code wants the pump to start on a demand for hot water (button, motion, flow) and shut off when the loop's hot. A demand system using the cold line can't send back water over 104°F.</td></tr>
         <tr><th>Insulate</th><td>The loop pipe gets insulated, R-3 (energy code). Bare loop = space heater in the wall.</td></tr>
         <tr><th><span class="badge why">WHY</span>The wait</th><td>½" PEX holds about <b>0.0092 gal/ft</b>; ¾" about 0.018. 60 ft of ½" = half a gallon of cold to dump before hot shows: about 28 s at a 1.2 gpm lav, plus the time to warm the pipe itself.</td></tr>
-        <tr><th>Legionella</th><td>Germs like 95–115°F. Keep the loop hot, not lukewarm.</td></tr>
+        <tr><th>Legionella</th><td>Germs grow at about 77–113°F. Keep the loop hot, not lukewarm.</td></tr>
               <tr><th>Hot in the cold line</th><td>After an under-sink "instant hot" crossover goes in, warm water showing up in the cold taps is a classic callback. One fixture: suspect its cartridge. The whole house: suspect the crossover valve or a mixing valve. <span class="sub">Trade practice.</span></td></tr>
 </tbody></table></div>
   </section>
@@ -3506,7 +3507,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <label for="et-t1">Cold water in (°F)<input id="et-t1" type="number" inputmode="decimal" step="any" value="50"></label>
       <label for="et-t2">Heater set (°F)<input id="et-t2" type="number" inputmode="decimal" step="any" value="140"></label>
       <label for="et-p1">House pressure (psi)<input id="et-p1" type="number" inputmode="decimal" min="0" step="any" value="60"></label>
-      <label for="et-p2">Max allowed (psi)<input id="et-p2" type="number" inputmode="decimal" min="1" step="any" value="150"></label>
+      <label for="et-p2">Max allowed (psi) <i>(keep it under the 150 relief)</i><input id="et-p2" type="number" inputmode="decimal" min="1" step="any" value="125"></label>
       <label for="et-el">Elevation (ft)<input id="et-el" type="number" inputmode="numeric" min="0" step="any" value="4500"></label>
     </div>
     <div class="x"><table class="t out"><tbody>
@@ -3515,7 +3516,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tr><th>Acceptance</th><td id="et-af" class="big">—</td><td class="sub">Share of the tank that can take water before max psi.</td></tr>
     </tbody></table></div>
     <details class="math"><summary>Show the math</summary><ol id="et-math"></ol></details>
-    <p class="note">Precharge the tank's air to the house pressure. Max allowed: usually the T&amp;P relief setting (150 psi); use a lower number to keep a margin. Water density by temperature from standard tables; method: tank = expansion ÷ (1 − P house ÷ P max), absolute pressures. Check the maker's sizing chart for the tank you buy.</p>
+    <p class="note">Precharge the tank's air to the house pressure. Max allowed: keep it under the T&amp;P's 150 psi relief setting (125 is a common design number), so the heater doesn't drip at the relief valve. Water density by temperature from standard tables; method: tank = expansion ÷ (1 − P house ÷ P max), absolute pressures. Check the maker's sizing chart for the tank you buy.</p>
       <p class="card-h">Charge it · is it dead?</p>
     <div class="x"><table class="t">
       <tbody>
@@ -3549,7 +3550,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>The squeeze</th><td>Legionella grows at 95–115°F and dies off above about 131°F. A tank kept at 140°F is cleaner, but too hot at the tap.</td></tr>
+        <tr><th>The squeeze</th><td>Legionella grows at about 77–113°F and dies off above about 131°F. A tank kept at 140°F is cleaner, but too hot at the tap.</td></tr>
         <tr><th>ASSE 1017</th><td>One thermostatic mixing valve at the heater outlet tempers the whole house down (often ~120°F).</td></tr>
         <tr><th>ASSE 1016 / 1070</th><td>Point-of-use: shower valves (1016, limit stop ≤ 120°F) and tub fillers (1070). These are required whatever the tank is set to.</td></tr>
         <tr><th>Kids &amp; elders</th><td>Thin skin burns faster than the table. That's why the limit stop matters.</td></tr>
@@ -3674,7 +3675,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Water back on</th><td>Open the main <b>slowly</b>. First run a big cold faucet with no aerator (tub spout, utility sink, hose bibb) until it's clear, 5–10 min. Then the other cold faucets, flush each toilet, and hold off on hot until the cold runs clear. Clean the aerators. <span class="badge why">WHY</span> Pressure all at once bangs the pipes, and the crud ends up in aerators and cartridges.</td></tr>
         <tr><th>Is there a leak?</th><td>Read the meter, use no water for <b>2 hours</b>, read it again. Any change means a leak (EPA WaterSense).</td></tr>
         <tr><th>Frozen pipe</th><td>Open the faucet, then gentle heat on the frozen spot: hair dryer, heating pad, hot towels or a space heater. Keep going until full pressure. Heaters 2 ft from anything that burns. <b>No torch or open flame</b> (Red Cross). Burst: shut the main.</td></tr>
-        <tr><th>Water hammer</th><td>Use an ASSE 1010 arrester, not a capped stub: an air chamber waterlogs and quits. AA size on hot and cold at the washer, dishwasher and ice maker. On a branch, put it at the end between the last two fixtures. Over 20 ft, add another. Over 55 psi, go one size up (PDI-WH201). <span class="badge why">WHY</span> A valve that snaps shut stops the water all at once, and that pressure spike is the bang.</td></tr>
+        <tr><th>Water hammer</th><td>Use an ASSE 1010 arrester, not a capped stub: an air chamber waterlogs and quits. AA size on hot and cold at the washer, dishwasher and ice maker. On a branch, put it at the end between the last two fixtures. Over 20 ft, add another. Above about 65 psi flowing, go one size up (PDI WH-201). <span class="badge why">WHY</span> A valve that snaps shut stops the water all at once, and that pressure spike is the bang.</td></tr>
       </tbody>
     </table></div>
     <p class="note">Sources: Chelan PUD water-restore guide, EPA WaterSense, American Red Cross, Sioux Chief, Plumbing &amp; Mechanical (PDI-WH201).</p>
@@ -3688,7 +3689,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Zurn Qest / QickSert</th><td>Yellow-brass crimp fittings sold 1996–2010 corroded and leaked ($20M settlement, 2013; claims closed 2020). White crust or pink crumbly brass at a crimp = replace every one of them.</td></tr>
         <tr><th><span class="badge why">WHY</span>Dezincification</th><td>High-zinc "yellow" brass loses its zinc in some water and goes brittle. Modern lead-free (NSF 372) and DZR brass are made to resist it.</td></tr>
         <tr><th>Push-to-connect</th><td>Listed (ASSE 1061) and allowed concealed and buried, but many shops keep them to repairs. Failures trace to burrs, a missed depth mark or a side load on the joint. Deburr, mark depth, support it, and follow your shop's rule. <span class="sub">Failure data: anecdotes only.</span></td></tr>
-        <tr><th>Drain noise</th><td>PVC/ABS is roughly 10–15 dB louder than cast iron. Stack over a bedroom or theater: ask about a cast iron section or a rated sound wrap. Plain pipe insulation barely helps. <span class="sub">2009 source; the physics hasn't changed.</span></td></tr>
+        <tr><th>Drain noise</th><td>ABS or PVC is roughly 10–15 dB louder than cast iron. Stack over a bedroom or theater: ask about a cast iron section or a rated sound wrap. Plain pipe insulation barely helps. <span class="sub">2009 source; the physics hasn't changed.</span></td></tr>
       </tbody></table></div>
     <div class="x"><table class="t cards">
       <thead><tr><th>Recall</th><th>Problem</th><th>How to ID it</th></tr></thead>
@@ -3729,7 +3730,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Orangeburg</th><td>Black fiber sewer pipe (tar paper and pitch), common before the 1970s. Don't tie into it: camera the line and replace back to solid pipe.</td></tr>
         <tr><th>Polybutylene</th><td>Gray (sometimes blue outside), 1978–1995. Use a <b>PB conversion coupling</b> (SharkBite: gray collar on the PB end) or a PEX × PB crimp adapter with the PB ring on the PB side. <b>Plain PEX fittings don't seal on PB.</b> Tell the owner a repipe is the real fix.</td></tr>
         <tr><th>Kitec</th><td>Orange and blue PEX-AL-PEX with brass fittings (about 1995–2007). The fittings fail: replace, don't patch (<b>Service → Troubleshoot → Then &amp; now: 1980 → today</b>).</td></tr>
-        <tr><th>Old CPVC</th><td>Gets brittle: cut it with a ratchet cutter or a fine saw, not a pinch cutter that cracks it. Use a transition fitting rated for CPVC.</td></tr>
+        <tr><th>Old CPVC</th><td>Gets brittle: cut it with a wheel-type tubing cutter or a fine-tooth saw. Never a ratchet or shear cutter: they crack it. Use a transition fitting rated for CPVC.</td></tr>
         <tr><th>Lead</th><td>Dull gray, soft, a bulb-shaped wiped joint. Don't disturb it; tell the owner and your foreman.</td></tr>
 </tbody></table></div>
     <p class="note">PB transitions: <a href="https://blog.supplyhouse.com/connecting-pex-to-pb/" target="_blank" rel="noopener">SupplyHouse</a>, <a href="https://www.supplyhouse.com/SharkBite-UC4006LF-3-8-PEX-Crimp-x-3-8-PB-Coupling-Lead-Free" target="_blank" rel="noopener">SharkBite PB coupling</a>. Failures and recalls: <b>Service → Troubleshoot → What fails &amp; what's recalled</b>.</p>
@@ -3954,11 +3955,12 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td data-label="Number" class="n">F2080</td><td data-label="What it is">Cold expansion with a metal compression sleeve</td><td data-label="Where">Sleeve-over-PEX systems (REHAU style).</td></tr>
         <tr><td data-label="Number" class="n">D2846 · F441</td><td data-label="What it is">CPVC: copper-tube sizes (D2846), Schedule 40/80 (F441)</td><td data-label="Where">Tan CTS CPVC is D2846. Cement F493.</td></tr>
         <tr><td data-label="Number" class="n">D1785 · D2241</td><td data-label="What it is">PVC pressure pipe: Schedule 40/80 (D1785), SDR / Class (D2241)</td><td data-label="Where">Water service, irrigation mains. Cold water only.</td></tr>
-        <tr><td data-label="Number" class="n">D2665</td><td data-label="What it is">PVC DWV pipe and fittings</td><td data-label="Where">Inside drains and vents. Primer F656 (purple) + cement D2564.</td></tr>
-        <tr><td data-label="Number" class="n">F891</td><td data-label="What it is">PVC cellular-core pipe (foam core)</td><td data-label="Where">Lighter DWV pipe. Same fittings as D2665.</td></tr>
+        <tr><td data-label="Number" class="n">D2661 · D2235</td><td data-label="What it is">ABS DWV (D2661), ABS cement (D2235)</td><td data-label="Where">Black drain pipe, the DWV pipe here. ABS to PVC: transition cement D3138 (green) only at the drain-to-sewer joint, otherwise a listed transition coupling.</td></tr>
+        <tr><td data-label="Number" class="n">F628</td><td data-label="What it is">ABS cellular-core pipe (foam core)</td><td data-label="Where">The black DWV most crews run. Drains and vents only: <b>never</b> appliance flue venting.</td></tr>
+        <tr><td data-label="Number" class="n">D2665</td><td data-label="What it is">PVC DWV pipe and fittings (solid core)</td><td data-label="Where">Here, mostly appliance flue venting: solid-core Sch 40 per the heater or furnace manual. Primer F656 (purple) + cement D2564.</td></tr>
+        <tr><td data-label="Number" class="n">F891</td><td data-label="What it is">PVC cellular-core pipe (foam core)</td><td data-label="Where">Lighter DWV pipe. <b>Never</b> appliance flue venting: manuals call for solid core.</td></tr>
         <tr><td data-label="Number" class="n">D3034</td><td data-label="What it is">PVC sewer pipe, SDR 35 (green)</td><td data-label="Where">Building sewer outside the house.</td></tr>
         <tr><td data-label="Number" class="n">D2729</td><td data-label="What it is">Thin-wall PVC sewer and drain</td><td data-label="Where">Perforated footing and yard drains. <b>Not</b> a building sewer.</td></tr>
-        <tr><td data-label="Number" class="n">D2661 · D2235</td><td data-label="What it is">ABS DWV (D2661), ABS cement (D2235)</td><td data-label="Where">Black drain pipe. ABS to PVC: transition cement D3138 (green) only at the drain-to-sewer joint, otherwise a listed transition coupling.</td></tr>
         <tr><td data-label="Number" class="n">B88</td><td data-label="What it is">Copper water tube: K green, L blue, M red</td><td data-label="Where">All copper supply. K for underground, L most common, M thinnest.</td></tr>
         <tr><td data-label="Number" class="n">B306</td><td data-label="What it is">Copper DWV tube (yellow print)</td><td data-label="Where">Drain and vent only, never pressure.</td></tr>
         <tr><td data-label="Number" class="n">B32 · B813 · B828</td><td data-label="What it is">Solder alloys (B32), water-soluble flux (B813), how to solder (B828)</td><td data-label="Where">Potable joints: lead-free solder, 0.2% lead or less.</td></tr>
@@ -4005,7 +4007,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td>1"</td><td>1.125</td><td>0.995</td><td>1.025</td><td>1.055</td><td>0.862</td></tr>
       </tbody></table></div>
     <div class="x"><table class="t num">
-      <thead><tr><th>Sch 40 PVC/ABS</th><th>OD</th><th>ID</th></tr></thead>
+      <thead><tr><th>Sch 40 ABS/PVC</th><th>OD</th><th>ID</th></tr></thead>
       <tbody>
         <tr><td>1½"</td><td>1.900</td><td>1.610</td></tr>
         <tr><td>2"</td><td>2.375</td><td>2.067</td></tr>
@@ -4224,8 +4226,8 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note tl-spec" id="tl-spec" aria-live="polite"></p>
     <div class="calc">
       <label for="at-p">Test started at (psi)<input id="at-p" type="number" inputmode="decimal" min="0" step="any" value="80"></label>
-      <label for="at-t1">Pipe temp then (°F)<input id="at-t1" type="number" inputmode="decimal" step="any" value="60"></label>
-      <label for="at-t2">Pipe temp now (°F)<input id="at-t2" type="number" inputmode="decimal" step="any" value="30"></label>
+      <label for="at-t1">Pipe temp then (°F)<input id="at-t1" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="60"></label>
+      <label for="at-t2">Pipe temp now (°F)<input id="at-t2" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="30"></label>
       <label for="at-now">Gauge reads now <i>(optional)</i><input id="at-now" type="number" inputmode="decimal" min="0" step="any" placeholder="psi"></label>
       <label for="at-el">Elevation (ft)<input id="at-el" type="number" inputmode="numeric" min="0" step="any" value="4500"></label>
     </div>
@@ -4246,7 +4248,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td>DWV metal</td><td>Air (base IPC: no plastic)</td><td class="n">5 psi</td><td class="n">15 min</td></tr>
         <tr><td><span class="badge ut">UT</span>DWV plastic</td><td>Air, only if water can't be used or would freeze</td><td class="n">≤6 psi</td><td class="n">≤15 min</td></tr>
         <tr><td>DWV plastic</td><td>Vacuum: in the 2021 IRC (houses) and 2024 IPC, not the 2021 IPC</td><td class="n">−5 psi<br>(−10" Hg)</td><td class="n">15 min</td></tr>
-        <tr><td>Water</td><td>Water</td><td class="n">≥ working</td><td>Until inspected</td></tr>
+        <tr><td>Water</td><td>Water</td><td class="n">≥ working</td><td>≥ 15 min, and keep it on for the inspector</td></tr>
         <tr><td><span class="badge ut">UT</span>Water plastic<div class="sub">Utah IPC 312.5. On a house, get the inspector's OK first.</div></td><td>Air</td><td class="n">50–80 psi</td><td class="n">≤15 min</td></tr>
         <tr><td>Shower pan</td><td>Water</td><td class="n">2" at threshold</td><td class="n">15 min</td></tr>
         <tr><td>Gas</td><td>Air, nitrogen or CO₂, never oxygen</td><td class="n">1.5× working<br>≥3 psi</td><td class="n">10 min</td></tr>
@@ -4288,7 +4290,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="code" data-kw="code adoption 2024 ipc 2021 irc 2021 ipc my code july 2026 utah amendments 15a which code applies mtech school">
     <div class="sec-head"><h2>Which code applies</h2><small>Utah, effective 7/1/2026</small></div>
-    <div class="seg" id="code-pick" role="group" aria-label="The code I work under"><span class="seg-lbl">I work under</span><button type="button" data-code="ipc21" aria-pressed="true">2021 IPC</button><button type="button" data-code="irc21" aria-pressed="false">2021 IRC</button><button type="button" data-code="ipc24" aria-pressed="false">2024 IPC</button></div>
+    <div class="seg" id="code-pick" role="group" aria-label="The code I work under"><span class="seg-lbl">I work under</span><button type="button" data-code="ipc21" aria-pressed="false">2021 IPC</button><button type="button" data-code="irc21" aria-pressed="true">2021 IRC</button><button type="button" data-code="ipc24" aria-pressed="false">2024 IPC</button></div>
     <p class="note" id="code-pick-note"></p>
     <div class="x"><table class="t">
       <tbody>
@@ -5090,7 +5092,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Repipe or plastic service</th><td>10 ft or more of metal water pipe in the ground is a grounding electrode (NEC 250.52(A)(1)). Swap it for PEX or PVC and that ground is gone: tell the owner it needs an electrician to check the grounding.</td></tr>
         <tr><th>Meter, softener, filter</th><td>The ground path can't depend on them (NEC 250.53(D)(1)). Leave the jumper, or add one around them with clamps and bare copper.</td></tr>
         <tr><th>Water heater jumper</th><td>Dielectric unions break the pipe's bond. Many inspectors want a hot-to-cold jumper at the heater so the metal piping stays bonded (NEC 250.104(A)). Ask yours.</td></tr>
-        <tr><th>CSST gas</th><td>Bond it: 6 AWG copper or bigger, 75 ft or shorter, to the electrical service grounding (IFGC 310.1.1), plus anything the maker adds. Black arc-resistant CSST: maker's instructions rule.</td></tr>
+        <tr><th>CSST gas</th><td>Bond it: 6 AWG copper or bigger, 75 ft or shorter, to the electrical service grounding (IRC G2411.1.1 for houses; IFGC 310.1.1 on other permits), plus anything the maker adds. Black arc-resistant CSST: maker's instructions rule.</td></tr>
         <tr><th>Lock it out</th><td>Kill the breaker, then test dead <b>at the heater</b>: each leg to ground and leg to leg. Panels are mislabeled more often than not.</td></tr>
         <tr><th>Dry fire</th><td>Never turn on an electric heater until the tank is full and air is out of a hot faucet. An element in air burns out in seconds.</td></tr>
         <tr><th>208 V buildings</th><td>A 240 V element on 208 V makes 75% of its watts: 4500 W → 3,380 W. Slower recovery, not a bad element.</td></tr>
@@ -5140,12 +5142,13 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 15, 2026 · late</th><td><b>Feet boxes take feet:</b> in every box that asks for a run, height or length in feet, a plain number now means feet (60 = 60 ft). For inches, add the " mark (720"). Before, a plain number was inches, and the gas sizer could pick a pipe a size too small. This also fixes Pressure at the far fixture (section lengths and fixture height) and the Ejector's lift and discharge length. <b>Safer erasing:</b> "Erase everything" asks once with a real yes/no that says how many jobs go, and now really erases (photos, files and safety copies too). <b>A full phone is no longer silent:</b> if a save fails because the app's space is full, it says so. <b>Minus temperatures:</b> the unit converter and the air test take a minus sign. <b>Fixes:</b> old CPVC: cut with a wheel cutter or fine saw, never a ratchet cutter; arresters go a size up above about 65 psi flowing (one card said 55); the water test holds at least 15 minutes; water and sewer in one trench follows the IPC 603.2 exceptions and your city's drawing; straps, Legionella, PE-RT and CSST bonding numbers corrected; ABS comes first for drains, with ABS foam core (F628) added and a warning that foam core is never for flue venting; the code you work under starts at the 2021 IRC (houses); slope shows the exact in/ft so the verdict and the number agree; the expansion tank starts at 125 psi max (under the 150 relief) and says when the heater temp is the problem. Two What's new notes about re-adding the app now say to back up first.</td></tr>
         <tr><th>Nov 15, 2026 · night</th><td><b>Proof card:</b> open a proof photo and tap <b>Save proof card</b> for one picture with the photo on top and the whole record under it (when and where, accuracy and elevation, a Maps address, the job and stage, your note, and the full fingerprint) to text, email or keep in Photos. <b>Share / save</b> still sends the stamped photo by itself. <b>Tidier:</b> restoring something from Recently deleted, or adding photos, now brings an archived job back like any other change, and the Archived wording matches its button.</td></tr>
         <tr><th>Nov 15, 2026 · evening</th><td><b>📷 Proof photos:</b> on any stage of a job, <b>Proof photo</b> opens the camera and stamps the picture with the date and time (to the second), the GPS spot and how close it is, and the job, address and stage. The same facts show under the photo, the spot opens in Maps, and <b>Check it</b> proves the photo hasn't been changed since it was stamped. Proof photos go in the backup with everything else. <b>Fixes from a full check of My jobs:</b> jobs no longer drop into Archived on the day you update, or after restoring or merging a backup; a job you restored can't slip back into Recently deleted when you merge another phone's backup, and a restored job's photos are never erased; saving a checklist as your list keeps the dates things were checked; "Back to the book's list" keeps every job's order and dates; adding a checklist item that's already there says so; two deletes in a row both come back with one Undo; the Undo button no longer blocks taps around it; pinned jobs can't be archived by mistake; archived jobs' to-dos leave "Open on active jobs"; just opening jobs no longer counts toward the backup reminder. <b>Restore a backup</b> now replaces everything, including lists saved after the backup was made. <b>Bottom bar:</b> three causes of it changing size or getting cut off on iPhone are fixed (a setting that stacked up over time, the bar sliding down after the keyboard, and an old screen height that stuck). <b>Offline:</b> an update can't leave the saved copy without My jobs.</td></tr>
         <tr><th>Nov 15, 2026 · later</th><td><b>Checklists you can arrange:</b> on a job's Underground, Top-out or Finish checklist, tap <b>Edit or reorder</b> to move items with ↑ ↓, change their words with ✎ (the book's items too), or take them off. The Inspect page's <b>Before you call it in</b> list does the same, with <b>Back to the book's list</b> to undo it. <b>Asks first:</b> editing or deleting an item asks, and so does unchecking anything with a date on it, so a stray tap can't wipe when it was done. <b>Undo:</b> after you delete or clear something (a punch item, an inspection, hours, a take-off, a cut, the tape, a test record, a My numbers entry…) an <b>Undo</b> button shows for 8 seconds. In My jobs, deleted punch items, inspections, hours and checklist items also wait 30 days in <b>Recently deleted</b>, like jobs and notes. <b>Archived:</b> a job you haven't opened or changed in 30 days moves to <b>Archived</b>, off Active, Home and Coming up (pinned jobs never do). Open it to look; change anything or tap <b>Bring it back</b> to make it active. You can also archive a job yourself from its page. <b>Rules for every job:</b> write them once on My jobs and they show at the top of every job's notes, old and new.</td></tr>
-        <tr><th>Nov 15, 2026</th><td><b>Edge-case calculators:</b> Fitting combo finder (odd angles from the fittings you have, or how far to roll two), Holes around a circle (Layout), Bucket flow test with a stopwatch, and Mixing temperature (Flow), each with a drawing. <b>New page: Calc → Math.</b> Seven everyday calculators that draw as you type: Fractions (the answer marked on a ruler), Percent, Area &amp; volume (the shape to scale, in ft², yards and gallons), Slope &amp; angle converter (the triangle at its real angle), Proportion, Time card (your shift on a timeline) and Average. Plus math rules: order of operations, fractions, rounding, percent and ratios, shape formulas, triangles and angles, and turning a formula around. <b>Learn is tidier:</b> Flashcards, Practice test and the Fact file are one page now, <b>Learn → Study</b> (8 pages down to 6). Pins, card notes and old links follow the cards. <b>Merge a backup:</b> keep a phone and an iPad matched without losing anything. AirDrop a backup over and tap <b>Merge a backup</b>: the newest copy of each job, person and note wins, and nothing new gets wiped (My jobs → Backup, or Settings → Backup). <b>Export hours</b> as a spreadsheet for your sponsor's records. <b>The search bar finds your jobs</b> above the cards. <b>Deleted photos and files</b> now wait in Recently deleted for 30 days. The unit converter got Copy, Share and Add to tape; Mine → Notes is now <b>Card notes</b>; the old Screen check test button is gone. <b>Weather → Plan the day:</b> today's work window (dry, above freezing, calm, before sunset), daylight left, tonight's low, tomorrow at 7 AM and frozen ground. New calls for thunderstorms, freezing rain, wind chill and dense fog. <b>Safer backups:</b> the app keeps a safety copy of your jobs from each of the last 7 days and from right before any restore, so a bad restore or a big mistake can be undone (Settings → Backup → Safety copies). Backups can be locked with a password. A lockdown rule lets the book talk only to the weather services it uses. <b>Tip jar</b> in Settings → About. <b>New in Learn → How it works:</b> how a shower valve works (pressure-balance vs thermostatic), how pumps lift water, how a gas burner stays lit, from the main to the sewer, why pipes sweat, how joints seal, valve types, and faucets &amp; flush valves, most with diagrams. <b>New in Jobsite → Safety:</b> ladders, concrete dust &amp; silica, torch &amp; hot work, and working in someone's house. <b>Learn:</b> a Power tools card and 32 new flashcards. <b>iPad and iPhone flicker:</b> cards no longer flicker or jump while you scroll. Safari was redrawing cards as they came on screen; now it draws them all. <b>How notes work, in depth:</b> the notes guide in My jobs is now six short lessons you open one at a time: the 3 steps, start-of-line vs anywhere marks, a picture of each mark (what you type → what you see → where it shows up), easy mistakes side by side, a full example note, and every mark with a try-it box. The guide remembers if you left it open or closed, and Notes on people, builder and subdivision pages fold too. <b>App scan:</b> cold-weather safety added to Jobsite → Safety (layers, spares, breaks, watch each other; CDC/NIOSH). "Settings → About" style references in cards now open Settings. Searching "sniff" or "smell" finds gas leak help. Home's label no longer mentions the removed My city. <b>Find a job:</b> a search box on My jobs looks through names, addresses, people, builders, notes, punch lists and inspections, and shows the matching note line. <b>Open on active jobs:</b> every unchecked box and open question across your jobs in one list; tap one to go to its note. <b>Mentioned in job notes:</b> a person, builder or subdivision page lists every note line that links to it. <b>📝 Day log</b> button lays out Did / Didn't, and why / Next. A booked inspection whose date has passed now asks for its result. <b>Job page flow:</b> the job's details fold under <b>Job details</b>; pin, icon and color moved to one <b>Look</b> section at the bottom, the icon picker folded; one notes help (30-second guide with every mark inside); when every stage is done the job offers <b>Mark the job Done</b>; failed or partial inspections show on the job's row; Colors moved to the bottom of the list. <b>New job icons:</b> 32 isometric black-and-white drawings (house, two-story, rambler, townhomes, cabin, church, warehouse, water heater, tankless, boiler, tub, toilet, valve, trench, truck…) replace the emoji, and they take on your theme's colors. <b>Subdivisions have icons too:</b> every job in a subdivision shows its icon unless the job has its own. <b>Spot a job fast:</b> pin a job to the top of the list (📌 on its page) and give it an icon (🏠 🔥 🚿 ⚠️…) next to its color, so you're not relying on color alone. The list is now A to Z by name (Lot 2 before Lot 12) instead of jumping around as you edit; "Open" is now <b>Active</b> (open and on hold); badges say what they count ("1 of 3 stages", "☐ 2 to do", "? 1 question", "📋 Inspection"); and the line under each job shows dates as 📅 and drops the raw marks. <b>More build cards:</b> Build → Drains → <b>Indirect waste &amp; air gaps</b>, <b>Backwater valves</b>, <b>Pans &amp; condensate</b>; Build → Water supply → <b>Water hammer arresters</b> (PDI sizes A–F). <b>More service cards:</b> Service → Water heaters → <b>Water heater repair: test it</b> (thermocouple mV, status lights, element ohms, flushing); Service → Error codes → <b>Noritz</b> and <b>Takagi</b>; Service → Troubleshoot → <b>Wells &amp; pressure tanks</b> and <b>Tying into old pipe</b>. <b>New cards:</b> Trim → <b>Toilet install, step by step</b>, <b>Kitchen hookups</b>, <b>Tub &amp; shower drains</b>, <b>Stops, supplies &amp; aerators</b>; Service → Troubleshoot → <b>Toilet problems</b> and <b>Service work: dos &amp; don'ts</b>. <b>Two themes for dark places</b> (Settings → Look): <b>Crawlspace</b>, dim amber on black for low glare, and <b>Headlamp</b>, crisp white and cyan that reads well by headlamp. Turn on Night (the moon button) for their dark versions. <b>Jobs as a tree:</b> the job list folds as Builder › Subdivision › job; tap a name to fold it. <b>Fold any section</b> of a job (People, Timeline, Checklist, Notes, Photos…) by tapping its heading; it stays that way. <b>More dates:</b> when each checklist and punch item was ticked, when a job was added and last changed, days in the current stage, and "edited" on changed notes. <b>New note marks:</b> <code>??</code> a blue question you tap when answered, <code>@Nov 20</code> a purple date (the next 7 days show on Home), and <code>Label: value</code> facts that collect at the top of the job. <b>How notes work</b> is now three colored steps with a color key, right above the note box. <b>Edit in place:</b> tap ✎ on an inspection, an hours entry, a punch item or one of your checklist items to change it (date, result, inspector, notes, hours…), then Save. <b>Your colors:</b> give each job a color (a stripe on it everywhere), and pick colors for stages and tags under <b>Colors: stages &amp; tags</b> on the Jobs page. <b>Explainers</b> on Supply demand, Unit converter, Before you call it in, Look up a city, My numbers and Circuits; stale "city" wording fixed in Pinned and Settings → Backup. <b>Colors in My jobs:</b> each stage has its own color (Underground brown, Top-out blue, Gas yellow, Finish green, Final purple, Warranty gray) on the timeline and in lists; links show what they open (👤 people orange, 🏗 builders teal, 🏘 subdivisions green, 🔧 jobs blue, 📖 book cards purple); each #tag keeps its own color; the toolbar buttons match. A live preview under the note box shows the note as you type, and <b>How to write notes</b> is a color cheat sheet with a Try it box. <b>Don't lose jobs:</b> <b>Back up everything</b> (Mine → Jobs, or Settings → Backup) makes one file with your jobs, people, notes, settings, photos and files, and the Share sheet saves it to iCloud Drive or Files. Home reminds you when it's been a week or after a lot of changes. Deleted jobs, people, builders, subdivisions and notes wait 30 days in <b>Recently deleted</b> before they're gone. The app also asks iOS not to clear its storage. <b>My jobs is its own file now</b> (jobs.js), saved for offline with the rest. Nothing looks different; an update to the book or to the tracker downloads only that part. <b>Sturdier My jobs:</b> damaged saved data is repaired instead of blanking the page (and if anything still breaks, a button downloads your jobs so they're safe); a save that fails because the phone's space is full now tells you, and the job list shows how full it's getting; restoring a backup asks first and says how many jobs it has; person and builder pages open faster with lots of jobs; <code>[[ ]]</code> with nothing in it stays plain text. <b>Bottom bar fixed:</b> the home-screen app no longer draws under the status bar, which is what made iOS float the bar after typing (re-add the app to the Home Screen to get it).</td></tr>
+        <tr><th>Nov 15, 2026</th><td><b>Edge-case calculators:</b> Fitting combo finder (odd angles from the fittings you have, or how far to roll two), Holes around a circle (Layout), Bucket flow test with a stopwatch, and Mixing temperature (Flow), each with a drawing. <b>New page: Calc → Math.</b> Seven everyday calculators that draw as you type: Fractions (the answer marked on a ruler), Percent, Area &amp; volume (the shape to scale, in ft², yards and gallons), Slope &amp; angle converter (the triangle at its real angle), Proportion, Time card (your shift on a timeline) and Average. Plus math rules: order of operations, fractions, rounding, percent and ratios, shape formulas, triangles and angles, and turning a formula around. <b>Learn is tidier:</b> Flashcards, Practice test and the Fact file are one page now, <b>Learn → Study</b> (8 pages down to 6). Pins, card notes and old links follow the cards. <b>Merge a backup:</b> keep a phone and an iPad matched without losing anything. AirDrop a backup over and tap <b>Merge a backup</b>: the newest copy of each job, person and note wins, and nothing new gets wiped (My jobs → Backup, or Settings → Backup). <b>Export hours</b> as a spreadsheet for your sponsor's records. <b>The search bar finds your jobs</b> above the cards. <b>Deleted photos and files</b> now wait in Recently deleted for 30 days. The unit converter got Copy, Share and Add to tape; Mine → Notes is now <b>Card notes</b>; the old Screen check test button is gone. <b>Weather → Plan the day:</b> today's work window (dry, above freezing, calm, before sunset), daylight left, tonight's low, tomorrow at 7 AM and frozen ground. New calls for thunderstorms, freezing rain, wind chill and dense fog. <b>Safer backups:</b> the app keeps a safety copy of your jobs from each of the last 7 days and from right before any restore, so a bad restore or a big mistake can be undone (Settings → Backup → Safety copies). Backups can be locked with a password. A lockdown rule lets the book talk only to the weather services it uses. <b>Tip jar</b> in Settings → About. <b>New in Learn → How it works:</b> how a shower valve works (pressure-balance vs thermostatic), how pumps lift water, how a gas burner stays lit, from the main to the sewer, why pipes sweat, how joints seal, valve types, and faucets &amp; flush valves, most with diagrams. <b>New in Jobsite → Safety:</b> ladders, concrete dust &amp; silica, torch &amp; hot work, and working in someone's house. <b>Learn:</b> a Power tools card and 32 new flashcards. <b>iPad and iPhone flicker:</b> cards no longer flicker or jump while you scroll. Safari was redrawing cards as they came on screen; now it draws them all. <b>How notes work, in depth:</b> the notes guide in My jobs is now six short lessons you open one at a time: the 3 steps, start-of-line vs anywhere marks, a picture of each mark (what you type → what you see → where it shows up), easy mistakes side by side, a full example note, and every mark with a try-it box. The guide remembers if you left it open or closed, and Notes on people, builder and subdivision pages fold too. <b>App scan:</b> cold-weather safety added to Jobsite → Safety (layers, spares, breaks, watch each other; CDC/NIOSH). "Settings → About" style references in cards now open Settings. Searching "sniff" or "smell" finds gas leak help. Home's label no longer mentions the removed My city. <b>Find a job:</b> a search box on My jobs looks through names, addresses, people, builders, notes, punch lists and inspections, and shows the matching note line. <b>Open on active jobs:</b> every unchecked box and open question across your jobs in one list; tap one to go to its note. <b>Mentioned in job notes:</b> a person, builder or subdivision page lists every note line that links to it. <b>📝 Day log</b> button lays out Did / Didn't, and why / Next. A booked inspection whose date has passed now asks for its result. <b>Job page flow:</b> the job's details fold under <b>Job details</b>; pin, icon and color moved to one <b>Look</b> section at the bottom, the icon picker folded; one notes help (30-second guide with every mark inside); when every stage is done the job offers <b>Mark the job Done</b>; failed or partial inspections show on the job's row; Colors moved to the bottom of the list. <b>New job icons:</b> 32 isometric black-and-white drawings (house, two-story, rambler, townhomes, cabin, church, warehouse, water heater, tankless, boiler, tub, toilet, valve, trench, truck…) replace the emoji, and they take on your theme's colors. <b>Subdivisions have icons too:</b> every job in a subdivision shows its icon unless the job has its own. <b>Spot a job fast:</b> pin a job to the top of the list (📌 on its page) and give it an icon (🏠 🔥 🚿 ⚠️…) next to its color, so you're not relying on color alone. The list is now A to Z by name (Lot 2 before Lot 12) instead of jumping around as you edit; "Open" is now <b>Active</b> (open and on hold); badges say what they count ("1 of 3 stages", "☐ 2 to do", "? 1 question", "📋 Inspection"); and the line under each job shows dates as 📅 and drops the raw marks. <b>More build cards:</b> Build → Drains → <b>Indirect waste &amp; air gaps</b>, <b>Backwater valves</b>, <b>Pans &amp; condensate</b>; Build → Water supply → <b>Water hammer arresters</b> (PDI sizes A–F). <b>More service cards:</b> Service → Water heaters → <b>Water heater repair: test it</b> (thermocouple mV, status lights, element ohms, flushing); Service → Error codes → <b>Noritz</b> and <b>Takagi</b>; Service → Troubleshoot → <b>Wells &amp; pressure tanks</b> and <b>Tying into old pipe</b>. <b>New cards:</b> Trim → <b>Toilet install, step by step</b>, <b>Kitchen hookups</b>, <b>Tub &amp; shower drains</b>, <b>Stops, supplies &amp; aerators</b>; Service → Troubleshoot → <b>Toilet problems</b> and <b>Service work: dos &amp; don'ts</b>. <b>Two themes for dark places</b> (Settings → Look): <b>Crawlspace</b>, dim amber on black for low glare, and <b>Headlamp</b>, crisp white and cyan that reads well by headlamp. Turn on Night (the moon button) for their dark versions. <b>Jobs as a tree:</b> the job list folds as Builder › Subdivision › job; tap a name to fold it. <b>Fold any section</b> of a job (People, Timeline, Checklist, Notes, Photos…) by tapping its heading; it stays that way. <b>More dates:</b> when each checklist and punch item was ticked, when a job was added and last changed, days in the current stage, and "edited" on changed notes. <b>New note marks:</b> <code>??</code> a blue question you tap when answered, <code>@Nov 20</code> a purple date (the next 7 days show on Home), and <code>Label: value</code> facts that collect at the top of the job. <b>How notes work</b> is now three colored steps with a color key, right above the note box. <b>Edit in place:</b> tap ✎ on an inspection, an hours entry, a punch item or one of your checklist items to change it (date, result, inspector, notes, hours…), then Save. <b>Your colors:</b> give each job a color (a stripe on it everywhere), and pick colors for stages and tags under <b>Colors: stages &amp; tags</b> on the Jobs page. <b>Explainers</b> on Supply demand, Unit converter, Before you call it in, Look up a city, My numbers and Circuits; stale "city" wording fixed in Pinned and Settings → Backup. <b>Colors in My jobs:</b> each stage has its own color (Underground brown, Top-out blue, Gas yellow, Finish green, Final purple, Warranty gray) on the timeline and in lists; links show what they open (👤 people orange, 🏗 builders teal, 🏘 subdivisions green, 🔧 jobs blue, 📖 book cards purple); each #tag keeps its own color; the toolbar buttons match. A live preview under the note box shows the note as you type, and <b>How to write notes</b> is a color cheat sheet with a Try it box. <b>Don't lose jobs:</b> <b>Back up everything</b> (Mine → Jobs, or Settings → Backup) makes one file with your jobs, people, notes, settings, photos and files, and the Share sheet saves it to iCloud Drive or Files. Home reminds you when it's been a week or after a lot of changes. Deleted jobs, people, builders, subdivisions and notes wait 30 days in <b>Recently deleted</b> before they're gone. The app also asks iOS not to clear its storage. <b>My jobs is its own file now</b> (jobs.js), saved for offline with the rest. Nothing looks different; an update to the book or to the tracker downloads only that part. <b>Sturdier My jobs:</b> damaged saved data is repaired instead of blanking the page (and if anything still breaks, a button downloads your jobs so they're safe); a save that fails because the phone's space is full now tells you, and the job list shows how full it's getting; restoring a backup asks first and says how many jobs it has; person and builder pages open faster with lots of jobs; <code>[[ ]]</code> with nothing in it stays plain text. <b>Bottom bar fixed:</b> the home-screen app no longer draws under the status bar, which is what made iOS float the bar after typing (to get it, re-add the app to the Home Screen, but <b>back up everything first</b>: deleting the icon deletes your jobs, photos and notes; Settings → Backup).</td></tr>
         <tr><th>Nov 14, 2026</th><td><b>Bottom bar, the real fix (we hope):</b> the home-screen app no longer draws under the clock and battery strip. That mode is what iOS got wrong after the keyboard, leaving the app 59 points short. If it ever still comes back short, the bar drops its home-indicator padding so it sits snug. <b>Bottom bar:</b> no longer slides into the strip iOS leaves undrawn after the keyboard (that cut it off); instead the app asks iOS to re-measure, and Screen check logs each try. <b>My city is gone:</b> nothing saves a city now. Home drops the city box, first-time setup drops the city step, and the city details moved to <b>Inspect → Cities → Look up a city</b> (any town, nothing saved). <b>Sturdier notes:</b> indented lists nest, numbered lists keep their number, back-to-back quote lines join, <code>```</code> blocks show text exactly as typed, <code>[[Dave|the inspector]]</code> shows your own words, a backslash shows a mark as-is, and web links don't swallow the period after them. <b>Fewer stages by default:</b> every job has Underground, Top-out and Finish. Gas, Final and Warranty are extras: tap <b>+ Gas</b> (or Final, Warranty) under the timeline to add one, and <b>Remove stage</b> to take it off. Older jobs keep any extra that has something in it. <b>Bottom bar, again:</b> after the keyboard, iOS can leave the app drawn shorter than the screen. The app now checks once a second and stretches back to the real bottom, and Settings → Screen check keeps the last readings so a floating bar can be tracked down. <b>Builders and subdivisions have pages,</b> like people: a builder's office phone, website, their people and subdivisions; a subdivision's city, builder, gate code and water/sewer tie-in; notes and every job on each. Jobs pick a builder and subdivision (a subdivision fills in its city and builder), the customer is its own box, and the job list is grouped by builder. <code>[[ABC Homes]]</code> links to the page. Older jobs: what was in "Builder / customer" became a builder page. <b>Job page polish:</b> the timeline line no longer runs through the open stage, date boxes stay inside the card, a skipped stage isn't dimmed while open, the four status buttons sit in one row, and the notes toolbar is one swipeable row. <b>The bottom bar, rebuilt:</b> in the home-screen app the page itself no longer scrolls; the book scrolls inside it and the bar sits below, so the keyboard and pop-ups can't push the bar up. <b>Jobs have a name</b> separate from the address: the name shows in lists, the address feeds Directions, and <code>[[links]]</code> match either one. <b>Faster:</b> switching tabs is 2 to 10 times quicker on long pages (cards off the screen aren't drawn until you scroll to them), and on weak signal the app opens from its saved copy after 2 seconds instead of 4. <b>Your own checklists:</b> tap <b>Edit list</b> on a stage's checklist to remove items (the book's too) and add your own, then <b>Use this list on new jobs</b> to make it your starting list for that stage. <b>Back to the book's list</b> undoes it. <b>A job's city is its own:</b> new jobs start with no city instead of My city, the city only feeds Directions, and jobs no longer show the city's inspection booking (that stays in Inspect → Cities). <b>Each job is a timeline now:</b> Underground → Top-out (rough-in) → Gas → Finish (trim) → Final → Warranty, with the blanks ready. Tap a stage to fill it in: To do / Doing / Done / Skip, dates, who led it, a checklist that starts from the book's "Before you call it in" list, inspections, hours, notes and photos. Mark a stage Done and the next one opens. <b>People:</b> set the job's Lead and Superintendent; everyone gets a page with phone (Call / Text), company, notes and every job they're on, and <code>[[Dave]]</code> in a note links to it. <b>Directions</b> opens the address in Maps. The bottom bar no longer floats when you add something while the keyboard is up. <b>Job notes are a dated log now:</b> add as many notes to a job as you like, each with its date, newest first, and tap ✎ to change one. Write them with quick marks: <code>- [ ]</code> a checkbox (the job shows how many are open), <code>!!</code> a red heads-up, <code>#</code> headings, <code>**bold**</code>, <code>#tag</code> (tap to see every job with it), and <code>[[Lot 14]]</code> to link another job or a card in the book. Buttons above the box put them in for you, and phone numbers in notes are tappable. Old notes moved into the log. The bottom bar re-seats after the delete pop-up, the date wheel and the photo picker. <b>My jobs (Mine → Jobs):</b> each job keeps its address, builder or customer, city (with how to book its inspections), phase and status; its inspections (booked, pass, partial, fail) with the inspector and corrections; hours with today, this week, last week and a running count toward your license hours; a punch and materials list you check off; and photos (a note on each) and files like PDF plans. <b>MY JOBS</b> on Home shows your open jobs. Jobs go in Settings → Download backup; photos and files are too big for it and have their own backup at the bottom of the Jobs page.</td></tr>
-        <tr><th>Nov 13, 2026</th><td><b>Find a city by typing:</b> the city menus (Contacts → Call → My city, and first-time setup) have a search box, so you don't scroll 259 names. <b>Every Utah city and town</b> is in the city picker now (259 places). The 227 new ones show their elevation. 24 of them (the rest of Utah County and the biggest cities nearby) also have how to book inspections and, where found, secondary water; the others say "not checked yet". <b>New home-screen icon:</b> bright lime on black, so it stays easy to see when the phone is in dark mode. An iPhone keeps the old picture until you delete the Handbook from the home screen and add it again (Safari → Share → Add to Home Screen). Your saved pins and notes stay. The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install. <b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
+        <tr><th>Nov 13, 2026</th><td><b>Find a city by typing:</b> the city menus (Contacts → Call → My city, and first-time setup) have a search box, so you don't scroll 259 names. <b>Every Utah city and town</b> is in the city picker now (259 places). The 227 new ones show their elevation. 24 of them (the rest of Utah County and the biggest cities nearby) also have how to book inspections and, where found, secondary water; the others say "not checked yet". <b>New home-screen icon:</b> bright lime on black, so it stays easy to see when the phone is in dark mode. An iPhone keeps the old picture until you delete the Handbook from the home screen and add it again (Safari → Share → Add to Home Screen). <b>Back up everything first</b> (Settings → Backup): deleting the icon deletes everything saved in the app. The Gas line sizer table, Pipe sizes: OD &amp; ID and the Test log table now fit a phone without scrolling sideways. <b>Treatment: what not to do</b> moved up next to Softener install. <b>Water treatment, part 2</b> (Service → Treatment): <b>Reionators</b> (what they are, and that they do use salt), <b>Combo units</b> (softener and filter together), <b>Zeolite</b>, <b>Treatment: what not to do</b> and <b>Soft water &amp; the water heater</b> (anodes go faster). Treatment brands adds Reionator, Puronics and Crystal-Right units.</td></tr>
         <tr><th>Nov 12, 2026</th><td><b>Share the book</b> (Settings) shows its QR code with no signal now: the code is stored in the book instead of being fetched. <b>Bottom bar:</b> eight tables had started scrolling up and down a few pixels inside their own boxes, which can tug the iPhone bar loose: fixed. After the "Allow location" prompt the book now re-seats the bar. <b>Weather:</b> the first forecast shows in a few seconds even when the main service is slow, and picking a new place no longer blanks the card. A book left in the background over 6 hours reloads when you come back, so it picks up updates. <b>Weather fixed:</b> when the main forecast service doesn't answer, the card now switches to the National Weather Service forecast instead of sitting on "Loading". Every weather request gives up after 12 seconds and tries again. <b>New:</b> a weather button in the top corner shows the sky right now and the temperature; tap it for Jobsite → Weather. Turn it off in <b>Settings → Behavior → Weather in the header</b>. <b>Home</b> has five shortcuts next to Emergency: Calculators, Code, Joist holes, Cities and Phone lines. Pick your own five in <b>Settings → Behavior → Home shortcuts</b>. Cards you open show up under Recent. <b>Five more themes:</b> Safety Orange, Hot &amp; Cold, Cast Iron, Torch and Salt Flats. <b>Settings:</b> a High contrast switch, and "Tap a phone number to copy". <b>Easier to tap:</b> phone numbers, pin stars, card menus and card pointers are all at least 44 px tall. Thirteen long card names are shorter; pins and notes moved with them. <b>Water treatment</b> (Service → Treatment) grew: <b>Where treatment goes</b> (order in the line, hard water for hose bibbs, the softener loop rough-in), <b>Softener trouble</b> (no soft water, salt bridge, resin in the lines, low pressure), <b>How RO works</b>, <b>Treatment code</b> (the IPC and IRC sections for softeners and RO) and <b>Treatment brands</b>. <b>Contacts → Tech lines → Water treatment</b> has 14 makers' phone lines.</td></tr>
         <tr><th>Nov 9, 2026</th><td><b>Search:</b> the card you meant comes first ("no hot water", "tub drain size", "cleanout spacing", "shower valve height") · "leaking", "dripping" and "running" match leak, drip and run · "disposal" finds disposer · 13 more cards are searchable by plain words. <b>Long pages</b> have an <b>On this page</b> list on top: open it and tap a name to drop to that card (once opened, it stays open). <b>Calculators:</b> "What is this? When do I use it?" on 11 more · Copy and Add to tape on Jump it, Ejector &amp; sump pump and Circuits, wire &amp; bonding. <b>Four new themes</b> in Settings → Look: Primer, Lake Powell, Aspen and Alpenglow. <b>Reopening the book</b> lands where you were on the page, not at the top. <b>Fits the phone:</b> calculator answers and the Pressure at the fixture rows no longer run off the right edge, long dropdowns get a full row, and tech line numbers stack instead of scrolling sideways.</td></tr>
         <tr><th>Nov 9, 2026 · organized</th><td><b>Which tool?</b> on Home now lists every calculator, grouped by the job it does · Trim → Finders is folded into <b>ID a part</b> · Water heater age sits beside Reading a rating plate (Service → Water heaters), and the heater calculators run size, output, then how long it lasts · How it works is grouped by system: drains, water, hot water, gas · the calculator on the Electrical page is now called <b>Circuits, wire &amp; bonding</b> · PEX install gained the crimp and expansion joint checks. <b>New card: Not the code, and not ours</b> (Inspect → Which code) says plainly that the IPC, IRC and other codes belong to the ICC and that this book is our own summary. <b>Removed:</b> My files, which never worked in this copy of the book. Pins, notes and old links follow every card that moved.</td></tr>
@@ -5850,20 +5853,20 @@ const val = id => parseFloat($(id).value);
 const LEN_RE = /^(?:(\d*\.?\d+)\s*')?\s*(?:(\d*\.?\d+)(?:\s+(\d+)\s*\/\s*(\d+))?|(\d+)\s*\/\s*(\d+))?\s*"?$/;
 /* tape-style length boxes: a plain number is inches, ' marks feet ("30'", "366", "30' 6 1/2"). A leading minus is allowed. */
 const tapeIn = raw => { raw = String(raw ?? "").trim(); const neg = /^[-−–]/.test(raw); const v = parseLen(raw.replace(/^[-−–]\s*/, "")); return isFinite(v) ? (neg ? -v : v) : NaN; };
-const tapeFt = id => tapeIn($(id).value) / 12;
-/* boxes asking for feet: a bare number is read as inches (tape style), so say so right under the box and offer the fix.
-   "60" in the gas sizer's Longest run is 5 ft and sizes the pipe a size too small. */
-const FT_BOXES = ["sl-run","lr-dist","gl-len","h-ft","p-len","te-len"];
-function ftEcho(inp){
+/* boxes that ask for FEET (runs, heights, lengths): a plain number is feet, the way you'd say it ("60" = 60 ft). Tape style
+   still works: 60' 6", 726" (inches with the " mark). Before Nov 2026 a plain number here was inches, which sized gas pipe
+   a size small ("60" read as 5 ft). Returns inches. */
+const feetIn = raw => { raw = String(raw ?? "").trim(); const m = raw.match(/^([-−–]?)\s*(\d*\.?\d+)$/);
+  return m ? (m[1] ? -1 : 1) * parseFloat(m[2]) * 12 : tapeIn(raw); };
+const tapeFt = id => feetIn($(id).value) / 12;
+const FT_BOXES = ["sl-run","lr-dist","gl-len","h-ft","p-len","te-len","pf-rise","ej-lift","ej-len"];
+function ftEcho(inp){   /* says how a plain number was read, so nobody wonders */
   let e = inp.parentElement.querySelector(".ftecho");
   if (!e){ e = document.createElement("span"); e.className = "ftecho"; inp.insertAdjacentElement("afterend", e); }
-  const raw = inp.value.trim(), bare = /^\d*\.?\d+$/.test(raw), v = tapeIn(raw);
-  if (!bare || !(v > 0)){ e.hidden = true; return; }
-  e.hidden = false;
-  e.innerHTML = `Plain number = inches: read as <b>${esc(fmtFtIn(v))}</b>. <button type="button" class="linkish" data-ft="${esc(raw)}">Use ${esc(raw)} ft</button>`;
+  const raw = inp.value.trim(), bare = /^[-−–]?\s*\d*\.?\d+$/.test(raw), v = feetIn(raw);
+  if (!bare || !isFinite(v) || v === 0){ e.hidden = true; return; }
+  e.hidden = false; e.innerHTML = `Read as <b>${esc(fmtFtIn(Math.abs(v)))}</b>. For inches, add the " mark.`;
 }
-document.addEventListener("click", e => { const b = e.target.closest(".ftecho button[data-ft]"); if (!b) return;
-  e.preventDefault(); const inp = b.closest("label").querySelector("input"); inp.value = b.dataset.ft + "'"; inp.dispatchEvent(new Event("input", {bubbles: true})); inp.focus(); });
 { const ftInit = () => FT_BOXES.forEach(id => { const i = $(id); if (!i) return; i.addEventListener("input", () => ftEcho(i)); ftEcho(i); });
   document.readyState === "loading" ? addEventListener("DOMContentLoaded", ftInit) : ftInit(); }
 const ftInTxt = ft => fmtFtIn(Math.round(ft * 12 * 16) / 16);
@@ -5891,8 +5894,13 @@ function stepTable(tbody, items, prefix, get, set){
 }
 const store = {
   get(k, d){ try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch(e){ return d; } },
-  set(k, v){ if (window.RESTORING) return; try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  set(k, v){ if (window.RESTORING) return; try { localStorage.setItem(k, JSON.stringify(v)); return true; }
+    catch(e){ storeFull(); return false; } }
 };
+/* a save that fails (the phone's space for the app is full) says so, once a minute at most, instead of looking saved */
+let storeFullT = 0;
+function storeFull(){ if (Date.now() - storeFullT < 60000) return; storeFullT = Date.now();
+  setTimeout(() => { try { toast("<b>That didn't save:</b> the app's space on this phone is full. Back up everything, then delete old photos or finished jobs.", 9000); } catch(e){} }, 0); }
 const warn = t => `<span class="warn">${t}</span>`;
 function mathOut(id, steps){ const el = document.getElementById(id); if (el) el.innerHTML = steps.map(x => `<li>${x}</li>`).join(""); }
 /* answers round to the fraction set in Settings → Behavior (1/8, 1/16 or 1/32; 1/16 until set). PREFS loads further down,
@@ -6412,7 +6420,7 @@ const FSRC = {
   pr: ["Industry guide: ABS cement on PVC", "https://plasticranger.com/can-i-use-abs-glue-on-pvc/"],
   nh: ["No-hub coupling install sheet", "https://images.salsify.com/image/upload/s--LHAhSeKE--/kz6hhup0j0zlsu9qwaha.pdf"],
   pmag: ["Plumber magazine: pipe supports", "https://www.plumbermag.com/online_exclusives/2022/07/a-guide-to-plumbing-pipe-supports"],
-  spk: ["IRC P2904 text (Seattle)", "https://seattle.gov/documents/departments/sdci/codes/seattleresidentialcode/2018srcchapter29.pdf"],
+  spk: ["IRC P2904 text (2018 edition, Seattle's copy: check your 2021 book)", "https://seattle.gov/documents/departments/sdci/codes/seattleresidentialcode/2018srcchapter29.pdf"],
   trench: ["OSHA trenching fact sheet", "https://www.montana.edu/ltap/documents/2_osha_trench_factsheet.pdf"],
   ladder: ["EC&M: OSHA ladder rules", "https://www.ecmag.com/magazine/articles/article-detail/proper-ladder-use-the-following-requirements-will-help-avoid-citations-and-violations"],
   h2s: ["OSHA: hydrogen sulfide", "https://www.osha.gov/hydrogen-sulfide"],
@@ -6455,7 +6463,7 @@ const FACTS = [
   ["ut","DC & PVB","Double check: horizontal, 12\"+ above floor or grade, 12\" clearance (all sides in a pit). PVB: vertical, 12\" above the highest outlet it serves, never below grade.","ut205"],
   ["ut","Pan drain","A water heater pan may drain straight into a stack or branch if it's trapped and vented and has a primer, barrier seal or deep-seal trap.","ut205"],
   ["ut","T&P bends","T&P discharge: no more than 180° of total direction change.","ut205"],
-  ["ut","Seismic","Straps in the upper and lower thirds of the heater.","ut205"],
+  ["mech","Seismic straps","Upper and lower thirds of the heater, the lower one at least 4\" above the controls (IRC P2801.8).","ut205"],
   ["ut","Below-grade vents","Below-grade floor drains and floor sinks may run a horizontal dry vent below the flood rim, with a cleanout in the vertical vent.","ut205"],
   ["ut","Pumps & tanks","No booster pump on a public main unless R309-540 allows it. A nonpotable tank's makeup water needs a 4\" air gap above the overflow, or an RP.","ut205"],
   ["bf","Standards","AVB: ASSE 1001. RP: ASSE 1013. Double check: ASSE 1015. PVB: ASSE 1020. Read the tag.","bfcn"],
@@ -6492,7 +6500,7 @@ const FACTS = [
   ["mech","Salt-free","TAC keeps the minerals in the water but turns them into tiny crystals that don't stick. No ANSI/NSF standard covers it; DVGW W512 is the test.","tac"],
   ["mech","Ionizers","Alkaline water ionizers are electrolysis cells. Medical claims for alkaline water aren't supported: the body controls its own pH.","ion"],
   ["mech","Recirc rules","Demand recirc on the cold line can't send back water over 104°F, and the pump must start on demand and stop when the loop is hot.","recirc"],
-  ["mech","Legionella","Grows at 95–115°F and starts dying above 131°F. Hence 140°F tanks with a 1017 mixing valve.","jlcleg"],
+  ["mech","Legionella","Grows at about 77–113°F and starts dying above 131°F. Hence 140°F tanks with a 1017 mixing valve.","jlcleg"],
   ["mech","Tankless specs","Navien NPE-240: up to 199,900 BTU/h, ¾\" gas inlet, 3.5–10.5\" w.c. natural gas, 0.5 gpm to fire, rated to 10,100 ft.","navq"],
   ["mech","Inlet screen","Tankless units have a cold-inlet screen. A plugged one throws low-flow codes: clean it every flush.","tklm"],
   ["wh","T&P pipe","Rated 100 psi at 180°F. PEX with insert fittings goes one size up, with the end fastened.","whcn"],
@@ -6512,8 +6520,8 @@ const FACTS = [
   ["pipe","95/5 solder","Tin with about 5% antimony, melts 452–464°F (ASTM B32). Needs a tight fit. Flux to ASTM B813; wipe the residue.","harris"],
   ["pipe","Lead-free","Since Jan 4, 2014: no more than 0.25% lead on wetted surfaces; solder and flux 0.2%. Shower valves and tub fillers are exempt.","vdh"],
   ["pipe","ABS to PVC","Green transition cement (ASTM D3138) is non-pressure only. Many inspectors want a shielded coupling (ASTM C1461) instead: ask first.","pr"],
-  ["pipe","No-hub","Standard bands: 60 in-lb with a 5/16\" driver, tightened alternately. ASTM C1460 couplings join cast iron to PVC or ABS.","nh"],
-  ["pipe","Supports","PVC/ABS every 4 ft. CPVC 3 ft (1\" and under). Copper 6 ft (1¼\" and under). Copper and PEX vertical 10 ft. Hangers must not cause galvanic action.","pmag"],
+  ["pipe","No-hub","Standard bands: 60 in-lb with a 5/16\" driver, tightened alternately. ASTM C1460 couplings join cast iron to ABS or PVC.","nh"],
+  ["pipe","Supports","ABS/PVC every 4 ft. CPVC 3 ft (1\" and under). Copper 6 ft (1¼\" and under). Copper and PEX vertical 10 ft. Hangers must not cause galvanic action.","pmag"],
   ["pipe","Shield plates","16 ga, wherever pipe is within 1¼\" of the face; reach 2\" above the sole plate and below the top plate. Rock in a trench: dig 3\" under the pipe and bed it in sand.","egP"],
   ["pipe","Sprinkler pipe","Where a house has sprinklers: no shutoff may isolate them except the main, never paint a head, ¾\" pipe minimum, and a tag at the main valve.","spk"],
   ["safe","Trenches","Protective system at 5 ft, engineer design at 20 ft, spoil 2 ft back, a way out within 25 ft at 4 ft, test the air past 4 ft.","trench"],
@@ -7235,13 +7243,20 @@ $("bk-file").addEventListener("change", async () => {
   } catch(e){ bkSay("That file isn't a Handbook backup.", "err"); }
   $("bk-file").value = "";
 });
-document.querySelectorAll("#look [data-reset]").forEach(b => b.addEventListener("click", () => {
-  if (!b.classList.contains("confirm")){ b.dataset.label = b.textContent; b.classList.add("confirm"); b.textContent = "Tap again to confirm"; setTimeout(() => { b.classList.remove("confirm"); b.textContent = b.dataset.label; }, 3500); return; }
+/* resets ask with a real yes/no that says what goes (a double tap with gloves can't do it), and "Erase everything" really
+   erases: saved settings and jobs, photos and files, and the safety copies. */
+document.querySelectorAll("#look [data-reset]").forEach(b => b.addEventListener("click", async () => {
   const what = b.dataset.reset, drop = k => { try { localStorage.removeItem(k); } catch(e){} };
+  let jobs = 0; try { jobs = (JSON.parse(localStorage.getItem("jpb-jobs") || "{}").jobs || []).length; } catch(e){}
+  const ask = {look: "Reset the look and settings to how the book came?", pins: "Clear every pin?", fc: "Clear your flashcard progress?",
+    all: `Erase everything in the app on this phone? That's ${jobs} job${jobs === 1 ? "" : "s"} with their photos and files, people, notes, pins, settings and the safety copies. It can't be undone: back up first if you might want any of it.`}[what];
+  if (!ask || !confirm(ask)){ if (window.navReseat) navReseat(); return; }
   if (what === "look") ["jpb-prefs","jpb-theme","jpb-vest","jpb-zoom"].forEach(drop);
   else if (what === "pins") drop("jpb-pins");
   else { let keys = []; try { keys = Object.keys(localStorage); } catch(e){}
-    keys.filter(k => k.startsWith(what === "fc" ? "jpb-fc" : "jpb-")).forEach(drop); }
+    keys.filter(k => k.startsWith(what === "fc" ? "jpb-fc" : "jpb-")).forEach(drop);
+    if (what === "all"){ window.RESTORING = true;   /* nothing saves again on the way out */
+      await Promise.all(["jpb-files", "jpb-snap"].map(n => new Promise(ok => { try { const r = indexedDB.deleteDatabase(n); r.onsuccess = r.onerror = r.onblocked = () => ok(); setTimeout(ok, 3000); } catch(e){ ok(); } }))); } }
   location.reload();
 }));
 $("set-update").addEventListener("click", async () => {
@@ -7353,7 +7368,7 @@ function fillFrom(){
   cFrom.innerHTML = kind === "temp" ? `<option value="F">°F</option><option value="C">°C</option>` : UNITS[kind].map(u => `<option value="${u[0]}">${u[1]}</option>`).join("");
 }
 function convert(){
-  const v = val("c-val");
+  const v = parseFloat($("c-val").value.replace(/[−–]/g, "-").replace(/,/g, ""));
   if (!isFinite(v)){ cOut.innerHTML = `<tr><td colspan="2">${warn("Type a number.")}</td></tr>`; return; }
   if (kind === "temp"){
     const f = cFrom.value === "F" ? v : v*9/5+32, c = (f-32)*5/9;
@@ -7938,7 +7953,7 @@ function slCalc(){
   if (!(run > 0) || !(f >= 0)){ el.innerHTML = warn("Enter a run over 0 and a fall of 0 or more."); mathOut("sl-math", []); return; }
   const s = f / run, e = 1e-9;
   const verdict = s + e >= 0.25 ? `<b class="ok">✓ Meets ¼"/ft: any size</b>` : s + e >= 0.125 ? `<b class="ok">✓ Meets ⅛"/ft: 3" and up only</b>` : warn("✗ Under ⅛\"/ft: too flat for a drain");
-  el.innerHTML = `${toFrac16(s).replace('"','')}"/ft<small>${nf(s,3)} in/ft · ${nf(f/(run*12)*100,2)}% · ${verdict}</small>`;
+  el.innerHTML = `${nf(s,3)}"/ft<small>about ${toFrac16(s).replace('"','')}"/ft · ${nf(f/(run*12)*100,2)}% · ${verdict}</small>`;
   mathOut("sl-math", [`Slope = fall ÷ run = ${nf(f,3)} in ÷ ${nf(run,2)} ft = <b>${nf(s,3)} in/ft</b>`, `Percent = fall ÷ (run × 12) × 100 = ${nf(f,3)} ÷ ${nf(run*12,1)} × 100 = ${nf(f/(run*12)*100,2)}%`, `Code minimum: ¼"/ft (0.25) for 2½" and smaller, ⅛"/ft (0.125) for 3"–6"`]);
 }
 document.querySelectorAll("#sl-mode button").forEach(b => b.addEventListener("click", () => {
@@ -8529,7 +8544,7 @@ $("pf-need").innerHTML = PF_NEED.map(([n, p], i) => `<option value="${p}"${i ===
 function pfRows(){
   $("pf-rows").innerHTML = PF.map((r, i) => `<tr>
     <td><select data-i="${i}" data-f="p" aria-label="Section ${i+1} pipe">${PF_PIPES.map((p, j) => `<option value="${j}"${j === r.p ? " selected" : ""}>${p[0]}</option>`).join("")}</select></td>
-    <td><input data-i="${i}" data-f="l" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="40'" value="${esc(r.l)}" aria-label="Section ${i+1} length, like 40' or 480 inches"></td>
+    <td><input data-i="${i}" data-f="l" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="40'" value="${esc(r.l)}" aria-label="Section ${i+1} length in feet, like 40, or 480&quot; in inches"></td>
     <td><input data-i="${i}" data-f="q" type="number" inputmode="decimal" min="0" step="any" value="${esc(r.q)}" aria-label="Section ${i+1} flow in gpm"></td>
     <td><input data-i="${i}" data-f="e" type="number" inputmode="numeric" min="0" step="1" value="${esc(r.e)}" aria-label="Section ${i+1} number of 90s"></td>
     <td><input data-i="${i}" data-f="t" type="number" inputmode="numeric" min="0" step="1" value="${esc(r.t)}" aria-label="Section ${i+1} number of tees, flowing through the branch"></td>
@@ -8542,7 +8557,7 @@ function pfCalc(){
   if (!isFinite(rise) || !(other >= 0)) return clear("Height like 10' (0 if level) and other losses (0 or more).");
   let fric = 0, vmax = 0, vmaxAt = "", bad = null; const det = [], steps = [];
   PF.forEach((r, i) => {
-    const [name, id, C, e90, eT] = PF_PIPES[r.p], L = tapeIn(r.l) / 12, q = parseFloat(r.q), ne = r.e === "" ? 0 : parseFloat(r.e), nt = r.t === "" ? 0 : parseFloat(r.t);
+    const [name, id, C, e90, eT] = PF_PIPES[r.p], L = feetIn(r.l) / 12, q = parseFloat(r.q), ne = r.e === "" ? 0 : parseFloat(r.e), nt = r.t === "" ? 0 : parseFloat(r.t);
     if (!(L >= 0) || !(q >= 0) || !(ne >= 0) || !(nt >= 0)){ bad = bad || `Section ${i+1}: length like 40' or 480, flow and fitting counts 0 or more.`; return; }
     const eq = L + ne * e90 + nt * eT, per = q > 0 ? hwPsi100(q, id, C) : 0, loss = per * eq / 100, v = q * 0.4085 / (id * id);
     fric += loss; if (v > vmax){ vmax = v; vmaxAt = `section ${i+1}, ${name}`; }
@@ -8776,7 +8791,7 @@ function sfCalc(){
 /* leak or just cold? gas law on absolute pressure; local air pressure from elevation (standard atmosphere) */
 const atmPsi = ft => 14.696 * Math.pow(1 - 6.8754e-6 * ft, 5.2559);
 function atCalc(){
-  const p = val("at-p"), t1 = val("at-t1"), t2 = val("at-t2"), el = val("at-el"), now = parseFloat($("at-now").value);
+  const p = val("at-p"), t1 = parseFloat($("at-t1").value.replace(/[−–]/g, "-")), t2 = parseFloat($("at-t2").value.replace(/[−–]/g, "-")), el = val("at-el"), now = parseFloat($("at-now").value);
   const ok = p >= 0 && t1 > -100 && t1 < 200 && t2 > -100 && t2 < 200 && el >= 0 && el <= 14000;
   if (!ok){ $("at-exp").innerHTML = warn("Enter psi, two temps (°F) and an elevation."); $("at-verdict").textContent = "—"; mathOut("at-math", []); return; }
   const a = atmPsi(el), exp = (p + a) * (t2 + 459.67) / (t1 + 459.67) - a, d = exp - p;
@@ -8876,7 +8891,7 @@ const CODES = {
   irc21: ["2021 IRC", "My code <b>2021 IRC</b> · Other <b>2024 IPC</b>", "Set to the <b>2021 IRC</b> (houses). <b>Calc → Sizing</b> counts a shower trap at 2\"."],
   ipc24: ["2024 IPC", "My code <b>2024 IPC</b> · Houses <b>2021 IRC</b>", "Set to the <b>2024 IPC</b> (non-house permits from 7/1/2026). Same tables as 2021 in this book, plus the vacuum test."]
 };
-let myCode = (c => CODES[c] ? c : "ipc21")(store.get("jpb-code", "ipc21"));
+let myCode = (c => CODES[c] ? c : "irc21")(store.get("jpb-code", "irc21"));   /* houses: 2021 IRC until you pick */
 const SHOWER = FIX.findIndex(f => /^Shower \(≤5\.7/.test(f[0]));
 function setCode(c){
   myCode = c; store.set("jpb-code", c);
@@ -9091,7 +9106,7 @@ const CARDS = [
   ["Tricks","Toilet dye test: how long do you wait?","10 minutes. Color in the bowl = the flapper leaks","Flush right after so it doesn't stain (EPA WaterSense)."],
   ["Tricks","Turning the water back on: which faucet first?","A big cold one with no aerator, opened slowly: tub spout, utility sink, hose bibb","It purges air and crud before it reaches aerators and cartridges. Hot last."],
   ["Tricks","Thawing a frozen pipe: what's off limits?","Any open flame or torch","Open the faucet and use gentle heat until full pressure (Red Cross)."],
-  ["Tricks","Water hammer arrester on a branch: where?","At the end, between the last two fixtures. Over 20 ft, add another","Over 55 psi, go one size up (PDI-WH201)."],
+  ["Tricks","Water hammer arrester on a branch: where?","At the end, between the last two fixtures. Over 20 ft, add another","Above about 65 psi flowing, go one size up (PDI WH-201)."],
   ["Tricks","¼\"/ft with a 2 ft level: how much shim?","½\" under the low end (1\" on a 4 ft level)","Bubble centered with the shim in = on grade."],
   ["Tools","Crimp passes GO and also fits NO-GO. What's wrong?","Over-crimped: tool is closing too far","Cut it out, adjust the tool per the manual, recrimp with a new ring."],
   ["Tools","RIDGID Lifetime Service Agreement: the catch?","Register within 90 days (bought at The Home Depot), with serials","Miss the window and it's just the 3-year warranty."],
@@ -9582,7 +9597,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-15z2";
+{ const NEWS = "2026-11-15z3";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -9679,7 +9694,7 @@ function etCalc(){
   const vs = val("et-gal"), t1 = val("et-t1"), t2 = val("et-t2"), p1 = val("et-p1"), p2 = val("et-p2"), el = val("et-el");
   const rc = rho(t1), rh = rho(t2);
   const bad = !(vs > 0) || !(el >= 0 && el <= 14000) || !(p1 >= 0) || !(p2 > p1) || isNaN(rc) || isNaN(rh) || !(t2 > t1);
-  if (bad){ $("et-ans").innerHTML = warn(isNaN(rc) || isNaN(rh) ? "Temps between 40 and 180°F, hot above cold." : !(p2 > p1) ? "Max psi has to be above house psi." : "Fill in every box."); ["et-exp","et-af"].forEach(id => $(id).textContent = "—"); $("et-pick").textContent = "—"; mathOut("et-math", []); return; }
+  if (bad){ $("et-ans").innerHTML = warn(isNaN(rc) || isNaN(rh) ? "Temps between 40 and 180°F, hot above cold." : !(t2 > t1) ? "Heater set has to be above cold water in." : !(p2 > p1) ? "Max psi has to be above house psi." : "Fill in every box."); ["et-exp","et-af"].forEach(id => $(id).textContent = "—"); $("et-pick").textContent = "—"; mathOut("et-math", []); return; }
   const a = atmPsi(el), A1 = p1 + a, A2 = p2 + a, grow = vs * (rc / rh - 1), af = 1 - A1 / A2, vt = grow / af;
   $("et-ans").innerHTML = `${nf(vt, 2)} gal<small>total tank volume</small>`;
   $("et-pick").textContent = vt <= 2 ? "A 2-gal tank covers it." : vt <= 4.5 ? "Go to a 4.5-gal size tank." : "Bigger than 4.5 gal: size it from the maker's chart.";
@@ -10371,7 +10386,7 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
 { const num = ["ej-q", "ej-in", "ej-90", "ej-45", "ej-ck", "ej-gv"], len = ["ej-d", "ej-pd", "ej-lift", "ej-len"];
   const tm = s => s < 90 ? `${Math.round(s)} s` : s < 5400 ? `${nf(s / 60, 1)} min` : `${nf(s / 3600, 1)} hr`;
   function ejCalc(){
-    const D = parseLen($("ej-d").value), pd = parseLen($("ej-pd").value), lift = tapeIn($("ej-lift").value) / 12, L = tapeIn($("ej-len").value) / 12;
+    const D = parseLen($("ej-d").value), pd = parseLen($("ej-pd").value), lift = tapeFt("ej-lift"), L = tapeFt("ej-len");
     const [q, qin, n90, n45, nck, ngv] = num.map(val), id = +$("ej-pipe").value, out = $("ej-out");
     const fail = t => { out.innerHTML = `<tr><td>${warn(t)}</td></tr>`; mathOut("ej-math", []); };
     if (!(D > 0 && pd > 0)) return fail("Type the basin's inside diameter and the pump-down, like 18 and 10.");
@@ -10821,7 +10836,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-15z2";
+var BUILD = "handbook-2026-11-15z3";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
