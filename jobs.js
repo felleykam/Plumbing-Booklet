@@ -55,7 +55,13 @@ const jfMB = n => n >= 1e6 ? (n / 1e6).toFixed(1) + " MB" : Math.max(1, Math.rou
 const jfSay = (t, c) => { const s = $(JF.sayId || "jf-say"); if (s){ s.textContent = t; s.className = (s.id === "bk-status" ? "status " : "note ") + (c || ""); } };
 const jbOpts = (o, v) => Object.entries(o).map(([k, t]) => `<option value="${k}"${k === v ? " selected" : ""}>${t}</option>`).join("");
 const jbList = (a, v) => a.map(x => `<option${x === v ? " selected" : ""}>${esc(x)}</option>`).join("");
-const jbIn = (k, j) => k === "all" || (k === "done") === (j.st === "done");
+/* Archived: a job you haven't opened or changed in 30 days (or put there yourself). Pinned jobs never go.
+   It leaves Active, Done, Home and Coming up; opening it doesn't bring it back, changing it or "Bring back" does. */
+const JB_ARCH_DAYS = 30;
+const jbLast = j => Math.max(+j.t || 0, +j.seen || 0, +j.made || 0);
+const jbArchMe = j => +j.arch > 0 && +j.arch >= (+j.t || 0);   /* archived by hand, and nothing changed since */
+const jbArch = j => !j.pin && (jbArchMe(j) || Date.now() - jbLast(j) > JB_ARCH_DAYS * 864e5);
+const jbIn = (k, j) => k === "all" || (k === "arch" ? jbArch(j) : !jbArch(j) && (k === "done") === (j.st === "done"));
 /* iPhone: a system pop-up (Delete?, a picker wheel, the photo sheet) or the keyboard vanishing can leave the page sitting off
    and the bottom bar floating. Re-seat it after each one. */
 const jbReseat = () => { try { if (window.navReseat) navReseat(); } catch(e){} };
@@ -109,6 +115,8 @@ function jbClean(){
   jbD.jobs = arrO(jbD.jobs);
   jbD.bin = arrO(jbD.bin).filter(b => isO(b.item) && typeof b.at === "number");
   if (!isO(jbD.fold)) jbD.fold = {};
+  jbD.rules = str(jbD.rules);
+  if (jbD.tpl != null && !isO(jbD.tpl)) jbD.tpl = {}; if (jbD.tpl) Object.keys(jbD.tpl).forEach(k => { if (!JB_SNAME[k] || !Array.isArray(jbD.tpl[k])) delete jbD.tpl[k]; else jbD.tpl[k] = jbD.tpl[k].map(str).filter(Boolean); });
   jbD.subs.forEach(x => { if (!JB_ICONS.includes(x.icon)) x.icon = ""; });
   ['stageCol', 'tagCol'].forEach(k => { const o = isO(jbD[k]) ? jbD[k] : {}; jbD[k] = {}; Object.keys(o).forEach(x => { if (JB_PAL.includes(o[x])) jbD[k][x] = o[x]; }); });
   ["people", "builders", "subs"].forEach(k => { jbD[k] = arrO(jbD[k]); jbD[k].forEach(x => { x.id = str(x.id) || jbId(); x.n = str(x.n); }); });
@@ -123,10 +131,12 @@ function jbClean(){
     if (!JB_ST[j.st]) j.st = "open";
     if (j.stages != null && !isO(j.stages)) j.stages = null;   /* jbFix builds it fresh */
     if (j.stages) JB_STG.forEach(([k]) => { const S = j.stages[k] = Object.assign({st: "todo", d0: "", d1: "", lead: "", done: [], extra: []}, isO(j.stages[k]) ? j.stages[k] : {});
-      if (!JB_SST[S.st]) S.st = "todo"; S.done = Array.isArray(S.done) ? S.done.map(str) : []; S.extra = arrO(S.extra); if (S.hide && !Array.isArray(S.hide)) S.hide = []; });
+      if (!JB_SST[S.st]) S.st = "todo"; S.done = Array.isArray(S.done) ? S.done.map(str) : []; S.extra = arrO(S.extra); if (S.hide && !Array.isArray(S.hide)) S.hide = [];
+      S.ord = Array.isArray(S.ord) ? S.ord.map(str) : []; if (!isO(S.doneAt)) S.doneAt = {}; });
     if (j.xs && !Array.isArray(j.xs)) delete j.xs;
     if (!JB_PAL.includes(j.color)) j.color = "";
     if (JB_EMOJI[j.icon]) j.icon = JB_EMOJI[j.icon]; if (!JB_ICONS.includes(j.icon)) j.icon = ""; j.pin = !!j.pin;
+    if (!(+j.seen > 0)) delete j.seen; if (!(+j.arch > 0)) delete j.arch;
     if (typeof j.made !== "number") j.made = Math.min(+j.t || Date.now(), ...j.log.map(e => +e.at || Infinity));   /* when the job was started here */
   });
 }
@@ -337,6 +347,9 @@ function jnIntro(n){
   <p class="note"><b>Good notes are short, same-day and specific:</b> what got done, what didn't and why (delays!), who said what (use a <code>&gt;</code> quote), and a photo of anything that'll be hidden behind drywall. Every model and serial you install: write it as <code>Serial: …</code> so it's there for a warranty call.</p>
 </div></details>`;
 }
+/* the rules for every job (My jobs → Rules for every job), shown live at the top of each job's notes, read-only there */
+const jbRulesHtml = () => { const r = String(jbD.rules || "").trim(); if (!r) return "";
+  return `<div class="jb-rules"><p class="jn-prevh">📌 Rules for every job · these come first</p><div class="jn-b">${jnMd(r, "rules").replace(/data-tk=/g, "disabled data-tk=")}</div><p class="note"><button type="button" class="linkish" data-a="rules-go">Change them</button> on My jobs.</p></div>`; };
 const jnBlock = (o, list, ph) => `${jnIntro(list.length)}<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label>
     <label for="jn-d">Date<input id="jn-d" type="date" value="${jbDay()}"></label></div>
   ${JN_TOOLS}
@@ -368,7 +381,7 @@ const jbRow = (j, attr = "data-open", extra = "") => { const n = jbNext(j), c = 
   const gist = last ? last.b.split("\n").map(x => jnPlain(x, last.d)).find(Boolean) || "" : "";
   return `<button type="button" class="jb-row${j.color ? " jb-colored" : ""}"${j.color ? ` style="--jc:var(--pal-${j.color})"` : ""} ${attr}="${j.id}"><b>${j.pin ? '<span class="jb-pin" aria-label="Pinned">📌</span> ' : ""}${jbIco(jbIcon(j))}${esc(jbName(j))}</b><span>${[(j.name || "").trim() && j.a, eName("sub", j.sub), j.who, c && c.n, pName(j.lead) && "Lead " + pName(j.lead)].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
     + (extra || (gist ? `<span class="jb-gist">${esc(gist.slice(0, 90))}</span>` : ""))
-    + `<span class="jb-tags"><span class="badge jb-sbadge jt-k-${cs}">${esc(JB_SNAME[cs])}</span><span class="badge">${done} of ${act.length} stages</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${tk ? `<span class="badge">☐ ${tk} to do</span>` : ""}${qs ? `<span class="badge jb-qb">? ${qs} question${qs === 1 ? "" : "s"}</span>` : ""}${(li => li && li.r === "fail" ? `<span class="badge jb-fail">✗ Failed inspection</span>` : li && li.r === "partial" ? `<span class="badge jb-fail">◐ Partial inspection</span>` : "")(j.insp.filter(i => i.r !== "booked").sort(jbByDate)[0])}${n ? n.d < jbDay() ? `<span class="badge jb-fail">📋 Inspection ${jbNice(n.d)}: result?</span>` : `<span class="jb-insp">📋 Inspection ${jbNice(n.d)}</span>` : ""}</span></button>`; };
+    + `<span class="jb-tags"><span class="badge jb-sbadge jt-k-${cs}">${esc(JB_SNAME[cs])}</span><span class="badge">${done} of ${act.length} stages</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${jbArch(j) ? `<span class="badge">🗄 Archived</span>` : ""}${tk ? `<span class="badge">☐ ${tk} to do</span>` : ""}${qs ? `<span class="badge jb-qb">? ${qs} question${qs === 1 ? "" : "s"}</span>` : ""}${(li => li && li.r === "fail" ? `<span class="badge jb-fail">✗ Failed inspection</span>` : li && li.r === "partial" ? `<span class="badge jb-fail">◐ Partial inspection</span>` : "")(j.insp.filter(i => i.r !== "booked").sort(jbByDate)[0])}${n ? n.d < jbDay() ? `<span class="badge jb-fail">📋 Inspection ${jbNice(n.d)}: result?</span>` : `<span class="jb-insp">📋 Inspection ${jbNice(n.d)}</span>` : ""}</span></button>`; };
 const eRow = (t, x) => { const n = eJobs(t, x).length, c = t === "sub" && cityById(x.city);
   const sub = t === "bld" ? [x.ph, (n2 => `${n2 || "no"} subdivision${n2 === 1 ? "" : "s"}`)(jbD.subs.filter(s => s.bld === x.id).length)] : [c && c.n, eName("bld", x.bld)];
   return `<button type="button" class="jb-row" data-ent="${t}|${x.id}"><b>${t === "sub" ? jbIco(x.icon) : ""}${esc(x.n || "No name")}</b><span>${[...sub, `${n} job${n === 1 ? "" : "s"}`].filter(Boolean).map(esc).join(" · ")}</span></button>`; };
@@ -382,7 +395,7 @@ const jbMark = (txt, W) => { let h = esc(txt); W.forEach(w => { const ew = esc(w
 function jbFindHtml(q){
   const W = q.toLowerCase().split(/\s+/).filter(Boolean); if (!W.length) return "";
   const hits = jbD.jobs.filter(j => { const h = jbHay(j); return W.every(w => h.includes(w)); })
-    .sort((a, b) => (a.st === "done") - (b.st === "done") || jbNat(a, b));
+    .sort((a, b) => (jbArch(a) - jbArch(b)) || (a.st === "done") - (b.st === "done") || jbNat(a, b));
   const where = j => { if (W.every(w => jbName(j).toLowerCase().includes(w))) return "";
     for (const e of j.log.slice().sort(jnSort)) for (const ln of e.b.split("\n")) if (W.some(w => ln.toLowerCase().includes(w))) return `${jbShort(new Date(e.d + "T12:00:00").getTime())} · ${jnPlain(ln, e.d) || ln}`;
     return ""; };
@@ -447,13 +460,16 @@ function jbListHtml(){
   ${jbD.jobs.length ? `<div class="calc jb-find"><label for="jb-q" class="wide">Find a job<input id="jb-q" type="search" autocomplete="off" autocorrect="off" enterkeyhint="search" value="${esc(JB.q || "")}" placeholder="Lot, address, person, serial, any word in a note"></label></div>` : ""}
   <div id="jb-res">${fq ? jbFindHtml(fq) : ""}</div>
   <div id="jb-main"${fq ? " hidden" : ""}>
-  <div class="seg jb-seg" role="group" aria-label="Show">${[["open", "Active"], ["done", "Done"], ["all", "All"]].map(([k, t]) => `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}">${t} · ${jbD.jobs.filter(j => jbIn(k, j)).length}</button>`).join("")}</div>
+  <div class="seg jb-seg" role="group" aria-label="Show">${[["open", "Active"], ["done", "Done"], ["arch", "Archived"], ["all", "All"]].map(([k, t]) => `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}">${t} · ${jbD.jobs.filter(j => jbIn(k, j)).length}</button>`).join("")}</div>
   ${tags.length ? `<div class="chips jn-tagbar">${JB.tag ? `<button type="button" data-tagclr="1" aria-pressed="true">#${esc(JB.tag)} ✕ show all</button>` : tags.map(t => `<button type="button" class="jn-tagchip" style="${jbTagStyle(t)}" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")}</div>` : ""}
-  <p class="note jb-sortnote">${JB.show === "open" ? "Active = open and on hold. " : ""}A to Z by name (Lot 2 before Lot 12). Pin a job from its page to keep it on top.</p>
+  <p class="note jb-sortnote">${JB.show === "open" ? "Active = open and on hold. " : JB.show === "arch" ? "Jobs you haven't opened or changed in 30 days, and ones you archived. Change one, or tap Bring back on its page, and it's active again. " : ""}A to Z by name (Lot 2 before Lot 12). Pin a job from its page to keep it on top${JB.show === "arch" ? "" : ". Jobs you don't open or change for 30 days move to Archived; pinned ones never do"}.</p>
   ${PIN.length ? `<div class="jb-grp"><div class="jb-th jb-th1"><span class="jb-tf"><b>📌 Pinned</b><span class="jb-tn">${PIN.length}</span></span></div><div class="jb-list">${PIN.map(j => jbRow(j)).join("")}</div></div>` : ""}
   ${L.length ? (L.length > PIN.length ? jbGroups(L.filter(j => !j.pin)) : "") : `<div class="jb-list"><p class="note">${jbD.jobs.length ? `No ${JB.show === "open" ? "active" : JB.show === "done" ? "done" : ""} jobs${JB.tag ? ` tagged <b>#${esc(JB.tag)}</b>` : ""}. ${JB.tag ? "Tap the tag above to show all." : JB.show !== "all" ? "Tap <b>All</b> to see every job." : ""}` : "No jobs yet. Tap <b>+ New job</b>. Each job is a timeline, Underground to Final, with the blanks ready to fill in as you go."}</p></div>`}
   ${jbOpenHtml()}
   </div>
+  <p class="card-h" id="jb-rules-h">Rules for every job</p>
+  <div class="calc"><label for="jb-rules" class="wide">Shows at the top of every job's notes, old and new. Change it here and every job has it.<textarea id="jb-rules" class="jn-ta" rows="4" placeholder="Test every top-out at 100 psi for 15 min. !! No push fittings inside walls. - [ ] photo every stub-up before drywall">${esc(jbD.rules || "")}</textarea></label></div>
+  <div class="jb-in"><p class="note">Same marks as notes: <code>!!</code> for a warning, <code>- [ ]</code> for a to-do, <code>#</code> for a heading. These come first: a job's own notes sit under them.</p></div>
   <p class="card-h">Hours</p>
   <div class="x"><table class="t wrap"><tbody>
     <tr><th>Today</th><td>${jbHr(H.today)} hr</td></tr>
@@ -545,7 +561,8 @@ function jbStageHtml(j, k){
   ${hrs.length ? `<div class="x"><table class="t wrap jb-t"><tbody>${hrs.map(jbHrsRow).join("")}</tbody></table></div>` : ""}
 
   <p class="card-h" data-fold="s-notes">Notes</p>
-  ${jnBlock(j, j.log.filter(e => e.s === k), "Gate code 1234. - [ ] call the super. !! gas not tested. [[Dave]] #warranty")}
+  ${jbRulesHtml()}
+  ${jnBlock(j, j.log.filter(e => e.s === k),"Gate code 1234. - [ ] call the super. !! gas not tested. [[Dave]] #warranty")}
 
   <p class="card-h" data-fold="s-photos">Photos</p>
   <div class="jb-in"><div class="set-btns"><label class="btn">Add photos<input type="file" id="jf-ph" accept="image/*" multiple hidden></label></div></div>
@@ -560,6 +577,7 @@ function jbJobHtml(j){
   return `<div class="set-btns jb-top"><button type="button" class="btn ghost" data-a="back">‹ All jobs</button></div>
   ${j.color ? `<div class="jb-jobbar" style="--jc:var(--pal-${j.color})" aria-hidden="true"></div>` : ""}
   <p class="note jb-stamp">Added ${jbShort(j.made)} · last changed ${jbAgo(j.t)}</p>
+  ${jbArch(j) ? `<div class="jb-in"><p class="note jb-archbar">🗄 <b>Archived.</b> ${jbArchMe(j) ? "You put it here." : `Not opened or changed since ${jbShort(jbLast(j))}.`} It's off Active, Home and Coming up. Changing anything brings it back too.</p><div class="set-btns"><button type="button" class="btn" data-a="job-unarch">Bring back to Active</button></div></div>` : ""}
   ${j.st !== "done" && (A => A.length && A.every(([k]) => j.stages[k].st === "done"))(jbStages(j).filter(([k]) => j.stages[k].st !== "skip")) ? `<div class="jb-in"><p class="note jb-donebar">✓ <b>Every stage is done.</b> Finished with this job?</p><div class="set-btns"><button type="button" class="btn" data-a="job-done">Mark the job Done</button></div></div>` : ""}
   <p class="card-h" data-fold="details">Job details</p>
   <div class="calc">
@@ -602,7 +620,7 @@ function jbJobHtml(j){
   <div class="jb-in"><div class="set-btns"><label class="btn ghost">Add files (PDF, plans)<input type="file" id="jf-fi" multiple hidden></label></div></div>
   <div class="jb-list" id="jf-files"></div>
   <p class="card-h" data-fold="look">Look: pin, icon, color <span class="jb-hint">so you spot it fast in the list</span></p>
-  <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-a="pin" aria-pressed="${j.pin}">${j.pin ? "📌 Pinned to top · unpin" : "📌 Pin to top of the list"}</button></div></div>
+  <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-a="pin" aria-pressed="${j.pin}">${j.pin ? "📌 Pinned to top · unpin" : "📌 Pin to top of the list"}</button>${jbArch(j) ? "" : `<button type="button" class="btn ghost" data-a="job-arch">🗄 Archive it now</button>`}</div></div>
   <details class="explain jb-pickd"><summary>Icon: ${jbIco(jbIcon(j))}${j.icon ? JB_ISO[j.icon][0] : (eById("sub", j.sub) || {}).icon ? `the subdivision's (${esc(eName("sub", j.sub))})` : "none"} · change</summary>
     ${jbIcoPick(j.icon, (eById("sub", j.sub) || {}).icon ? "Use the subdivision's" : "None")}</details>
   <div class="jb-in"><p class="note">Color: a stripe on this job's row everywhere and a bar on this page.</p></div>
@@ -656,6 +674,7 @@ function jbDraw(){
   const body = $("jb-body"), ae = document.activeElement, had = !!ae && ae !== document.body && body.contains(ae);
   if (had) ae.blur();   /* a box removed while the keyboard is up never says so, and the bar floats: close it properly first */
   const en = eCur(), j = jbCur(), p = JB.person && pById(JB.person); if (JB.open && !j) JB.open = null; if (JB.person && !p) JB.person = null; if (JB.ent && !en) JB.ent = null;
+  if (j && !jbArch(j) && Date.now() - (+j.seen || 0) > 36e5){ j.seen = Date.now(); jbSave(); }   /* opening a job keeps it out of Archived (saved at most hourly) */
   const dl = `<datalist id="jb-ppl">${jbD.people.map(x => `<option value="${esc(x.n)}">${esc(x.role)}</option>`).join("")}</datalist>`
     + ["bld", "sub"].map(t => `<datalist id="jb-${t}s">${eList(t).map(x => `<option value="${esc(x.n)}"></option>`).join("")}</datalist>`).join("");
   body.innerHTML = (en ? jbEntHtml(JB.ent.t, en) : p ? jbPersonHtml(p) : j ? jbJobHtml(j) : jbListHtml()) + dl;
@@ -669,7 +688,7 @@ function jbDraw(){
   bindPn(body);
   if (had) jbReseat();
 }
-const jbTouch = o => { o.t = Date.now(); jbSave(); jbDraw(); };
+const jbTouch = o => { o.t = Math.max(Date.now(), (+o.arch || 0) + 1); jbSave(); jbDraw(); };   /* later than any hand archive, so a change brings it back */
 const jbTop = () => { const c = $("jobs-card"); if (c) c.scrollIntoView({block: "start"}); };
 const jbOpenStage = () => { const o = $("jt-open"); if (o) o.scrollIntoView({block: "start"}); };
 const jbState = () => ({open: JB.open, stage: JB.stage, person: JB.person, ent: JB.ent});
@@ -747,10 +766,11 @@ B.addEventListener("click", e => {
     jbTouch(j); return; }
   if (t.dataset.pdel && j){ j.ppl = j.ppl.filter(x => x.id !== t.dataset.pdel); jbTouch(j); return; }
   if (t.dataset.ckdel && st){ const k = t.dataset.ckdel, di = jbCk(j, JB.stage).items.find(y => y.key === k);
-    if (di && !jbAsk(`Delete "${di.t}"?${di.done && di.at ? ` It's checked off (${jbShort(di.at)}), and that date goes with it.` : ""} This can't be undone.`)) return;
+    if (!di || !jbAsk(`Delete "${di.t}"?${di.done && di.at ? ` It's checked off (${jbShort(di.at)}); the date goes with it.` : ""} It goes to Recently deleted for 30 days.`)) return;
+    const bid = jbBin("ck", {id: di.id, t: di.t, done: !!di.done, at: di.at}, {jid: j.id, s: JB.stage, tpl: !!di.tpl});
     if (k[0] === "t"){ const txt = k.slice(1); st.hide = [...new Set([...(st.hide || []), txt])]; }
     else st.extra = st.extra.filter(x => "x" + x.id !== k);
-    jbTouch(j); return; }
+    jbTouch(j); jbUndo(bid); return; }
   if (t.dataset.ckmv && st){ const keys = jbCurKeys(j, JB.stage), i = keys.indexOf(t.dataset.ckmv), n = i + (+t.dataset.dir);
     if (i < 0 || n < 0 || n >= keys.length) return;
     [keys[i], keys[n]] = [keys[n], keys[i]]; st.ord = keys; jbTouch(j); return; }
@@ -760,6 +780,8 @@ B.addEventListener("click", e => {
     st.hide = [...new Set([...(st.hide || []), x.t])]; st.done = (st.done || []).filter(d => d !== x.t);
     st.extra.push({id, t: x.t, done: x.done, at: x.at}); keys[keys.indexOf(key)] = "x" + id; st.ord = keys;
     JB.rowEdit = "ck|" + id; jbTouch(j); return; }
+  if (a === "rules-go"){ JB.hist = []; JB.open = null; JB.stage = null; JB.person = null; JB.ent = null; JB.view = "jobs"; JB.q = ""; jbDraw();
+    const h = $("jb-rules-h"); if (h) h.scrollIntoView({block: "start"}); const ta = $("jb-rules"); if (ta) ta.focus({preventScroll: true}); return; }
   if (a === "ck-edit"){ JB.ckEdit = !JB.ckEdit; jbDraw(); jbOpenStage(); return; }
   if (a === "ck-save" && st){ const C = jbCk(j, JB.stage), list = C.items.map(x => x.t);
     jbD.tpl = Object.assign({}, jbD.tpl, {[JB.stage]: list});
@@ -797,27 +819,29 @@ B.addEventListener("click", e => {
   if (a === "e-new"){ const x = eGet(JB.view, "\u200b"); x.n = ""; jbSave(); JB.open = null; jbOpenEnt(JB.view, x.id); $("ef-n").focus(); return; }
   if (a === "e-del" && JB.ent){ const {t: et} = JB.ent, x = eCur(); if (!x || !jbAsk(`Delete ${x.n || "this " + ENT[et].one}? It goes to Recently deleted for 30 days.`)) return;
     const links = jbD.jobs.filter(j => j[et] === x.id).map(j => [j.id, et]).concat(et === "bld" ? jbD.subs.filter(s => s.bld === x.id).map(s => ["sub:" + s.id, "bld"]) : []);
-    jbBin(et, x, {links});
+    const bid = jbBin(et, x, {links});
     jbD[ENT[et].list] = eList(et).filter(y => y !== x); jbD.jobs.forEach(j => { if (j[et] === x.id) j[et] = ""; }); if (et === "bld") jbD.subs.forEach(s => { if (s.bld === x.id) s.bld = ""; });
-    jbGoBack(); return; }
+    jbGoBack(); jbUndo(bid); return; }
   if (a === "p-new"){ const p = {id: jbId(), n: "", role: "Other", co: "", ph: "", em: "", log: [], draft: "", t: Date.now()}; jbD.people.push(p); jbSave(); JB.open = null; jbOpenPerson(p.id); $("pp-n").focus(); return; }
   if (a === "p-del" && JB.person){ const p = pById(JB.person); if (!p || !jbAsk(`Delete ${p.n || "this person"}? They go to Recently deleted for 30 days.`)) return;
     const links = []; jbD.jobs.forEach(x => { if (x.lead === p.id) links.push([x.id, "lead"]); if (x.sup === p.id) links.push([x.id, "sup"]);
       x.ppl.filter(y => y.p === p.id).forEach(y => links.push([x.id, "ppl", y])); JB_STG.forEach(([k]) => { if (x.stages[k].lead === p.id) links.push([x.id, "stage", k]); }); });
-    jbBin("person", p, {links});
+    const bid = jbBin("person", p, {links});
     jbD.people = jbD.people.filter(x => x !== p);
     jbD.jobs.forEach(x => { if (x.lead === p.id) x.lead = ""; if (x.sup === p.id) x.sup = ""; x.ppl = x.ppl.filter(y => y.p !== p.id); JB_STG.forEach(([k]) => { if (x.stages[k].lead === p.id) x.stages[k].lead = ""; }); });
-    jbGoBack(); return; }
+    jbGoBack(); jbUndo(bid); return; }
   if (a === "jn-add" && o){ const b = $("jn-new").value.trim(); if (!b){ toast("Write the note first."); return; }
     o.log.push(Object.assign({id: jbId(), d: $("jn-d").value || jbDay(), at: Date.now(), b}, (JB.person || JB.ent) ? {} : {s: JB.stage})); o.draft = ""; jnTa = null; jbTouch(o); toast("Note added.", 1600); return; }
   if (a === "jn-save" && o){ const n = o.log.find(x => x.id === JB.edit); if (n){ n.b = $("jn-ed").value.trim() || n.b; n.d = $("jn-ed-d").value || n.d; n.ed = Date.now(); } JB.edit = null; jnTa = null; jbTouch(o); return; }
   if (a === "jn-cancel"){ JB.edit = null; jnTa = null; jbDraw(); return; }
   if (a === "jn-del" && o){ if (!jbAsk("Delete this note? It goes to Recently deleted for 30 days.")) return;
-    const n = o.log.find(x => x.id === JB.edit); if (n) jbBin("note", n, {owner: JB.ent ? JB.ent.t : JB.person ? "person" : "job", oid: o.id});
-    o.log = o.log.filter(x => x.id !== JB.edit); JB.edit = null; jnTa = null; jbTouch(o); return; }
-  if (t.dataset.del && j){ const [k, id] = t.dataset.del.split("|");
-    if (k !== "punch" && !jbAsk(k === "hrs" ? "Delete these hours?" : "Delete this inspection?")) return;
-    j[k] = j[k].filter(x => x.id !== id); jbTouch(j); return; }
+    const n = o.log.find(x => x.id === JB.edit), bid = n && jbBin("note", n, {owner: JB.ent ? JB.ent.t : JB.person ? "person" : "job", oid: o.id});
+    o.log = o.log.filter(x => x.id !== JB.edit); JB.edit = null; jnTa = null; jbTouch(o); if (bid) jbUndo(bid); return; }
+  if (t.dataset.del && j){ const [k, id] = t.dataset.del.split("|"), x = Array.isArray(j[k]) && j[k].find(y => y.id === id); if (!x) return;
+    const ask = k === "hrs" ? `Delete ${jbHr(x.h)} hr on ${jbNice(x.d)}?` : k === "insp" ? `Delete the ${x.k || "inspection"} inspection on ${jbNice(x.d)}?`
+      : x.done && x.at ? `Delete "${x.t}"? It's checked off (${jbShort(x.at)}); the date goes with it.` : "";   /* an unchecked punch item just goes, with Undo */
+    if (ask && !jbAsk(ask + " It goes to Recently deleted for 30 days.")) return;
+    const bid = jbBin(k, x, {jid: j.id, i: j[k].indexOf(x)}); j[k] = j[k].filter(y => y !== x); jbTouch(j); jbUndo(bid); return; }
   if (!j) return;
   if (a === "row-save" && JB.rowEdit){ const [k, id] = JB.rowEdit.split("|"), val = x => (($(x) || {}).value || "").trim();
     if (k === "insp"){ const i = j.insp.find(x => x.id === id); if (i){ i.d = val("re-d") || i.d; i.r = JB_RES[val("re-r")] ? val("re-r") : i.r; i.who = val("re-who"); i.n = val("re-n"); if (i.who) pGet(i.who, "Inspector"); } }
@@ -826,6 +850,8 @@ B.addEventListener("click", e => {
     else if (k === "ck"){ const x = st && st.extra.find(y => y.id === id); if (x && val("re-t")) x.t = val("re-t"); }
     JB.rowEdit = null; jbTouch(j); toast("Saved.", 1400); return; }
 
+  if (a === "job-arch"){ j.arch = Math.max(Date.now(), +j.t || 0); jbSave(); jbDraw(); toast("Archived. It's under <b>Archived</b> in the list. Change anything on it, or tap Bring back, to make it active.", 3600); return; }
+  if (a === "job-unarch"){ delete j.arch; j.seen = Date.now(); jbSave(); jbDraw(); toast("Back in Active.", 1800); return; }
   if (a === "job-done"){ j.st = "done"; jbTouch(j); toast("Job marked Done. It's under <b>Done</b> in the list.", 2400); return; }
   if (a === "pin"){ j.pin = !j.pin; jbTouch(j); toast(j.pin ? "Pinned to the top of the list." : "Unpinned.", 1600); return; }
   if (a === "ck-add" && st){ const x = v("jc-t"); if (!x) return; st.extra.push({id: jbId(), t: x, done: false}); jbTouch(j); $("jc-t").focus(); }
@@ -838,11 +864,13 @@ B.addEventListener("click", e => {
   else if (a === "ppl-add"){ const p = pGet(v("jpo-n"), $("jpo-r").value); if (!p){ toast("Type their name."); return; }
     if (!j.ppl.some(x => x.p === p.id)) j.ppl.push({id: jbId(), r: $("jpo-r").value, p: p.id}); jbTouch(j); }
   else if (a === "punch-add"){ const x = v("jp-t"); if (!x) return; j.punch.push({id: jbId(), t: x, done: false, add: Date.now()}); jbTouch(j); $("jp-t").focus(); }
-  else if (a === "punch-clear"){ j.punch = j.punch.filter(p => !p.done); jbTouch(j); }
+  else if (a === "punch-clear"){ const gone = j.punch.filter(p => p.done), ids = gone.map(p => jbBin("punch", p, {jid: j.id, i: j.punch.indexOf(p)}));
+    j.punch = j.punch.filter(p => !p.done); jbTouch(j);
+    undoToast(`Cleared ${gone.length} checked item${gone.length === 1 ? "" : "s"}. They're in Recently deleted.`, () => { ids.forEach(id => jbBinRestore(id, true)); jbSave(); jbDraw(); }); }
   else if (a === "job-del"){
     if (!jbAsk(`Delete "${jbName(j)}"? It goes to Recently deleted for 30 days, photos and all, then it's gone for good.`)) return;
-    jbBin("job", j); jbD.jobs = jbD.jobs.filter(x => x !== j);   /* its photos stay until the bin is emptied */
-    JB.open = null; jbSave(); jbDraw(); jbTop(); toast("Job moved to Recently deleted.", 2200); }
+    const bid = jbBin("job", j); jbD.jobs = jbD.jobs.filter(x => x !== j);   /* its photos stay until the bin is emptied */
+    JB.open = null; jbSave(); jbDraw(); jbTop(); jbUndo(bid); }
 });
 B.addEventListener("keydown", e => { if (e.key !== "Enter") return;
   if (e.target.matches(".card-h[data-fold]")){ e.preventDefault(); e.target.click(); return; } const btn = {"jp-t": "punch-add", "jc-t": "ck-add"}[e.target.id];
@@ -851,6 +879,7 @@ B.addEventListener("input", e => { const t = e.target, j = jbCur(), p = JB.perso
   if (en && t.dataset.ef && t.tagName !== "SELECT" && t.dataset.ef !== "bld"){ en[t.dataset.ef] = t.value; en.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
   if (j && t.dataset.f && t.tagName !== "SELECT"){ j[t.dataset.f] = t.value; j.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
   if (p && t.dataset.pf && t.tagName !== "SELECT"){ p[t.dataset.pf] = t.value; p.t = Date.now(); clearTimeout(jbT); jbT = setTimeout(jbSave, 500); }
+  if (t.id === "jb-rules"){ jbD.rules = t.value; clearTimeout(jbT); jbT = setTimeout(jbSave, 500); return; }
   if (t.id === "jb-q"){ JB.q = t.value; const r = $("jb-res"), m = $("jb-main"), fq = t.value.trim(); if (r) r.innerHTML = fq ? jbFindHtml(fq) : ""; if (m) m.hidden = !!fq; return; }
   if (t.id === "jn-try"){ const out = $("jn-tryout"); if (out) out.innerHTML = jnMd(t.value, "try"); return; }
   if (t.id === "jn-new"){ const pv = $("jn-prev"); if (pv){ pv.hidden = !t.value.trim(); pv.innerHTML = '<p class="jn-prevh">Preview: how it\'ll look</p>' + jnMd(t.value, "prev"); }
@@ -869,12 +898,17 @@ B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.pers
   if (st && t.dataset.sp){ const per = pGet(t.value, "Lead"); st.lead = per ? per.id : ""; jbTouch(j); return; }
   if (st && t.dataset.sf){ st[t.dataset.sf] = t.value; jbTouch(j); return; }
   if (st && t.dataset.ck){ const k = t.dataset.ck;
+    if (!t.checked){ const it = jbCk(j, JB.stage).items.find(y => y.key === k);   /* a dated check isn't wiped by a stray tap */
+      if (it && it.at && !jbAsk(`Uncheck "${it.t}"? It was checked off ${jbShort(it.at)}, and that date will be cleared.`)){ t.checked = true; return; } }
     if (k[0] === "t"){ const txt = k.slice(1), s = new Set(st.done); t.checked ? s.add(txt) : s.delete(txt); st.done = [...s];
       st.doneAt = st.doneAt || {}; if (t.checked) st.doneAt[txt] = Date.now(); else delete st.doneAt[txt]; }
     else { const x = st.extra.find(y => "x" + y.id === k); if (x){ x.done = t.checked; x.at = t.checked ? Date.now() : undefined; } }
     jbTouch(j); return; }
   if (j && t.dataset.ir){ const i = j.insp.find(x => x.id === t.dataset.ir); if (i){ i.r = t.value; jbTouch(j); } return; }
-  if (j && t.dataset.pk){ const x = j.punch.find(y => y.id === t.dataset.pk); if (x){ x.done = t.checked; x.at = t.checked ? Date.now() : undefined; jbTouch(j); } return; }
+  if (j && t.dataset.pk){ const x = j.punch.find(y => y.id === t.dataset.pk); if (x){
+    if (!t.checked && x.at && !jbAsk(`Uncheck "${x.t}"? It was checked off ${jbShort(x.at)}, and that date will be cleared.`)){ t.checked = true; return; }
+    x.done = t.checked; x.at = t.checked ? Date.now() : undefined; jbTouch(j); } return; }
+  if (t.id === "jb-rules"){ jbD.rules = t.value; jbSave(); return; }
   if (t.id === "jb-goal"){ jbD.goal = +t.value; jbSave(); jbDraw(); return; }
   if (t.id === "jb-before"){ jbD.before = Math.max(0, parseFloat(t.value) || 0); jbSave(); jbDraw(); return; }
   if (t.id === "jf-ph" || t.id === "jf-fi"){ jfAdd([...t.files], t.id === "jf-ph"); return; }
@@ -884,13 +918,13 @@ B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.pers
 
 /* Home: MY JOBS box (homeDraw calls this) */
 window.jobsHome = () => {
-  const open = jbD.jobs.filter(j => j.st === "open").sort((a, b) => (b.pin - a.pin) || b.t - a.t).slice(0, 3), H = jbHours();
+  const open = jbD.jobs.filter(j => j.st === "open" && !jbArch(j)).sort((a, b) => (b.pin - a.pin) || b.t - a.t).slice(0, 3), H = jbHours();
   return `<p class="card-h">My jobs <button type="button" class="linkish" data-hj="all">All</button></p>`
     + (open.length ? `<div class="jb-list">${open.map(j => jbRow(j, "data-hj")).join("")}</div>`
       : `<p class="note"><button type="button" class="linkish" data-hj="new">Add a job</button>: a timeline from Underground to Final, with the blanks ready to fill in.</p>`)
     + (H.wk ? `<p class="note">${jbHr(H.today)} hr today · ${jbHr(H.wk)} hr this week</p>` : "")
     + (() => { const now = jbDay(), wk = new Date(now + "T12:00:00"); wk.setDate(wk.getDate() + 7); const end = jbDay(wk);
-        const up = jbD.jobs.filter(j => j.st !== "done").flatMap(j => j.log.flatMap(e => jnDates(e.b, e.d).map(([d, l]) => [d, l, j]))).filter(([d]) => d >= now && d <= end).sort((a, b) => a[0] < b[0] ? -1 : 1).slice(0, 4);
+        const up = jbD.jobs.filter(j => j.st !== "done" && !jbArch(j)).flatMap(j => j.log.flatMap(e => jnDates(e.b, e.d).map(([d, l]) => [d, l, j]))).filter(([d]) => d >= now && d <= end).sort((a, b) => a[0] < b[0] ? -1 : 1).slice(0, 4);
         return up.length ? `<p class="card-h">Coming up</p><ul class="jb-soon">${up.map(([d, l, j]) => `<li><button type="button" class="linkish" data-hj="${j.id}"><span class="jn-date${d === now ? " now" : ""}">📅 ${jbNice(d)}</span> <b>${esc(jbName(j))}</b> · ${esc(l.replace(JN_DATE, "$1").replace(/^\s*([-*+] \[[ xX]\]|\?\?|!!)\s*/, "").trim().slice(0, 60))}</button></li>`).join("")}</ul>` : ""; })()
     + (jbBkDue() ? `<button type="button" class="renew-line" data-hj="backup"><b>${+store.get("jpb-lastbk", 0) ? "Last backup " + jbAgo(+store.get("jpb-lastbk", 0)) : "No backup yet"}</b> · Back up now ›</button>` : "");
 };
@@ -979,8 +1013,8 @@ $("jf-share").addEventListener("click", async () => { const c = JF.cur; if (!c) 
   const a = document.createElement("a"); a.href = JF.url; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); });
 $("jf-del").addEventListener("click", async () => { const c = JF.cur; if (!c || !jbAsk(`Delete this ${c.kind === "photo" ? "photo" : "file"}? It goes to Recently deleted for 30 days.`)) return;
   JF.cur = null; c.del = Date.now(); await jfPut(c).catch(() => {});   /* marked, not erased: Recently deleted can bring it back */
-  jbBin("file", {id: c.id, kind: c.kind, job: c.job, name: c.kind === "photo" ? (c.note || "Photo") : c.name}); jbSave();
-  $("jf-dlg").close(); jfDraw(c.job); toast("Moved to Recently deleted.", 1800); });
+  const bid = jbBin("file", {id: c.id, kind: c.kind, job: c.job, name: c.kind === "photo" ? (c.note || "Photo") : c.name}); jbSave();
+  $("jf-dlg").close(); jfDraw(c.job); jbUndo(bid); });
 
 /* ---- photos & files backup: a plain (stored, not compressed) zip with manifest.json; JPEGs and PDFs don't shrink anyway */
 const JF_CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++){ let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
@@ -1108,7 +1142,7 @@ window.jbRestoreAll = jbRestoreAll;
 /* the search bar at the top: jobs that have every word, shown above the cards */
 window.jbSearchHits = q => {
   const W = String(q || "").toLowerCase().split(/\s+/).filter(w => w.length > 1 && !["the", "my", "and"].includes(w)); if (!W.length || !jbD.jobs.length) return "";
-  const hits = jbD.jobs.filter(j => { const h = jbHay(j); return W.every(w => h.includes(w)); }).sort((a, b) => (a.st === "done") - (b.st === "done") || jbNat(a, b));
+  const hits = jbD.jobs.filter(j => { const h = jbHay(j); return W.every(w => h.includes(w)); }).sort((a, b) => (jbArch(a) - jbArch(b)) || (a.st === "done") - (b.st === "done") || jbNat(a, b));
   if (!hits.length) return "";
   return `<p class="job-hits-h"><b>My jobs</b> · ${hits.length} match${hits.length === 1 ? "" : "es"}</p><div class="jb-list">${hits.slice(0, 4).map(j => jbRow(j, "data-hjob")).join("")}</div>`
     + (hits.length > 4 ? `<button type="button" class="linkish job-hits-all" data-hjall="1">See all ${hits.length} in My jobs ›</button>` : "");
@@ -1156,7 +1190,9 @@ function jbMerge(o){
   const LIST = {job: "jobs", person: "people", bld: "builders", sub: "subs"}, OWN = {job: "jobs", person: "people", bld: "builders", sub: "subs"};
   jbD.bin.forEach(b => {   /* deleted on either side after its last change: stays deleted */
     if (LIST[b.kind]) jbD[LIST[b.kind]] = jbD[LIST[b.kind]].filter(x => !(x.id === b.item.id && (+x.t || 0) <= b.at));
-    else if (b.kind === "note"){ const ow = (jbD[OWN[b.owner]] || []).find(x => x.id === b.oid); if (ow) ow.log = ow.log.filter(e => !(e.id === b.item.id && when(e) <= b.at)); } });
+    else if (b.kind === "note"){ const ow = (jbD[OWN[b.owner]] || []).find(x => x.id === b.oid); if (ow) ow.log = ow.log.filter(e => !(e.id === b.item.id && when(e) <= b.at)); }
+    else if (["punch", "insp", "hrs"].includes(b.kind)){ const ow = jbD.jobs.find(x => x.id === b.jid); if (ow && Array.isArray(ow[b.kind])) ow[b.kind] = ow[b.kind].filter(e => !(e.id === b.item.id && when(e) <= b.at)); } });
+  if (!String(jbD.rules || "").trim() && typeof o.rules === "string") jbD.rules = o.rules;   /* rules here win; an empty phone takes the backup's */
   ["fold", "tagCol", "stageCol", "tpl"].forEach(k => { if (isO(o[k])) jbD[k] = Object.assign({}, o[k], isO(jbD[k]) ? jbD[k] : {}); });
   if (!jbD.goal && o.goal) jbD.goal = o.goal; if (!+jbD.before && +o.before) jbD.before = o.before;
   jbClean(); jbD.jobs.forEach(jbFix);
@@ -1167,9 +1203,17 @@ function jbMerge(o){
 }
 
 /* ---- Recently deleted: jobs, people, builders, subdivisions and notes wait 30 days before they're gone */
-const JB_BIN_DAYS = 30, JB_BIN_NAME = {job: "Job", person: "Person", bld: "Builder", sub: "Subdivision", note: "Note", file: "Photo or file"};
-function jbBin(kind, item, extra){ jbD.bin.unshift(Object.assign({id: jbId(), kind, at: Date.now(), item: JSON.parse(JSON.stringify(item))}, extra || {})); }
-const jbBinName = b => b.kind === "file" ? `${b.item.name || "Photo"}${(j0 => j0 ? " · " + jbName(j0) : "")(jbD.jobs.find(j => j.id === b.item.job))}` : b.kind === "job" ? jbName(b.item) : b.kind === "note" ? String(b.item.b || "").split("\n").map(x => x.replace(/^[\s#>*!\-\[\]xX]+/, "").trim()).find(Boolean) || "Note" : (b.item.n || "No name");
+const JB_BIN_DAYS = 30, JB_BIN_NAME = {job: "Job", person: "Person", bld: "Builder", sub: "Subdivision", note: "Note", file: "Photo or file", punch: "Punch item", insp: "Inspection", hrs: "Hours", ck: "Checklist item"};
+const JB_BIN_JOB = ["punch", "insp", "hrs", "ck"];   /* kinds that live inside a job (b.jid) */
+function jbBin(kind, item, extra){ const id = jbId(); jbD.bin.unshift(Object.assign({id, kind, at: Date.now(), item: JSON.parse(JSON.stringify(item))}, extra || {})); return id; }
+/* after a delete: "… moved to Recently deleted · Undo" for 8 seconds */
+const jbUndo = id => { const b = jbD.bin.find(x => x.id === id); if (!b) return; jbSave();
+  undoToast(`${JB_BIN_NAME[b.kind]} moved to Recently deleted.`, () => { jbBinRestore(id); return false; }); };
+const jbBinName = b => { const it = b.item, oj = jbD.jobs.find(j => j.id === (b.jid || it.job)), on = oj ? " · " + jbName(oj) : "";
+  return b.kind === "file" ? (it.name || "Photo") + on : b.kind === "job" ? jbName(it)
+    : b.kind === "note" ? String(it.b || "").split("\n").map(x => x.replace(/^[\s#>*!\-\[\]xX]+/, "").trim()).find(Boolean) || "Note"
+    : b.kind === "punch" || b.kind === "ck" ? (it.t || "Item") + on : b.kind === "insp" ? `${it.k || "Inspection"} · ${jbNice(it.d)}${on}`
+    : b.kind === "hrs" ? `${jbHr(it.h)} hr · ${jbNice(it.d)}${on}` : (it.n || "No name"); };
 function jbBinPurge(all){
   const cut = Date.now() - JB_BIN_DAYS * 864e5, gone = jbD.bin.filter(b => all || b.at < cut); if (!gone.length) return 0;
   jbD.bin = jbD.bin.filter(b => !gone.includes(b));
@@ -1177,8 +1221,18 @@ function jbBinPurge(all){
   gone.filter(b => b.kind === "file").forEach(b => jfDel(b.item.id).catch(() => {}));
   jbSave(); return gone.length;
 }
-function jbBinRestore(id){
+function jbBinRestore(id, quiet){
   const b = jbD.bin.find(x => x.id === id); if (!b) return; const it = b.item;
+  if (JB_BIN_JOB.includes(b.kind)){ const oj = jbD.jobs.find(x => x.id === b.jid);
+    if (!oj){ toast("The job it was on is gone. Restore that job first, then this."); return; }
+    if (b.kind === "ck"){ const S = oj.stages[b.s]; if (!S){ toast("That stage is gone from the job."); return; }
+      if (b.tpl && jbTpl(b.s).includes(it.t)){ S.hide = (S.hide || []).filter(x => x !== it.t);   /* a book item: just stop hiding it */
+        if (it.done){ S.done = [...new Set([...S.done, it.t])]; S.doneAt = S.doneAt || {}; if (it.at) S.doneAt[it.t] = it.at; } }
+      else { const nid = it.id || jbId(); if (!S.extra.some(x => x.id === nid)) S.extra.push({id: nid, t: it.t, done: !!it.done, at: it.at});
+        if (!it.id && Array.isArray(S.ord)) S.ord = S.ord.map(k => k === "t" + it.t ? "x" + nid : k); }   /* keeps its place in your order */
+      if (JB_XTRA.includes(b.s) && !oj.xs.includes(b.s)) oj.xs.push(b.s); }
+    else if (!oj[b.kind].some(x => x.id === it.id)) oj[b.kind].splice(b.i >= 0 ? Math.min(b.i, oj[b.kind].length) : oj[b.kind].length, 0, it);   /* back where it was */
+    oj.t = Date.now(); }
   if (b.kind === "job"){ if (jbD.jobs.some(j => j.id === it.id)) it.id = jbId(); jbFix(it); jbD.jobs.push(it); }
   else if (b.kind === "person"){ jbD.people.push(it);
     (b.links || []).forEach(([jid, f, x]) => { const j = jbD.jobs.find(y => y.id === jid); if (!j) return;
@@ -1188,7 +1242,7 @@ function jbBinRestore(id){
   else if (b.kind === "file"){ jfTx("readonly", st => st.get(it.id)).then(f => { if (!f){ toast("That photo is already gone."); return; } delete f.del; return jfPut(f).then(() => { if (JB.open === f.job) jfDraw(f.job); jfUse(); }); }).catch(() => {}); }
   else if (b.kind === "note"){ const o = b.owner === "job" ? jbD.jobs.find(j => j.id === b.oid) : b.owner === "person" ? pById(b.oid) : eById(b.owner, b.oid);
     if (!o){ toast("The job or page it was on is gone. Restore that first, then this note."); return; } o.log.push(it); }
-  jbD.bin = jbD.bin.filter(x => x !== b); jbSave(); jbDraw(); toast(`${JB_BIN_NAME[b.kind]} restored.`, 2000);
+  jbD.bin = jbD.bin.filter(x => x !== b); if (quiet) return; jbSave(); jbDraw(); toast(`${JB_BIN_NAME[b.kind]} restored.`, 2000);
 }
 const jbBinHtml = () => !jbD.bin.length ? "" : `<details class="explain"><summary>Recently deleted · ${jbD.bin.length}</summary><div>
   <div class="jb-list">${jbD.bin.map(b => { const d = Math.max(0, JB_BIN_DAYS - Math.floor((Date.now() - b.at) / 864e5));
