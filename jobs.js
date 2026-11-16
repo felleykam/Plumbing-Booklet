@@ -1007,7 +1007,7 @@ const jfGeo = () => new Promise(ok => {
   if (!navigator.geolocation){ ok({err: "This phone won't share its location here."}); return; }
   navigator.geolocation.getCurrentPosition(
     p => ok({lat: +p.coords.latitude.toFixed(6), lon: +p.coords.longitude.toFixed(6), acc: Math.round(p.coords.accuracy), alt: p.coords.altitude == null ? null : Math.round(p.coords.altitude * 3.28084), gat: p.timestamp}),
-    e => ok({err: e.code === 1 ? "Location is off for the Handbook. Turn it on in Settings → Privacy → Location Services." : "Couldn't get a GPS fix."}),
+    e => ok({err: e.code === 1 ? "Location is off for the Handbook. Turn it on in Settings → Privacy & Security → Location Services → Safari Websites (While Using)." : "Couldn't get a GPS fix."}),
     {enableHighAccuracy: true, timeout: 20000, maximumAge: 30000});
 });
 /* with location already allowed, start the GPS fix on the tap so it's ready when the camera closes; otherwise ask after the photo,

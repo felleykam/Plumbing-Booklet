@@ -51,7 +51,7 @@ document.documentElement.classList.toggle("pwa",matchMedia("(display-mode: stand
 document.documentElement.classList.toggle("shell",document.documentElement.classList.contains("pwa")||/[?&]shell=1/.test(location.search));
 /* vest color and text size, before paint too */
 try{var P=JSON.parse(localStorage.getItem("jpb-prefs"))||{},R=document.documentElement;["skin","font","caps","density","cols"].forEach(function(k){if(P[k]&&!(k==="skin"&&P[k]==="hivis"))R.dataset[k]=P[k]});if(P.skin==="night")R.dataset.theme="dark";R.dataset.stars=P.stars===false?"off":"on";R.dataset.gloves=P.gloves?"on":"off";R.dataset.fx=P.fx===false?"off":"on";}catch(e){}
-try{var v=JSON.parse(localStorage.getItem("jpb-vest"));if(v==="yellow"||v==="orange")document.documentElement.dataset.vest=v;var z=+JSON.parse(localStorage.getItem("jpb-zoom"));if(z>=0.8&&z<=1.5)document.documentElement.style.setProperty("--zoom",z);}catch(e){}</script>
+try{var v=JSON.parse(localStorage.getItem("jpb-vest"));if(v==="yellow"||v==="orange")document.documentElement.dataset.vest=v;var z=+JSON.parse(localStorage.getItem("jpb-zoom"));if(z>=0.8&&z<=1.5){document.documentElement.style.setProperty("--zoom",z);if(z<1)document.documentElement.dataset.zsmall="1";}}catch(e){}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png?v=2">
 <style>
@@ -755,6 +755,8 @@ footer{column-span:all;color:var(--muted);font-size:14.5px;border-top:var(--bw) 
 :root:not([data-skin])[data-vest="orange"][data-theme="dark"]{--bar-ink:#FF7A1F;--hi:#3A1800;--hi-edge:#FF7A1F;--ul:#FF7A1F}
 /* text size: the book scales, the toolbar and tab bar stay put so they never cover more screen */
 .book,.no-hits,.tip{zoom:var(--zoom,1)}
+/* small text size: boxes are scaled down too, and iOS zooms the page in when you tap a box drawn under 16px. Keep them at 16+ on screen. */
+html[data-zsmall] .book :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){font-size:calc(17px / var(--zoom,1))}
 
 .vest-sw{display:inline-block;width:18px;height:18px;border-radius:3px;border:2px solid var(--k);vertical-align:-3px;margin-right:6px}
 
@@ -981,7 +983,7 @@ body.sheet-open{overflow:hidden}
 
 /* Night shift: red light only, so your eyes stay dark-adapted in a crawlspace or a dark basement at 6 a.m. Always dark. */
 :root[data-skin="night"]{
-  --hv:#FF6359; --k:#000000; --on-k:#FF7066; --on-k-sub:#FF6359; --paper:#000000; --sheet:#070000; --ink:#FF7066; --muted:#FF6359; --rule:#4A0E0B; --edge:#A3231C; --zebra:#120000;
+  --hv:#FF6359; --k:#000000; --on-k:#FF7066; --on-k-sub:#FF6359; --paper:#000000; --sheet:#070000; --ink:#FF7066; --muted:#FF6359; --rule:#9A2A20; --edge:#D23B30; --zebra:#120000;
   --bar:#170000; --bar-ink:#FF7066; --hi:#2A0200; --hi-ink:#FF7A72; --hi-edge:#FF3B30; --danger:#FF5A50; --danger-soft:#1A0000; --ok:#FFA49E; --caution:#FF7A72;
   --ctl:#FF6359; --ul:#FF6359; --logo-tile:#FF3B30; --logo-ink:#000000;
   --g-calc:#FF5A50; --g-rough:#FF5A50; --g-mech:#FF5A50; --g-trim:#FF5A50; --g-inspect:#FF7A72; --g-calls:#FF3B30; --g-learn:#FF5A50; --g-parts:#FF5A50; --g-mine:#FF5A50;
@@ -1256,7 +1258,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </div>
 
     <div class="set-grp" id="set-share"><h3>Share the book</h3>
-      <p class="sample">Have a coworker point their phone camera at this, open the link in Safari, then Share → <b>Add to Home Screen</b>.</p>
+      <p class="sample">Have a coworker point their phone camera at this, open the link in Safari, then Share → <b>Add to Home Screen</b>. Then open it once from the new icon <b>while they have signal</b>, so it saves itself for offline.</p>
       <div class="qr-box" id="qr-box"></div>
       <p class="sample qr-url">felleykam.github.io/Plumbing-Booklet</p>
       <div class="set-btns"><button type="button" class="btn" id="share-link">Share link</button><button type="button" class="btn ghost" id="copy-link">Copy link</button></div>
@@ -5142,6 +5144,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 15, 2026 · last</th><td><b>Phone polish from the review panel:</b> at text size S, tapping a box no longer zooms the page in. Night theme's box borders and dividers are easier to see in the dark. After 6 hours away the app still updates itself, but not while you're writing a card note, editing your shop, typing, or in a practice test. A number like 801-555-1234 ext 22 dials the number, waits, then dials 22. "Back to typical" on one card's shop values has Undo. Switching towns with no signal and back shows the saved forecast again. The app icons are saved for offline. <b>Calculators:</b> Average reads "3 1/2" as one number, "1,250" as a thousand-plus and "62-58" as two readings; Time card says when start and end are the same instead of 24 hours; the bore line flags a hole cut into the bottom plate. <b>Wording:</b> star help says "filled ★" and tells you to turn stars on if they're off; the share note says to open the app once with signal; iPhone menu names match today's iOS; the license renewal line no longer goes stale after 2026.</td></tr>
         <tr><th>Nov 15, 2026 · late</th><td><b>Feet boxes take feet:</b> in every box that asks for a run, height or length in feet, a plain number now means feet (60 = 60 ft). For inches, add the " mark (720"). Before, a plain number was inches, and the gas sizer could pick a pipe a size too small. This also fixes Pressure at the far fixture (section lengths and fixture height) and the Ejector's lift and discharge length. <b>Safer erasing:</b> "Erase everything" asks once with a real yes/no that says how many jobs go, and now really erases (photos, files and safety copies too). <b>A full phone is no longer silent:</b> if a save fails because the app's space is full, it says so. <b>Minus temperatures:</b> the unit converter and the air test take a minus sign. <b>Fixes:</b> old CPVC: cut with a wheel cutter or fine saw, never a ratchet cutter; arresters go a size up above about 65 psi flowing (one card said 55); the water test holds at least 15 minutes; water and sewer in one trench follows the IPC 603.2 exceptions and your city's drawing; straps, Legionella, PE-RT and CSST bonding numbers corrected; ABS comes first for drains, with ABS foam core (F628) added and a warning that foam core is never for flue venting; the code you work under starts at the 2021 IRC (houses); slope shows the exact in/ft so the verdict and the number agree; the expansion tank starts at 125 psi max (under the 150 relief) and says when the heater temp is the problem. Two What's new notes about re-adding the app now say to back up first.</td></tr>
         <tr><th>Nov 15, 2026 · night</th><td><b>Proof card:</b> open a proof photo and tap <b>Save proof card</b> for one picture with the photo on top and the whole record under it (when and where, accuracy and elevation, a Maps address, the job and stage, your note, and the full fingerprint) to text, email or keep in Photos. <b>Share / save</b> still sends the stamped photo by itself. <b>Tidier:</b> restoring something from Recently deleted, or adding photos, now brings an archived job back like any other change, and the Archived wording matches its button.</td></tr>
         <tr><th>Nov 15, 2026 · evening</th><td><b>📷 Proof photos:</b> on any stage of a job, <b>Proof photo</b> opens the camera and stamps the picture with the date and time (to the second), the GPS spot and how close it is, and the job, address and stage. The same facts show under the photo, the spot opens in Maps, and <b>Check it</b> proves the photo hasn't been changed since it was stamped. Proof photos go in the backup with everything else. <b>Fixes from a full check of My jobs:</b> jobs no longer drop into Archived on the day you update, or after restoring or merging a backup; a job you restored can't slip back into Recently deleted when you merge another phone's backup, and a restored job's photos are never erased; saving a checklist as your list keeps the dates things were checked; "Back to the book's list" keeps every job's order and dates; adding a checklist item that's already there says so; two deletes in a row both come back with one Undo; the Undo button no longer blocks taps around it; pinned jobs can't be archived by mistake; archived jobs' to-dos leave "Open on active jobs"; just opening jobs no longer counts toward the backup reminder. <b>Restore a backup</b> now replaces everything, including lists saved after the backup was made. <b>Bottom bar:</b> three causes of it changing size or getting cut off on iPhone are fixed (a setting that stacked up over time, the bar sliding down after the keyboard, and an old screen height that stuck). <b>Offline:</b> an update can't leave the saved copy without My jobs.</td></tr>
@@ -5808,7 +5811,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>MTECH</th><td>4 yr, 8 semesters, 576 hr. Test-out after semester 4A (6,000 hr) fits the <b>residential</b> path. Confirm which license you're testing for.</td></tr>
         <tr><th>3 · Exams</th><td>Written (remote OK) + Utah Plumber Practical in person. Pass, then apply.</td></tr>
         <tr><th>Exam reality</th><td>Statewide pass rates, Jun 2025–Jun 2026: theory 69%, residential theory 56%, practical 55%. The practical is a PVC project and a copper project, 37 points each; the average was 26.2 on PVC and <b>25.2 on copper</b>, so practice copper. MTECH beat the state: theory 85%, practical 60%. Weak spot statewide: hydronics (DOPL bulletin, May 2026).</td></tr>
-        <tr id="renew-row" tabindex="-1"><th>4 · Renew</th><td>Every 2 yr, Nov 30 of even years: <b>2026 is a renewal year</b>. 12 CE hr, 8 core. $68 renewal fee, $20 more if late. Renew online in <a href="https://utahdoc.mylicenseone.com/" target="_blank" rel="noopener">My License One</a> (UtahID login, easier on a computer); DOPL emails a notice 90 days ahead. Working on an expired license is unlawful, even if you renew later.</td></tr>
+        <tr id="renew-row" tabindex="-1"><th>4 · Renew</th><td>Every 2 yr, by Nov 30 of even years (2026, 2028, 2030…). 12 CE hr, 8 core. $68 renewal fee, $20 more if late. Renew online in <a href="https://utahdoc.mylicenseone.com/" target="_blank" rel="noopener">My License One</a> (UtahID login, easier on a computer); DOPL emails a notice 90 days ahead. Working on an expired license is unlawful, even if you renew later.</td></tr>
         <tr><th>Upgrade</th><td>Residential → journeyman: 2,000 hr non-residential + 4th-year class (144 hr).</td></tr>
       </tbody></table></div>
     <div class="x"><table class="t"><tbody id="list-career"></tbody></table></div>
@@ -6561,7 +6564,7 @@ async function copyNum(n){
 }
 function bindPn(root = document){ root.querySelectorAll(".pn:not([data-pn])").forEach(n => {
   n.dataset.pn = "";
-  const digits = n.textContent.replace(/[^0-9]/g, "");
+  const m = n.textContent.match(/^(.*?)(?:\s*(?:ext\.?|extension|x|#)\s*(\d+))?\s*$/i), digits = m[1].replace(/[^0-9]/g, "") + (m[2] ? "," + m[2] : "");   /* "801-555-1234 ext 22": the comma is a pause, then 22 */
   n.tabIndex = 0; n.setAttribute("role", canCall ? "link" : "button");
   n.setAttribute("aria-label", (canCall ? "Call " : "Copy ") + n.textContent.trim());
   n.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); n.click(); } });
@@ -6949,7 +6952,7 @@ let PINS = new Set((a => Array.isArray(a) ? a.map(x => PID_MOVED[x] || x) : [])(
 store.set("jpb-pins", [...PINS]);
 function pinNote(){
   const n = SECTIONS.filter(s => s.dataset.pin === "1").length;
-  $("pins-note").innerHTML = n ? `<b>${n}</b> pinned. Tap a gold <b>★</b> to unpin. Pins are saved on this device.` : `Tap the <b>☆</b> on any card's header to pin it here. Good for the cards you open every day: the offset calculator, your rough-in heights, a tech line.`;
+  $("pins-note").innerHTML = n ? `<b>${n}</b> pinned. Tap a filled <b>★</b> to unpin. Pins are saved on this device.` : `Tap the <b>☆</b> on any card's header to pin it here${PREFS.stars ? "" : " (turn card stars on in Settings → Behavior first)"}. Good for the cards you open every day: the offset calculator, your rough-in heights, a tech line.`;
 }
 SECTIONS.forEach(sec => {
   if (["pins","notes","tape","shop"].includes(sec.dataset.sec) || sec.id === "home-card") return;
@@ -7105,7 +7108,7 @@ function lookDraw(){
   press($("look-size"), b => b.dataset.z === z);
   document.querySelectorAll("#look .seg[data-pref]").forEach(g => { const v = String(PREFS[g.dataset.pref] ?? ""); g.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v))); });
   document.querySelectorAll("#look .tog").forEach(t => { t.setAttribute("aria-checked", String(!!PREFS[t.dataset.t])); });
-  const wk = document.querySelector('#look .tog[data-t="wake"]'); if (!("wakeLock" in navigator)){ wk.disabled = true; wk.querySelector("small").textContent = "This browser can't hold the screen on. iPhone: Settings → Display → Auto-Lock."; }
+  const wk = document.querySelector('#look .tog[data-t="wake"]'); if (!("wakeLock" in navigator)){ wk.disabled = true; wk.querySelector("small").textContent = "This browser can't hold the screen on. iPhone: Settings → Display &amp; Brightness → Auto-Lock."; }
   $("set-start").value = PREFS.start;
   $("bk-size").textContent = `${nf(bookBytes() / 1024, 1)} KB saved on this device.`;
   $("set-build").textContent = (document.getElementById("offline-status") || {}).textContent || "";
@@ -7126,7 +7129,7 @@ $("look-vest").addEventListener("click", e => {
 });
 $("look-size").addEventListener("click", e => {
   const b = e.target.closest("button[data-z]"); if (!b) return;
-  ROOT.style.setProperty("--zoom", b.dataset.z); store.set("jpb-zoom", +b.dataset.z);
+  ROOT.style.setProperty("--zoom", b.dataset.z); store.set("jpb-zoom", +b.dataset.z); if (+b.dataset.z < 1) ROOT.dataset.zsmall = "1"; else delete ROOT.dataset.zsmall;
   lookDraw(); redrawArt(); say("Text size " + b.textContent);
 });
 document.querySelectorAll("#look .seg[data-pref]").forEach(g => g.addEventListener("click", e => {
@@ -9597,7 +9600,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-15z3";
+{ const NEWS = "2026-11-15z4";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -9898,8 +9901,9 @@ function tapeDraw(){
     const tm = s => { const m = String(s).match(/^(\d{1,2}):(\d{2})/); return m ? +m[1] * 60 + +m[2] : NaN; };
     const a = tm($("mt-a").value), b0 = tm($("mt-b").value), br = Math.max(0, val("mt-c") || 0), el = $("mt-ans");
     if (!isFinite(a) || !isFinite(b0)){ el.innerHTML = warn("Pick both times."); $("mt-viz").innerHTML = ""; return; }
-    const b = b0 <= a ? b0 + 1440 : b0, mins = Math.max(0, b - a - br), h = Math.floor(mins / 60), mm = mins % 60;
-    el.innerHTML = `${r2(mins / 60)} hr<small>${h} h ${mm} min${b0 <= a ? " · past midnight" : ""}${br ? ` · after a ${br}-minute break` : ""}</small>`;
+    if (b0 === a){ el.innerHTML = warn("Start and end are the same time."); $("mt-viz").innerHTML = ""; return; }
+    const b = b0 < a ? b0 + 1440 : b0, mins = Math.max(0, b - a - br), h = Math.floor(mins / 60), mm = mins % 60;
+    el.innerHTML = `${r2(mins / 60)} hr<small>${h} h ${mm} min${b0 < a ? " · past midnight" : ""}${br ? ` · after a ${br}-minute break` : ""}</small>`;
     const X = t => 10 + (t % 1440) / 1440 * 300; let g = `<rect x="10" y="14" width="300" height="18" rx="3" fill="none" stroke="var(--d-pipe)" stroke-width="1.5"/>`;
     const seg = (s, e, col) => { if (s >= 1440) return seg(s - 1440, e - 1440, col); if (e <= s) return ""; if (e <= 1440) return `<rect x="${X(s)}" y="16" width="${(e - s) / 1440 * 300}" height="14" fill="${col}"/>`; return seg(s, 1440, col) + `<rect x="10" y="16" width="${(e - 1440) / 1440 * 300}" height="14" fill="${col}"/>`; };
     g += seg(a, b, "var(--d-fit)"); if (br){ const mid = a + (b - a) / 2 - br / 2; g += seg(mid, mid + br, "var(--d-bg)"); }
@@ -9910,7 +9914,10 @@ function tapeDraw(){
 
   /* average */
   function mv(){
-    const n = ($("mv-a").value.match(/-?\d*\.?\d+/g) || []).map(Number).filter(isFinite), out = $("mv-out");
+    /* "3 1/2" is one number, "1,250" is one thousand two hundred fifty, "62-58" is two readings */
+    const raw = $("mv-a").value.replace(/(\d),(?=\d{3}(?!\d))/g, "$1").replace(/(\d)\s*[-–]\s*(?=\d)/g, "$1 ");
+    const one = t => { const m = t.match(/^(-?)(?:(\d+)\s+)?(\d+)\/(\d+)$/); if (!m) return Number(t); const v = (+(m[2] || 0)) + (+m[3]) / (+m[4]); return +m[4] ? (m[1] ? -v : v) : NaN; };
+    const n = (raw.match(/-?(?:\d+\s+\d+\/\d+|\d+\/\d+|\d*\.?\d+)/g) || []).map(one).filter(isFinite), out = $("mv-out");
     if (!n.length){ out.innerHTML = `<tr><td>${warn("Type some numbers.")}</td></tr>`; $("mv-viz").innerHTML = ""; return; }
     const sum = n.reduce((s, x) => s + x, 0), avg = sum / n.length, lo = Math.min(...n), hi = Math.max(...n), srt = [...n].sort((a, b) => a - b), med = n.length % 2 ? srt[(n.length - 1) / 2] : (srt[n.length / 2 - 1] + srt[n.length / 2]) / 2;
     out.innerHTML = [["Average", nf(avg, 2), 1], ["Middle (median)", nf(med, 2)], ["Low · high", `${nf(lo, 2)} · ${nf(hi, 2)}`], ["Spread", nf(hi - lo, 2)], ["Count · total", `${n.length} · ${nf(sum, 2)}`]].map(([a, b, h]) => `<tr${h ? ' class="hit"' : ""}><th>${a}</th><td class="big">${b}</td></tr>`).join("");
@@ -10101,12 +10108,13 @@ window.noteAct = (c, sec) => {
     sec.querySelector(".sec-head").insertAdjacentHTML("afterend", `<div class="shop-bar"><b>Editing for your shop.</b> Tap a cell and type. <div class="set-btns"><button type="button" class="btn" data-s="done">Done</button><button type="button" class="del" data-s="reset">Back to typical</button></div></div>`);
     const bar = sec.querySelector(".shop-bar");
     bar.addEventListener("click", e => { const b = e.target.closest("button[data-s]"); if (!b) return;
-      const next = {};
+      const next = {}, was = SHOP[pid];
       if (b.dataset.s === "done") cells.forEach((td, i) => { const x = document.createElement("div"); x.innerHTML = td.dataset.orig; const v = td.textContent.trim(); if (v && v !== x.textContent.trim()) next[i] = v; });
       cells.forEach(td => { td.contentEditable = "false"; td.removeAttribute("contenteditable"); td.innerHTML = td.dataset.orig; td.classList.remove("shop-cell"); });
       if (Object.keys(next).length) SHOP[pid] = next; else delete SHOP[pid];
       store.set("jpb-shop", SHOP); sec.classList.remove("shop-edit"); bar.remove(); shopDraw(sec); bindPn(sec); IDX = null;
-      toast(Object.keys(next).length ? `Saved ${Object.keys(next).length} shop value${Object.keys(next).length > 1 ? "s" : ""}.` : "Back to typical.", 2000); });
+      if (b.dataset.s === "reset" && was) undoToast("Back to typical.", () => { SHOP[pid] = was; shopRedraw(); });
+      else toast(Object.keys(next).length ? `Saved ${Object.keys(next).length} shop value${Object.keys(next).length > 1 ? "s" : ""}.` : "Back to typical.", 2000); });
   }
 };
 const shopRedraw = () => { store.set("jpb-shop", SHOP); SECTIONS.forEach(s => { if (s.dataset.shop === "1") shopDraw(s); }); bindPn(); IDX = null; apply(); };
@@ -10200,7 +10208,7 @@ function setupDraw(){
   const z = String(+store.get("jpb-zoom", 1) || 1); press("#setup-size", b => b.dataset.z === z);
 }
 $("setup-code").addEventListener("click", e => { const b = e.target.closest("button[data-code]"); if (b) setCode(b.dataset.code); });
-$("setup-size").addEventListener("click", e => { const b = e.target.closest("button[data-z]"); if (!b) return; ROOT.style.setProperty("--zoom", b.dataset.z); store.set("jpb-zoom", +b.dataset.z); press("#setup-size", x => x === b); redrawArt(); });
+$("setup-size").addEventListener("click", e => { const b = e.target.closest("button[data-z]"); if (!b) return; ROOT.style.setProperty("--zoom", b.dataset.z); store.set("jpb-zoom", +b.dataset.z); if (+b.dataset.z < 1) ROOT.dataset.zsmall = "1"; else delete ROOT.dataset.zsmall; press("#setup-size", x => x === b); redrawArt(); });
 $("setup-done").addEventListener("click", () => {
   store.set("jpb-setup", 1); sheet("setup", false); homeDraw(); go("home"); toast("Set. Change any of it in <b>Settings</b>.", 2400);
 });
@@ -10291,7 +10299,7 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
     rows.innerHTML = Array.from({length: n}, (_, i) => {
       const c = h0 + sign * drop * i, dist = i * oc;
       let ok = true, why = "";
-      if (kind === "stud"){ if (c - saw / 2 < 0){ ok = false; why = "below the floor"; } }
+      if (kind === "stud"){ if (c - saw / 2 < 1.5 - 1e-9){ ok = false; why = c - saw / 2 < 0 ? "below the floor" : "into the bottom plate"; } }   /* the 1½" plate sits under the studs */
       else { if (c - saw / 2 < 2 - 1e-9){ ok = false; why = "within 2\" of the top"; } else if (c + saw / 2 > depth - 2 + 1e-9){ ok = false; why = "within 2\" of the bottom"; } }
       if (!ok && firstBad < 0) firstBad = i;
       return `<tr${ok ? "" : ' class="hit"'}><td>${i + 1}</td><td>${fmtFtIn(dist)}</td><td>${toFrac16(c)}</td><td>${ok ? '<span class="ok">✓</span>' : warn("✗ " + why)}</td></tr>`;
@@ -10462,8 +10470,9 @@ const WX = (() => {
   const T = {}, G = {}, busy = {}, err = {};   /* G = when each source last answered */                                                     /* fetched-at times, in-flight, last error */
   /* last good data is saved, so a jobsite with no signal still shows the most recent forecast (with its age) */
   const KEEP = ["om", "obs", "air"];
-  try { const c = store.get("jpb-wx-cache", null);
-    if (c && c.k === `${place.lat.toFixed(3)},${place.lon.toFixed(3)}`){ KEEP.forEach(n => { if (c.S[n] != null){ S[n] = c.S[n]; T[n] = c.T[n]; G[n] = c.T[n]; } }); T.k = c.k; } } catch(e){}
+  const fromCache = () => { try { const c = store.get("jpb-wx-cache", null);
+    if (c && c.k === `${place.lat.toFixed(3)},${place.lon.toFixed(3)}`){ KEEP.forEach(n => { if (c.S[n] != null){ S[n] = c.S[n]; T[n] = c.T[n]; G[n] = c.T[n]; } }); T.k = c.k; } } catch(e){} };
+  fromCache();
   const save = () => { try { const o = {k: T.k, S: {}, T: {}}; KEEP.forEach(n => { o.S[n] = S[n]; o.T[n] = G[n]; }); store.set("jpb-wx-cache", o); } catch(e){} };
   const shown = () => SECTIONS.some(s => s.dataset.sec.startsWith("wx") && !s.hidden);
   const key = () => `${place.lat.toFixed(3)},${place.lon.toFixed(3)}`;
@@ -10788,7 +10797,7 @@ const WX = (() => {
       : err.om ? `Couldn't reach the forecast service: ${last}. Trying again in ${dur(next)}.` : `Forecast ${G.om ? "updated " + ago(G.om) : "loading"} · next check in ${dur(next)}${place.src === "gps" ? " · following your location" : ""}.${S.om && S.om.src === "nws" ? " Backup source (National Weather Service): the main forecast service isn't answering, so there are no soil, UV, gust or snow-depth readings." : ""}`;
   }
   /* ---- location ---- */
-  function setPlace(p){ place = p; store.set("jpb-wx-place", place); for (const n in S) S[n] = null; for (const n in err) err[n] = null;
+  function setPlace(p){ place = p; store.set("jpb-wx-place", place); for (const n in S) S[n] = null; for (const n in err) err[n] = null; fromCache();   /* the saved forecast, if it's for this town */
     /* the old tables stay until the new forecast lands: emptying them made the page jump shorter, then longer */
     $("wx-hero").innerHTML = `<div class="sub">Loading the forecast for ${esc(place.name)}…</div>`; $("wx-alerts").innerHTML = "";
     $("wx-flags").innerHTML = `<p class="flag ok-flag">Waiting for the forecast for ${esc(place.name)}…</p>`;
@@ -10836,7 +10845,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-15z3";
+var BUILD = "handbook-2026-11-15z4";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
@@ -10864,7 +10873,10 @@ var BUILD = "handbook-2026-11-15z3";
   var hiddenAt = 0;
   document.addEventListener("visibilitychange", function(){
     if (document.hidden){ hiddenAt = Date.now(); return; }
-    if (hiddenAt && Date.now() - hiddenAt > 6 * 3600e3 && navigator.onLine) location.reload();
+    /* not while you're in the middle of something: a card note or shop edit open, a practice test running, a box being typed in */
+    var ex = document.getElementById("ex-box"), a = document.activeElement;
+    var busy = document.querySelector(".shop-edit, .note-edit") || (ex && !ex.hidden) || (a && /^(TEXTAREA|INPUT|SELECT)$/.test(a.tagName));
+    if (hiddenAt && Date.now() - hiddenAt > 6 * 3600e3 && navigator.onLine && !busy) location.reload();
   });
 })();
 </script>
