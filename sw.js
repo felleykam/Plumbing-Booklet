@@ -1,3 +1,4 @@
+/* Utah Plumbers Digital Handbook: offline cache. © 2026 Deklan Patrick Kelley. All rights reserved. */
 /* Utah Plumbers Digital Handbook: offline cache.
    The version comes from BUILD in index.html (registered as sw.js?v=BUILD), so bumping BUILD
    is the only step needed to push an update to phones. */

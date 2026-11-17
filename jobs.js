@@ -1,3 +1,4 @@
+/* Utah Plumbers Digital Handbook: My jobs. © 2026 Deklan Patrick Kelley. All rights reserved. No copying or reuse without written permission. */
 /* ---------- My jobs (Mine → Jobs). Each job is a timeline of stages (Underground → Final) with the blanks laid out:
    status, dates, lead, checklist, inspections, hours, notes, photos. People (lead, super, inspector…) are their own pages,
    linked from jobs and from notes with [[Name]]. Jobs and people live in jpb-jobs (in Settings → Download backup); photos
@@ -1265,7 +1266,7 @@ async function jbReport(j0, only){
   const proofs = files.filter(f => f.kind === "photo" && f.proof), others = files.filter(f => f.kind === "photo" && !f.proof), docs = files.filter(f => f.kind !== "photo");
   const num = new Map(proofs.map((f, i) => [f.id, i + 1])), pn = id => id && num.has(id) ? ` <span class="m">· proof photo #${num.get(id)}</span>` : "";
   const team = [["Lead", pName(j.lead)], ["Superintendent", pName(j.sup)], ...j.ppl.map(x => [x.r, pName(x.p)])].filter(([, v]) => v);
-  let h = `<p class="m">Job report made ${E(jfWhen(made))}, from the Utah Plumbers Handbook on this phone.</p>${jbTechPub() ? `<p><b>Report by:</b> ${E(jbTechPub())}</p>` : ""}<h1>${E(jbName(j))}${only ? " · " + E(JB_SNAME[only]) : ""}</h1>
+  let h = `<p class="m">Job report made ${E(jfWhen(made))}, from the Utah Plumbers Handbook (© Deklan Patrick Kelley) on this phone.</p>${jbTechPub() ? `<p><b>Report by:</b> ${E(jbTechPub())}</p>` : ""}<h1>${E(jbName(j))}${only ? " · " + E(JB_SNAME[only]) : ""}</h1>
   <table>${[["Address", j.a], ["Builder", eName("bld", j.bld)], ["Subdivision", eName("sub", j.sub)], ["Customer", j.who], ["City", (cityById(j.city) || {}).n], ["Job status", JB_ST[j.st]], ["Added", when(j.made)], ["Last changed", when(j.t)], ...team].filter(([, v]) => v).map(([k, v]) => `<tr><th>${E(k)}</th><td>${E(v)}</td></tr>`).join("")}</table>`;
   h += `<h2>Stages and checklists</h2>`;
   jbStages(j).filter(([k]) => !only || k === only).forEach(([k, name]) => { const s = j.stages[k], C = jbCk(j, k);
@@ -1286,7 +1287,7 @@ async function jbReport(j0, only){
   const fp = await jfHash(new Blob([h]));
   const doc = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${String((jbD.tech || {}).lic || "").trim() ? `<meta name="technician-license" content="${E(String(jbD.tech.lic).trim())}">` : ""}<title>Job report · ${E(jbName(j))}</title>
 <style>body{font:16px/1.45 -apple-system,system-ui,sans-serif;color:#111;max-width:860px;margin:0 auto;padding:16px}h1{margin:.3em 0}h2{border-top:3px solid #111;padding-top:8px;margin-top:28px}h3{margin:18px 0 2px}table{border-collapse:collapse;width:100%}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #ccc;padding:5px 8px}.m{color:#555;font-size:14px}.ck{list-style:none;padding:0}.ck li{padding:3px 0;border-bottom:1px solid #eee}pre{white-space:pre-wrap;font:inherit;margin:4px 0}.nt{border-left:4px solid #999;padding:4px 10px;margin:10px 0}.hv{border-left:3px dashed #bbb;padding-left:10px;margin-top:6px}figure{margin:14px 0}figure img{max-width:100%;border:1px solid #999}.th{display:flex;flex-wrap:wrap;gap:8px}.th figure{width:150px;margin:0}code{word-break:break-all;font-size:13px}.act{padding-left:22px}.fp{border:2px solid #111;padding:10px;margin-top:24px}</style></head>
-<body>${h}<div class="fp m"><b>Report fingerprint</b> (SHA-256 of everything above this box): <code>${fp}</code><br>Proof photos carry their own fingerprints, which the app's "Check it" button can verify against the photo on the phone.</div></body></html>`;
+<body>${h}<div class="fp m"><b>Report fingerprint</b> (SHA-256 of everything above this box): <code>${fp}</code><br>Proof photos carry their own fingerprints, which the app's "Check it" button can verify against the photo on the phone.<br>This report is a record made by the technician on their own phone. Times come from the phone's clock. It is not an inspection approval, a certification or a guarantee.</div></body></html>`;
   const name = `job-report-${(jbName(j) || "job").replace(/[^\w-]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "job"}${only ? "-" + only : ""}-${jbDay()}.html`;
   const file = new File([doc], name, {type: "text/html"});
   JF.rep = {jid: j.id, k: only, file}; jbDraw(); toast(`${only ? JB_SNAME[only] + " report" : "Report"} ready: tap <b>📤 Send</b>.`, 4000);
@@ -1317,7 +1318,7 @@ async function jfCard(f){
     ctx.fillStyle = "#fff"; ctx.font = `${k === "Fingerprint" ? 400 : 500} ${k === "Fingerprint" ? Math.round(fs * .85) : fs}px ${k === "Fingerprint" ? "ui-monospace, Menlo, monospace" : "-apple-system, system-ui, sans-serif"}`;
     L.forEach((t, i) => ctx.fillText(t, pad * 2 + kw, y + i * lh)); y += L.length * lh + Math.round(fs * .6); });
   ctx.fillStyle = "#9a9a9a"; ctx.font = `500 ${Math.round(fs * .8)}px -apple-system, system-ui, sans-serif`;
-  ctx.fillText("Made with the Utah Plumbers Handbook. Check the fingerprint against the stamped photo.", pad, c.height - foot);
+  ctx.fillText("Made with the Utah Plumbers Handbook © Deklan Patrick Kelley. Check the fingerprint against the stamped photo.", pad, c.height - foot);
   const blob = await new Promise((ok, no) => c.toBlob(b => b ? ok(b) : no(new Error("encode")), "image/jpeg", .9));
   return new File([blob], (f.name || "proof.jpg").replace(/^proof-/, "proof-card-").replace(/\.[^.]*$/, "") + ".jpg", {type: "image/jpeg"});
 }
