@@ -122,6 +122,7 @@ function jbClean(){
   const str = x => typeof x === "string" ? x : x == null ? "" : String(x);
   jbD.jobs = arrO(jbD.jobs);
   jbD.bin = arrO(jbD.bin).filter(b => isO(b.item) && typeof b.at === "number");
+  jbD.bin.forEach(b => { b.id = jbSafeId(b.id); });
   jbD.binOut = Array.isArray(jbD.binOut) ? jbD.binOut.filter(x => typeof x === "string").slice(0, 1000) : [];
   if (!isO(jbD.fold)) jbD.fold = {};
   jbD.tech = isO(jbD.tech) ? Object.fromEntries(["n", "lic", "co", "ph"].map(k => [k, str(jbD.tech[k]).slice(0, 80)])) : {};
@@ -183,7 +184,7 @@ function jbFreeze(x, k, list){ const s2 = x.stages[k]; if (!s2) return; const ha
 const jbCurKeys = (j, k) => jbCk(j, k).items.map(x => x.key);
 const jbCkRow = (x, i, n) => {
   if (!x.tpl && jbIsEd("ck", x.id)) return `<li class="jb-liedit">${jbTextEd(x.t)}</li>`;
-  const ed = !JB.ckEdit ? "" : x.tpl ? `<button type="button" class="jb-x" data-ckconv="${esc(x.key)}" aria-label="Edit ${esc(x.t)}">✎</button>` : jbEdBtn("ck", x.id, esc(x.t));
+  const ed = x.tpl ? `<button type="button" class="jb-x" data-ckconv="${esc(x.key)}" aria-label="Edit ${esc(x.t)}">✎</button>` : jbEdBtn("ck", x.id, esc(x.t));   /* always there (it asks first); only × and the arrows wait for Edit */
   const mv = JB.ckEdit ? `<button type="button" class="jb-x" data-ckmv="${esc(x.key)}" data-dir="-1" aria-label="Move ${esc(x.t)} up"${i === 0 ? " disabled" : ""}>↑</button><button type="button" class="jb-x" data-ckmv="${esc(x.key)}" data-dir="1" aria-label="Move ${esc(x.t)} down"${i === n - 1 ? " disabled" : ""}>↓</button>` : "";
   const cam = JB.ckEdit ? "" : x.ph ? `<button type="button" class="jb-x" data-v="${esc(x.ph)}" aria-label="See the proof photo for ${esc(x.t)}">📷</button>`
     : `<button type="button" class="jb-x jb-cam" data-ckph="${esc(x.key)}" aria-label="Check off ${esc(x.t)} with a proof photo">📷</button>`;
@@ -194,7 +195,7 @@ const jbCkRow = (x, i, n) => {
 /* notes: a dated log with our own light markup (see "How to write notes") */
 const JN_TAG = /(^|[\s(])#([A-Za-z][\w-]*)/g;
 const jbTags = j => [...new Set(j.log.flatMap(e => [...e.b.matchAll(JN_TAG)].map(m => m[2].toLowerCase())))];
-const jbQs = j => j.log.reduce((n, e) => n + (e.b.match(/^\s*\?\?/gm) || []).length, 0);
+const jbQs = j => j.log.filter(e => jnLive(j, e)).reduce((n, e) => n + (e.b.match(/^\s*\?\?/gm) || []).length, 0);
 const jnLive = (j, e) => !e.s || jbStages(j).some(([k]) => k === e.s);   /* a note on a removed stage isn't counted */
 const jbTasks = j => j.log.filter(e => jnLive(j, e)).reduce((n, e) => n + (e.b.match(/^\s*[-*] \[ \]/gm) || []).length, 0);
 const jnSort = (a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : b.at - a.at;
@@ -584,9 +585,9 @@ function jbStageHtml(j, k){
     <label for="js-d1">Done<input id="js-d1" data-sf="d1" type="date" value="${esc(s.d1)}"></label>
     <label for="js-lead" class="wide">Lead on this stage<input id="js-lead" data-sp="1" list="jb-ppl" type="text" autocomplete="off" value="${esc(pName(s.lead))}" placeholder="${esc(pName(j.lead) || "Who ran it")}"></label>
   </div></details>
-  <p class="card-h" data-fold="s-check">Checklist · ${C.done} of ${C.total} <button type="button" class="linkish" data-a="ck-edit" aria-pressed="${JB.ckEdit}">${JB.ckEdit ? "Done editing" : "Edit or reorder"}</button></p>
+  <p class="card-h" data-fold="s-check">Checklist · ${C.done} of ${C.total} <button type="button" class="btn ghost jb-ckedit" data-a="ck-edit" aria-pressed="${JB.ckEdit}">${JB.ckEdit ? "✓ Done" : "↕ Reorder · remove"}</button></p>
   ${C.items.length ? `<ul class="jb-punch">${C.items.map((x, i) => jbCkRow(x, i, C.items.length)).join("")}</ul>` : `<div class="jb-in"><p class="note">Empty. Add what this stage needs below.</p></div>`}
-  ${JB.ckEdit ? `<div class="jb-in"><p class="note">↑ ↓ change the order, ✎ changes the words, × takes it off. Add your own below. Then save it as your list for ${JB_SNAME[k]} on every new job.${Array.isArray((jbD.tpl || {})[k]) ? " You're using your own list for this stage." : " Right now it starts from the book's list."}</p>
+  ${JB.ckEdit ? `<div class="jb-in"><p class="note">↑ ↓ change the order, × takes it off, ✎ changes the words. Add your own below. Then save it as your list for ${JB_SNAME[k]} on every new job.${Array.isArray((jbD.tpl || {})[k]) ? " You're using your own list for this stage." : " Right now it starts from the book's list."}</p>
     <div class="set-btns"><button type="button" class="btn" data-a="ck-save">Use this list on new jobs</button>${Array.isArray((jbD.tpl || {})[k]) ? `<button type="button" class="btn ghost" data-a="ck-book">Back to the book's list</button>` : ""}</div></div>` : ""}
   <div class="calc"><label for="jc-t" class="wide">Add to the checklist<input id="jc-t" type="text" autocomplete="off" enterkeyhint="done" placeholder="Something your lead or city wants"></label></div>
   <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-a="ck-add">Add item</button></div></div>
@@ -642,6 +643,7 @@ function jbJobHtml(j){
   const q = encodeURIComponent([addr.replace(/^lot\s*\w+\s*[·,\-–]\s*/i, ""), c && c.n, "UT"].filter(Boolean).join(", "));
   const tk = jbTasks(j), slot = (id, label, f, ph) => `<label for="${id}">${label}<input id="${id}" data-jp="${f}" list="jb-ppl" type="text" autocomplete="off" value="${esc(pName(j[f]))}" placeholder="${ph}"></label>`;
   const team = [...[["lead", "Lead"], ["sup", "Superintendent"]].filter(([f]) => pById(j[f])).map(([f, r]) => ({p: pById(j[f]), r})), ...j.ppl.map(x => ({p: pById(x.p), r: x.r, id: x.id})).filter(x => x.p)];
+  const named = !!((j.name || "").trim() || (j.a || "").trim());   /* a named job leads with the work; a new one with its details */
   const hs = jbStageNow(j), hAct = jbStages(j).filter(([k]) => j.stages[k].st !== "skip"), hDone = hAct.filter(([k]) => j.stages[k].st === "done").length, hLead = pById(j.stages[hs].lead) || pById(j.lead);
   return `<div class="jb-head">
   <div class="jb-hrow"><button type="button" class="btn ghost jb-back" data-a="back">‹ All jobs</button><span class="jb-stamp">Added ${jbShort(j.made)} · changed ${jbAgo(j.t)}</span></div>
@@ -654,7 +656,7 @@ function jbJobHtml(j){
   ${jbArch(j) ? `<div class="jb-in"><p class="note jb-archbar">🗄 <b>Archived.</b> ${jbArchMe(j) ? "You put it here." : `Not opened or changed since ${jbShort(jbLast(j))}.`} It's off the ${j.st === "done" ? "Done" : "Active"} list, Home and Coming up. Changing anything brings it back too.</p><div class="set-btns"><button type="button" class="btn" data-a="job-unarch">Bring it back</button></div></div>` : ""}
   ${j.st !== "done" && (A => A.length && A.every(([k]) => j.stages[k].st === "done"))(jbStages(j).filter(([k]) => j.stages[k].st !== "skip")) ? `<div class="jb-in"><p class="note jb-donebar">✓ <b>Every stage is done.</b> Finished with this job?</p><div class="set-btns"><button type="button" class="btn" data-a="job-done">Mark the job Done</button></div></div>` : ""}
   ${jbLeftOff(j)}
-  <p class="card-h" data-fold="details">Job details</p>
+  ${named ? "" : `  <p class="card-h" data-fold="details">Job details</p>
   <div class="calc">
     <label for="jb-n" class="wide">Job name<input id="jb-n" data-f="name" type="text" autocomplete="off" value="${esc(j.name)}" placeholder="Lot 12 ABC · Smith basement"></label>
     <label for="jb-a" class="wide">Address<input id="jb-a" data-f="a" type="text" autocomplete="off" value="${esc(j.a)}" placeholder="123 N Main St"></label>
@@ -668,18 +670,7 @@ function jbJobHtml(j){
   ${eById("bld", j.bld) || eById("sub", j.sub) ? `<div class="jb-list">${[["bld", j.bld], ["sub", j.sub]].filter(([t, id]) => eById(t, id)).map(([t, id]) => eRow(t, eById(t, id))).join("")}</div>` : ""}
   ${eById("sub", j.sub) && eById("sub", j.sub).gate ? `<div class="jb-in"><p class="note"><b>Gate:</b> ${esc(eById("sub", j.sub).gate)}</p></div>` : ""}
 
-  ${(() => { const F = new Map(); j.log.slice().sort((a, b) => jnSort(b, a)).forEach(e => jnProps(e.b).forEach(([k, v]) => F.set(k.toLowerCase(), [k, v, e.d])));
-    const up = j.log.flatMap(e => jnDates(e.b, e.d)).filter(([d]) => d >= jbDay()).sort((a, b) => a[0] < b[0] ? -1 : 1).slice(0, 5);
-    return (F.size ? `<p class="card-h" data-fold="facts">From your notes</p><div class="x"><table class="t wrap jb-facts"><tbody>${[...F.values()].map(([k, v, d]) => `<tr><th>${esc(k)}</th><td>${jnInline(v)}<div class="sub">${jbNice(d)}</div></td></tr>`).join("")}</tbody></table></div>` : "")
-      + (up.length ? `<p class="card-h" data-fold="soon">Coming up</p><ul class="jb-soon">${up.map(([d, l]) => `<li><span class="jn-date${d === jbDay() ? " now" : ""}">📅 ${jbNice(d)}</span> ${esc(l.replace(JN_DATE, "$1").replace(/^\s*([-*+] \[[ xX]\]|\?\?|!!)\s*/, "").trim().slice(0, 80))}</li>`).join("")}</ul>` : ""); })()}
-  <p class="card-h" data-fold="people">People</p>
-  <div class="calc">${slot("jp-lead", "Lead", "lead", "Who's leading for your company")}${slot("jp-sup", "Superintendent", "sup", "The builder's super")}</div>
-  ${team.length ? `<div class="jb-list">${team.map(x => `<div class="jp-row"><button type="button" class="jb-row" data-person="${x.p.id}"><b>${esc(x.p.n)}</b><span>${esc([x.r, x.p.co].filter(Boolean).join(" · "))}</span></button>${pTel(x.p) ? `<a class="btn ghost jp-call" href="tel:${pTel(x.p)}" aria-label="Call ${esc(x.p.n)}">Call</a>` : ""}${x.id ? `<button type="button" class="jb-x" data-pdel="${x.id}" aria-label="Take ${esc(x.p.n)} off this job">×</button>` : ""}</div>`).join("")}</div>` : ""}
-  <details class="explain"><summary>+ Add someone else</summary><div><div class="calc">
-    <label for="jpo-r">Role<select id="jpo-r">${jbList(JB_ROLES.slice(2), "Homeowner")}</select></label>
-    <label for="jpo-n" class="wide">Name<input id="jpo-n" type="text" list="jb-ppl" autocomplete="off"></label>
-  </div><div class="set-btns jb-top"><button type="button" class="btn" data-a="ppl-add">Add to this job</button></div></div></details>
-
+`}
   <p class="card-h" data-fold="timeline">Timeline${tk ? ` · ☐ ${tk} open` : ""}${jbQs(j) ? ` · ? ${jbQs(j)} question${jbQs(j) === 1 ? "" : "s"}` : ""}</p>
   <ol class="jt">${jbStages(j).map(([k, name]) => { const s = j.stages[k];
     return k === sel ? `<li class="jt-i jt-${s.st} jt-k-${k} jt-open" id="jt-open">${jbStageHtml(j, k)}</li>`
@@ -691,6 +682,33 @@ function jbJobHtml(j){
   <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-a="punch-add">Add item</button>${j.punch.some(p => p.done) ? `<button type="button" class="btn ghost" data-a="punch-clear">Clear checked</button>` : ""}</div></div>
   ${j.punch.length ? `<ul class="jb-punch">${j.punch.map(p => jbIsEd("punch", p.id) ? `<li class="jb-liedit">${jbTextEd(p.t)}</li>` : `<li><label><input type="checkbox" data-pk="${p.id}"${p.done ? " checked" : ""}><span>${esc(p.t)}${p.done && p.at ? `<small class="jb-when">✓ ${jbShort(p.at)}</small>` : p.add ? `<small class="jb-when">added ${jbShort(p.add)}</small>` : ""}</span></label>${p.ph ? `<button type="button" class="jb-x" data-v="${esc(p.ph)}" aria-label="See the proof photo for ${esc(p.t)}">📷</button>` : `<button type="button" class="jb-x jb-cam" data-pkph="${p.id}" aria-label="Check off ${esc(p.t)} with a proof photo">📷</button>`}${jbEdBtn("punch", p.id, esc(p.t))}<button type="button" class="jb-x" data-del="punch|${p.id}" aria-label="Delete ${esc(p.t)}">×</button></li>`).join("")}</ul>` : ""}
 
+  <p class="card-h" data-fold="people">People</p>
+  <div class="calc">${slot("jp-lead", "Lead", "lead", "Who's leading for your company")}${slot("jp-sup", "Superintendent", "sup", "The builder's super")}</div>
+  ${team.length ? `<div class="jb-list">${team.map(x => `<div class="jp-row"><button type="button" class="jb-row" data-person="${x.p.id}"><b>${esc(x.p.n)}</b><span>${esc([x.r, x.p.co].filter(Boolean).join(" · "))}</span></button>${pTel(x.p) ? `<a class="btn ghost jp-call" href="tel:${pTel(x.p)}" aria-label="Call ${esc(x.p.n)}">Call</a>` : ""}${x.id ? `<button type="button" class="jb-x" data-pdel="${x.id}" aria-label="Take ${esc(x.p.n)} off this job">×</button>` : ""}</div>`).join("")}</div>` : ""}
+  <details class="explain"><summary>+ Add someone else</summary><div><div class="calc">
+    <label for="jpo-r">Role<select id="jpo-r">${jbList(JB_ROLES.slice(2), "Homeowner")}</select></label>
+    <label for="jpo-n" class="wide">Name<input id="jpo-n" type="text" list="jb-ppl" autocomplete="off"></label>
+  </div><div class="set-btns jb-top"><button type="button" class="btn" data-a="ppl-add">Add to this job</button></div></div></details>
+
+  ${named ? `  <p class="card-h" data-fold="details">Job details</p>
+  <div class="calc">
+    <label for="jb-n" class="wide">Job name<input id="jb-n" data-f="name" type="text" autocomplete="off" value="${esc(j.name)}" placeholder="Lot 12 ABC · Smith basement"></label>
+    <label for="jb-a" class="wide">Address<input id="jb-a" data-f="a" type="text" autocomplete="off" value="${esc(j.a)}" placeholder="123 N Main St"></label>
+    <label for="jb-bld" class="wide">Builder<input id="jb-bld" data-je="bld" list="jb-blds" type="text" autocomplete="off" value="${esc(eName("bld", j.bld))}" placeholder="Pick or type a new one"></label>
+    <label for="jb-sub" class="wide">Subdivision<input id="jb-sub" data-je="sub" list="jb-subs" type="text" autocomplete="off" value="${esc(eName("sub", j.sub))}" placeholder="Pick or type a new one"></label>
+    <label for="jb-who" class="wide">Customer / homeowner <i>(optional)</i><input id="jb-who" data-f="who" type="text" autocomplete="off" value="${esc(j.who)}" placeholder="For remodels and service"></label>
+    <label for="jb-city">City <i>(for Directions)</i><select id="jb-city" data-f="city">${CITY_OPTS}</select></label>
+    <label for="jb-st">Job status<select id="jb-st" data-f="st">${jbOpts(JB_ST, j.st)}</select></label>
+  </div>
+
+  ${eById("bld", j.bld) || eById("sub", j.sub) ? `<div class="jb-list">${[["bld", j.bld], ["sub", j.sub]].filter(([t, id]) => eById(t, id)).map(([t, id]) => eRow(t, eById(t, id))).join("")}</div>` : ""}
+  ${eById("sub", j.sub) && eById("sub", j.sub).gate ? `<div class="jb-in"><p class="note"><b>Gate:</b> ${esc(eById("sub", j.sub).gate)}</p></div>` : ""}
+
+` : ""}
+  ${(() => { const F = new Map(); j.log.slice().sort((a, b) => jnSort(b, a)).forEach(e => jnProps(e.b).forEach(([k, v]) => F.set(k.toLowerCase(), [k, v, e.d])));
+    const up = j.log.flatMap(e => jnDates(e.b, e.d)).filter(([d]) => d >= jbDay()).sort((a, b) => a[0] < b[0] ? -1 : 1).slice(0, 5);
+    return (F.size ? `<p class="card-h" data-fold="facts">From your notes</p><div class="x"><table class="t wrap jb-facts"><tbody>${[...F.values()].map(([k, v, d]) => `<tr><th>${esc(k)}</th><td>${jnInline(v)}<div class="sub">${jbNice(d)}</div></td></tr>`).join("")}</tbody></table></div>` : "")
+      + (up.length ? `<p class="card-h" data-fold="soon">Coming up</p><ul class="jb-soon">${up.map(([d, l]) => `<li><span class="jn-date${d === jbDay() ? " now" : ""}">📅 ${jbNice(d)}</span> ${esc(l.replace(JN_DATE, "$1").replace(/^\s*([-*+] \[[ xX]\]|\?\?|!!)\s*/, "").trim().slice(0, 80))}</li>`).join("")}</ul>` : ""); })()}
   <p class="card-h" data-fold="files">Files</p>
   <div class="jb-in"><div class="set-btns"><label class="btn ghost">Add files (PDF, plans)<input type="file" id="jf-fi" multiple hidden></label></div></div>
   <div class="jb-list" id="jf-files"></div>
@@ -771,11 +789,11 @@ const jbState = () => ({open: JB.open, stage: JB.stage, person: JB.person, ent: 
 const jbPush = () => { if (JB.open || JB.person || JB.ent) JB.hist.push(jbState()); };
 function jbOpenPerson(id){ JB.allJobs = false; jbPush(); JB.ent = null; JB.person = id; JB.edit = null; jbDraw(); jbTop(); }
 function jbOpenEnt(t, id){ JB.allJobs = false; jbPush(); JB.person = null; JB.ent = {t, id}; JB.edit = null; jbDraw(); jbTop(); }
-function jbGoBack(){ const b = JB.hist.pop() || {open: null, stage: null, person: null, ent: null}; Object.assign(JB, b); JB.edit = null; JB.ckEdit = false; jbSave(); jbDraw(); jbTop(); }
+function jbGoBack(){ const b = JB.hist.pop() || {open: null, stage: null, person: null, ent: null}; Object.assign(JB, b); JB.edit = null; JB.ckEdit = false; jbSave(true); jbDraw(); jbTop(); }
 function jbBack(){
-  const en = eCur(); if (en){ if (!en.n.trim() && !en.log.length && !eJobs(JB.ent.t, en).length) jbD[ENT[JB.ent.t].list] = eList(JB.ent.t).filter(x => x !== en); jbGoBack(); return; }   /* a new page left blank isn't kept */
+  const en = eCur(); if (en){ if (!en.n.trim() && !en.log.length && !eJobs(JB.ent.t, en).length && !Object.keys(en).some(k => !["id", "n", "t", "log", "icon"].includes(k) && typeof en[k] === "string" && en[k].trim())) jbD[ENT[JB.ent.t].list] = eList(JB.ent.t).filter(x => x !== en); jbGoBack(); return; }   /* a new page left blank isn't kept */
   if (JB.person){ const p = pById(JB.person);
-    if (p && !p.n.trim() && !p.log.length && !pJobs(p).length) jbD.people = jbD.people.filter(x => x !== p);
+    if (p && !p.n.trim() && !p.log.length && !pJobs(p).length && !["co", "ph", "em", "draft"].some(k => String(p[k] || "").trim())) jbD.people = jbD.people.filter(x => x !== p);
     jbGoBack(); return; }
   const j = jbCur();
   if (j && !(j.a || "").trim() && !(j.name || "").trim() && !j.who.trim() && !j.bld && !j.sub && !j.log.length && !j.draft.trim() && !j.insp.length && !j.hrs.length && !j.punch.length && !j.lead && !j.sup && !JF.n
@@ -818,8 +836,8 @@ B.addEventListener("click", e => {
   const oi = e.target.closest("details[data-oi] > summary"); if (oi) JB.openItems = !oi.parentNode.open;   /* remember it open across redraws */
   const fh = e.target.closest(".card-h[data-fold]");
   if (fh && fh.dataset.fold === "details" && JB.open && !e.target.closest("button, a, input, select, label")){ JB.dState = {id: JB.open, open: fh.classList.contains("jb-folded")}; jbDraw(); return; }
-  if (fh && !e.target.closest("button, a, input, select, label")){ const k = fh.dataset.fold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(); jbDraw(); return; }   /* fold or open a section; remembered */
-  const tf = e.target.closest("[data-tfold]"); if (tf){ const k = tf.dataset.tfold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(); jbDraw(); return; }
+  if (fh && !e.target.closest("button, a, input, select, label")){ const k = fh.dataset.fold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(true); jbDraw(); return; }   /* fold or open a section; remembered */
+  const tf = e.target.closest("[data-tfold]"); if (tf){ const k = tf.dataset.tfold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(true); jbDraw(); return; }
   const t = e.target.closest("[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ckmv],[data-ckconv],[data-ckph],[data-pkph],[data-iq],[data-ent],[data-xadd],[data-xdel],[data-binr],[data-redit],[data-col],[data-tfold],[data-ico]"); if (!t) return;
   const j = jbCur(), o = jnOwner(), a = t.dataset.a, v = id => $(id).value.trim(), st = j && j.stages[JB.stage];
   if (t.dataset.ins){ jnInsert(t.dataset.ins); return; }
@@ -843,7 +861,7 @@ B.addEventListener("click", e => {
       const S = jbStages(j), i = S.findIndex(([k]) => k === JB.stage), nx = S.slice(i + 1).find(([k]) => j.stages[k].st === "todo");
       if (nx){ const n = j.stages[nx[0]]; n.st = "doing"; if (!n.d0) n.d0 = jbDay(); jbAct(j, `${JB_SNAME[nx[0]]}: To do → Doing (started when ${JB_SNAME[JB.stage]} was done)`, nx[0]); toast(`${JB_SNAME[JB.stage]} done. ${JB_SNAME[nx[0]]} is next.`, 2400); JB.stage = nx[0]; jbTouch(j); jbOpenStage(); return; } }
     jbTouch(j); return; }
-  if (t.dataset.pdel && j){ const q = j.ppl.find(x => x.id === t.dataset.pdel); if (q) jbAct(j, `Took ${pName(q.p) || "someone"} (${q.r}) off the job`); j.ppl = j.ppl.filter(x => x.id !== t.dataset.pdel); jbTouch(j); return; }
+  if (t.dataset.pdel && j){ j.pplOut = [...new Set([...(j.pplOut || []), t.dataset.pdel])].slice(-200); const q = j.ppl.find(x => x.id === t.dataset.pdel); if (q) jbAct(j, `Took ${pName(q.p) || "someone"} (${q.r}) off the job`); j.ppl = j.ppl.filter(x => x.id !== t.dataset.pdel); jbTouch(j); return; }
   if (t.dataset.ckdel && st){ const k = t.dataset.ckdel, di = jbCk(j, JB.stage).items.find(y => y.key === k);
     if (!di || !jbAsk(`Delete "${di.t}"?${di.done && di.at ? ` It's checked off (${jbShort(di.at)}); the date goes with it.` : ""} It goes to Recently deleted for 30 days.`)) return;
     jbAct(j, `🗑 Removed checklist item "${di.t}"${di.done && di.at ? ` (checked ${jbWhenAt(di.at)})` : ""}`, JB.stage);
@@ -868,8 +886,8 @@ B.addEventListener("click", e => {
     jfGeoWarm(); const inp = $("jf-proof-ln"); if (inp) inp.click(); return; }
   if (t.dataset.iq && j){ const [iid, r] = t.dataset.iq.split("|"), i = j.insp.find(x => x.id === iid); if (!i || !JB_RES[r]) return;
     let fix = "";
-    if (r !== "pass"){ fix = (prompt(`What did the inspector flag? It goes on the punch list.${"\n"}Leave it blank to skip.`) || "").trim(); jbReseat(); }   /* corrections straight onto the punch list */
-    jbAct(j, `📋 Inspection ${jbNice(i.d)}: ${JB_RES[i.r]} → ${JB_RES[r]}${fix ? ` (${fix.slice(0, 80)})` : ""}`, i.s); i.r = r;
+    if (r !== "pass"){ const ans = prompt(`What did the inspector flag? It goes on the punch list.${"\n"}Leave it blank to skip.`); jbReseat(); if (ans === null) return; fix = ans.trim(); }   /* Cancel = no change; blank = no correction */   /* corrections straight onto the punch list */
+    jbAct(j, `📋 Inspection ${jbNice(i.d)}: ${JB_RES[i.r]} → ${JB_RES[r]}${fix ? ` (${fix.slice(0, 80)})` : ""}`, i.s); i.r = r; i.ed = Date.now();
     if (fix){ i.n = [i.n, fix].filter(Boolean).join(" · "); j.punch.push({id: jbId(), t: `Correction (${JB_SNAME[i.s] || "inspection"} ${jbNice(i.d)}): ${fix}`, done: false, add: Date.now()}); }
     jbTouch(j); toast(r === "pass" ? "Passed. Nice." : fix ? "Saved, and the correction is on the punch list." : "Saved.", 2200); return; }
   if (a === "act-all"){ JB.actAll = true; jbDraw(); return; }
@@ -942,13 +960,13 @@ B.addEventListener("click", e => {
     const bid = jbBin(k, x, {jid: j.id, i: j[k].indexOf(x)}); j[k] = j[k].filter(y => y !== x); jbTouch(j); jbUndo(bid); return; }
   if (!j) return;
   if (a === "row-save" && JB.rowEdit){ const [k, id] = JB.rowEdit.split("|"), val = x => (($(x) || {}).value || "").trim();
-    if (k === "insp"){ const i = j.insp.find(x => x.id === id); if (i){ const was = `${jbNice(i.d)}, ${JB_RES[i.r] || i.r}`; i.d = val("re-d") || i.d; i.r = JB_RES[val("re-r")] ? val("re-r") : i.r; i.who = val("re-who"); i.n = val("re-n"); if (i.who) pGet(i.who, "Inspector"); const now = `${jbNice(i.d)}, ${JB_RES[i.r] || i.r}`; if (now !== was) jbAct(j, `📋 Inspection changed: ${was} → ${now}`, i.s); } }
-    else if (k === "hrs"){ const h = j.hrs.find(x => x.id === id), n = parseFloat(val("re-h")); if (h){ if (!(n > 0 && n <= 24)){ toast("Hours: more than 0, up to 24."); return; } h.h = Math.round(n * 100) / 100; h.d = val("re-d") || h.d; h.n = val("re-n"); } }
-    else if (k === "punch"){ const p = j.punch.find(x => x.id === id); if (p && val("re-t")) p.t = val("re-t"); }
+    if (k === "insp"){ const i = j.insp.find(x => x.id === id); if (i){ i.ed = Date.now(); const was = `${jbNice(i.d)}, ${JB_RES[i.r] || i.r}${i.who ? ", " + i.who : ""}${i.n ? ", " + i.n : ""}`; i.d = val("re-d") || i.d; i.r = JB_RES[val("re-r")] ? val("re-r") : i.r; i.who = val("re-who"); i.n = val("re-n"); if (i.who) pGet(i.who, "Inspector"); const now = `${jbNice(i.d)}, ${JB_RES[i.r] || i.r}${i.who ? ", " + i.who : ""}${i.n ? ", " + i.n : ""}`; if (now !== was) jbAct(j, `📋 Inspection changed: ${was} → ${now}`, i.s); } }
+    else if (k === "hrs"){ const h = j.hrs.find(x => x.id === id), n = parseFloat(val("re-h")); if (h){ if (!(n > 0 && n <= 24)){ toast("Hours: more than 0, up to 24."); return; } const was = `${jbHr(h.h)} hr on ${jbNice(h.d)}${h.n ? " (" + h.n + ")" : ""}`;
+      h.h = Math.round(n * 100) / 100; h.d = val("re-d") || h.d; h.n = val("re-n"); h.ed = Date.now(); const now = `${jbHr(h.h)} hr on ${jbNice(h.d)}${h.n ? " (" + h.n + ")" : ""}`; if (now !== was) jbAct(j, `⏱ Hours changed: ${was} → ${now}`, h.s); } }
+    else if (k === "punch"){ const p = j.punch.find(x => x.id === id), nt = val("re-t"); if (p && nt && nt !== p.t){ jbAct(j, `✎ Punch item: "${p.t}" → "${nt}"`); p.t = nt; p.ed = Date.now(); } }
     else if (k === "ck"){ const x = st && st.extra.find(y => y.id === id), nt = val("re-t");
       if (x && nt && nt !== x.t && jbCk(j, JB.stage).items.some(y => y.t === nt)){ toast("That's already on the list."); return; }
-      if (x && nt) x.t = nt; }
-    jbAct(j, "✎ Edited " + ({insp: "an inspection", hrs: "an hours entry", punch: "a punch item", ck: "a checklist item"}[k] || "an entry"), JB.stage);
+      if (x && nt && nt !== x.t){ jbAct(j, `✎ Checklist item: "${x.t}" → "${nt}"`, JB.stage); x.t = nt; } }   /* 6: each edit logged once, old → new, only if something changed */
     JB.rowEdit = null; jbTouch(j); toast("Saved.", 1400); return; }
 
   if (a === "job-arch"){ if (j.pin){ toast("Unpin it first: pinned jobs stay out of Archived."); return; }
@@ -1009,17 +1027,18 @@ B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.pers
   if (st && t.dataset.ck){ const k = t.dataset.ck;
     if (!t.checked){ const it = jbCk(j, JB.stage).items.find(y => y.key === k);   /* a dated check isn't wiped by a stray tap */
       if (it && it.at && !jbAsk(`Uncheck "${it.t}"? It was checked off ${jbShort(it.at)}, and that date will be cleared.`)){ t.checked = true; return; } }
+    if (!t.checked && st.ph && st.ph[k]) delete st.ph[k];
     { const ci = jbCk(j, JB.stage).items.find(y => y.key === k); if (ci) jbAct(j, `${t.checked ? "☑ Checked" : "☐ Unchecked"} "${ci.t}"${!t.checked && ci.at ? ` (was checked ${jbWhenAt(ci.at)})` : ""}`, JB.stage); }
     if (k[0] === "t"){ const txt = k.slice(1), s = new Set(st.done); t.checked ? s.add(txt) : s.delete(txt); st.done = [...s];
       st.doneAt = st.doneAt || {}; if (t.checked) st.doneAt[txt] = Date.now(); else delete st.doneAt[txt];
       st.extra.forEach(x => { if (x.t === txt){ x.done = t.checked; x.at = t.checked ? st.doneAt[txt] : undefined; } }); }   /* your own copy of the same line follows */
     else { const x = st.extra.find(y => "x" + y.id === k); if (x){ x.done = t.checked; x.at = t.checked ? Date.now() : undefined; } }
     jbTouch(j); return; }
-  if (j && t.dataset.ir){ const i = j.insp.find(x => x.id === t.dataset.ir); if (i){ jbAct(j, `📋 Inspection ${jbNice(i.d)}: ${JB_RES[i.r] || i.r} → ${JB_RES[t.value] || t.value}`, i.s); i.r = t.value; jbTouch(j); } return; }
+  if (j && t.dataset.ir){ const i = j.insp.find(x => x.id === t.dataset.ir); if (i){ jbAct(j, `📋 Inspection ${jbNice(i.d)}: ${JB_RES[i.r] || i.r} → ${JB_RES[t.value] || t.value}`, i.s); i.r = t.value; i.ed = Date.now(); jbTouch(j); } return; }
   if (j && t.dataset.pk){ const x = j.punch.find(y => y.id === t.dataset.pk); if (x){
     if (!t.checked && x.at && !jbAsk(`Uncheck "${x.t}"? It was checked off ${jbShort(x.at)}, and that date will be cleared.`)){ t.checked = true; return; }
     jbAct(j, `${t.checked ? "☑ Checked" : "☐ Unchecked"} punch item "${x.t}"${!t.checked && x.at ? ` (was checked ${jbWhenAt(x.at)})` : ""}`);
-    x.done = t.checked; x.at = t.checked ? Date.now() : undefined; jbTouch(j); } return; }
+    x.done = t.checked; x.at = t.checked ? Date.now() : undefined; x.ed = Date.now(); if (!t.checked) delete x.ph; jbTouch(j); } return; }   /* unchecked: its proof photo stays in Photos but no longer claims this item */
   if (t.id === "jb-rules"){ jbD.rules = t.value; jbSave(); return; }
   if (t.id === "jb-goal"){ jbD.goal = +t.value; jbSave(); jbDraw(); return; }
   if (t.id === "jb-before"){ jbD.before = Math.max(0, parseFloat(t.value) || 0); jbSave(); jbDraw(); return; }
@@ -1117,7 +1136,7 @@ async function jfDraw(job){
   const P = L.filter(f => f.kind === "photo" && f.s === JB.stage), F = L.filter(f => f.kind !== "photo");
   const ph = $("jf-photos"), fi = $("jf-files"), all = $("jf-all");
   if (all){ all.hidden = !P.length; all.textContent = JF.allReady && JF.allReady.s === JB.stage && JF.allReady.job === job ? `📤 Tap to send ${JF.allReady.files.length} photo${JF.allReady.files.length === 1 ? "" : "s"}` : `📤 Save or send all ${P.length}`; }
-  if (ph) ph.innerHTML = P.map(f => `<button type="button" class="jf-th" data-v="${f.id}" aria-label="${f.proof ? "Proof photo, " + esc(jfWhen(f.proof.at)) : "Photo"}${f.note ? ": " + esc(f.note) : ""}">${f.thumb ? `<img src="${f.thumb}" alt="">` : "<b>Photo</b>"}${f.proof ? `<i class="jf-pb" aria-hidden="true">📍 Proof</i>` : ""}${f.note ? `<span>${esc(f.note)}</span>` : ""}</button>`).join("")
+  if (ph) ph.innerHTML = P.map(f => `<button type="button" class="jf-th" data-v="${f.id}" aria-label="${f.proof ? "Proof photo, " + esc(jfWhen(f.proof.at)) : "Photo"}${f.note ? ": " + esc(f.note) : ""}">${jfThumbOk(f.thumb) ? `<img src="${f.thumb}" alt="">` : "<b>Photo</b>"}${f.proof ? `<i class="jf-pb" aria-hidden="true">📍 Proof</i>` : ""}${f.note ? `<span>${esc(f.note)}</span>` : ""}</button>`).join("")
     || `<p class="note">None yet. Stub-outs before drywall, the test gauge, what the inspector flagged.</p>`;
   if (fi) fi.innerHTML = F.map(f => `<button type="button" class="jb-row" data-v="${f.id}"><b>${esc(f.name)}</b><span>${jfMB(f.blob.size)}${f.note ? " · " + esc(f.note) : ""}</span></button>`).join("")
     || `<p class="note">None yet. Plans, the permit, spec sheets.</p>`;
@@ -1154,9 +1173,10 @@ const jfGeo = () => new Promise(ok => {
 });
 /* with location already allowed, start the GPS fix on the tap so it's ready when the camera closes; otherwise ask after the photo,
    so the "Allow location" box doesn't fight the camera */
-const jfGeoWarm = () => { if (navigator.permissions) navigator.permissions.query({name: "geolocation"}).then(s => { if (s.state === "granted" && !jfGeoP) jfGeoP = jfGeo(); }).catch(() => {}); };
+const jfGeoWarm = () => { if (navigator.permissions) navigator.permissions.query({name: "geolocation"}).then(s => { if (s.state === "granted") jfGeoP = jfGeo(); }).catch(() => {}); };
 document.addEventListener("click", e => { if (!e.target.closest("#jf-proof-l") || !navigator.permissions) return;
   navigator.permissions.query({name: "geolocation"}).then(s => { if (s.state === "granted") jfGeoP = jfGeo(); }).catch(() => {}); });
+const jfThumbOk = t => typeof t === "string" && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(t);   /* a thumbnail is only ever a plain image */
 const jfHash = async blob => { try { return [...new Uint8Array(await crypto.subtle.digest("SHA-256", await blob.arrayBuffer()))].map(b => b.toString(16).padStart(2, "0")).join(""); } catch(e){ return ""; } };
 const jfWhen = ts => new Date(ts).toLocaleString(undefined, {weekday: "short", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", second: "2-digit", timeZoneName: "short"});
 const jfAlt = p => p.alt != null && Number.isFinite(+p.alt);   /* elevation, when the phone gave one */
@@ -1203,7 +1223,8 @@ async function jfProof(file, link){
   const j = link ? jbD.jobs.find(x => x.id === link.jid) : jbCur(); if (!j || !file) return; const stage = link ? link.s : JB.stage, item = link ? jfLinkText(j, link) : "";
   toast("Getting the GPS fix and stamping the photo…", 25000);
   const now = Date.now(), ft = +file.lastModified || 0, fresh = ft > 0 && Math.abs(now - ft) < 10 * 60e3;   /* straight from the camera, or an older picture */
-  const geo = await (jfGeoP || jfGeo()); jfGeoP = null;
+  let geo = await (jfGeoP || jfGeo()); jfGeoP = null;
+  if (geo.gat && Date.now() - geo.gat > 120e3) geo = await jfGeo();   /* a fix from a camera that was cancelled earlier: get a new one */
   const P = Object.assign({at: fresh ? ft : now, late: !fresh && ft > 0, ft, tz: (Intl.DateTimeFormat().resolvedOptions() || {}).timeZone || "",
     job: jbName(j), addr: (j.a || "").trim(), stage: JB_SNAME[stage] || ""}, item ? {item} : {}, jbTechPub() ? {tech: jbTechPub()} : {}, String((jbD.tech || {}).lic || "").trim() ? {lic: String(jbD.tech.lic).trim()} : {},   /* license kept in the record, not shown */ geo.err ? {gpsErr: geo.err} : geo);
   try {
@@ -1214,7 +1235,12 @@ async function jfProof(file, link){
     jbAct(j, item ? `📷 Proof photo: checked off "${item}"` : "📷 Proof photo taken", stage);
     jbBump(j); jbSave(); if (link) jbDraw(); jfDraw(j.id);
     toast(geo.err ? `Saved, stamped with the date and job. <b>No GPS:</b> ${esc(geo.err)}` : `Proof photo saved · GPS ±${P.acc} m.`, geo.err ? 6000 : 2400);
-  } catch(e){ toast("Couldn't save the photo. The phone may be out of space.", 4000); }
+  } catch(e){
+    try { P.unstamped = true; P.hash = await jfHash(file); const pid = jbId();
+      await jfPut({id: pid, job: j.id, kind: "photo", name: `proof-${jbDay(new Date(P.at))}-unstamped.jpg`, type: file.type || "image/jpeg", blob: file, thumb: "", note: "", t: Date.now(), s: stage, proof: P});
+      if (link) jfLinkDone(j, link, pid, P.at); jbAct(j, "📷 Proof photo saved without its stamp (the phone couldn't draw it)", stage); jbBump(j); jbSave(); if (link) jbDraw(); jfDraw(j.id);
+      toast("The stamp couldn't be drawn, so the photo was saved as it came from the camera, with its time and details recorded.", 6000); }
+    catch(e2){ toast("Couldn't save the photo: the phone may be out of space. Try again after freeing some.", 5000); } }
   const inp = $("jf-proof"); if (inp) inp.value = ""; jbReseat();
 }
 async function jfAdd(files, photos){
@@ -1259,7 +1285,7 @@ async function jbReport(j0, only){
     toast("Job report saved to Downloads.", 2600); return; }
   if (JF.repBusy) return; JF.repBusy = true;
   try {
-  toast("Making the report…", 30000); jbAct(j0, `📄 Report made: ${only ? JB_SNAME[only] : "whole job"}`, only || undefined); jbSave(); jbDraw();
+  toast("Making the report…", 30000); const actN = (j0.act || []).length, tN = j0.t;
   const E = esc, when = ts => ts ? jbWhenAt(ts) : "", made = Date.now();
   let files = []; try { files = (await jfAll(j.id)).filter(f => !f.del && (!only || (f.kind === "photo" && f.s === only))).sort((a, b) => a.t - b.t); } catch(e){}
   const dataUrl = b => new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = () => ok(""); r.readAsDataURL(b); });
@@ -1280,7 +1306,7 @@ async function jbReport(j0, only){
   if (proofs.length){ h += `<h2>Proof photos</h2>`;
     for (const f of proofs){ const P = f.proof, src = await dataUrl(f.blob), gps = Number.isFinite(+P.lat) && Number.isFinite(+P.lon);
       h += `<figure><img src="${src}" alt="Proof photo ${num.get(f.id)}"><figcaption><b>#${num.get(f.id)}</b>${f.note ? ` · <b>${E(f.note)}</b>` : ""}<br>${P.late ? "Stamped" : "Taken"} ${E(jfWhen(+P.at))}${P.tz ? " (" + E(P.tz) + ")" : ""}<br>${gps ? `GPS ${E(jfLL(P))}, within ${E(+P.acc)} m · maps.apple.com/?ll=${+P.lat},${+P.lon}` : E(P.gpsErr || "No location")}<br>${E([P.job, P.addr, P.stage].filter(Boolean).join(" · "))}${P.item ? "<br>☑ Checked off: " + E(P.item) : ""}${P.tech ? "<br>Technician: " + E(P.tech) : ""}${P.hash ? `<br>Fingerprint (SHA-256 of the photo): <code>${E(P.hash)}</code>` : ""}</figcaption></figure>`; } }
-  if (others.length) h += `<h2>Other photos</h2><div class="th">${others.map(f => `<figure><img src="${f.thumb}" alt=""><figcaption>${E(when(f.t))}${f.note ? " · " + E(f.note) : ""}</figcaption></figure>`).join("")}</div>`;
+  if (others.length) h += `<h2>Other photos</h2><div class="th">${others.filter(f => jfThumbOk(f.thumb)).map(f => `<figure><img src="${f.thumb}" alt=""><figcaption>${E(when(f.t))}${f.note ? " · " + E(f.note) : ""}</figcaption></figure>`).join("")}</div>`;
   if (docs.length) h += `<h2>Files on this job</h2><ul>${docs.map(f => `<li>${E(f.name)} <span class="m">· added ${E(when(f.t))}</span></li>`).join("")}</ul>`;
   const A = j.act || [];
   if (A.length) h += `<h2>Activity log · ${A.length}</h2><ol class="act">${A.map(e => `<li><span class="m">${E(when(e.at))}</span> ${E(e.t)}${e.s && JB_SNAME[e.s] ? ` <span class="m">· ${E(JB_SNAME[e.s])}</span>` : ""}</li>`).join("")}</ol>`;
@@ -1290,6 +1316,8 @@ async function jbReport(j0, only){
 <body>${h}<div class="fp m"><b>Report fingerprint</b> (SHA-256 of everything above this box): <code>${fp}</code><br>Proof photos carry their own fingerprints, which the app's "Check it" button can verify against the photo on the phone.<br>This report is a record made by the technician on their own phone. Times come from the phone's clock. It is not an inspection approval, a certification or a guarantee.</div></body></html>`;
   const name = `job-report-${(jbName(j) || "job").replace(/[^\w-]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "job"}${only ? "-" + only : ""}-${jbDay()}.html`;
   const file = new File([doc], name, {type: "text/html"});
+  if ((j0.act || []).length !== actN || j0.t !== tN){ toast("The job changed while the report was being made. Tap again for an up-to-date one.", 4000); return; }
+  jbAct(j0, `📄 Report made: ${only ? JB_SNAME[only] : "whole job"}`, only || undefined); jbSave();
   JF.rep = {jid: j.id, k: only, file}; jbDraw(); toast(`${only ? JB_SNAME[only] + " report" : "Report"} ready: tap <b>📤 Send</b>.`, 4000);
   } catch(e){ toast("Couldn't make the report. Try again, or make one stage at a time.", 4000); } finally { JF.repBusy = false; }
 }
@@ -1456,7 +1484,7 @@ async function jfRestoreZ(z, merge){
   let n = 0;
   for (const f of m.files){ const x = z[f.path]; if (!x || !/^[\w-]+$/.test(String(f.id))) continue;
     if (merge){ const cur = await jfTx("readonly", s => s.get(f.id)).catch(() => null); if (cur && (cur.del || (+cur.ed || +cur.t || 0) >= (+f.ed || +f.t || 0))) continue; }
-    if (f.thumb && !/^data:image\//.test(f.thumb)) f.thumb = "";
+    if (f.thumb && !jfThumbOk(f.thumb)) f.thumb = "";
     await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, +f.ed ? {ed: +f.ed} : {}, f.s ? {s: f.s} : {}, f.del ? {del: f.del} : {}, f.proof && typeof f.proof === "object" ? {proof: f.proof} : {})); n++; }
   return n;
 }
@@ -1542,7 +1570,9 @@ function jbMerge(o){
         A(other[k]).forEach(e => { const c = L.get(e.id); if (!c || when(e) > when(c)) L.set(e.id, cl(e)); }); keep[k] = [...L.values()]; });
       m.set(y.id, keep); });
     return [...m.values()]; };
+  const outP = new Map(); [...jbD.jobs, ...A(o.jobs)].forEach(x => (Array.isArray(x.pplOut) ? x.pplOut : []).forEach(id => { if (!outP.has(x.id)) outP.set(x.id, new Set()); outP.get(x.id).add(String(id)); }));
   jbD.jobs = byId(jbD.jobs, o.jobs, ["log", "insp", "hrs", "punch", "ppl", "act"]);
+  jbD.jobs.forEach(x => { const s = outP.get(x.id); if (s){ x.pplOut = [...s]; x.ppl = (x.ppl || []).filter(p => !s.has(p.id)); } });   /* taken off on either phone: stays off */
   jbD.people = byId(jbD.people, o.people, ["log"]); jbD.builders = byId(jbD.builders, o.builders, ["log"]); jbD.subs = byId(jbD.subs, o.subs, ["log"]);
   jbBinOut(Array.isArray(o.binOut) ? o.binOut.filter(x => typeof x === "string") : []);   /* restored or emptied on either phone: done */
   const out = new Set(jbD.binOut || []), bin = new Map(jbD.bin.filter(b => !out.has(b.id)).map(b => [b.id, b]));
