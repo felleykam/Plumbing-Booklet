@@ -4310,8 +4310,8 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note">Every visit: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. SLC also wants install instructions at rough and final.</p>
   </section>
   <section data-sec="phases" data-kw="checklist ready for inspection before you call inspector punch list pre-inspection underground rough final">
-    <div class="sec-head"><h2>Before you call it in</h2><small>Tap to check · saved on this device</small></div>
-    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you are about to call for an inspection.</p><p><b>How:</b> pick the inspection (Underground, Top-out, Final) and tick each item as you check it on site. Ticks stay on this phone until you tap Uncheck all. Tap <b>Edit or reorder</b> to move items, change their words, take some off or add your own. These are typical items: your city's list and your lead win. For one job's own checklist, use Mine → Jobs, where every stage has its own.</p></div></details>
+    <div class="sec-head"><h2>Before you call it in</h2><small>A quick scratch list · or check it on a job</small></div>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you are about to call for an inspection.</p><p><b>How:</b> pick the inspection (Underground, Top-out, Final) and tick each item as you check it on site.</p><p><b>Two ways to tick:</b> the ticks on this page are a <b>scratch list</b>: not tied to any job, kept until you tap Uncheck all. To keep the checks with a job (dated, and in its report), tap the job under <b>Check it on a job</b>. That opens the same list on the job's stage.</p><p><b>One list, two places:</b> <b>Edit or reorder</b> changes the starting list here <i>and</i> on new jobs in My jobs. Jobs you already have keep the list they show now. These are typical items: your city's list and your lead win.</p></div></details>
     <div class="seg" id="ck-phase" role="group" aria-label="Which inspection">
       <button type="button" data-ph="under" aria-pressed="true">Underground</button>
       <button type="button" data-ph="rough" aria-pressed="false">Top-out</button>
@@ -4320,10 +4320,11 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <ul class="tick" id="ck-list"></ul>
     <div class="tick-foot"><span id="ck-count" aria-live="polite"></span><span><button type="button" class="linkish" id="ck-edit" aria-pressed="false">Edit or reorder</button> · <button type="button" class="linkish" id="ck-clear">Uncheck all</button></span></div>
     <div id="ck-edbox" hidden>
-      <p class="note">↑ ↓ change the order, ✎ changes the words, × takes it off. Your list is saved on this phone.</p>
+      <p class="note">↑ ↓ change the order, ✎ changes the words, × takes it off. This is also the starting checklist for this stage on <b>new</b> jobs in My jobs; jobs you already have keep theirs.</p>
       <div class="calc"><label for="ck-new" class="wide">Add to this list<input id="ck-new" type="text" autocomplete="off" enterkeyhint="done" placeholder="Something your city or lead wants"></label></div>
       <div class="set-btns"><button type="button" class="btn ghost" id="ck-add">Add item</button><button type="button" class="btn ghost" id="ck-book" hidden>Back to the book's list</button></div>
     </div>
+    <div id="ck-jobs"></div>
     <p class="note">Typical items. Your city's list and your lead win.</p>
   </section>
     <section data-sec="phases" data-kw="test log record pressure test hold time start stop dwv water supply gas vacuum test values how long psi head what must hold leak or just cold air test temperature cold drop gauge falling leak overnight winter shell pressure correction gas test">
@@ -5267,6 +5268,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 16, 2026 · flow fixes</th><td><b>A cleaner job list:</b> My jobs now shows just search, filters, <b>Open on active jobs</b> (moved up top) and your jobs, with your hours on one line at the bottom. Everything else moved to <b>⚙ Jobs settings</b> (bottom of the list): you, rules for every job, hours and the license goal, colors, backup and Recently deleted. Restore, merge, password backups and safety copies stay in Settings → Backup &amp; reset. <b>Next up:</b> one list per job (booked inspections, @dates in notes, open boxes and questions, heads-ups, punch items, then the current stage's checklist). It's at the top of each job, in Quick view, and feeds Home's Coming up. <b>One checklist, two places:</b> Inspect → Before you call it in uses the same lists as new jobs, and <b>Check it on a job</b> opens that list on a job so the checks are dated and in its report; ticks on the Inspect page are a scratch list. <b>Photos &amp; files</b> is one section on a job, with a chip for each stage (and All). <b>⏱ Log hours</b> is right in a job's header (today and the stage you're on). A removed Gas, Final or Warranty stage now says what it still holds, with <b>Put back</b>. A <code>[[link]]</code> to something in Recently deleted offers to restore it. The gate code on a job now taps through to its subdivision, where you change it.</td></tr>
         <tr><th>Nov 16, 2026 · night pass</th><td><b>Read this first:</b> a short pop-up on opening the book (once, and again if the terms change): check everything yourself, you're the plumber, and how to back up so updates and new phones don't cost you your work. <b>"Not done" on checklists:</b> tap ⊘ on an item, say why (waiting on the framer, no access…), and it shows in red with the date, in the stage count, the activity log and reports; checking it off later clears it. <b>Cleaner job list:</b> rows drop the random note line, and the badges are smaller and tidier. <b>Fewer duplicates:</b> one 📷 Proof photo button (in the job's header; each stage keeps Add photos), and one whole-job 📄 Report (the header's; the Proof section keeps the stage reports). <b>Things that now connect:</b> open punch items count as to-dos and show in "Where you left off"; the subdivision's gate code shows at the top of the job. <b>Fixes:</b> Settings → Restore from file now takes the .zip from Back up everything; a new job's details no longer jump while you type the address; your license # is off the Technician summary line. Backup, merge and restore were tested end to end.</td></tr>
         <tr><th>Nov 16, 2026 · tune-up</th><td><b>Checklist editing is back in plain sight:</b> ✎ shows on every checklist item again (it asks first); only × and the move arrows wait behind <b>↕ Reorder · remove</b>. <b>Jobs lead with the work:</b> a job opens on its Timeline, then the Punch list, People and Job details (a brand-new job still starts with its details). <b>Inspection buttons:</b> Cancel on the "what did the inspector flag?" box now leaves the inspection as it was. <b>Fixes from a code review:</b> a proof photo always gets a fresh GPS fix; if the stamp can't be drawn, the photo is still saved with its record; edits to inspections, hours and punch items are dated so merging a backup keeps the newest; unchecking an item drops its proof-photo link; the activity log records each edit once, with what it said before and after; "Report made" is logged only when the report really is; people taken off a job stay off through a merge; a filled-in person, builder or subdivision page without a name isn't thrown away; and tapping Back or folding a section no longer counts toward the backup reminder. Spelling and wording checked across the book.</td></tr>
         <tr><th>Nov 16, 2026 · copyright</th><td><b>Disclaimers &amp; terms of use</b> (Inspect → Which code, and a link in the footer): a field aid, not the code; not professional advice; your work, your responsibility; calculators are estimates; what proof photos and reports are and aren't; your data stays on your phone; no warranty. <b>Copyright notice:</b> the book now says © 2026 Deklan Patrick Kelley, all rights reserved, in the footer, in About, in its code files and on job reports and proof cards.</td></tr>
@@ -8962,13 +8964,15 @@ const CK = {
 /* your own version of a phase's list (order, words, added and removed items), else the book's */
 let ckMy = store.get("jpb-ck-my", {}); if (!ckMy || typeof ckMy !== "object" || Array.isArray(ckMy)) ckMy = {};
 for (const k in ckMy) if (!CK[k] || !Array.isArray(ckMy[k])) delete ckMy[k]; else ckMy[k] = ckMy[k].filter(t => typeof t === "string" && t.trim());
-const ckList = k => Array.isArray(ckMy[k]) ? ckMy[k] : CK[k];
+/* one list per stage, shared with My jobs: once jobs.js is loaded it holds them (jbTplGet / jbTplPut), and this page reads and edits those */
+const ckList = k => window.jbTplGet ? jbTplGet(k) : Array.isArray(ckMy[k]) ? ckMy[k] : CK[k];
+const ckIsMine = k => window.jbTplMine ? jbTplMine(k) : Array.isArray(ckMy[k]);
 const ckMine = () => (ckMy[ckPh] = [...ckList(ckPh)]);   /* copy before changing, so the book's list stays as it is */
-const ckSaveMy = () => store.set("jpb-ck-my", ckMy);
+const ckSaveMy = (ph = ckPh) => { if (window.jbTplPut) jbTplPut(ph, Array.isArray(ckMy[ph]) ? ckMy[ph] : null); else store.set("jpb-ck-my", ckMy); };
 let ckEd = false, ckRow = -1;
 let ckPh = store.get("jpb-ck-ph", "under"), ckDone = store.get("jpb-ck", {}); if (!CK[ckPh]) ckPh = "under";
 if (!ckDone || typeof ckDone !== "object" || Array.isArray(ckDone)) ckDone = {};
-for (const k in ckDone) ckDone[k] = Array.isArray(ckDone[k]) ? ckDone[k].filter(t => typeof t === "string" && CK[k] && ckList(k).includes(t)) : [];
+for (const k in ckDone) ckDone[k] = Array.isArray(ckDone[k]) && CK[k] ? ckDone[k].filter(t => typeof t === "string") : [];   /* stale ticks don't count: only items on the list are counted */
 const ckCount = (L, s) => { $("ck-count").textContent = `${L.filter(t => s.has(t)).length} of ${L.length} done`; };
 function ckDraw(){
   press("#ck-phase", x => x.dataset.ph === ckPh);
@@ -8978,7 +8982,8 @@ function ckDraw(){
     : `<li${ckEd ? ' class="ck-ed"' : ""}><label><input type="checkbox" data-i="${i}"${done.has(t) ? " checked" : ""}><span>${esc(t)}</span></label>${ckEd ? `<button type="button" class="jb-x" data-ck="up" data-i="${i}" aria-label="Move ${esc(t)} up"${i === 0 ? " disabled" : ""}>↑</button><button type="button" class="jb-x" data-ck="down" data-i="${i}" aria-label="Move ${esc(t)} down"${i === n - 1 ? " disabled" : ""}>↓</button><button type="button" class="jb-x" data-ck="edit" data-i="${i}" aria-label="Edit ${esc(t)}">✎</button><button type="button" class="jb-x" data-ck="del" data-i="${i}" aria-label="Remove ${esc(t)}">×</button>` : ""}</li>`).join("");
   ckCount(L, done);
   $("ck-edit").textContent = ckEd ? "Done editing" : "Edit or reorder"; $("ck-edit").setAttribute("aria-pressed", String(ckEd));
-  $("ck-edbox").hidden = !ckEd; $("ck-book").hidden = !Array.isArray(ckMy[ckPh]);
+  $("ck-edbox").hidden = !ckEd; $("ck-book").hidden = !ckIsMine(ckPh);
+  $("ck-jobs").innerHTML = window.jbCkJobs ? jbCkJobs(ckPh) : "";
   IDX = null;
 }
 $("ck-list").addEventListener("change", e => { if (e.target.type !== "checkbox") return;
@@ -9001,7 +9006,7 @@ $("ck-list").addEventListener("click", e => { const b = e.target.closest("button
     ckRow = -1; ckSaveMy(); ckDraw(); toast("Saved.", 1400); return; }
   if (act === "del"){ if (!confirm(`Delete "${t}"?${done.has(t) ? " It's checked off." : ""}`)) return;
     const ph = ckPh, was = done.has(t), M = ckMine(); M.splice(i, 1); done.delete(t); keepDone(); ckRow = -1; ckSaveMy(); ckDraw();
-    undoToast("Item removed.", () => { const L2 = ckMy[ph] || (ckMy[ph] = [...CK[ph]]); if (!L2.includes(t)) L2.splice(Math.min(i, L2.length), 0, t); ckSaveMy();
+    undoToast("Item removed.", () => { const L2 = ckMy[ph] = [...ckList(ph)]; if (!L2.includes(t)) L2.splice(Math.min(i, L2.length), 0, t); ckSaveMy(ph);
       if (was){ ckDone[ph] = [...new Set([...(ckDone[ph] || []), t])]; store.set("jpb-ck", ckDone); } ckDraw(); }); }
 });
 $("ck-list").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "ck-re"){ e.preventDefault(); $("ck-list").querySelector('[data-ck="save"]').click(); } });
@@ -9011,10 +9016,10 @@ $("ck-add").addEventListener("click", () => { const v = $("ck-new").value.trim()
   ckMine().push(v); ckSaveMy(); $("ck-new").value = ""; ckDraw(); $("ck-new").focus(); });
 $("ck-new").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); $("ck-add").click(); } });
 $("ck-book").addEventListener("click", () => { const nm = (document.querySelector(`#ck-phase [data-ph="${ckPh}"]`) || {}).textContent || "";
-  if (!confirm(`Go back to the book's ${nm} list? This drops your order, wording and added items for ${nm}. You can tap Undo right after.`)) return;
-  const ph = ckPh, myWas = ckMy[ph], doneWas = (ckDone[ph] || []).slice();
-  delete ckMy[ph]; ckSaveMy(); ckDone[ph] = doneWas.filter(t => CK[ph].includes(t)); store.set("jpb-ck", ckDone); ckRow = -1; ckDraw();
-  undoToast(`Back to the book's ${nm} list.`, () => { ckMy[ph] = myWas; ckSaveMy(); ckDone[ph] = doneWas; store.set("jpb-ck", ckDone); ckDraw(); }); });
+  if (!confirm(`Go back to the book's ${nm} list? This drops your order, wording and added items for ${nm} (here and as the starting list for new jobs). You can tap Undo right after.`)) return;
+  const ph = ckPh, myWas = ckIsMine(ph) ? [...ckList(ph)] : undefined, doneWas = (ckDone[ph] || []).slice();
+  delete ckMy[ph]; ckSaveMy(ph); ckDone[ph] = doneWas.filter(t => CK[ph].includes(t)); store.set("jpb-ck", ckDone); ckRow = -1; ckDraw();
+  undoToast(`Back to the book's ${nm} list.`, () => { ckMy[ph] = myWas; ckSaveMy(ph); ckDone[ph] = doneWas; store.set("jpb-ck", ckDone); ckDraw(); }); });
 document.querySelectorAll("#ck-phase button").forEach(b => b.addEventListener("click", () => {
   ckPh = b.dataset.ph; ckRow = -1; store.set("jpb-ck-ph", ckPh); ckDraw(); apply();
 }));
@@ -9736,7 +9741,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-16i";
+{ const NEWS = "2026-11-16j";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -10988,7 +10993,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-16i";
+var BUILD = "handbook-2026-11-16j";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
