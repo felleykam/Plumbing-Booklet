@@ -395,7 +395,7 @@ function jnIntro(n){
   <p class="note"><b>Good notes are short, same-day and specific:</b> what got done, what didn't and why (delays!), who said what (use a <code>&gt;</code> quote), and a photo of anything that'll be hidden behind drywall. Every model and serial you install: write it as <code>Serial: …</code> so it's there for a warranty call.</p>
 </div></details>`;
 }
-/* the rules for every job (My jobs → Rules for every job), shown live at the top of each job's notes, read-only there */
+/* the rules for every job (My jobs → Jobs settings → Rules for every job), shown live at the top of each job's notes, read-only there */
 /* who's taking the photos and making the reports: filled in once by whoever uses this phone; it goes on new proof photos and every report */
 const jbTechPub = () => { const T = jbD.tech || {}; return [T.n, T.co, T.ph].map(x => String(x || "").trim()).filter(Boolean).join(" · "); };   /* shown: no license number */
 const jbTech = () => { const T = jbD.tech || {}; return [T.n, T.lic && "Lic " + T.lic, T.co, T.ph].map(x => String(x || "").trim()).filter(Boolean).join(" · "); };
@@ -404,7 +404,7 @@ const jbTechHtml = () => { const T = jbD.tech || {}, f = (k, label, ph, type = "
   <div class="calc">${f("n", "Your name", "First and last name")}${f("lic", "License #", "DOPL number")}${f("ph", "Phone", "801-555-0100", "tel")}${f("co", "Company <i>(optional)</i>", "Who you work for")}</div>
   <p class="note">Your name, company and phone go on every new proof photo, proof card and report. Your license # is kept with them but not shown. Saved on this phone only.</p></div></details>`; };
 const jbRulesHtml = () => { const r = String(jbD.rules || "").trim(); if (!r) return "";
-  return `<div class="jb-rules"><p class="jn-prevh">📌 Rules for every job · these come first</p><div class="jn-b">${jnMd(r, "rules").replace(/data-tk=/g, "disabled data-tk=")}</div><p class="note"><button type="button" class="linkish" data-a="rules-go">Change them</button> on My jobs.</p></div>`; };
+  return `<div class="jb-rules"><p class="jn-prevh">📌 Rules for every job · these come first</p><div class="jn-b">${jnMd(r, "rules").replace(/data-tk=/g, "disabled data-tk=")}</div><p class="note"><button type="button" class="linkish" data-a="rules-go">Change them</button> in Jobs settings.</p></div>`; };
 const jnBlock = (o, list, ph) => `${jnIntro(list.length)}<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label>
     <label for="jn-d">Date<input id="jn-d" type="date" value="${jbDay()}"></label></div>
   ${JN_TOOLS}
@@ -665,7 +665,7 @@ const jbNextHtml = (N, n, cls) => `<ul class="${cls}">${N.slice(0, n).map(jbNext
 /* coming back to a job: what's next, then the last note, before anything else */
 function jbLeftOff(j){
   const N = jbNextUp(j), last = j.log.filter(e => jnLive(j, e)).sort(jnSort)[0];
-  if (!N.length && !last) return "";
+  if (!last && N.every(x => x.ck)) return "";
   return `<div class="jb-left"><p class="jb-lefth">Where you left off · next up</p>
     ${N.length ? jbNextHtml(N, 5, "jb-leftl") : ""}
     ${last ? `<p class="jb-leftp"><b>Last note ${esc(jbNice(last.d))}:</b> ${esc(jnGist(last, 2) || "Note")}</p>` : ""}</div>`;
@@ -824,7 +824,7 @@ function jbDraw(){
     for (let n = h.nextElementSibling; n && !n.matches(".card-h, .jb-end"); n = n.nextElementSibling) n.hidden = f; });
   bindPn(body);
   if (had) jbReseat();
-  const cj = $("ck-jobs"); if (cj && typeof ckPh === "string") cj.innerHTML = window.jbCkJobs(ckPh);
+  const cj = $("ck-jobs"); if (cj && window.jbCkJobs && typeof ckPh === "string") cj.innerHTML = window.jbCkJobs(ckPh);
 }
 const jbTouch = o => { jbBump(o); jbSave(); jbDraw(); };
 const jbTop = () => { const c = $("jobs-card"); if (c) c.scrollIntoView({block: "start"}); };
@@ -1051,7 +1051,7 @@ B.addEventListener("click", e => {
   else if (a === "punch-clear"){ jbAct(j, `🗑 Cleared ${j.punch.filter(p => p.done).length} checked punch items (they're in Recently deleted)`); const gone = j.punch.filter(p => p.done), ids = gone.map(p => jbBin("punch", p, {jid: j.id, i: j.punch.indexOf(p)}));
     j.punch = j.punch.filter(p => !p.done); jbTouch(j);
     undoToast(`Cleared ${gone.length} checked item${gone.length === 1 ? "" : "s"}. They're in Recently deleted.`, () => { const n = ids.filter(id => jbBinRestore(id, true)).length; jbSave(); jbDraw();
-      return n ? `Brought back ${n}.` : "The job is gone. Restore it from Recently deleted first."; }); }
+      return n ? `Brought back ${n}.` : "The job is gone. Restore it from Jobs settings → Recently deleted first."; }); }
   else if (a === "job-del"){
     if (!jbAsk(`Delete "${jbName(j)}"? It goes to Recently deleted for 30 days, photos and all, then it's gone for good.`)) return;
     const bid = jbBin("job", j); jbD.jobs = jbD.jobs.filter(x => x !== j);   /* its photos stay until the bin is emptied */
