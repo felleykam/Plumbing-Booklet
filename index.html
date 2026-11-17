@@ -407,6 +407,18 @@ section[data-sec]{content-visibility:auto;contain-intrinsic-size:auto 500px}
 .jb-row>span.jb-peek{position:absolute;top:0;right:0;width:48px;height:100%;min-height:48px;display:grid;place-items:center;font-size:22px;color:var(--ink);border-left:1px solid var(--rule)}
 .jn-mode{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 12px 0;font-size:15px;color:var(--muted)}
 .jn-mode .seg{margin:0}
+.jn-mode>span{white-space:nowrap}
+.jt-open .jn-mode .jb-seg,.jn-mode .jb-seg{display:flex;flex:none;padding:0;gap:6px}
+.jn-mode .jb-seg button{min-height:40px;padding:4px 12px;font-size:14px}
+/* list page: search and New job on one line, filters on one line */
+.jb-toprow{display:flex;gap:8px;align-items:stretch;padding:10px 12px 0}
+.jb-toprow input{flex:1;min-width:0;min-height:48px;padding:6px 10px;font:600 16px var(--body);border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);color:var(--ink)}
+.jb-toprow .btn{flex:none;white-space:nowrap}
+.jb-show{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.jb-show button{padding:4px 2px;font-size:14px;letter-spacing:.02em;min-height:44px}
+.jb-rulesd{margin:8px 12px}
+.jb-act li.jb-aday{padding:10px 0 2px;border-bottom:0;font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.jb-act time{display:inline;margin-right:6px}
 .jn-compact{gap:0}
 .jn-row{appearance:none;display:grid;grid-template-columns:1fr auto;gap:2px 10px;width:100%;min-height:52px;padding:9px 12px;text-align:left;font:inherit;color:var(--ink);background:var(--sheet);border:0;border-bottom:1px solid var(--rule);border-left:5px solid var(--acc,var(--edge));cursor:pointer}
 .jn-compact .jn-row:first-child{border-top:1px solid var(--rule)}
@@ -415,7 +427,8 @@ section[data-sec]{content-visibility:auto;contain-intrinsic-size:auto 500px}
 .jn-rp{grid-column:1/-1;font-size:14.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .jn-compact .jn-e{margin:6px 0}
 .jn-hb{display:flex}
-.jb-cam{opacity:.75}
+.jb-cam{opacity:.4;font-size:19px;filter:grayscale(1)}
+.jb-cam:hover,.jb-cam:focus-visible{opacity:1;filter:none}
 .jn-hist{margin:0 10px 8px;font-size:15px}
 .jn-hist summary{cursor:pointer;color:var(--muted);font-weight:700;min-height:36px;display:flex;align-items:center}
 .jn-hv{border-left:3px dashed var(--rule);padding:2px 0 2px 10px;margin:6px 0}
@@ -473,7 +486,13 @@ dialog.jf-dlg{width:min(720px,calc(100vw - 24px));max-height:calc(100dvh - 24px)
 dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .jf-dlg img{display:block;max-width:100%;max-height:60dvh;margin:0 auto;object-fit:contain}
 .jf-dlg .calc{border:0}
-.jf-btns{padding:0 12px 12px}
+.jf-btns{padding:4px 12px 14px;border-top:1px solid var(--rule);margin-top:8px}
+.jf-top{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 4px 4px 12px;background:var(--sheet);border-bottom:1px solid var(--rule)}
+.jf-top b{font-family:var(--display);font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jf-desc{padding-top:8px}
+.jf-proof .t{margin:4px 0 0}
+.jf-cardb{margin-top:8px}
+.jf-all{grid-column:1/-1}
 .jf-fname{padding:16px 12px 0;margin:0;overflow-wrap:anywhere}
 .jb-gist{font-style:italic}
 .jn-tools{padding:0 12px 8px;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
@@ -628,6 +647,21 @@ p.jb-gh{cursor:default}
 .jn-tools .t-q{border-left:6px solid var(--pal-blue)}.jn-tools .t-date{border-left:6px solid var(--pal-purple)}.jn-tools .t-prop{border-left:6px solid var(--pal-teal)}.jn-tools .t-tag{border-left:6px solid var(--pal-pink)}
 .jb-when{display:inline-block;margin-left:8px;font-size:13px;color:var(--muted);font-weight:600;text-decoration:none}
 .jb-stamp{padding:2px 12px 0}
+/* job page header */
+.jb-head{padding:8px 12px 10px;border-bottom:1px solid var(--rule)}
+.jb-hrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.jb-hrow .jb-back{min-height:44px;padding:4px 12px}
+.jb-head .jb-stamp{padding:0;font-size:13.5px;color:var(--muted);text-align:right}
+.jb-head .jb-jobbar{margin:10px -12px 0}
+.jb-title{display:flex;align-items:center;gap:8px;margin:12px 0 2px;font-family:var(--display);font-size:24px;line-height:1.15;overflow-wrap:anywhere}
+.jb-title .iso{width:30px;height:30px;margin:0}
+.jb-sub{margin:0;font-size:15.5px;color:var(--muted);overflow-wrap:anywhere}
+.jb-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+.jb-hacts{margin-top:8px}
+/* easier on the eyes: what you type in a job reads in the book's own font (the typewriter font stays for numbers in calculators) */
+#jb-body .calc input:not([type=number]):not([type=date]),#jb-body textarea,.jf-dlg textarea{font-family:var(--body);font-weight:600;letter-spacing:0}
+#jb-body .calc input::placeholder,#jb-body textarea::placeholder,.jf-dlg textarea::placeholder{font-weight:500;opacity:.75}
+#jb-body .jn-ta{line-height:1.4}
 .jb-qb{border-color:var(--pal-blue)!important;color:var(--pal-blue)}
 .jb-soon{list-style:none;margin:0;padding:4px 12px 8px}.jb-soon li{padding:4px 0}
 .jb-soon .linkish{text-align:left;padding:6px 0}
@@ -1170,9 +1204,11 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 <noscript><div style="padding:12px;margin:12px;border:3px solid #000;background:#CCFF00;color:#000;font:16px/1.4 system-ui,sans-serif"><b>Calculators and tabs are off.</b> This viewer isn't running scripts. Open the book in Safari or Chrome.</div></noscript>
 <div id="sr-status" role="status" class="sr-only"></div>
 <canvas id="fx" aria-hidden="true" hidden></canvas>
-<dialog id="jf-dlg" class="jf-dlg" aria-label="Photo or file"><div id="jf-dlg-body"></div>
-  <div class="calc"><label for="jf-note" class="wide">Note<textarea id="jf-note" rows="3" placeholder="What this shows: 3/4 stub-out at 8 in left of center"></textarea></label></div>
-  <div class="set-btns jf-btns"><button type="button" class="btn" id="jf-open">Open</button><button type="button" class="btn ghost" id="jf-share">Share / save</button><button type="button" class="btn ghost" id="jf-close">Close</button><button type="button" class="del" id="jf-del">Delete</button></div>
+<dialog id="jf-dlg" class="jf-dlg" aria-labelledby="jf-title"><div class="jf-top"><b id="jf-title">Photo</b><button type="button" class="jb-x" id="jf-close" aria-label="Close">✕</button></div>
+  <div id="jf-dlg-body"></div>
+  <div class="calc jf-desc"><label for="jf-note" class="wide">Description <i>(saves as you type · goes on the proof card and the job report)</i><textarea id="jf-note" rows="2" placeholder="What this shows: 3/4 stub-out at 8 in left of center"></textarea></label></div>
+  <div id="jf-proofbox"></div>
+  <div class="set-btns jf-btns"><button type="button" class="btn" id="jf-share">Save to Photos / send</button><button type="button" class="btn ghost" id="jf-open">Open full size</button><button type="button" class="del" id="jf-del">Delete</button></div>
 </dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 
@@ -5182,6 +5218,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 16, 2026 · later</th><td><b>Photos you can hand over:</b> open any photo and tap <b>Save to Photos / send</b> (the share sheet's Save Image puts it in your Photos app). On a stage, <b>Save or send all</b> gathers every photo there, then a second tap sends them together. <b>A description on every photo,</b> right under the picture and above the time stamp and GPS. It saves as you type, goes on the proof card and the job report above the time stamp, and changing it is written in the job's activity log. The stamped picture itself never changes, so its fingerprint still checks out. <b>A cleaner job page:</b> the job's name, address, stage and to-dos sit at the top with Directions, Call the lead and Proof photo right there; Job details start folded on jobs that already have a name; what you type reads in the book's own font instead of the typewriter one; and the 📷 on checklist rows is quieter. The photo viewer is tidied too: a title bar with ✕, the photo, its description, the stamp details, then the buttons. <b>Less clutter:</b> on My jobs, the search box and + New job share a line, the four filters fit one row, the explainer is one line, and Rules for every job folds away. A new job's first stage starts with today's date. The How notes work guide opens by itself only until you've written a few notes. The activity log groups by day. Shorter help text under Photos and Proof.</td></tr>
         <tr><th>Nov 16, 2026</th><td><b>Proof you can show:</b> every job now keeps an <b>activity log</b>: each check and uncheck (with the date it had), stage change, note added, edited or deleted, inspection, hours entry, punch item, photo and delete is written down with its date and time, and the log can't be edited (on the job page under <b>Proof: job report and activity log</b>). <b>Notes keep their earlier versions:</b> edit a note and the old words stay under it in <b>Earlier versions</b>, with when they changed. <b>Check off with a proof photo:</b> the 📷 on any checklist or punch item opens the camera; the photo is stamped with the item, checks it off, and the item's 📷 opens that photo after. <b>Make a job report:</b> one file with the whole job (details, every stage's checklist with check-off times, inspections, hours, punch list, notes with earlier versions, proof photos with GPS and fingerprints, and the activity log) to text or email to your bosses. Send it right away: the text or email's own time stamp backs up when it was made.</td></tr>
         <tr><th>Nov 15, 2026 · colors</th><td><b>More job colors:</b> 18 now, up from 10 (maroon, tan, olive, lime, sky, navy, indigo and magenta join the rest), for jobs, stages and tags. <b>12 new job icons</b> in the same drawn style: pool / spa, sewer / manhole, gas meter, hydrant / fire line, laundry, pipe elbow, shower, RV / camper, empty lot / pad, medical / clinic, school and drum / barrel.</td></tr>
         <tr><th>Nov 15, 2026 · quick view</th><td><b>Quick view:</b> tap the ⇤ on the right of any job (in My jobs, on Home or in search results), or swipe the job left, and a panel slides in with the essentials: stage, Call the lead, Directions, Proof photo, your "at a glance" lines, open to-dos and heads-ups, the next inspection, the checklist count and the last two notes. Tap outside it, the ✕, or swipe it right to close; <b>Open the whole job</b> goes in. <b>Compact notes:</b> a job's notes now show one line each (the title, a preview and the date, with ☐ for open boxes); tap one to open it, ▴ to fold it again. <b>Compact · Full</b> above the notes switches back to full notes. <b>The line under each job</b> now shows what your newest note says, not its heading.</td></tr>
@@ -9641,7 +9678,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-16a";
+{ const NEWS = "2026-11-16b";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -10886,7 +10923,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-16a";
+var BUILD = "handbook-2026-11-16b";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
