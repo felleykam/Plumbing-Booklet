@@ -405,6 +405,10 @@ section[data-sec]{content-visibility:auto;contain-intrinsic-size:auto 500px}
 .jb-row b{font-family:var(--display);font-size:17px;overflow-wrap:anywhere}
 .jb-row>span{font-size:14.5px;color:var(--muted);overflow-wrap:anywhere}
 .jb-row:has(.jb-peek){position:relative;padding-right:52px}
+.jb-row .jb-tags{display:flex;flex-wrap:wrap;gap:4px 5px;margin-top:4px}
+.jb-row .jb-tags .badge,.jb-row .jb-insp{font-family:var(--body);font-weight:700;font-size:12.5px;letter-spacing:0;text-transform:none;line-height:1.3;padding:1px 7px;border-width:1px;border-radius:999px}
+.jb-row .jb-tags .jb-fail{color:var(--danger);border-color:var(--danger)}
+.jb-row>span:not(.jb-tags):not(.jb-peek){font-size:14px}
 .jb-row>span.jb-peek{position:absolute;top:0;right:0;width:48px;height:100%;min-height:48px;display:grid;place-items:center;font-size:22px;color:var(--ink);border-left:1px solid var(--rule)}
 .jn-mode{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 12px 0;font-size:15px;color:var(--muted)}
 .jn-mode .seg{margin:0}
@@ -433,6 +437,8 @@ section[data-sec]{content-visibility:auto;contain-intrinsic-size:auto 500px}
 .jn-compact .jn-e{margin:6px 0}
 .jn-hb{display:flex}
 .jb-cam{opacity:.4;font-size:19px;filter:grayscale(1)}
+.jb-ndb{opacity:.45;font-size:20px}.jb-ndb.on{opacity:1;color:var(--danger)}
+.jb-ndt{color:var(--muted)}.jb-ndw{color:var(--danger)!important;font-weight:700}
 .card-h .jb-ckedit{min-height:40px;padding:2px 10px;font-size:13px;margin-left:auto}
 .jb-cam:hover,.jb-cam:focus-visible{opacity:1;filter:none}
 .jn-hist{margin:0 10px 8px;font-size:15px}
@@ -492,6 +498,10 @@ dialog.jf-dlg{width:min(720px,calc(100vw - 24px));max-height:calc(100dvh - 24px)
 dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .jf-dlg img{display:block;max-width:100%;max-height:60dvh;margin:0 auto;object-fit:contain}
 .jf-dlg .calc{border:0}
+.terms-in{padding:16px 16px 18px}
+.terms-in h2{margin:0 0 10px;font-family:var(--display);font-size:22px}
+.terms-k{margin:0 0 12px;font-size:16px;line-height:1.45}
+.terms-dlg .set-btns{gap:14px;align-items:center}
 .jf-btns{padding:4px 12px 14px;border-top:1px solid var(--rule);margin-top:8px}
 .jf-top{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 4px 4px 12px;background:var(--sheet);border-bottom:1px solid var(--rule)}
 .jf-top b{font-family:var(--display);font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -662,6 +672,7 @@ p.jb-gh{cursor:default}
 .jb-title{display:flex;align-items:center;gap:8px;margin:12px 0 2px;font-family:var(--display);font-size:24px;line-height:1.15;overflow-wrap:anywhere}
 .jb-title .iso{width:30px;height:30px;margin:0}
 .jb-sub{margin:0;font-size:15.5px;color:var(--muted);overflow-wrap:anywhere}
+.jb-gate{margin:6px 0 0;font-size:16px}
 .jb-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
 .jb-hacts{margin-top:8px}
 .jb-left{margin:0;padding:10px 12px;border-bottom:1px solid var(--rule);background:var(--zebra)}
@@ -1226,6 +1237,13 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <div id="jf-proofbox"></div>
   <div class="set-btns jf-btns"><button type="button" class="btn" id="jf-share">Save to Photos / send</button><button type="button" class="btn ghost" id="jf-open">Open full size</button><button type="button" class="del" id="jf-del">Delete</button></div>
 </dialog>
+<dialog id="terms-dlg" class="jf-dlg terms-dlg" aria-labelledby="terms-h"><div class="terms-in">
+  <h2 id="terms-h">Before you use this book</h2>
+  <p class="terms-k">⚠ <b>Check everything yourself.</b> This book can be wrong, incomplete or out of date. Codes, city rules and products change. Before you install, confirm it with the adopted code, your inspector, the approved plans and the manufacturer's instructions. Take it with a grain of salt.</p>
+  <p class="terms-k">🔧 <b>You're the plumber.</b> It's up to each plumber to be competent, trained and licensed for the work they do. This book doesn't replace your training, your lead, your license or your judgment. Use it at your own risk: it's provided as is, with no warranty.</p>
+  <p class="terms-k">💾 <b>Keep your work safe.</b> Your jobs, photos and notes live only on this phone. Updates never erase them, but deleting the app from your Home Screen or losing the phone does. Once a week, back up: <b>Settings → Backup &amp; reset → Back up everything</b>, and save the file to iCloud Drive or Files. On a new phone, restore that file.</p>
+  <div class="set-btns"><button type="button" class="btn" id="terms-ok">I understand</button><button type="button" class="linkish" id="terms-more">Read the full disclaimers</button></div>
+</div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <header class="tb">
@@ -1332,7 +1350,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </div>
     <div class="set-grp" id="set-data"><h3>Backup &amp; reset</h3>
       <p class="sample">Everything you save lives on this phone only: jobs, people, notes, photos, numbers, take-offs, pins, settings. <b>Back up everything</b> puts it all in one file: save it to iCloud Drive or Files. Deleting the app from the Home Screen deletes everything in it.</p>
-      <div class="set-btns"><button type="button" class="btn" id="bk-all">Back up everything</button><button type="button" class="btn ghost" id="bk-save">Download backup (no photos)</button><button type="button" class="btn ghost" id="bk-copy">Copy backup</button><label class="btn ghost" for="bk-file">Restore from file<input type="file" id="bk-file" accept="application/json,.json,.txt" hidden></label><label class="btn ghost" for="bk-merge">Merge a backup<input type="file" id="bk-merge" accept=".zip,.json,application/zip,application/json" hidden></label></div>
+      <div class="set-btns"><button type="button" class="btn" id="bk-all">Back up everything</button><button type="button" class="btn ghost" id="bk-save">Download backup (no photos)</button><button type="button" class="btn ghost" id="bk-copy">Copy backup</button><label class="btn ghost" for="bk-file">Restore from file<input type="file" id="bk-file" accept=".zip,application/zip,application/json,.json,.txt" hidden></label><label class="btn ghost" for="bk-merge">Merge a backup<input type="file" id="bk-merge" accept=".zip,.json,application/zip,application/json" hidden></label></div>
       <p class="status" id="bk-status" role="status"></p>
       <details class="explain"><summary>Back up with a password</summary><div>
         <p class="sample">Locks the backup file, so names, addresses and phone numbers stay private if the file gets texted, emailed or kept in the cloud. <b>Write the password down.</b> Without it nobody can open that file, and there's no reset.</p>
@@ -4422,7 +4440,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tr><th>No warranty</th><td>The book is provided "as is," without any warranty. To the fullest extent the law allows, the author isn't liable for any loss, damage, injury, failed inspection, cost or lost data from using it, or from relying on anything in it.</td></tr>
       <tr><th>Copyright</th><td>© 2026 Deklan Patrick Kelley. All rights reserved. The book's writing, layout, drawings, calculators and code may not be copied, republished or reused without written permission.</td></tr>
     </tbody></table></div>
-    <p class="note">These terms can change with new versions of the book. Questions: About &amp; contact.</p>
+    <p class="note">These terms can change with new versions of the book. Questions: About &amp; contact. <button type="button" class="linkish" onclick="localStorage.removeItem('jpb-terms');termsCheck()">Show the pop-up again</button></p>
   </section>
   <section data-sec="code" data-kw="2021 ipc quick reference section numbers table 909.1 709.1 710.1 704.1 312.2 312.3 312.5 312.9 504.6 504.7 604.8 424.3 305.4 308.5 905.4 903.5 918 1002 cleanout standpipe my code">
     <div class="sec-head"><h2>2021 IPC quick reference</h2><small>Section · rule · house if different</small></div>
@@ -5249,6 +5267,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 16, 2026 · night pass</th><td><b>Read this first:</b> a short pop-up on opening the book (once, and again if the terms change): check everything yourself, you're the plumber, and how to back up so updates and new phones don't cost you your work. <b>"Not done" on checklists:</b> tap ⊘ on an item, say why (waiting on the framer, no access…), and it shows in red with the date, in the stage count, the activity log and reports; checking it off later clears it. <b>Cleaner job list:</b> rows drop the random note line, and the badges are smaller and tidier. <b>Fewer duplicates:</b> one 📷 Proof photo button (in the job's header; each stage keeps Add photos), and one whole-job 📄 Report (the header's; the Proof section keeps the stage reports). <b>Things that now connect:</b> open punch items count as to-dos and show in "Where you left off"; the subdivision's gate code shows at the top of the job. <b>Fixes:</b> Settings → Restore from file now takes the .zip from Back up everything; a new job's details no longer jump while you type the address; your license # is off the Technician summary line. Backup, merge and restore were tested end to end.</td></tr>
         <tr><th>Nov 16, 2026 · tune-up</th><td><b>Checklist editing is back in plain sight:</b> ✎ shows on every checklist item again (it asks first); only × and the move arrows wait behind <b>↕ Reorder · remove</b>. <b>Jobs lead with the work:</b> a job opens on its Timeline, then the Punch list, People and Job details (a brand-new job still starts with its details). <b>Inspection buttons:</b> Cancel on the "what did the inspector flag?" box now leaves the inspection as it was. <b>Fixes from a code review:</b> a proof photo always gets a fresh GPS fix; if the stamp can't be drawn, the photo is still saved with its record; edits to inspections, hours and punch items are dated so merging a backup keeps the newest; unchecking an item drops its proof-photo link; the activity log records each edit once, with what it said before and after; "Report made" is logged only when the report really is; people taken off a job stay off through a merge; a filled-in person, builder or subdivision page without a name isn't thrown away; and tapping Back or folding a section no longer counts toward the backup reminder. Spelling and wording checked across the book.</td></tr>
         <tr><th>Nov 16, 2026 · copyright</th><td><b>Disclaimers &amp; terms of use</b> (Inspect → Which code, and a link in the footer): a field aid, not the code; not professional advice; your work, your responsibility; calculators are estimates; what proof photos and reports are and aren't; your data stays on your phone; no warranty. <b>Copyright notice:</b> the book now says © 2026 Deklan Patrick Kelley, all rights reserved, in the footer, in About, in its code files and on job reports and proof cards.</td></tr>
         <tr><th>Nov 16, 2026 · last pass</th><td><b>Inspection results in one tap:</b> a booked inspection shows big <b>✓ Pass</b>, <b>◐ Partial</b> and <b>✗ Fail</b> buttons. On a Partial or Fail, type what the inspector flagged and it goes on the job's punch list as a correction (and into the inspection's notes and the activity log). <b>Where you left off:</b> the top of every job shows the next inspection, what's still open in your notes (to-dos and heads-ups) and your last note, so coming back after a few weeks takes one look. A job with no name or address is called "New job" everywhere.</td></tr>
@@ -7349,7 +7368,9 @@ $("bk-copy").addEventListener("click", async () => { try { await navigator.clipb
 $("bk-merge").addEventListener("change", () => { const f = $("bk-merge").files[0]; if (!f) return; if (window.jbRestoreAll) jbRestoreAll(f, "bk-status", true); else bkSay("My jobs hasn't loaded yet. Try again in a moment.", "err"); });
 $("bk-file").addEventListener("change", async () => {
   const f = $("bk-file").files[0]; if (!f) return;
-  try { const j = JSON.parse(await f.text());
+  try { const head = new Uint8Array(await f.slice(0, 2).arrayBuffer());
+    if (head[0] === 0x50 && head[1] === 0x4b){ $("bk-file").value = ""; if (window.jbRestoreAll) jbRestoreAll(f, "bk-status"); else bkSay("My jobs hasn't loaded yet. Try again in a moment.", "err"); return; }   /* a "Back up everything" .zip */
+    const j = JSON.parse(await f.text());
     if (j && j.app === "utah-plumbers-handbook-locked"){ $("bk-file").value = ""; if (window.jbRestoreAll) jbRestoreAll(f, "bk-status"); return; }
     const d = j && j.data; if (!d || typeof d !== "object") throw 0;
     const keys = Object.keys(d).filter(k => k.startsWith("jpb-") && typeof d[k] === "string"); if (!keys.length) throw 0;
@@ -9715,7 +9736,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-16h";
+{ const NEWS = "2026-11-16i";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -10363,7 +10384,14 @@ function hashTarget(){
     restoring = false;
   });
   if (!store.get("jpb-setup", 0) && !t0) requestAnimationFrame(() => sheet("setup", true));
+  termsCheck();
 }
+/* the disclaimer pop-up: shown until it's accepted, and again whenever the wording changes (bump termsV()) */
+function termsV(){ return "2026-11-16"; }   /* a function, so it already exists when the start-up check runs */
+function termsCheck(){ const d = $("terms-dlg"); if (!d || store.get("jpb-terms", "") === termsV() || d.open) return; try { d.showModal(); } catch(e){ d.setAttribute("open", ""); } }
+$("terms-dlg").addEventListener("cancel", e => e.preventDefault());   /* it can't be swiped or Escaped away: tap I understand */
+$("terms-ok").addEventListener("click", () => { store.set("jpb-terms", termsV()); $("terms-dlg").close(); if (window.navReseat) navReseat(); });
+$("terms-more").addEventListener("click", () => { store.set("jpb-terms", termsV()); $("terms-dlg").close(); jumpTo("inspect", "code", "Disclaimers & terms of use"); });
 
 /* keyboard: the Konami code (↑ ↑ ↓ ↓ ← → ← → B A) */
 { const K = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"]; let k = 0;
@@ -10960,7 +10988,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-16h";
+var BUILD = "handbook-2026-11-16i";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
