@@ -478,7 +478,7 @@ section[data-sec]{content-visibility:auto;contain-intrinsic-size:auto 500px}
 .jf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;padding:8px 12px}
 .jf-grid>.note{grid-column:1/-1;padding:0}
 .jf-th{appearance:none;padding:0;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--zebra);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;text-align:left;color:var(--ink);font:inherit;min-width:0}
-.jf-th img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.jf-th img{display:block;width:100%;aspect-ratio:1;object-fit:contain;background:var(--k)}   /* the whole photo, never cropped */
 .jf-th b{display:grid;place-items:center;aspect-ratio:1}
 .jf-th span{font-size:12.5px;padding:3px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .jf-th{position:relative}
@@ -5222,6 +5222,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 16, 2026 · clean stamp</th><td><b>A cleaner proof stamp, nothing cut off:</b> the stamp now sits in a band <b>under</b> the photo, so no part of the picture is covered, and every line wraps instead of being cut short. The date and time are big on top, then the job, address and stage, the item you checked off, and your name, company and phone, smaller, at the bottom. <b>Your license # and the GPS spot aren't printed on the photo</b>: both are still saved with it, and the GPS shows in the photo's details, on the proof card and in reports (the license number is kept but never shown). Photo thumbnails show the whole picture instead of a cropped square. <b>Fixes:</b> restoring a deleted proof photo links it back to its checklist or punch item; 📤 Send never shares a report or proof card made before your latest changes; jobs waiting in Recently deleted keep their own checklist when you change a starting list; a report that fails says so; ticking a task that has a "?" in it is logged as a tick; adding someone already on the job isn't logged; the "space is full" message names the right button.</td></tr>
         <tr><th>Nov 16, 2026 · reports</th><td><b>Technician (you):</b> fill in your name, license #, phone and company once on My jobs (each phone keeps its own). It's stamped on every new proof photo and printed on proof cards and every report. <b>Reports by stage:</b> in a job's Proof section, make a report for the <b>Whole job</b> or just <b>Underground</b>, <b>Top-out</b> or <b>Finish</b> (and any extra stage): that stage's checklist, inspections, hours, notes, photos and log. First tap makes it, second tap (📤 Send) shares it. <b>Cleaner stages:</b> the checklist comes right after the stage status; the start and done dates and the lead fold into one line you tap to change; and ✎ and × on your own checklist items only show in Edit or reorder, so a gloved tap can't delete one.</td></tr>
         <tr><th>Nov 16, 2026 · fixes</th><td><b>From a full review of My jobs:</b> a new job you've only checked things off on is no longer thrown away when you tap ‹ All jobs. Saving a checklist as your list for new jobs (or going back to the book's) no longer changes your other jobs' checklists, checks, dates or photo links. The job report and the proof card are made on one tap and sent on the next (📤 Send report), because iPhone only opens the share sheet right on a tap. Deleting a proof photo shows the item's camera again so you can retake it. Hours from deleted jobs still count toward your license. Merging a backup keeps this phone's newer photo descriptions and doesn't bring back photos you deleted. The activity log now also records ticking a box in a note, stage dates and leads, the next stage starting, removing a stage, people, builder and subdivision changes, and an inspection's old and new result. Search highlighting no longer garbles words like "amp". <b>Quick wins:</b> a job waiting on a booked inspection or a date coming up isn't auto-archived; tapping a job's "Inspection …: result?" badge opens that stage; <b>📄 Report</b> is in the job's top buttons; and every proof-photo button starts the GPS fix right away.</td></tr>
         <tr><th>Nov 16, 2026 · later</th><td><b>Photos you can hand over:</b> open any photo and tap <b>Save to Photos / send</b> (the share sheet's Save Image puts it in your Photos app). On a stage, <b>Save or send all</b> gathers every photo there, then a second tap sends them together. <b>A description on every photo,</b> right under the picture and above the time stamp and GPS. It saves as you type, goes on the proof card and the job report above the time stamp, and changing it is written in the job's activity log. The stamped picture itself never changes, so its fingerprint still checks out. <b>A cleaner job page:</b> the job's name, address, stage and to-dos sit at the top with Directions, Call the lead and Proof photo right there; Job details start folded on jobs that already have a name; what you type reads in the book's own font instead of the typewriter one; and the 📷 on checklist rows is quieter. The photo viewer is tidied too: a title bar with ✕, the photo, its description, the stamp details, then the buttons. <b>Less clutter:</b> on My jobs, the search box and + New job share a line, the four filters fit one row, the explainer is one line, and Rules for every job folds away. A new job's first stage starts with today's date. The How notes work guide opens by itself only until you've written a few notes. The activity log groups by day. Shorter help text under Photos and Proof.</td></tr>
@@ -9684,7 +9685,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-16d";
+{ const NEWS = "2026-11-16e";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -10929,7 +10930,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-16d";
+var BUILD = "handbook-2026-11-16e";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
