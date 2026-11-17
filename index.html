@@ -662,6 +662,16 @@ p.jb-gh{cursor:default}
 .jb-sub{margin:0;font-size:15.5px;color:var(--muted);overflow-wrap:anywhere}
 .jb-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
 .jb-hacts{margin-top:8px}
+.jb-left{margin:0;padding:10px 12px;border-bottom:1px solid var(--rule);background:var(--zebra)}
+.jb-lefth{margin:0 0 4px;font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.jb-leftp{margin:4px 0;font-size:16px}
+.jb-leftl{margin:4px 0;padding:0;list-style:none;font-size:16px}
+.jb-leftl li{padding:3px 0}
+.jb-iq td{padding-top:0}
+.jb-iqh{display:block;font-size:14px;color:var(--muted);margin:2px 0}
+.jb-iq .set-btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.jb-iq .btn{min-height:48px;padding:4px 6px}
+.jb-iqp{border-color:var(--pal-green)!important}.jb-iqf{border-color:var(--danger)!important}
 /* easier on the eyes: what you type in a job reads in the book's own font (the typewriter font stays for numbers in calculators) */
 #jb-body .calc input:not([type=number]):not([type=date]),#jb-body textarea,.jf-dlg textarea{font-family:var(--body);font-weight:600;letter-spacing:0}
 #jb-body .calc input::placeholder,#jb-body textarea::placeholder,.jf-dlg textarea::placeholder{font-weight:500;opacity:.75}
@@ -5222,6 +5232,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 16, 2026 · last pass</th><td><b>Inspection results in one tap:</b> a booked inspection shows big <b>✓ Pass</b>, <b>◐ Partial</b> and <b>✗ Fail</b> buttons. On a Partial or Fail, type what the inspector flagged and it goes on the job's punch list as a correction (and into the inspection's notes and the activity log). <b>Where you left off:</b> the top of every job shows the next inspection, what's still open in your notes (to-dos and heads-ups) and your last note, so coming back after a few weeks takes one look. A job with no name or address is called "New job" everywhere.</td></tr>
         <tr><th>Nov 16, 2026 · clean stamp</th><td><b>A cleaner proof stamp, nothing cut off:</b> the stamp now sits in a band <b>under</b> the photo, so no part of the picture is covered, and every line wraps instead of being cut short. The date and time are big on top, then the job, address and stage, the item you checked off, and your name, company and phone, smaller, at the bottom. <b>Your license # and the GPS spot aren't printed on the photo</b>: both are still saved with it, and the GPS shows in the photo's details, on the proof card and in reports (the license number is kept but never shown). Photo thumbnails show the whole picture instead of a cropped square. <b>Fixes:</b> restoring a deleted proof photo links it back to its checklist or punch item; 📤 Send never shares a report or proof card made before your latest changes; jobs waiting in Recently deleted keep their own checklist when you change a starting list; a report that fails says so; ticking a task that has a "?" in it is logged as a tick; adding someone already on the job isn't logged; the "space is full" message names the right button.</td></tr>
         <tr><th>Nov 16, 2026 · reports</th><td><b>Technician (you):</b> fill in your name, license #, phone and company once on My jobs (each phone keeps its own). It's stamped on every new proof photo and printed on proof cards and every report. <b>Reports by stage:</b> in a job's Proof section, make a report for the <b>Whole job</b> or just <b>Underground</b>, <b>Top-out</b> or <b>Finish</b> (and any extra stage): that stage's checklist, inspections, hours, notes, photos and log. First tap makes it, second tap (📤 Send) shares it. <b>Cleaner stages:</b> the checklist comes right after the stage status; the start and done dates and the lead fold into one line you tap to change; and ✎ and × on your own checklist items only show in Edit or reorder, so a gloved tap can't delete one.</td></tr>
         <tr><th>Nov 16, 2026 · fixes</th><td><b>From a full review of My jobs:</b> a new job you've only checked things off on is no longer thrown away when you tap ‹ All jobs. Saving a checklist as your list for new jobs (or going back to the book's) no longer changes your other jobs' checklists, checks, dates or photo links. The job report and the proof card are made on one tap and sent on the next (📤 Send report), because iPhone only opens the share sheet right on a tap. Deleting a proof photo shows the item's camera again so you can retake it. Hours from deleted jobs still count toward your license. Merging a backup keeps this phone's newer photo descriptions and doesn't bring back photos you deleted. The activity log now also records ticking a box in a note, stage dates and leads, the next stage starting, removing a stage, people, builder and subdivision changes, and an inspection's old and new result. Search highlighting no longer garbles words like "amp". <b>Quick wins:</b> a job waiting on a booked inspection or a date coming up isn't auto-archived; tapping a job's "Inspection …: result?" badge opens that stage; <b>📄 Report</b> is in the job's top buttons; and every proof-photo button starts the GPS fix right away.</td></tr>
@@ -9685,7 +9696,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-16e";
+{ const NEWS = "2026-11-16f";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -10930,7 +10941,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-16e";
+var BUILD = "handbook-2026-11-16f";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);

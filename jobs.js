@@ -46,7 +46,7 @@ const jbWk = s => { const x = new Date(s + "T12:00:00"); x.setDate(x.getDate() -
 const jbNice = s => { const x = new Date(s + "T12:00:00"); return !s || isNaN(x) ? esc(s || "") : x.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}); };
 const jbHr = x => (Math.round(x * 100) / 100).toLocaleString();
 const jbCur = () => jbD.jobs.find(j => j.id === JB.open);
-const jbName = j => (j.name || "").trim() || (j.a || "").trim() || "Untitled job";   /* the job's name, else its address */
+const jbName = j => (j.name || "").trim() || (j.a || "").trim() || "New job";   /* the job's name, else its address */
 const jbNext = j => j.insp.filter(i => i.r === "booked").sort((a, b) => a.d < b.d ? -1 : 1)[0];
 const jbShort = ts => new Date(ts).toLocaleDateString(undefined, {month: "short", day: "numeric"});
 const jbDays = iso => Math.max(0, Math.round((new Date(jbDay() + "T12:00:00") - new Date(iso + "T12:00:00")) / 864e5));
@@ -555,6 +555,7 @@ const jbIsEd = (k, id) => JB.rowEdit === k + "|" + id;
 const jbEdBtn = (k, id, what) => `<button type="button" class="jb-x" data-redit="${k}|${id}" aria-label="Edit ${what}">✎</button>`;
 const jbRowBtns = `<div class="set-btns jb-rowbtns"><button type="button" class="btn" data-a="row-save">Save</button><button type="button" class="btn ghost" data-a="row-cancel">Cancel</button></div>`;
 const jbTextEd = v => `<div class="calc jb-rowed"><label for="re-t" class="wide">Change it<input id="re-t" type="text" autocomplete="off" value="${esc(v)}"></label></div>${jbRowBtns}`;
+const jbInspQ = i => i.r !== "booked" ? "" : `<tr class="jb-iq"><td colspan="3"><span class="jb-iqh">How did it go?</span><div class="set-btns"><button type="button" class="btn ghost jb-iqp" data-iq="${i.id}|pass">✓ Pass</button><button type="button" class="btn ghost" data-iq="${i.id}|partial">◐ Partial</button><button type="button" class="btn ghost jb-iqf" data-iq="${i.id}|fail">✗ Fail</button></div></td></tr>`;
 const jbInspRow = i => jbIsEd("insp", i.id)
   ? `<tr><td colspan="3"><div class="calc jb-rowed"><label for="re-d">Date<input id="re-d" type="date" value="${esc(i.d)}"></label><label for="re-r">Result<select id="re-r">${jbOpts(JB_RES, i.r)}</select></label>
      <label for="re-who" class="wide">Inspector<input id="re-who" type="text" list="jb-ppl" autocomplete="off" value="${esc(i.who)}"></label><label for="re-n" class="wide">Notes / corrections<input id="re-n" type="text" autocomplete="off" value="${esc(i.n)}"></label></div>${jbRowBtns}</td></tr>`
@@ -590,7 +591,7 @@ function jbStageHtml(j, k){
   <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-a="ck-add">Add item</button></div></div>
 
   <p class="card-h" data-fold="s-insp">Inspections</p>
-  ${ins.length ? `<div class="x"><table class="t wrap jb-t"><tbody>${ins.map(jbInspRow).join("")}</tbody></table></div>` : ""}
+  ${ins.length ? `<div class="x"><table class="t wrap jb-t"><tbody>${ins.map(i => jbInspRow(i) + (jbIsEd("insp", i.id) ? "" : jbInspQ(i))).join("")}</tbody></table></div>` : ""}
   <details class="explain"${ins.length ? "" : " open"}><summary>+ Add an inspection</summary><div><div class="calc">
     <label for="ji-d">Date<input id="ji-d" type="date" value="${jbDay()}"></label>
     <label for="ji-r">Result<select id="ji-r">${jbOpts(JB_RES, "booked")}</select></label>
@@ -625,6 +626,16 @@ const jbActHtml = j => { const A = (j.act || []).slice().reverse(), n = JB.actAl
   ${A.length ? `<ol class="jb-act">${A.slice(0, n).map((e, i, L) => { const d = new Date(+e.at).toDateString(), day = !i || new Date(+L[i - 1].at).toDateString() !== d;
       return `${day ? `<li class="jb-aday">${esc(jbNice(jbDay(new Date(+e.at))))}</li>` : ""}<li><time>${esc(new Date(+e.at).toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"}))}</time> ${esc(e.t)}${e.s && JB_SNAME[e.s] ? ` <span class="jb-acts">· ${JB_SNAME[e.s]}</span>` : ""}</li>`; }).join("")}</ol>${A.length > n ? `<div class="jb-in"><button type="button" class="linkish" data-a="act-all">Show all ${A.length}</button></div>` : ""}`
     : `<div class="jb-in"><p class="note">Nothing yet. Changes from now on show up here.</p></div>`}`; };
+/* coming back to a job: the next inspection, what's still open in the notes, and the last note, before anything else */
+function jbLeftOff(j){
+  const notes = j.log.filter(e => jnLive(j, e)).sort(jnSort), n = jbNext(j), last = notes[0];
+  const items = notes.flatMap(e => e.b.split("\n").filter(ln => JN_OPEN.test(ln) || /^\s*!!/.test(ln)).map(ln => jnMark(ln) + jnPlain(ln, e.d))).filter(x => x.trim());
+  if (!items.length && !n && !last) return "";
+  return `<div class="jb-left"><p class="jb-lefth">Where you left off</p>
+    ${n ? `<p class="jb-leftp">📋 Inspection ${esc(jbNice(n.d))}${n.k ? " · " + esc(n.k) : ""}${n.d < jbDay() ? " · <b>result?</b>" : ""}</p>` : ""}
+    ${items.length ? `<ul class="jb-leftl">${items.slice(0, 3).map(t => `<li>${esc(t)}</li>`).join("")}${items.length > 3 ? `<li class="jq-more">+${items.length - 3} more in the notes</li>` : ""}</ul>` : ""}
+    ${last ? `<p class="jb-leftp"><b>Last note ${esc(jbNice(last.d))}:</b> ${esc(jnGist(last, 2) || "Note")}</p>` : ""}</div>`;
+}
 function jbJobHtml(j){
   const c = cityById(j.city), addr = (j.a || "").trim(), sel = JB.stage && jbStages(j).some(([k]) => k === JB.stage) ? JB.stage : jbStageNow(j); JB.stage = sel;
   const q = encodeURIComponent([addr.replace(/^lot\s*\w+\s*[·,\-–]\s*/i, ""), c && c.n, "UT"].filter(Boolean).join(", "));
@@ -641,6 +652,7 @@ function jbJobHtml(j){
   </div>
   ${jbArch(j) ? `<div class="jb-in"><p class="note jb-archbar">🗄 <b>Archived.</b> ${jbArchMe(j) ? "You put it here." : `Not opened or changed since ${jbShort(jbLast(j))}.`} It's off the ${j.st === "done" ? "Done" : "Active"} list, Home and Coming up. Changing anything brings it back too.</p><div class="set-btns"><button type="button" class="btn" data-a="job-unarch">Bring it back</button></div></div>` : ""}
   ${j.st !== "done" && (A => A.length && A.every(([k]) => j.stages[k].st === "done"))(jbStages(j).filter(([k]) => j.stages[k].st !== "skip")) ? `<div class="jb-in"><p class="note jb-donebar">✓ <b>Every stage is done.</b> Finished with this job?</p><div class="set-btns"><button type="button" class="btn" data-a="job-done">Mark the job Done</button></div></div>` : ""}
+  ${jbLeftOff(j)}
   <p class="card-h" data-fold="details">Job details</p>
   <div class="calc">
     <label for="jb-n" class="wide">Job name<input id="jb-n" data-f="name" type="text" autocomplete="off" value="${esc(j.name)}" placeholder="Lot 12 ABC · Smith basement"></label>
@@ -807,7 +819,7 @@ B.addEventListener("click", e => {
   if (fh && fh.dataset.fold === "details" && JB.open && !e.target.closest("button, a, input, select, label")){ JB.dState = {id: JB.open, open: fh.classList.contains("jb-folded")}; jbDraw(); return; }
   if (fh && !e.target.closest("button, a, input, select, label")){ const k = fh.dataset.fold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(); jbDraw(); return; }   /* fold or open a section; remembered */
   const tf = e.target.closest("[data-tfold]"); if (tf){ const k = tf.dataset.tfold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(); jbDraw(); return; }
-  const t = e.target.closest("[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ckmv],[data-ckconv],[data-ckph],[data-pkph],[data-ent],[data-xadd],[data-xdel],[data-binr],[data-redit],[data-col],[data-tfold],[data-ico]"); if (!t) return;
+  const t = e.target.closest("[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ckmv],[data-ckconv],[data-ckph],[data-pkph],[data-iq],[data-ent],[data-xadd],[data-xdel],[data-binr],[data-redit],[data-col],[data-tfold],[data-ico]"); if (!t) return;
   const j = jbCur(), o = jnOwner(), a = t.dataset.a, v = id => $(id).value.trim(), st = j && j.stages[JB.stage];
   if (t.dataset.ins){ jnInsert(t.dataset.ins); return; }
   if (t.dataset.wl){ jnGo(t.dataset.wl); return; }
@@ -853,6 +865,12 @@ B.addEventListener("click", e => {
   if ((t.dataset.ckph || t.dataset.pkph) && j){   /* the camera opens on this same tap; the photo checks the item off */
     JF.link = t.dataset.ckph ? {k: "ck", key: t.dataset.ckph, s: JB.stage, jid: j.id} : {k: "punch", id: t.dataset.pkph, s: JB.stage, jid: j.id};
     jfGeoWarm(); const inp = $("jf-proof-ln"); if (inp) inp.click(); return; }
+  if (t.dataset.iq && j){ const [iid, r] = t.dataset.iq.split("|"), i = j.insp.find(x => x.id === iid); if (!i || !JB_RES[r]) return;
+    let fix = "";
+    if (r !== "pass"){ fix = (prompt(`What did the inspector flag? It goes on the punch list.${"\n"}Leave it blank to skip.`) || "").trim(); jbReseat(); }   /* corrections straight onto the punch list */
+    jbAct(j, `📋 Inspection ${jbNice(i.d)}: ${JB_RES[i.r]} → ${JB_RES[r]}${fix ? ` (${fix.slice(0, 80)})` : ""}`, i.s); i.r = r;
+    if (fix){ i.n = [i.n, fix].filter(Boolean).join(" · "); j.punch.push({id: jbId(), t: `Correction (${JB_SNAME[i.s] || "inspection"} ${jbNice(i.d)}): ${fix}`, done: false, add: Date.now()}); }
+    jbTouch(j); toast(r === "pass" ? "Passed. Nice." : fix ? "Saved, and the correction is on the punch list." : "Saved.", 2200); return; }
   if (a === "act-all"){ JB.actAll = true; jbDraw(); return; }
   if (a === "job-report" && j){ jbReport(j, t.dataset.k || ""); return; }
   if (a === "jf-all" && j){ jfShareAll(j.id, JB.stage); return; }
