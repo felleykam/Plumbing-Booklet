@@ -571,8 +571,8 @@ function jbSetHtml(){
 }
 
 /* an extra stage that's off this job: "+ Gas", or what it still holds when it was taken off with things in it */
-function jbXChip(j, k, nPh){ const s = j.stages[k] || {}, n = j.log.filter(e => e.s === k).length, ni = j.insp.filter(x => x.s === k).length, h = j.hrs.filter(x => x.s === k).reduce((a, x) => a + (+x.h || 0), 0), c = (s.done || []).length + (s.extra || []).length;
-  const P = [n && `${n} note${n === 1 ? "" : "s"}`, nPh && `${nPh} photo${nPh === 1 ? "" : "s"}`, ni && `${ni} inspection${ni === 1 ? "" : "s"}`, h && `${jbHr(h)} hr`, c && "checklist"].filter(Boolean);
+function jbXChip(j, k, nPh){ const s = j.stages[k] || {}, n = j.log.filter(e => e.s === k).length, ni = j.insp.filter(x => x.s === k).length, h = j.hrs.filter(x => x.s === k).reduce((a, x) => a + (+x.h || 0), 0), c = (s.done || []).length + (s.extra || []).filter(x => x.done).length;
+  const P = [n && `${n} note${n === 1 ? "" : "s"}`, nPh && `${nPh} photo${nPh === 1 ? "" : "s"}`, ni && `${ni} inspection${ni === 1 ? "" : "s"}`, h && `${jbHr(h)} hr`, c && `${c} checked`].filter(Boolean);
   return P.length ? `${JB_SNAME[k]} removed · ${P.join(", ")} · Put back` : `+ ${JB_SNAME[k]}`; }
 /* tap ✎ on a row to change it right there; Save or Cancel */
 const jbIsEd = (k, id) => JB.rowEdit === k + "|" + id;
@@ -723,7 +723,7 @@ function jbJobHtml(j){
   <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-a="punch-add">Add item</button>${j.punch.some(p => p.done) ? `<button type="button" class="btn ghost" data-a="punch-clear">Clear checked</button>` : ""}</div></div>
   ${j.punch.length ? `<ul class="jb-punch">${j.punch.map(p => jbIsEd("punch", p.id) ? `<li class="jb-liedit">${jbTextEd(p.t)}</li>` : `<li><label><input type="checkbox" data-pk="${p.id}"${p.done ? " checked" : ""}><span>${esc(p.t)}${p.done && p.at ? `<small class="jb-when">✓ ${jbShort(p.at)}</small>` : p.add ? `<small class="jb-when">added ${jbShort(p.add)}</small>` : ""}</span></label>${p.ph ? `<button type="button" class="jb-x" data-v="${esc(p.ph)}" aria-label="See the proof photo for ${esc(p.t)}">📷</button>` : `<button type="button" class="jb-x jb-cam" data-pkph="${p.id}" aria-label="Check off ${esc(p.t)} with a proof photo">📷</button>`}${jbEdBtn("punch", p.id, esc(p.t))}<button type="button" class="jb-x" data-del="punch|${p.id}" aria-label="Delete ${esc(p.t)}">×</button></li>`).join("")}</ul>` : ""}
 
-  <p class="card-h" data-fold="files">Photos &amp; files</p>
+  <p class="card-h" data-fold="media">Photos &amp; files</p>
   <div class="jb-in"><div class="set-btns"><input type="file" id="jf-proof" accept="image/*" capture="environment" hidden><label class="btn ghost">Add photos<input type="file" id="jf-ph" accept="image/*" multiple hidden></label><label class="btn ghost">Add files (PDF, plans)<input type="file" id="jf-fi" multiple hidden></label><button type="button" class="btn ghost" data-a="jf-all" id="jf-all" hidden>Save or send all</button></div>
     <p class="note">Each photo is filed under a stage. Tap a stage to see its photos, or <b>All</b>. New photos go under the stage you're looking at. Files (plans, the permit) show under every stage. Proof photos (📍) are stamped with the time, GPS and job. Tap one to describe, save or send it.</p></div>
   <div class="chips jn-tagbar jf-chips" id="jf-chips" role="group" aria-label="Show photos from"></div>
