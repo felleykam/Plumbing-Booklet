@@ -518,7 +518,7 @@ function jbListHtml(){
   const tags = [...new Set(jbD.jobs.flatMap(jbTags))].sort();
   const goal = +jbD.goal === 6000 ? 6000 : 8000, have = H.all + (+jbD.before || 0);
   const fq = (JB.q || "").trim();
-  return `${viewSeg}<div class="jb-toprow">${jbD.jobs.length ? `<input id="jb-q" type="search" autocomplete="off" autocorrect="off" enterkeyhint="search" value="${esc(JB.q || "")}" placeholder="Find a job: lot, address, person, any word" aria-label="Find a job">` : ""}<button type="button" class="btn" data-a="new">+ New job</button></div>
+  return `${viewSeg}<div class="jb-toprow">${jbD.jobs.length ? `<input id="jb-q" type="search" autocomplete="off" autocorrect="off" enterkeyhint="search" value="${esc(JB.q || "")}" placeholder="Find a job: lot, address, person, any word" aria-label="Find a job">` : ""}<button type="button" class="btn" data-a="new">+ New job</button><button type="button" class="btn ghost" data-a="set-go" aria-label="Jobs settings" title="Jobs settings">⚙</button></div>
   <div id="jb-res">${fq ? jbFindHtml(fq) : ""}</div>
   <div id="jb-main"${fq ? " hidden" : ""}>
   <div class="seg jb-seg jb-show" role="group" aria-label="Show">${[["open", "Active"], ["done", "Done"], ["arch", "Archived"], ["all", "All"]].map(([k, t]) => `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}">${t} · ${jbD.jobs.filter(j => jbIn(k, j)).length}</button>`).join("")}</div>
