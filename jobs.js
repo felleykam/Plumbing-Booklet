@@ -528,10 +528,9 @@ function jbListHtml(){
   ${PIN.length ? `<div class="jb-grp"><div class="jb-th jb-th1"><span class="jb-tf"><b>📌 Pinned</b><span class="jb-tn">${PIN.length}</span></span></div><div class="jb-list">${PIN.map(j => jbRow(j)).join("")}</div></div>` : ""}
   ${L.length ? (L.length > PIN.length ? jbGroups(L.filter(j => !j.pin)) : "") : `<div class="jb-list"><p class="note">${jbD.jobs.length ? `No ${({open: "active ", done: "done ", arch: "archived "})[JB.show] || ""}jobs${JB.tag ? ` tagged <b>#${esc(JB.tag)}</b>` : ""}. ${JB.tag ? "Tap the tag above to show all." : JB.show !== "all" ? "Tap <b>All</b> to see every job." : ""}` : "No jobs yet. Tap <b>+ New job</b>. Each job is a timeline, Underground to Final, with the blanks ready to fill in as you go."}</p></div>`}
   </div>
-  <div class="jb-in jb-foot"><p class="note"><button type="button" class="linkish" data-a="set-go" data-k="jb-hrs-h">⏱ ${jbHr(H.today)} hr today · ${jbHr(H.wk)} this week · ${jbHr(have)} of ${goal.toLocaleString()} toward license ›</button></p>
-  ${jbBytes() > 35e5 ? `<p class="note flag">Jobs are nearly out of room on this phone. <button type="button" class="linkish" data-a="set-go" data-k="jb-bk">Back up and clear space ›</button></p>` : jbBkDue() ? `<p class="note"><button type="button" class="linkish" data-a="set-go" data-k="jb-bk">💾 ${+store.get("jpb-lastbk", 0) ? "Last backup " + jbAgo(+store.get("jpb-lastbk", 0)) : "No backup yet"} · Back up ›</button></p>` : ""}
-  <div class="set-btns"><button type="button" class="btn ghost" data-a="set-go">⚙ Jobs settings</button></div>
-  <p class="note">You, rules for every job, hours and the license goal, colors, backup, Recently deleted${jbD.bin.length ? ` (${jbD.bin.length})` : ""}.</p></div>`;
+  <ul class="jb-soon jb-foot"><li><button type="button" class="linkish" data-a="set-go" data-k="jb-hrs-h">⏱ <b>${jbHr(H.today)} hr today</b> · ${jbHr(H.wk)} this week · ${jbHr(have)} of ${goal.toLocaleString()} toward license</button></li>
+  ${jbBytes() > 35e5 ? `<li><button type="button" class="linkish flag" data-a="set-go" data-k="jb-bk">⚠ <b>Nearly out of room on this phone</b> · back up and clear space</button></li>` : jbBkDue() ? `<li><button type="button" class="linkish" data-a="set-go" data-k="jb-bk">💾 <b>${+store.get("jpb-lastbk", 0) ? "Last backup " + jbAgo(+store.get("jpb-lastbk", 0)) : "No backup yet"}</b> · back up now</button></li>` : ""}
+  <li><button type="button" class="linkish" data-a="set-go">⚙ <b>Jobs settings</b> · you, rules, hours goal, colors, backup, Recently deleted${jbD.bin.length ? ` (${jbD.bin.length})` : ""}</button></li></ul>`;
 }
 /* Jobs settings: everything that isn't a job, off the list */
 function jbSetHtml(){
@@ -543,7 +542,7 @@ function jbSetHtml(){
   <details class="explain jb-rulesd" id="jb-rules-h"><summary>Rules for every job${rl ? ` · ${rl} line${rl === 1 ? "" : "s"}` : ""}</summary><div>
   <div class="calc"><label for="jb-rules" class="wide">Shows at the top of every job's notes<textarea id="jb-rules" class="jn-ta" rows="4" placeholder="Test every top-out at 100 psi for 15 min. !! No push fittings inside walls. Photo every stub-up before drywall.">${esc(jbD.rules || "")}</textarea></label></div>
   <p class="note">Same marks as notes (<code>!!</code> warning, <code>#</code> heading). Put to-dos in a job's own notes: boxes here can't be ticked.</p></div></details>
-  <details class="explain"${JB.colOpen ? " open" : ""}><summary>Colors: stages &amp; tags</summary><div>
+  <details class="explain jb-rulesd"${JB.colOpen ? " open" : ""}><summary>Colors: stages &amp; tags</summary><div>
     <p class="note jn-lead">Pick a color for each stage and tag, or leave it on Auto. Each job's own color is on the job's page.</p>
     ${JB_STG.map(([k, nm]) => `<div class="jb-colrow jt-k-${k}"><span class="jb-dot"></span>${nm}</div>${jbSwatches("stage", k, jbD.stageCol[k], "Auto")}`).join("")}
     ${tags.length ? tags.map(t => `<div class="jb-colrow"><span class="jn-tag" style="${jbTagStyle(t)}">#${esc(t)}</span></div>${jbSwatches("tag", esc(t), jbD.tagCol[t], "Auto")}`).join("") : `<p class="note jn-lead">Tags show up here once a note has one, like <code>#warranty</code>.</p>`}
