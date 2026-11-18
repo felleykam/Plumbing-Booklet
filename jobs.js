@@ -504,7 +504,7 @@ function jbGroups(L){
 }
 function jbListHtml(){
   const viewSeg = `<div class="seg jb-seg jb-views" role="group" aria-label="Show">${[["jobs", "Jobs", jbD.jobs], ["people", "People", jbD.people], ["bld", "Builders", jbD.builders], ["sub", "Subdivisions", jbD.subs]]
-    .map(([k, t, L]) => `<button type="button" data-view="${k}" aria-pressed="${JB.view === k}">${t} · ${L.length}</button>`).join("")}</div>`;
+    .map(([k, t, L]) => `<button type="button" data-view="${k}" aria-pressed="${JB.view === k}" aria-label="${t}, ${L.length}"><span class="jb-vl">${t}</span><b class="jb-vn">${L.length}</b></button>`).join("")}</div>`;
   if (JB.view === "bld" || JB.view === "sub"){ const t = JB.view, C = ENT[t], E = eList(t).slice().sort((a, b) => a.n.localeCompare(b.n));
     return `${viewSeg}<div class="set-btns jb-top"><button type="button" class="btn" data-a="e-new">+ New ${C.one}</button></div>
     <div class="jb-list">${E.map(x => eRow(t, x)).join("") || `<p class="note">None yet. They show up here when you pick a ${C.one} on a job, or tap <b>+ New ${C.one}</b>. Each has a page: ${t === "bld" ? "office phone, website, their people and subdivisions" : "city, builder, gate code, where water and sewer tie in"}, notes, and every job.</p>`}</div>`; }
@@ -521,10 +521,10 @@ function jbListHtml(){
   return `${viewSeg}<div class="jb-toprow">${jbD.jobs.length ? `<input id="jb-q" type="search" autocomplete="off" autocorrect="off" enterkeyhint="search" value="${esc(JB.q || "")}" placeholder="Find a job: lot, address, person, any word" aria-label="Find a job">` : ""}<button type="button" class="btn" data-a="new">+ New job</button></div>
   <div id="jb-res">${fq ? jbFindHtml(fq) : ""}</div>
   <div id="jb-main"${fq ? " hidden" : ""}>
-  <div class="seg jb-seg jb-show" role="group" aria-label="Show">${[["open", "Active"], ["done", "Done"], ["arch", "Archived"], ["all", "All"]].map(([k, t]) => `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}">${t} · ${jbD.jobs.filter(j => jbIn(k, j)).length}</button>`).join("")}</div>
+  <div class="seg jb-seg jb-show" role="group" aria-label="Show">${[["open", "Active"], ["done", "Done"], ["arch", "Archived"], ["all", "All"]].map(([k, t]) => { const n = jbD.jobs.filter(j => jbIn(k, j)).length; return `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}" aria-label="${t}, ${n}"><span class="jb-vl">${t}</span><b class="jb-vn">${n}</b></button>`; }).join("")}</div>
   ${tags.length ? `<div class="chips jn-tagbar">${JB.tag ? `<button type="button" data-tagclr="1" aria-pressed="true">#${esc(JB.tag)} ✕ show all</button>` : tags.map(t => `<button type="button" class="jn-tagchip" style="${jbTagStyle(t)}" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")}</div>` : ""}
   ${jbOpenHtml()}
-  <p class="note jb-sortnote">${JB.show === "arch" ? "Not opened or changed in 30 days, or archived by hand. Change one, or tap Bring it back on its page." : `A to Z · 📌 first · ⇤ quick look`} · <button type="button" class="linkish" data-a="set-go">⚙ Jobs settings</button></p>
+  <div class="jb-sortrow"><p class="note jb-sortnote">${JB.show === "arch" ? "Not opened or changed in 30 days, or archived by hand. Change one, or tap Bring it back on its page." : `A to Z · 📌 first · ⇤ quick look`}</p><button type="button" class="linkish jb-setlink" data-a="set-go">⚙ Settings</button></div>
   ${PIN.length ? `<div class="jb-grp"><div class="jb-th jb-th1"><span class="jb-tf"><b>📌 Pinned</b><span class="jb-tn">${PIN.length}</span></span></div><div class="jb-list">${PIN.map(j => jbRow(j)).join("")}</div></div>` : ""}
   ${L.length ? (L.length > PIN.length ? jbGroups(L.filter(j => !j.pin)) : "") : `<div class="jb-list"><p class="note">${jbD.jobs.length ? `No ${({open: "active ", done: "done ", arch: "archived "})[JB.show] || ""}jobs${JB.tag ? ` tagged <b>#${esc(JB.tag)}</b>` : ""}. ${JB.tag ? "Tap the tag above to show all." : JB.show !== "all" ? "Tap <b>All</b> to see every job." : ""}` : "No jobs yet. Tap <b>+ New job</b>. Each job is a timeline, Underground to Final, with the blanks ready to fill in as you go."}</p></div>`}
   </div>
@@ -660,7 +660,8 @@ function jbNextUp(j){
   const ck = jbCk(j, k).items.filter(x => !x.done && !x.nd).map(x => ({m: "☐", t: x.t, s: k, ck: 1}));
   return [...dated, ...rest.filter(x => x.t), ...j.punch.filter(p => !p.done).map(p => ({m: "☐", t: p.t, punch: 1})), ...ck];
 }
-const jbNextLi = x => `<li>${x.d ? `<span class="jn-date${x.d === jbDay() ? " now" : ""}">${x.m} ${esc(jbNice(x.d))}</span> ` : `${esc(x.m)} `}${esc(x.t.slice(0, 90))}${x.late ? " · <b>result?</b>" : ""}${x.punch ? ' <span class="sub">(punch)</span>' : x.ck ? ` <span class="sub">(${esc(JB_SNAME[x.s].replace(/ \(.*\)$/, ""))} checklist)</span>` : ""}</li>`;
+const JB_MK = {"☐": "k-task", "⚠": "k-flag", "?": "k-q", "✔": "k-q"};
+const jbNextLi = x => `<li>${x.d ? `<span class="jn-date${x.d === jbDay() ? " now" : ""}">${x.m} ${esc(jbNice(x.d))}</span> ` : `<span class="jb-nm ${x.ck ? "jb-nmck" : JB_MK[x.m] || ""}" aria-hidden="true">${esc(x.m)}</span>`}${esc(x.t.slice(0, 90))}${x.late ? " · <b>result?</b>" : ""}${x.punch ? ' <span class="sub">(punch)</span>' : x.ck ? ` <span class="sub">(${esc(JB_SNAME[x.s].replace(/ \(.*\)$/, ""))} checklist)</span>` : ""}</li>`;
 const jbNextHtml = (N, n, cls) => `<ul class="${cls}">${N.slice(0, n).map(jbNextLi).join("")}${N.length > n ? `<li class="jq-more">+${N.length - n} more${(c => !c ? "" : c === N.length - n ? " on the checklist" : ` (${c} on the checklist)`)(N.slice(n).filter(x => x.ck).length)}</li>` : ""}</ul>`;
 /* coming back to a job: what's next, then the last note, before anything else */
 function jbLeftOff(j){
@@ -684,7 +685,7 @@ function jbJobHtml(j){
   <h3 class="jb-title">${jbIco(jbIcon(j))}<span>${esc((j.name || "").trim() || addr || "New job")}</span></h3>
   ${(eById("sub", j.sub) || {}).gate ? `<p class="jb-gate">🔑 Gate: <b>${esc(eById("sub", j.sub).gate)}</b> <button type="button" class="linkish" data-ent="sub|${j.sub}" aria-label="Change the gate code on the ${esc(eName("sub", j.sub))} page">change ›</button></p>` : ""}<p class="jb-sub">${esc([(j.name || "").trim() && addr, eName("sub", j.sub), eName("bld", j.bld), c && c.n].filter(Boolean).join(" · ")) || "Add a name and address in Job details below."}</p>
   <div class="jb-chips"><span class="badge jb-sbadge jt-k-${hs}">${esc(JB_SNAME[hs])}</span><span class="badge">${hDone} of ${hAct.length} stages</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${tk ? `<span class="badge">☐ ${tk} to do</span>` : ""}${hLead ? `<span class="badge">Lead ${esc(hLead.n)}</span>` : ""}</div>
-  <div class="set-btns jb-hacts">${addr ? `<a class="btn ghost" href="https://maps.apple.com/?daddr=${q}" target="_blank" rel="noopener">Directions</a>` : ""}${hLead && pTel(hLead) ? `<a class="btn ghost" href="tel:${pTel(hLead)}">📞 Call ${esc(hLead.n.split(" ")[0])}</a>` : ""}<button type="button" class="btn ghost" data-a="hd-hrs" aria-expanded="${JB.hrsBox === j.id}">⏱ Log hours</button><button type="button" class="btn ghost" data-a="hd-proof">📷 Proof photo</button><button type="button" class="btn ghost" data-a="job-report">${JF.rep && JF.rep.jid === j.id && !JF.rep.k ? "📤 Send report" : "📄 Report"}</button></div>
+  <div class="set-btns jb-hacts">${addr ? `<a class="btn ghost" href="https://maps.apple.com/?daddr=${q}" target="_blank" rel="noopener"><span class="jb-hi" aria-hidden="true">🧭</span>Map</a>` : ""}${hLead && pTel(hLead) ? `<a class="btn ghost" href="tel:${pTel(hLead)}"><span class="jb-hi" aria-hidden="true">📞</span>Call ${esc(hLead.n.split(" ")[0])}</a>` : ""}<button type="button" class="btn ghost" data-a="hd-hrs" aria-expanded="${JB.hrsBox === j.id}"><span class="jb-hi" aria-hidden="true">⏱</span>Hours</button><button type="button" class="btn ghost" data-a="hd-proof"><span class="jb-hi" aria-hidden="true">📷</span>Proof</button><button type="button" class="btn ghost" data-a="job-report"><span class="jb-hi" aria-hidden="true">${JF.rep && JF.rep.jid === j.id && !JF.rep.k ? "📤" : "📄"}</span>${JF.rep && JF.rep.jid === j.id && !JF.rep.k ? "Send" : "Report"}</button></div>
   </div>
   ${JB.hrsBox === j.id ? `<div class="jb-left jb-hrsq"><p class="jb-lefth">Log hours</p><div class="calc">
     <label for="jhq-d">Date<input id="jhq-d" type="date" value="${jbDay()}"></label>
@@ -767,9 +768,10 @@ function jbJobHtml(j){
 
 function jbPersonHtml(p){
   const jobs = pJobs(p), tel = pTel(p), f = (id, k, label, type, ph, wide) => `<label for="${id}"${wide ? ' class="wide"' : ""}>${label}<input id="${id}" data-pf="${k}" type="${type}" autocomplete="off" value="${esc(p[k] || "")}" placeholder="${ph}"${type === "tel" ? ' inputmode="tel"' : ""}></label>`;
-  return `<div class="set-btns jb-top"><button type="button" class="btn ghost" data-a="back">‹ Back</button></div>
+  return `<div class="jb-head"><div class="jb-hrow"><button type="button" class="btn ghost jb-back" data-a="back">‹ Back</button></div>
+  <h3 class="jb-title"><span>👤 ${esc(p.n.trim() || "New person")}</span></h3><p class="jb-sub">${esc([p.role, p.co].filter(Boolean).join(" · ")) || "Add their name, role and phone below."}</p></div>
   <div class="calc">
-    ${f("pp-n", "n", "Name", "text", "Dave Smith", true)}
+    ${f("pp-n", "n", "Name", "text", "Sam Smith", true)}
     <label for="pp-role">Role<select id="pp-role" data-pf="role">${jbList(JB_ROLES, p.role)}</select></label>
     <label for="pp-co">Company<input id="pp-co" data-pf="co" list="jb-blds" type="text" autocomplete="off" value="${esc(p.co || "")}" placeholder="Builder, city or shop"></label>
     ${f("pp-ph", "ph", "Phone", "tel", "801-555-0100", false)}
@@ -793,7 +795,8 @@ function jbEntHtml(t, x){
     : `<label for="ef-${k}"${type === "text" ? ' class="wide"' : ""}>${label}<input id="ef-${k}" data-ef="${k}" type="${type === "bld" ? "text" : type}"${type === "bld" ? ' list="jb-blds"' : ""}${type === "tel" ? ' inputmode="tel"' : ""} autocomplete="off" value="${esc(type === "bld" ? eName("bld", x[k]) : x[k] || "")}" placeholder="${esc(ph)}"></label>`;
   const nm = x.n.trim().toLowerCase(), ppl = t === "bld" ? jbD.people.filter(p => (p.co || "").trim().toLowerCase() === nm || jbD.jobs.some(j => j.bld === x.id && (j.sup === p.id))) : [];
   const subs = t === "bld" ? jbD.subs.filter(s => s.bld === x.id) : [];
-  return `<div class="set-btns jb-top"><button type="button" class="btn ghost" data-a="back">‹ Back</button></div>
+  return `<div class="jb-head"><div class="jb-hrow"><button type="button" class="btn ghost jb-back" data-a="back">‹ Back</button></div>
+  <h3 class="jb-title">${t === "sub" ? jbIco(x.icon) : ""}<span>${t === "bld" ? "🏗 " : x.icon ? "" : "🏘 "}${esc(x.n.trim() || "New " + C.one)}</span></h3><p class="jb-sub">${esc((t === "bld" ? [x.ph, subs.length && `${subs.length} subdivision${subs.length === 1 ? "" : "s"}`] : [(cityById(x.city) || {}).n, eName("bld", x.bld)]).concat(`${jobs.length} job${jobs.length === 1 ? "" : "s"}`).filter(Boolean).join(" · "))}</p></div>
   <div class="calc"><label for="ef-n" class="wide">${C.Title}<input id="ef-n" data-ef="n" type="text" autocomplete="off" value="${esc(x.n)}" placeholder="${C.ph}"></label>${C.fields.map(fld).join("")}</div>
   ${tel || web ? `<div class="jb-in"><div class="set-btns">${tel ? `<a class="btn" href="tel:${tel}">Call</a><a class="btn ghost" href="sms:${tel}">Text</a>` : ""}${web ? `<a class="btn ghost" href="${esc(/^https?:/i.test(web) ? web : "https://" + web)}" target="_blank" rel="noopener">Website</a>` : ""}</div></div>` : ""}
   ${t === "sub" ? `<p class="card-h">Subdivision icon <span class="jb-hint">every job here shows it, unless the job has its own</span></p><details class="explain jb-pickd"><summary>Icon: ${jbIco(x.icon)}${x.icon ? JB_ISO[x.icon][0] : "none"} · change</summary>${jbIcoPick(x.icon, "None")}</details>` : ""}
@@ -897,7 +900,7 @@ B.addEventListener("click", e => {
   if (t.dataset.jfflt && j){ JF.fltJob = j.id; JF.flt = t.dataset.jfflt; JF.allReady = null; jfDraw(j.id); return; }
   if (t.dataset.wl){ jnGo(t.dataset.wl); return; }
   if (t.dataset.xadd && j){ const k = t.dataset.xadd; if (!j.xs.includes(k)){ j.xs.push(k); jbAct(j, `+ Stage added: ${JB_SNAME[k]}`, k); } JB.stage = k; JB.ckEdit = false; jbTouch(j); jbOpenStage(); return; }
-  if (t.dataset.xdel && j){ const k = t.dataset.xdel; if (!jbAsk(`Take ${JB_SNAME[k]} off this job? Anything filled in stays saved and comes back if you add it again.`)) return;
+  if (t.dataset.xdel && j){ const k = t.dataset.xdel; if (!jbAsk(`Take ${JB_SNAME[k]} off this job? Anything filled in stays saved: a "${JB_SNAME[k]} removed · Put back" chip under the timeline brings it back.`)) return;
     jbAct(j, `Stage removed: ${JB_SNAME[k]} (what's in it stays saved)`, k); j.xs = j.xs.filter(x => x !== k); JB.stage = null; jbTouch(j); return; }
   if (t.dataset.ent){ const [et, id] = t.dataset.ent.split("|"); jbOpenEnt(et, id); return; }
   if (t.dataset.tag){ JB.tag = t.dataset.tag; JB.view = "jobs"; JB.show = "all"; JB.open = null; JB.person = null; JB.ent = null; JB.hist = []; JB.edit = null; jbDraw(); jbTop(); return; }
@@ -1122,7 +1125,7 @@ function jbQuickHtml(j){
   return `<div class="jq-top"><h2 id="jq-h">${jbIco(jbIcon(j))}${esc(jbName(j))}</h2><button type="button" class="jb-x" data-qa="close" aria-label="Close quick view">✕</button></div>
   <p class="jq-sub">${esc([JB_SNAME[k], `${done} of ${jbStages(j).length} stages`, lead && "Lead " + lead.n].filter(Boolean).join(" · "))}${jbArch(j) ? " · 🗄 Archived" : ""}</p>
   ${addr ? `<p class="jq-addr">${esc(addr)}</p>` : ""}
-  <div class="set-btns jq-acts">${lead && pTel(lead) ? `<a class="btn ghost" href="tel:${pTel(lead)}">📞 Call ${esc(lead.n.split(" ")[0])}</a>` : ""}${addr ? `<a class="btn ghost" href="https://maps.apple.com/?daddr=${q}" target="_blank" rel="noopener">Directions</a>` : ""}<button type="button" class="btn ghost" data-qa="proof">📷 Proof photo</button></div>
+  <div class="set-btns jq-acts jb-hacts">${addr ? `<a class="btn ghost" href="https://maps.apple.com/?daddr=${q}" target="_blank" rel="noopener"><span class="jb-hi" aria-hidden="true">🧭</span>Map</a>` : ""}${lead && pTel(lead) ? `<a class="btn ghost" href="tel:${pTel(lead)}"><span class="jb-hi" aria-hidden="true">📞</span>Call ${esc(lead.n.split(" ")[0])}</a>` : ""}<button type="button" class="btn ghost" data-qa="proof"><span class="jb-hi" aria-hidden="true">📷</span>Proof photo</button></div>
   ${glance ? `<p class="jq-h">At a glance</p><p class="jq-p">${esc(jnGist(glance, 6))}</p>` : ""}
   <p class="jq-h">Next up${N.length ? " · " + N.length : ""}</p>${N.length ? jbNextHtml(N, 7, "jq-list") : `<p class="jq-p">Nothing open. No inspection booked.</p>`}
   <p class="jq-p">${esc(JB_SNAME[k])} checklist ${C.done} of ${C.total}${N.some(x => x.insp) ? "" : " · no inspection booked"}</p>
@@ -1466,7 +1469,7 @@ async function jfShareAll(job, stage){
       toast(`Saving ${R.files.length} photos to Downloads.`, 3000); } }
     jbReseat(); jfDraw(job); return; }
   let L = []; try { L = (await jfAll(job)).filter(f => !f.del && f.kind === "photo" && (stage === "all" || f.s === stage)).sort((a, b) => a.t - b.t); } catch(e){}
-  if (!L.length){ toast("No photos on this stage yet."); return; }
+  if (!L.length){ toast(stage === "all" ? "No photos on this job yet." : "No photos on this stage yet."); return; }
   const used = new Set(), files = L.map((f, i) => { let n = (f.name || `photo-${jbDay(new Date(f.t))}-${i + 1}.jpg`).replace(/\.[^.]*$/, "") + ".jpg"; while (used.has(n)) n = n.replace(/\.jpg$/, `-${i + 1}.jpg`); used.add(n); return new File([f.blob], n, {type: f.type || "image/jpeg"}); });
   if (navigator.canShare && !navigator.canShare({files})){ JF.allReady = {job, s: stage, files}; jfShareAll(job, stage); return; }
   JF.allReady = {job, s: stage, files}; jfDraw(job); toast(`${files.length} photo${files.length === 1 ? "" : "s"} ready: tap the button again to save or send.`, 4000);

@@ -514,8 +514,20 @@ dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .jn-tools{padding:0 12px 8px;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
 .jn-tools::-webkit-scrollbar{display:none}
 .jn-tools button{flex:none}
-.jb-views{display:grid;grid-template-columns:1fr 1fr}
-.jb-views button{font-size:15px;padding:4px 6px}
+.jb-views{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.jb-views button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 2px;min-height:54px;font-size:12px;letter-spacing:.01em;line-height:1.1;min-width:0;overflow-wrap:anywhere}
+.jb-views .jb-vn{font-size:19px;line-height:1}
+.jb-seg.jb-show{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.jb-show button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;min-height:46px;padding:3px 2px;font-size:12px;line-height:1.1;min-width:0}
+.jb-show .jb-vn{font-size:15px;line-height:1.1}
+.jb-sortrow{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:6px 12px 0}
+.jb-sortrow .jb-sortnote{padding:0;margin:0}
+.jb-setlink{flex:none;white-space:nowrap;padding:8px 0;min-height:40px}
+.set-btns.jb-hacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(58px,1fr));gap:6px;margin-top:10px}
+.jb-hacts .btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px;padding:6px 2px;font-size:12px;letter-spacing:.02em;line-height:1.1;text-align:center;text-decoration:none;min-width:0;overflow-wrap:anywhere}
+.jb-hi{font-size:22px;line-height:1;letter-spacing:0}
+.jb-nm{display:inline-block;min-width:1.35em;margin-right:4px;font-weight:800;text-align:center}
+.jb-nmck{color:var(--muted)}
 .jb-gh{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;min-height:44px;margin:12px 0 0;padding:6px 12px 2px;border:0;border-top:2px solid var(--edge);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
 .jb-gh b{font-family:var(--display);font-size:18px;text-transform:uppercase;letter-spacing:.05em;overflow-wrap:anywhere}
 .jb-gh span{flex:none;color:var(--muted);font-weight:700}
@@ -3001,7 +3013,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Hot (95°F+)</th><td>Pipe lying in sun runs <b>20–30°F hotter</b> than the air, and solvent flashes off before you push the joint. Shade the pipe and the cans. Cool the ends with a damp rag, then dry them. Make the critical joints in the morning. Use a heavier-bodied cement, keep both surfaces wet when you join, and work fast (Weldon/IPS hot-weather guide).</td></tr>
-        <tr><th>Cold</th><td>Cure time stretches a lot below 40°F (see the CPVC table; PVC and ABS makers publish their own charts). Keep cans in the cab. Never warm cement or pipe with a flame: the vapor is very flammable. Below about 50°F cold plastic cracks under ratchet cutters: use a wheel or saw.</td></tr>
+        <tr><th>Cold</th><td>Cure time stretches a lot below 40°F (see the CPVC table; ABS and PVC makers publish their own charts). Keep cans in the cab. Never warm cement or pipe with a flame: the vapor is very flammable. Below about 50°F cold plastic cracks under ratchet cutters: use a wheel or saw.</td></tr>
         <tr><th>Utah County</th><td>Design temps run 13°F to 95°F, so you'll hit both ends in one year. <b>Jobsite → Weather</b> flags glue days.</td></tr>
       </tbody></table></div>
   </section>
@@ -4083,7 +4095,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td data-label="Number" class="n">A53</td><td data-label="What it is">Steel pipe, black or galvanized</td><td data-label="Where">Black for gas. Galvanized in old houses.</td></tr>
         <tr><td data-label="Number" class="n">A888 · A74</td><td data-label="What it is">Cast iron soil pipe: hubless (A888), hub and spigot (A74)</td><td data-label="Where">Quiet stacks. Hub gaskets are C564.</td></tr>
         <tr><td data-label="Number" class="n">CISPI 310 · C1277 · C1540</td><td data-label="What it is">No-hub couplings: standard (CISPI 310, C1277), heavy-duty (C1540)</td><td data-label="Where">Cast iron to cast iron. 60 in-lb standard, 80 in-lb heavy-duty.</td></tr>
-        <tr><td data-label="Number" class="n">C1460 · C1461</td><td data-label="What it is">Shielded transition couplings (C1460), mechanical couplings for plastic DWV (C1461)</td><td data-label="Where">Cast iron to PVC/ABS, and plastic-to-plastic repair couplings.</td></tr>
+        <tr><td data-label="Number" class="n">C1460 · C1461</td><td data-label="What it is">Shielded transition couplings (C1460), mechanical couplings for plastic DWV (C1461)</td><td data-label="Where">Cast iron to ABS/PVC, and plastic-to-plastic repair couplings.</td></tr>
       </tbody></table></div>
     <p class="card-h">Water quality &amp; treatment (NSF/ANSI)</p>
     <div class="x"><table class="t cards wrap">
@@ -4199,7 +4211,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Copper / PEX size</th><td>Measure the OD and subtract ⅛": 0.875" OD = ¾" nominal.</td></tr>
-        <tr><th>Steel / PVC / ABS</th><td>Match the OD to <b>Trim → Threads &amp; sizes → Pipe sizes</b>: 1.900" = 1½", 2.375" = 2".</td></tr>
+        <tr><th>Steel / ABS / PVC</th><td>Match the OD to <b>Trim → Threads &amp; sizes → Pipe sizes</b>: 1.900" = 1½", 2.375" = 2".</td></tr>
         <tr><th>Cartridge or stem</th><td>Overall length, stem length, spline count on the broach, and any ears or tabs. Lay it on a tape and photo it.</td></tr>
         <tr><th>Toilet rough-in</th><td>Finished wall (not baseboard) to the center of the closet bolts: 10", 12" or 14".</td></tr>
         <tr><th>Flapper</th><td>Measure the flush valve opening: about 2" or about 3".</td></tr>
@@ -5272,7 +5284,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 17, 2026 · stickler pass</th><td><b>Hours from the Time card:</b> Calc → Math → Time card now lists your active jobs under the answer; tap one and it opens with <b>Log hours</b> filled in. <b>Tests on the job:</b> each test in Inspect → Test log has <b>📋 Add to a job</b>, which puts it in that job's notes (Gas for a gas test), dated and in the report. <b>Move a photo:</b> open a photo and pick the stage it's <b>Filed under</b> (proof photos stay on the stage they were stamped with). <b>Fixed:</b> merging another phone's backup could change the checklists on jobs you already had; now every job keeps exactly the list it showed. Photos added while you switched stages could land on the wrong stage. The Proof section's <b>Whole job</b> report button was missing. "+ [ ]" boxes in notes weren't counted as to-dos. A booked inspection on a removed stage still showed on the job's row. The Log hours box stayed open the next time you opened the job. The notes guide now says where dates, boxes and questions show up (Next up), and what a 🗑 link means. Settings → Backup &amp; reset points to Jobs settings for hours, rules and Recently deleted. <b>Easier on a phone:</b> checklist lines on a job use the full width, with ⊘ 📷 ✎ on a short row underneath, so they read in one or two lines instead of five. The job search box has its full width back (⚙ Jobs settings moved to the line under the filters). Tapping <b>Jobs</b> while you're on a job or in Jobs settings goes back to the job list, like any app's tab bar. The calculator keys + − × ÷ and % now say their names to VoiceOver.</td></tr>
+        <tr><th>Nov 17, 2026 · stickler pass</th><td><b>Hours from the Time card:</b> Calc → Math → Time card now lists your active jobs under the answer; tap one and it opens with <b>Log hours</b> filled in. <b>Tests on the job:</b> each test in Inspect → Test log has <b>📋 Add to a job</b>, which puts it in that job's notes (Gas for a gas test), dated and in the report. <b>Move a photo:</b> open a photo and pick the stage it's <b>Filed under</b> (proof photos stay on the stage they were stamped with). <b>Fixed:</b> merging another phone's backup could change the checklists on jobs you already had; now every job keeps exactly the list it showed. Photos added while you switched stages could land on the wrong stage. The Proof section's <b>Whole job</b> report button was missing. "+ [ ]" boxes in notes weren't counted as to-dos. A booked inspection on a removed stage still showed on the job's row. The Log hours box stayed open the next time you opened the job. The notes guide now says where dates, boxes and questions show up (Next up), and what a 🗑 link means. Settings → Backup &amp; reset points to Jobs settings for hours, rules and Recently deleted. <b>Easier on a phone:</b> checklist lines on a job use the full width, with ⊘ 📷 ✎ on a short row underneath, so they read in one or two lines instead of five. The job search box has its full width back (⚙ Jobs settings moved to the line under the filters). Tapping <b>Jobs</b> while you're on a job or in Jobs settings goes back to the job list, like any app's tab bar. The calculator keys + − × ÷ and % now say their names to VoiceOver. <b>A cleaner look in My jobs:</b> Jobs, People, Builders and Subdivisions sit in one row with their counts, and Active, Done, Archived and All are four even buttons. A job's Map, Call, Hours, Proof and Report are one row of icon buttons (Quick view matches). In Next up, boxes, heads-ups and questions show in the same colors as in your notes. People, builders and subdivisions open with a title like a job does. ABS comes before PVC in the last three spots that had it the other way.</td></tr>
         <tr><th>Nov 16, 2026 · cleanup</th><td><b>Tidier:</b> a brand-new job no longer opens with a "Where you left off" box that only repeats its checklist; "Change them" under the rules on a job and the "restore the job first" message now point to Jobs settings, where those moved. <b>Fixed:</b> a job that never had Gas, Final or Warranty could say "Gas removed · checklist" after you changed a starting checklist; now only a stage that really holds notes, photos, hours, inspections or checked items says so. Photos &amp; files opens unfolded even if you had folded the old Files section. <b>Easier to find:</b> a ⚙ button next to <b>+ New job</b> opens Jobs settings, and searching the book for "backup", "license goal" or "recently deleted" finds My jobs. <b>Fixed:</b> the arrows on the ball, gate and globe valve drawing could go missing (two drawings shared one name).</td></tr>
         <tr><th>Nov 16, 2026 · flow fixes</th><td><b>A cleaner job list:</b> My jobs now shows just search, filters, <b>Open on active jobs</b> (moved up top) and your jobs, with your hours on one line at the bottom. Everything else moved to <b>⚙ Jobs settings</b> (bottom of the list): you, rules for every job, hours and the license goal, colors, backup and Recently deleted. Restore, merge, password backups and safety copies stay in Settings → Backup &amp; reset. <b>Next up:</b> one list per job (booked inspections, @dates in notes, open boxes and questions, heads-ups, punch items, then the current stage's checklist). It's at the top of each job, in Quick view, and feeds Home's Coming up. <b>One checklist, two places:</b> Inspect → Before you call it in uses the same lists as new jobs, and <b>Check it on a job</b> opens that list on a job so the checks are dated and in its report; ticks on the Inspect page are a scratch list. <b>Photos &amp; files</b> is one section on a job, with a chip for each stage (and All). <b>⏱ Log hours</b> is right in a job's header (today and the stage you're on). A removed Gas, Final or Warranty stage now says what it still holds, with <b>Put back</b>. A <code>[[link]]</code> to something in Recently deleted offers to restore it. The gate code on a job now taps through to its subdivision, where you change it.</td></tr>
         <tr><th>Nov 16, 2026 · night pass</th><td><b>Read this first:</b> a short pop-up on opening the book (once, and again if the terms change): check everything yourself, you're the plumber, and how to back up so updates and new phones don't cost you your work. <b>"Not done" on checklists:</b> tap ⊘ on an item, say why (waiting on the framer, no access…), and it shows in red with the date, in the stage count, the activity log and reports; checking it off later clears it. <b>Cleaner job list:</b> rows drop the random note line, and the badges are smaller and tidier. <b>Fewer duplicates:</b> one 📷 Proof photo button (in the job's header; each stage keeps Add photos), and one whole-job 📄 Report (the header's; the Proof section keeps the stage reports). <b>Things that now connect:</b> open punch items count as to-dos and show in "Where you left off"; the subdivision's gate code shows at the top of the job. <b>Fixes:</b> Settings → Restore from file now takes the .zip from Back up everything; a new job's details no longer jump while you type the address; your license # is off the Technician summary line. Backup, merge and restore were tested end to end.</td></tr>
@@ -9747,7 +9759,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-17b";
+{ const NEWS = "2026-11-17e";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -10198,7 +10210,7 @@ tapeDraw();
     if (!$("at-now").value.trim()){ toast("Enter what the gauge reads now first.", 2400); $("at-now").focus(); return; }
     const x = Object.assign(run || {start: 0, type: $("tl-type").value, where: $("tl-where").value.trim(), p: $("at-p").value, t1: $("at-t1").value},
       {end: Date.now(), now: $("at-now").value, t2: $("at-t2").value, exp: $("at-exp").innerText.split("\n")[0], verdict: "Verdict: " + $("at-verdict").innerText.trim().replace(/\s*\n\s*/g, ". ").replace(/\s+/g, " ")});
-    log.unshift(x); log = log.slice(0, 40); run = null; store.set("jpb-tl", log); store.set("jpb-tl-run", null); draw(); toast("Logged. Copy or share it below.", 2200);
+    log.unshift(x); log = log.slice(0, 40); run = null; store.set("jpb-tl", log); store.set("jpb-tl-run", null); draw(); toast(window.jbTestPick ? "Logged. Copy, share or add it to a job below." : "Logged. Copy or share it below.", 2400);
   });
   $("tl-list").addEventListener("click", async e => {
     const b = e.target.closest("button"); if (!b) return;
@@ -11005,7 +11017,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-17b";
+var BUILD = "handbook-2026-11-17e";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
