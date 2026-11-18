@@ -34,10 +34,11 @@ const jbNat = (a, b) => jbName(a).localeCompare(jbName(b), undefined, {numeric: 
 const JB_RES = {booked: "Booked", pass: "Pass", partial: "Partial", fail: "Fail"};
 const JB_ST = {open: "Open", hold: "On hold", done: "Done"};
 let jbT, jfNT, jbDirty = false;
-let jbFull = false;
-const jbSave = noCount => { clearTimeout(jbT); if (window.RESTORING) return; JB_IX = null; let ok = true; noCount = noCount === true && !jbDirty; jbDirty = false;   /* true: not a change (just opened a job), so it doesn't push toward the backup reminder */
+let jbFull = false, jbFullT = 0;
+const jbSave = noCount => { clearTimeout(jbT); if (window.RESTORING) return; JB_IX = null; JB_AC = new WeakMap(); let ok = true; noCount = noCount === true && !jbDirty; jbDirty = false;   /* true: not a change (just opened a job), so it doesn't push toward the backup reminder */
   try { localStorage.setItem("jpb-jobs", JSON.stringify(jbD)); } catch(e){ ok = false; }
-  if (!ok && !jbFull) toast("<b>Jobs didn't save:</b> this phone's space for them is full. Back up (My jobs → ⚙ Jobs settings), then delete finished jobs.", 9000);
+  if (!ok && (!jbFull || Date.now() - jbFullT > 6e4)){ jbFullT = Date.now();   /* after this tap's own "Added" message, so that one can't cover it; again each minute it stays full */
+    setTimeout(() => toast("<b>Jobs didn't save:</b> this phone's space for them is full. Back up (My jobs → ⚙ Jobs settings), then delete finished jobs.", 9000), 0); }
   jbFull = !ok; if (ok && !noCount) try { localStorage.setItem("jpb-chg", String((+localStorage.getItem("jpb-chg") || 0) + 1)); } catch(e){}
   IDX = null; try { homeDraw(); } catch(e){} };
 const jbBytes = () => { try { return (localStorage.getItem("jpb-jobs") || "").length; } catch(e){ return 0; } };
@@ -67,7 +68,8 @@ const jbBump = o => { o.t = Math.max(Date.now(), (+o.arch || 0) + 1); };   /* a 
 const jbLast = j => Math.max(+j.t || 0, +j.seen || 0, +j.made || 0);
 const jbArchMe = j => +j.arch > 0 && +j.arch >= (+j.t || 0);   /* archived by hand, and nothing changed since */
 const jbWaiting = j => { const now = jbDay(); return (j.insp || []).some(i => i.r === "booked" && i.d >= now) || (j.log || []).some(e => typeof jnDates === "function" && jnDates(e.b, e.d).some(([d]) => d >= now)); };
-const jbArch = j => !j.pin && (jbArchMe(j) || (Date.now() - jbLast(j) > JB_ARCH_DAYS * 864e5 && !jbWaiting(j)));   /* booked inspection or a date coming up: it's waiting, not done */
+let JB_AC = new WeakMap();   /* per screen: archived or not, worked out once per job (it reads every note's dates) */
+const jbArch = j => { if (JB_AC.has(j)) return JB_AC.get(j); const v = !j.pin && (jbArchMe(j) || (Date.now() - jbLast(j) > JB_ARCH_DAYS * 864e5 && !jbWaiting(j))); JB_AC.set(j, v); return v; };   /* booked inspection or a date coming up: it's waiting, not done */
 const jbIn = (k, j) => k === "all" || (k === "arch" ? jbArch(j) : !jbArch(j) && (k === "done") === (j.st === "done"));
 /* iPhone: a system pop-up (Delete?, a picker wheel, the photo sheet) or the keyboard vanishing can leave the page sitting off
    and the bottom bar floating. Re-seat it after each one. */
@@ -130,7 +132,8 @@ function jbClean(){
   if (jbD.tpl != null && !isO(jbD.tpl)) jbD.tpl = {}; if (jbD.tpl) Object.keys(jbD.tpl).forEach(k => { if (!JB_SNAME[k] || !Array.isArray(jbD.tpl[k])) delete jbD.tpl[k]; else jbD.tpl[k] = jbD.tpl[k].map(str).filter(Boolean); });
   jbD.subs.forEach(x => { if (!JB_ICONS.includes(x.icon)) x.icon = ""; });
   ['stageCol', 'tagCol'].forEach(k => { const o = isO(jbD[k]) ? jbD[k] : {}; jbD[k] = {}; Object.keys(o).forEach(x => { if (JB_PAL.includes(o[x])) jbD[k][x] = o[x]; }); });
-  ["people", "builders", "subs"].forEach(k => { jbD[k] = arrO(jbD[k]); jbD[k].forEach(x => { x.id = jbSafeId(x.id); x.n = str(x.n); }); });
+  ["people", "builders", "subs"].forEach(k => { jbD[k] = arrO(jbD[k]); const seen = new Set(); jbD[k].forEach(x => { x.id = jbSafeId(x.id); if (seen.has(x.id)) x.id = jbId(); seen.add(x.id); x.n = str(x.n); }); });
+  { const seen = new Set(); jbD.jobs.forEach(j => { j.id = jbSafeId(j.id); if (seen.has(j.id)) j.id = jbId(); seen.add(j.id); }); }
   jbD.jobs.forEach(j => {
     j.id = jbSafeId(j.id); ["name", "a", "who", "city", "draft"].forEach(k => { j[k] = str(j[k]); });
     if (!Array.isArray(j.log)){ j.log = str(j.note).trim() ? [{id: jbId(), d: jbDay(new Date(+j.t || Date.now())), at: +j.t || Date.now(), b: str(j.note)}] : []; delete j.note; }
@@ -232,9 +235,10 @@ function jnResolve(tok, base){
   const b = new Date((base || jbDay()) + "T12:00:00"), t = tok.toLowerCase(); let d = null, m;
   if (t === "today") d = b; else if (t === "tomorrow"){ d = new Date(b); d.setDate(d.getDate() + 1); }
   else if (JN_WD.includes(t.slice(0, 3))){ d = new Date(b); const w = JN_WD.indexOf(t.slice(0, 3)); d.setDate(d.getDate() + ((w - d.getDay() + 7) % 7 || 7)); }
-  else if ((m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/))) d = new Date(+m[1], +m[2] - 1, +m[3], 12);
+  else if ((m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/))){ d = new Date(+m[1], +m[2] - 1, +m[3], 12); if (d.getMonth() !== +m[2] - 1 || d.getDate() !== +m[3]) d = null; }   /* Feb 30 isn't a day: it stays plain text */
   else { let mo, da; if ((m = t.match(/^(\d{1,2})\/(\d{1,2})$/))){ mo = +m[1] - 1; da = +m[2]; } else if ((m = t.match(/^([a-z]{3})[a-z]* (\d{1,2})$/))){ mo = JN_MON.indexOf(m[1]); da = +m[2]; }
-    if (mo >= 0 && mo < 12 && da >= 1 && da <= 31){ d = new Date(b.getFullYear(), mo, da, 12); if (d - b < -182 * 864e5) d.setFullYear(d.getFullYear() + 1); } }
+    if (mo >= 0 && mo < 12 && da >= 1 && da <= 31){ let y = b.getFullYear(); if (new Date(y, mo, Math.min(da, 28), 12) - b < -182 * 864e5) y++;   /* the year first, so Feb 29 finds a leap year */
+      d = new Date(y, mo, da, 12); if (d.getMonth() !== mo || d.getDate() !== da) d = null; } }
   return d && !isNaN(d) ? jbDay(d) : "";
 }
 const jnDates = (text, base) => { const out = []; String(text).split("\n").forEach(ln => { for (const m of ln.matchAll(JN_DATE)){ const iso = jnResolve(m[2], base); if (iso) out.push([iso, ln]); } }); return out; };
@@ -472,14 +476,14 @@ function jbFindHtml(q){
 const JN_OPEN = /^\s*(?:[-*+] \[ \]|\?\?)/;
 function jbOpenItems(){
   const out = []; jbD.jobs.filter(j => j.st !== "done" && !jbArch(j)).sort(jbNat).forEach(j => j.log.filter(e => jnLive(j, e)).sort(jnSort).forEach(e => e.b.split("\n").forEach(ln => {
-    if (JN_OPEN.test(ln)) out.push({j, e, q: /^\s*\?\?/.test(ln), t: jnPlain(ln, e.d)}); })));
+    if (JN_OPEN.test(ln)) out.push({j, e, q: /^\s*\?\?/.test(ln), ln}); })));
   return out;
 }
 const jbOpenHtml = () => { const L = jbOpenItems(); if (!L.length) return "";
   const tk = L.filter(x => !x.q).length, qs = L.length - tk;
   return `<details class="explain"${JB.openItems ? " open" : ""} data-oi="1"><summary>Open on active jobs: ${[tk && `☐ ${tk} to do`, qs && `? ${qs} question${qs === 1 ? "" : "s"}`].filter(Boolean).join(" · ")}</summary><div>
     <p class="note jn-lead">Every unchecked box and open question in your notes. Tap one to go to its note and check it off there.</p>
-    <ul class="jb-soon jb-oi">${L.slice(0, 80).map(x => `<li><button type="button" class="linkish" data-open="${x.j.id}" data-ostage="${x.e.s || ""}"><span class="jb-oik${x.q ? " q" : ""}" aria-hidden="true">${x.q ? "?" : "☐"}</span> <b>${esc(jbName(x.j))}</b> · ${esc(x.t.slice(0, 90))}</button></li>`).join("")}</ul></div></details>`; };
+    <ul class="jb-soon jb-oi">${L.slice(0, 80).map(x => `<li><button type="button" class="linkish" data-open="${x.j.id}" data-ostage="${x.e.s || ""}"><span class="jb-oik${x.q ? " q" : ""}" aria-hidden="true">${x.q ? "?" : "☐"}</span> <b>${esc(jbName(x.j))}</b> · ${esc(jnPlain(x.ln, x.e.d).slice(0, 90))}</button></li>`).join("")}</ul></div></details>`; };
 /* backlinks: the note lines on jobs that [[link]] this name */
 function jbMentionHtml(name){
   const n = String(name || "").trim().toLowerCase(); if (!n) return "";
@@ -810,13 +814,13 @@ function jbEntHtml(t, x){
 }
 /* a job with nothing in it at all: never named, never changed (adding a photo or anything else writes to its activity log) */
 const jbBlank = j => !(j.a || "").trim() && !(j.name || "").trim() && !String(j.who || "").trim() && !j.bld && !j.sub && !j.log.length && !String(j.draft || "").trim() && !j.insp.length && !j.hrs.length && !j.punch.length && !j.lead && !j.sup
-  && !j.color && !j.icon && !j.pin && !(j.act || []).some(e => e.t !== "Job created")
+  && !j.color && !j.icon && !j.pin && (j.act || []).length > 0 && (j.act || []).every(e => e.t === "Job created")
   && JB_STG.every(([k]) => { const s = j.stages[k]; return !s || (!s.done.length && !s.extra.length && !s.d1 && !s.lead && !(s.hide || []).length && !(s.ord || []).length); });
 const jbTidy = away => { const n = jbD.jobs.length, now = Date.now();   /* away: you've left My jobs, so the open one goes too (unless it was made a moment ago) */
   jbD.jobs = jbD.jobs.filter(j => !jbBlank(j) || (j.id === JB.open && (!away || now - (+j.made || 0) < 5000)));
   if (JB.open && !jbD.jobs.some(j => j.id === JB.open)) JB.open = null; if (jbD.jobs.length !== n) jbSave(true); };
 function jbDraw(){
-  JB_IX = null; JN_CARDS = null; jbTidy();
+  JB_IX = null; JB_AC = new WeakMap(); JN_CARDS = null; jbTidy();
   const body = $("jb-body"), ae = document.activeElement, had = !!ae && ae !== document.body && body.contains(ae);
   if (had) ae.blur();   /* a box removed while the keyboard is up never says so, and the bar floats: close it properly first */
   const en = eCur(), j = jbCur(), p = JB.person && pById(JB.person); if (JB.open && !j) JB.open = null; if (JB.person && !p) JB.person = null; if (JB.ent && !en) JB.ent = null;
@@ -846,15 +850,16 @@ const jbState = () => ({open: JB.open, stage: JB.stage, person: JB.person, ent: 
 const jbPush = () => { if (JB.open || JB.person || JB.ent) JB.hist.push(jbState()); };
 function jbOpenPerson(id){ JB.allJobs = false; jbPush(); JB.ent = null; JB.person = id; JB.edit = null; jbDraw(); jbTop(); }
 function jbOpenEnt(t, id){ JB.allJobs = false; jbPush(); JB.person = null; JB.ent = {t, id}; JB.edit = null; jbDraw(); jbTop(); }
-function jbGoBack(){ JB.dPos = null; const b = JB.hist.pop() || {open: null, stage: null, person: null, ent: null}; Object.assign(JB, b); JB.edit = null; JB.ckEdit = false; jbSave(true); jbDraw(); jbTop(); }
+function jbGoBack(save){ JB.dPos = null; const b = JB.hist.pop() || {open: null, stage: null, person: null, ent: null}; Object.assign(JB, b); JB.edit = null; JB.ckEdit = false; if (save || jbDirty) jbSave(true); jbDraw(); jbTop(); }
 function jbBack(){
-  const en = eCur(); if (en){ if (!en.n.trim() && !en.log.length && !eJobs(JB.ent.t, en).length && !Object.keys(en).some(k => !["id", "n", "t", "log", "icon"].includes(k) && typeof en[k] === "string" && en[k].trim())) jbD[ENT[JB.ent.t].list] = eList(JB.ent.t).filter(x => x !== en); jbGoBack(); return; }   /* a new page left blank isn't kept */
+  const sz = () => jbD.jobs.length + jbD.people.length + jbD.builders.length + jbD.subs.length, n0 = sz();
+  const en = eCur(); if (en){ if (!en.n.trim() && !en.log.length && !eJobs(JB.ent.t, en).length && !Object.keys(en).some(k => !["id", "n", "t", "log", "icon"].includes(k) && typeof en[k] === "string" && en[k].trim())) jbD[ENT[JB.ent.t].list] = eList(JB.ent.t).filter(x => x !== en); jbGoBack(sz() !== n0); return; }   /* a new page left blank isn't kept */
   if (JB.person){ const p = pById(JB.person);
     if (p && !p.n.trim() && !p.log.length && !pJobs(p).length && !["co", "ph", "em", "draft"].some(k => String(p[k] || "").trim())) jbD.people = jbD.people.filter(x => x !== p);
-    jbGoBack(); return; }
+    jbGoBack(sz() !== n0); return; }
   const j = jbCur();
   if (j && !JF.n && jbBlank(j)) jbD.jobs = jbD.jobs.filter(x => x !== j);   /* a new job left blank isn't kept */
-  jbGoBack();
+  jbGoBack(sz() !== n0);
 }
 /* a deleted person, builder, subdivision or job with exactly this name */
 const jbBinFind = x => { const q = String(x).trim().toLowerCase(); return q && jbD.bin.find(b => ["person", "bld", "sub", "job"].includes(b.kind) && (b.kind === "job" ? [b.item.name, b.item.a] : [b.item.n]).some(v => String(v || "").trim().toLowerCase() === q)); };
@@ -1615,7 +1620,10 @@ async function jbRestoreAll(file, sayId, merge){
         u8 = new Uint8Array(buf); } }
     if (u8[0] === 0x50 && u8[1] === 0x4b){ z = jfUnzip(buf); if (z["handbook-backup.json"]) data = JSON.parse(dec.decode(z["handbook-backup.json"])); }
     else data = JSON.parse(dec.decode(u8));
+    if (data && data.app !== "utah-plumbers-handbook") throw 0;   /* every backup this app makes says so; anything else isn't ours */
     const d = data && data.data, keys = d && typeof d === "object" ? Object.keys(d).filter(k => k.startsWith("jpb-") && typeof d[k] === "string") : [];
+    if (keys.includes("jpb-jobs")){ let o = null; try { o = JSON.parse(d["jpb-jobs"]); } catch(e){}
+      if (!o || typeof o !== "object" || !Array.isArray(o.jobs)){ jfSay("This backup's job data is damaged, so nothing was changed.", "err"); clear(); return; } }
     const photos = z && z["manifest.json"] ? ((JSON.parse(dec.decode(z["manifest.json"])) || {}).files || []).length : 0;
     if (!keys.length && !photos) throw 0;
     let n = 0; try { n = JSON.parse(d["jpb-jobs"] || "{}").jobs.length || 0; } catch(e){}
@@ -1628,7 +1636,7 @@ async function jbRestoreAll(file, sayId, merge){
       const np = z && photos ? await jfRestoreZ(z, true) : 0, r = o ? jbMerge(o) : {add: 0, upd: 0};
       jbSave(); jbDraw(); try { if (typeof ckDraw === "function") ckDraw(); } catch(e){}
       jfSay(`Merged: ${r.add} new, ${r.upd} updated${np ? `, ${np} photos & files` : ""}. Undo it from Settings → Backup & reset → Safety copies if it isn't right.`, "good"); clear(); return; }
-    if (!jbAsk(keys.length ? `Replace everything on this phone with the backup${when}? It has ${n} job${n === 1 ? "" : "s"}${photos ? ` and ${photos} photos & files` : ""}. Anything added since then will be gone.`
+    if (!jbAsk(keys.length ? `Replace everything on this phone with the backup${when}? It has ${n} job${n === 1 ? "" : "s"}${photos ? ` and ${photos} photos & files` : ""}. Anything added since then will be gone.${!n && jbD.jobs.length ? ` This backup has no jobs, so the ${jbD.jobs.length} job${jbD.jobs.length === 1 ? "" : "s"} on this phone will be removed.` : ""}`
       : `Add the ${photos} photos & files from this backup?`)){ const r = $("jb-restore"); if (r) r.value = ""; return; }
     if (keys.length) try { await SNAP.put("undo"); } catch(e){}   /* so this restore can be undone: Settings → Backup &amp; reset → Safety copies */
     if (z && photos) await jfRestoreZ(z);
