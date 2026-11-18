@@ -37,7 +37,7 @@ let jbT, jfNT, jbDirty = false;
 let jbFull = false;
 const jbSave = noCount => { clearTimeout(jbT); if (window.RESTORING) return; JB_IX = null; let ok = true; noCount = noCount === true && !jbDirty; jbDirty = false;   /* true: not a change (just opened a job), so it doesn't push toward the backup reminder */
   try { localStorage.setItem("jpb-jobs", JSON.stringify(jbD)); } catch(e){ ok = false; }
-  if (!ok && !jbFull) toast("<b>Jobs didn't save:</b> this phone's space for them is full. Tap Back up everything, then delete finished jobs.", 9000);
+  if (!ok && !jbFull) toast("<b>Jobs didn't save:</b> this phone's space for them is full. Back up (My jobs → ⚙ Jobs settings), then delete finished jobs.", 9000);
   jbFull = !ok; if (ok && !noCount) try { localStorage.setItem("jpb-chg", String((+localStorage.getItem("jpb-chg") || 0) + 1)); } catch(e){}
   IDX = null; try { homeDraw(); } catch(e){} };
 const jbBytes = () => { try { return (localStorage.getItem("jpb-jobs") || "").length; } catch(e){ return 0; } };
@@ -48,7 +48,7 @@ const jbNice = s => { const x = new Date(s + "T12:00:00"); return !s || isNaN(x)
 const jbHr = x => (Math.round(x * 100) / 100).toLocaleString();
 const jbCur = () => jbD.jobs.find(j => j.id === JB.open);
 const jbName = j => (j.name || "").trim() || (j.a || "").trim() || "New job";   /* the job's name, else its address */
-const jbNext = j => j.insp.filter(i => i.r === "booked").sort((a, b) => a.d < b.d ? -1 : 1)[0];
+const jbNext = j => j.insp.filter(i => i.r === "booked" && (!i.s || jbStages(j).some(([k]) => k === i.s))).sort((a, b) => a.d < b.d ? -1 : 1)[0];
 const jbShort = ts => new Date(ts).toLocaleDateString(undefined, {month: "short", day: "numeric"});
 const jbDays = iso => Math.max(0, Math.round((new Date(jbDay() + "T12:00:00") - new Date(iso + "T12:00:00")) / 864e5));
 const jbByDate = (a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : 0;
@@ -176,7 +176,7 @@ function jbCk(j, k){ const s = j.stages[k], dn = new Set(s.done), hide = new Set
   const PH = s.ph || {}; items.forEach(x => { if (PH[x.key]) x.ph = PH[x.key]; });
   return {items, total: items.length, done: items.filter(x => x.done).length, nd: items.filter(x => !x.done && x.nd).length}; }
 /* a job keeps the checklist it shows (order, words, checks, dates, photo links) when the starting list for that stage changes */
-function jbFreeze(x, k, list){ const s2 = x.stages[k]; if (!s2) return; const have = jbCk(x, k).items, ls = new Set(list), ph = {};
+function jbFreeze(x, k, list){ const s2 = x && x.stages && x.stages[k]; if (!s2 || !Array.isArray(s2.extra) || !Array.isArray(s2.done)) return; const have = jbCk(x, k).items, ls = new Set(list), ph = {};
   const ex = new Map(have.filter(y => !ls.has(y.t)).map(y => [y, Object.assign({id: jbId(), t: y.t, done: y.done, at: y.at}, y.nd ? {nd: y.nd} : {})])), key = y => ex.has(y) ? "x" + ex.get(y).id : "t" + y.t;
   have.forEach(y => { if (y.ph) ph[key(y)] = y.ph; });
   s2.extra = [...ex.values()]; s2.hide = list.filter(b => !have.some(y => y.t === b)); s2.done = have.filter(y => y.done && ls.has(y.t)).map(y => y.t);
@@ -209,7 +209,7 @@ const JN_TAG = /(^|[\s(])#([A-Za-z][\w-]*)/g;
 const jbTags = j => [...new Set(j.log.flatMap(e => [...e.b.matchAll(JN_TAG)].map(m => m[2].toLowerCase())))];
 const jbQs = j => j.log.filter(e => jnLive(j, e)).reduce((n, e) => n + (e.b.match(/^\s*\?\?/gm) || []).length, 0);
 const jnLive = (j, e) => !e.s || jbStages(j).some(([k]) => k === e.s);   /* a note on a removed stage isn't counted */
-const jbTasks = j => j.log.filter(e => jnLive(j, e)).reduce((n, e) => n + (e.b.match(/^\s*[-*] \[ \]/gm) || []).length, 0) + j.punch.filter(p => !p.done).length;   /* notes' boxes + open punch items */
+const jbTasks = j => j.log.filter(e => jnLive(j, e)).reduce((n, e) => n + (e.b.match(/^\s*[-*+] \[ \]/gm) || []).length, 0) + j.punch.filter(p => !p.done).length;   /* notes' boxes + open punch items */
 const jnSort = (a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : b.at - a.at;
 /* one line of note text → HTML. Order matters: code spans first (nothing inside them is touched), then a backslash
    escapes the next mark (\* \# \[ shows the mark itself), then links, bold, italic, highlight, strike, web links, phones, tags. */
@@ -305,10 +305,10 @@ const JN_CHEAT = [
   ["- [ ] call the super", "A checkbox. Tap it off when it's done; the job counts the open ones."],
   ["!! gas not tested yet", "A red heads-up line. For anything that can't be missed."],
   ["?? does the super want the vent through the roof or the side wall", "A blue open question. Tap it when you get the answer; the job counts the open ones (❓)."],
-  ["call inspector @tomorrow, final @Nov 20", "A purple date. @today, @tomorrow, @fri, @Nov 20, @11/20 all work, counted from the note's date. The next 7 days show on Home under My jobs."],
+  ["call inspector @tomorrow, final @Nov 20", "A purple date. @today, @tomorrow, @fri, @Nov 20, @11/20 all work, counted from the note's date. It shows in the job's Next up, and the next 7 days show on Home under Coming up."],
   ["PSI: 80\nWater heater: Rheem XG50T06EC36U1\nSerial: Q041912345", "Facts. A line like Label: value shows as a fact, and the job collects them all at the top (From your notes): pressure, serials, gate codes, model numbers."],
   ["#warranty #callback", "Tags. Each tag keeps its own color everywhere. Tap one to see every job with it."],
-  ["[[Sam]] [[ABC Homes]] [[Sunny Acres]] [[Lot 12]] [[Offset calculator]]", "Links. The color and icon say what it opens: 👤 a person, 🏗 a builder, 🏘 a subdivision, 🔧 another job, 📖 a card in the book. A gray ＋ means nothing has that name yet: tap it to make a person page."],
+  ["[[Sam]] [[ABC Homes]] [[Sunny Acres]] [[Lot 12]] [[Offset calculator]]", "Links. The color and icon say what it opens: 👤 a person, 🏗 a builder, 🏘 a subdivision, 🔧 another job, 📖 a card in the book. 🗑 means it's in Recently deleted: tap it to bring it back. A gray ＋ means nothing has that name yet: tap it to make a person page."],
   ["[[Sam|the lead]]", "A link that shows your own words."],
   ["# Top-out walk", "A heading. Two ## for a smaller one."],
   ["**bold** *italic* ==highlight== ~~done~~", "Bold, italic, highlighted, struck out."],
@@ -333,11 +333,11 @@ function jnHelpHtml(){
 const jnOwner = () => eCur() || (JB.person ? pById(JB.person) : jbCur());
 /* the notes guide: one fold that remembers open or shut (open by default for your first few notes), short lessons inside */
 const JN_ANAT = [   /* [color, the mark, an example line, what it is, where it shows up] */
-  ["task", "- [ ]", "- [ ] call the super", "A checkbox. Tap it when it's done.", "☐ count on the job's row and on Timeline · in <b>Open on active jobs</b> under the job list"],
+  ["task", "- [ ]", "- [ ] call the super", "A checkbox. Tap it when it's done.", "The job's <b>Next up</b> · ☐ count on the job's row · <b>Open on active jobs</b> at the top of the job list"],
   ["flag", "!!", "!! gas not tested yet", "A red heads-up line, so it can't be missed.", "Right there in the note, in red"],
-  ["q", "??", "?? vent through the roof or the wall", "A blue question. Tap it when you get the answer: it turns into ?✓.", "? count on the job's row · in <b>Open on active jobs</b>"],
+  ["q", "??", "?? vent through the roof or the wall", "A blue question. Tap it when you get the answer: it turns into ?✓.", "The job's <b>Next up</b> · ? count on the job's row · <b>Open on active jobs</b>"],
   ["prop", "Label: value", "PSI: 80", "A fact. The words before the colon are its name.", "The <b>From your notes</b> table near the top of the job. A newer note with the same label replaces the old value."],
-  ["date", "@", "inspection @fri", "A purple date, counted from the note's own date.", "The job's <b>Coming up</b> list · Home's <b>Coming up</b> (next 7 days)"],
+  ["date", "@", "inspection @fri", "A purple date, counted from the note's own date.", "The job's <b>Next up</b> and Quick view · Home's <b>Coming up</b> (next 7 days)"],
   ["tag", "#", "#warranty", "A colored tag. Same tag, same color, everywhere.", "The tag bar over the job list: tap a tag to see every job that has it"],
   ["link", "[[ ]]", "call [[Sam]]", "A link to a person, builder, subdivision, job or book card.", "Tap it to open that page. Their page lists the line under <b>Mentioned in job notes</b>"]];
 const JN_OOPS = [   /* [wrong, right, why] */
@@ -634,13 +634,13 @@ function jbStageHtml(j, k){
 
   <p class="card-h" data-fold="s-notes">Notes</p>
   ${jbRulesHtml()}
-  ${jnBlock(j, j.log.filter(e => e.s === k),"Gate code 1234. - [ ] call the super. !! gas not tested. [[Dave]] #warranty")}`;
+  ${jnBlock(j, j.log.filter(e => e.s === k),"- [ ] call the super. !! gas not tested. [[Sam]] #warranty")}`;
 }
 
 const jbActHtml = j => { const A = (j.act || []).slice().reverse(), n = JB.actAll ? A.length : 25;
   return `<p class="card-h" data-fold="proof">Proof: job report and activity log</p>
   <div class="jb-in"><p class="note">Every change is logged here with its time and can't be edited. The report is the whole job in one file: send it right away so the text or email stamps the time too.</p>
-  <div class="set-btns jb-reps">${jbStages(j).map(([k, name]) => { const ready = JF.rep && JF.rep.jid === j.id && (JF.rep.k || "") === k;
+  <div class="set-btns jb-reps">${[["", "Whole job"], ...jbStages(j)].map(([k, name]) => { const ready = JF.rep && JF.rep.jid === j.id && (JF.rep.k || "") === k;
     return `<button type="button" class="btn${k ? " ghost" : ""}" data-a="job-report" data-k="${k}">${ready ? "📤 Send " : "📄 "}${k ? JB_SNAME[k].replace(/ \(.*\)$/, "") : "Whole job"}</button>`; }).join("")}</div></div>
   ${A.length ? `<ol class="jb-act">${A.slice(0, n).map((e, i, L) => { const d = new Date(+e.at).toDateString(), day = !i || new Date(+L[i - 1].at).toDateString() !== d;
       return `${day ? `<li class="jb-aday">${esc(jbNice(jbDay(new Date(+e.at))))}</li>` : ""}<li><time>${esc(new Date(+e.at).toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"}))}</time> ${esc(e.t)}${e.s && JB_SNAME[e.s] ? ` <span class="jb-acts">· ${JB_SNAME[e.s]}</span>` : ""}</li>`; }).join("")}</ol>${A.length > n ? `<div class="jb-in"><button type="button" class="linkish" data-a="act-all">Show all ${A.length}</button></div>` : ""}`
@@ -825,6 +825,7 @@ function jbDraw(){
   bindPn(body);
   if (had) jbReseat();
   const cj = $("ck-jobs"); if (cj && window.jbCkJobs && typeof ckPh === "string") cj.innerHTML = window.jbCkJobs(ckPh);
+  const mj = $("mt-jobs"), ma = $("mt-ans"); if (mj && ma && window.jbHrsJobs) mj.innerHTML = window.jbHrsJobs(+ma.dataset.h || 0);
 }
 const jbTouch = o => { jbBump(o); jbSave(); jbDraw(); };
 const jbTop = () => { const c = $("jobs-card"); if (c) c.scrollIntoView({block: "start"}); };
@@ -972,7 +973,7 @@ B.addEventListener("click", e => {
   if (a === "ck-book" && st){ if (!jbAsk(`Go back to the book's list for ${JB_SNAME[JB.stage]} on new jobs? Jobs you already have keep what they show now.`)) return;
     jbTplSet(JB.stage, null); jbAct(j, `${JB_SNAME[JB.stage]} checklist: back to the book's list for new jobs`, JB.stage);
     JB.ckEdit = false; jbTouch(j); toast("Back to the book's list for new jobs.", 2200); return; }
-  if (a === "back"){ JB.allJobs = false; JB.rowEdit = null; JB.colOpen = false; jbBack(); return; }
+  if (a === "back"){ JB.allJobs = false; JB.rowEdit = null; JB.colOpen = false; JB.hrsBox = null; jbBack(); return; }
   if (t.dataset.ico != null){ const v = JB_ICONS.includes(t.dataset.ico) ? t.dataset.ico : "", en2 = eCur(), jj = jbCur();
     if (en2 && JB.ent.t === "sub"){ en2.icon = v; jbTouch(en2); } else if (jj){ jj.icon = v; jbTouch(jj); } return; }
   if (t.dataset.binr){ jbBinRestore(t.dataset.binr); return; }
@@ -1169,6 +1170,23 @@ document.addEventListener("click", e => { const b = e.target.closest("[data-ckjo
   if (JB_XTRA.includes(k) && !j.xs.includes(k)){ j.xs.push(k); jbAct(j, `+ Stage added: ${JB_SNAME[k]}`, k); jbBump(j); jbSave(); }
   jbGoJob(id, k); });
 
+/* other cards hand a job something (Time card hours, a Test log record): active jobs, pinned and latest first */
+const jbPickJobs = () => jbD.jobs.filter(j => j.st !== "done" && !jbArch(j)).sort((a, b) => (+!!b.pin - +!!a.pin) || jbLast(b) - jbLast(a));
+window.jbHrsJobs = h => { h = Math.round(+h * 100) / 100; if (!(h > 0 && h <= 24)) return ""; const J = jbPickJobs().slice(0, 4);
+  return J.length ? `<p class="note">Log ${jbHr(h)} hr on a job. You pick the date and stage there; it counts toward your license hours.</p><div class="jb-list">${J.map(j => `<button type="button" class="jb-row" data-hrsjob="${j.id}|${h}"><b>${jbIco(jbIcon(j))}${esc(jbName(j))} ›</b><span>${esc(JB_SNAME[jbStageNow(j)])} · ${jbHr(j.hrs.reduce((n, x) => n + (+x.h || 0), 0))} hr logged so far</span></button>`).join("")}</div>`
+    : `<p class="note">Add a job in Mine → Jobs to log these hours toward your license.</p>`; };
+document.addEventListener("click", e => { const b = e.target.closest("[data-hrsjob]"); if (!b) return; const [id, h] = b.dataset.hrsjob.split("|"); if (!jbD.jobs.some(j => j.id === id)) return;
+  JB.hrsBox = id; jbGoJob(id); const i = $("jhq-h"); if (i){ i.value = h; i.focus({preventScroll: true}); } });
+/* Test log → a job: the job whose name or address matches "Job / area" first */
+window.jbTestPick = (where, i) => { const w = String(where || "").trim().toLowerCase(), hit = j => !!w && [j.name, j.a].some(v => (v || "").trim().toLowerCase() === w || (w.length > 2 && (v || "").toLowerCase().includes(w)));
+  const J = jbPickJobs(), L = [...J.filter(hit), ...J.filter(j => !hit(j))].slice(0, 5);
+  return L.length ? `<p class="note">Add this test to a job's notes (it goes on the stage you're on, or Gas for a gas test):</p><div class="jb-list">${L.map(j => `<button type="button" class="jb-row" data-tljob="${j.id}|${i}"><b>${jbIco(jbIcon(j))}${esc(jbName(j))} ›</b><span>${esc(JB_SNAME[jbStageNow(j)])}</span></button>`).join("")}</div>`
+    : `<p class="note">No active jobs. Add one in Mine → Jobs.</p>`; };
+window.jbAddNote = (id, b, hint, d) => { const j = jbD.jobs.find(x => x.id === id); if (!j || !String(b).trim()) return "";
+  const k = hint && jbStages(j).some(([x]) => x === hint) ? hint : jbStageNow(j);
+  j.log.push({id: jbId(), d: /^\d{4}-\d{2}-\d{2}$/.test(d || "") ? d : jbDay(), at: Date.now(), b: String(b), s: k}); jbAct(j, "📝 Note added from the Test log", k); jbBump(j); jbSave();
+  if (JB.open === id) jbDraw(); return `${jbName(j)} · ${JB_SNAME[k].replace(/ \(.*\)$/, "")}`; };
+
 /* Home: MY JOBS box (homeDraw calls this) */
 window.jobsHome = () => {
   const open = jbD.jobs.filter(j => j.st === "open" && !jbArch(j)).sort((a, b) => (b.pin - a.pin) || b.t - a.t).slice(0, 3), H = jbHours();
@@ -1325,7 +1343,7 @@ async function jfProof(file, link){
   const inp = $("jf-proof"); if (inp) inp.value = ""; jbReseat();
 }
 async function jfAdd(files, photos){
-  const j = jbCur(); if (!j || !files.length) return;
+  const j = jbCur(); if (!j || !files.length) return; const stg = jfStage();   /* fixed now: saving takes a moment, and you may open another stage meanwhile */
   try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}   /* ask the phone not to clear them */
   toast(`Saving ${files.length}…`, 9000);
   let n = 0, bad = 0;
@@ -1333,11 +1351,11 @@ async function jfAdd(files, photos){
     try {
       const img = photos && /^image\//.test(f.type); let blob = f, thumb = "", type = f.type || "application/octet-stream";
       if (img){ try { const x = await jfImg(f); blob = x.big; thumb = x.thumb; type = "image/jpeg"; } catch(e){} }
-      await jfPut(Object.assign({id: jbId(), job: j.id, kind: img ? "photo" : "file", name: f.name || (img ? "photo.jpg" : "file"), type, blob, thumb, note: "", t: Date.now()}, img ? {s: jfStage()} : {})); n++;
+      await jfPut(Object.assign({id: jbId(), job: j.id, kind: img ? "photo" : "file", name: f.name || (img ? "photo.jpg" : "file"), type, blob, thumb, note: "", t: Date.now()}, img ? {s: stg} : {})); n++;
     } catch(e){ bad++; }
   }
   toast(bad ? `Saved ${n}. ${bad} couldn't be saved: the phone may be out of space.` : `Saved ${n}.`, 2400);
-  if (n) jbAct(j, `🖼 Added ${n} ${photos ? "photo" : "file"}${n === 1 ? "" : "s"}`, photos ? jfStage() : undefined);
+  if (n) jbAct(j, `🖼 Added ${n} ${photos ? "photo" : "file"}${n === 1 ? "" : "s"}`, photos ? stg : undefined);
   jbBump(j); jbSave(); jfDraw(j.id); jbReseat();
   const inp = $(photos ? "jf-ph" : "jf-fi"); if (inp) inp.value = "";
 }
@@ -1462,7 +1480,11 @@ async function jfView(id){
   $("jf-title").textContent = f.proof ? "📍 Proof photo · " + jbShort(+f.proof.at) : f.kind === "photo" ? "Photo · " + jbShort(f.t) : f.name;
   $("jf-dlg-body").innerHTML = f.kind === "photo" ? `<img src="${JF.url}" alt="${f.proof ? "Proof photo" : "Job photo"}">` : `<p class="jf-fname"><b>${esc(f.name)}</b><br>${jfMB(f.blob.size)}</p>`;
   $("jf-proofbox").innerHTML = jfProofHtml(f); $("jf-share").textContent = f.kind === "photo" ? "Save to Photos / send" : "Save / send file";
-  $("jf-note").value = f.note || ""; JF.noteWas = f.note || ""; JF.noteAct = null; $("jf-dlg").showModal();
+  $("jf-note").value = f.note || ""; JF.noteWas = f.note || ""; JF.noteAct = null;
+  const oj = jbD.jobs.find(x => x.id === f.job), sb = $("jf-stg");
+  if (sb) sb.innerHTML = !oj || f.kind !== "photo" ? "" : f.proof ? `<p class="note">Filed under <b>${esc(JB_SNAME[f.s] || "the job")}</b>. A proof photo stays on the stage it was stamped with.</p>`
+    : `<div class="calc"><label for="jf-s">Filed under<select id="jf-s">${[...jbStages(oj), ...(f.s && !jbStages(oj).some(([k]) => k === f.s) && JB_SNAME[f.s] ? [[f.s, JB_SNAME[f.s] + " (removed)"]] : [])].map(([k, nm]) => `<option value="${k}"${k === f.s ? " selected" : ""}>${esc(nm)}</option>`).join("")}</select></label></div>`;
+  $("jf-dlg").showModal();
 }
 /* a description change goes in the job's activity log as it saves: one entry per time the photo is open, holding the latest words */
 function jfNoteLog(c){ if (!c || (c.note || "") === (JF.noteWas || "")) return; const oj = jbD.jobs.find(x => x.id === c.job); if (!oj) return;
@@ -1470,6 +1492,10 @@ function jfNoteLog(c){ if (!c || (c.note || "") === (JF.noteWas || "")) return; 
   if (JF.noteAct && (oj.act || []).includes(JF.noteAct)) JF.noteAct.t = t; else { jbAct(oj, t, c.s); JF.noteAct = oj.act[oj.act.length - 1]; } jbSave(); }
 $("jf-note").addEventListener("input", () => { const c = JF.cur; if (!c) return; if (JF.card){ JF.card = null; const cb = $("jf-card"); if (cb) cb.textContent = "Save proof card"; } c.note = $("jf-note").value; c.ed = Date.now(); clearTimeout(jfNT); jfNT = setTimeout(() => { jfPut(c).catch(() => {}); jfNoteLog(c); }, 400); });
 $("jf-close").addEventListener("click", () => $("jf-dlg").close());
+$("jf-dlg").addEventListener("change", e => { const c = JF.cur; if (!c || e.target.id !== "jf-s" || !JB_SNAME[e.target.value] || e.target.value === c.s) return;
+  const oj = jbD.jobs.find(x => x.id === c.job), was = c.s; c.s = e.target.value; c.ed = Date.now(); jfPut(c).catch(() => {}); jbReseat();
+  if (oj){ jbAct(oj, `🖼 Photo moved from ${JB_SNAME[was] || "no stage"} to ${JB_SNAME[c.s]}`, c.s); jbBump(oj); jbSave(); }
+  toast(`Moved to ${JB_SNAME[c.s]}.`, 1600); });
 $("jf-dlg").addEventListener("close", () => { const c = JF.cur; JF.cur = null; clearTimeout(jfNT); jbReseat(); jfNoteLog(c);   /* closed before the save timer ran */
   if (c) jfPut(c).catch(() => {}).then(() => { if (JB.open === c.job) jfDraw(c.job); }); });
 $("jf-open").addEventListener("click", () => { if (!JF.url) return; const a = document.createElement("a"); a.href = JF.url; a.target = "_blank"; a.rel = "noopener"; document.body.appendChild(a); a.click(); a.remove(); });
@@ -1596,11 +1622,11 @@ async function jbRestoreAll(file, sayId, merge){
       if (!jbAsk(`Merge the backup${when} into this phone? It has ${no} job${no === 1 ? "" : "s"}${photos ? ` and ${photos} photos & files` : ""}. For each job, person and note, whichever copy was changed last wins. Nothing new here gets wiped.`)){ clear(); return; }
       try { await SNAP.put("undo"); } catch(e){}
       const np = z && photos ? await jfRestoreZ(z, true) : 0, r = o ? jbMerge(o) : {add: 0, upd: 0};
-      jbSave(); jbDraw();
-      jfSay(`Merged: ${r.add} new, ${r.upd} updated${np ? `, ${np} photos & files` : ""}. Undo it from Settings → Backup → Safety copies if it isn't right.`, "good"); clear(); return; }
+      jbSave(); jbDraw(); try { if (typeof ckDraw === "function") ckDraw(); } catch(e){}
+      jfSay(`Merged: ${r.add} new, ${r.upd} updated${np ? `, ${np} photos & files` : ""}. Undo it from Settings → Backup & reset → Safety copies if it isn't right.`, "good"); clear(); return; }
     if (!jbAsk(keys.length ? `Replace everything on this phone with the backup${when}? It has ${n} job${n === 1 ? "" : "s"}${photos ? ` and ${photos} photos & files` : ""}. Anything added since then will be gone.`
       : `Add the ${photos} photos & files from this backup?`)){ const r = $("jb-restore"); if (r) r.value = ""; return; }
-    if (keys.length) try { await SNAP.put("undo"); } catch(e){}   /* so this restore can be undone: Settings → Backup → Safety copies */
+    if (keys.length) try { await SNAP.put("undo"); } catch(e){}   /* so this restore can be undone: Settings → Backup &amp; reset → Safety copies */
     if (z && photos) await jfRestoreZ(z);
     if (keys.length){ bkApply(d); jfSay("Restored. Reloading…", "good"); setTimeout(() => location.reload(), 900); }
     else { jfSay(`Restored ${photos} photos & files.`, "good"); jfUse(); }
@@ -1652,8 +1678,12 @@ function jbMerge(o){
         A(other[k]).forEach(e => { const c = L.get(e.id); if (!c || when(e) > when(c)) L.set(e.id, cl(e)); }); keep[k] = [...L.values()]; });
       m.set(y.id, keep); });
     return [...m.values()]; };
-  const outP = new Map(); [...jbD.jobs, ...A(o.jobs)].forEach(x => (Array.isArray(x.pplOut) ? x.pplOut : []).forEach(id => { if (!outP.has(x.id)) outP.set(x.id, new Set()); outP.get(x.id).add(String(id)); }));
-  jbD.jobs = byId(jbD.jobs, o.jobs, ["log", "insp", "hrs", "punch", "ppl", "act"]);
+  const inc = A(o.jobs).map(cl), theirT = isO(o.tpl) ? o.tpl : {};
+  JB_STG.forEach(([k]) => { if (!window.jbTplMine(k) && Array.isArray(theirT[k]) && theirT[k].length) jbTplSet(k, theirT[k]); });
+  { const keep = jbD.tpl; JB_STG.forEach(([k]) => { const T = Array.isArray(theirT[k]) && theirT[k].length ? theirT[k].map(x => String(x).trim()).filter(Boolean) : JB_TPL[k](), M = jbTpl(k);
+      if (JSON.stringify(T) === JSON.stringify(M)) return; jbD.tpl = Object.assign({}, keep, {[k]: T}); inc.forEach(x => jbFreeze(x, k, M)); jbD.tpl = keep; }); }
+  const outP = new Map(); [...jbD.jobs, ...inc].forEach(x => (Array.isArray(x.pplOut) ? x.pplOut : []).forEach(id => { if (!outP.has(x.id)) outP.set(x.id, new Set()); outP.get(x.id).add(String(id)); }));
+  jbD.jobs = byId(jbD.jobs, inc, ["log", "insp", "hrs", "punch", "ppl", "act"]);
   jbD.jobs.forEach(x => { const s = outP.get(x.id); if (s){ x.pplOut = [...s]; x.ppl = (x.ppl || []).filter(p => !s.has(p.id)); } });   /* taken off on either phone: stays off */
   jbD.people = byId(jbD.people, o.people, ["log"]); jbD.builders = byId(jbD.builders, o.builders, ["log"]); jbD.subs = byId(jbD.subs, o.subs, ["log"]);
   jbBinOut(Array.isArray(o.binOut) ? o.binOut.filter(x => typeof x === "string") : []);   /* restored or emptied on either phone: done */
@@ -1667,7 +1697,7 @@ function jbMerge(o){
     else if (["punch", "insp", "hrs"].includes(b.kind)){ const ow = jbD.jobs.find(x => x.id === b.jid); if (ow && Array.isArray(ow[b.kind])) ow[b.kind] = ow[b.kind].filter(e => !(e.id === b.item.id && when(e) <= b.at)); } });
   if (!jbTech() && o.tech && typeof o.tech === "object") jbD.tech = o.tech;   /* this phone's technician wins */
   if (!String(jbD.rules || "").trim() && typeof o.rules === "string") jbD.rules = o.rules;   /* rules here win; an empty phone takes the backup's */
-  ["fold", "tagCol", "stageCol", "tpl"].forEach(k => { if (isO(o[k])) jbD[k] = Object.assign({}, o[k], isO(jbD[k]) ? jbD[k] : {}); });
+  ["fold", "tagCol", "stageCol"].forEach(k => { if (isO(o[k])) jbD[k] = Object.assign({}, o[k], isO(jbD[k]) ? jbD[k] : {}); });
   if (!jbD.goal && o.goal) jbD.goal = o.goal; if (!+jbD.before && +o.before) jbD.before = o.before;
   jbClean(); jbD.jobs.forEach(jbFix);
   jbD.jobs.forEach(j => { if (!Array.isArray(j.xs)) j.xs = []; });
@@ -1736,7 +1766,8 @@ const jbBinHtml = () => !jbD.bin.length ? "" : `<details class="explain"><summar
   <div class="set-btns jb-top"><button type="button" class="del" data-a="bin-empty">Empty now</button></div></div></details>`;
 
 jbApplyColors();
-try { if (typeof ckDraw === "function") ckDraw(); } catch(e){}   /* Inspect's checklist now reads the shared lists */
+try { if (typeof ckDraw === "function") ckDraw(); } catch(e){}
+try { const mj = $("mt-jobs"), ma = $("mt-ans"); if (mj && ma) mj.innerHTML = window.jbHrsJobs(+ma.dataset.h || 0); if (typeof tlDraw === "function") tlDraw(); } catch(e){}   /* Time card and Test log can hand things to jobs now */   /* Inspect's checklist now reads the shared lists */
 jbBinPurge(false);   /* past 30 days: gone for good */
 jbDraw(); try { homeDraw(); } catch(e){}
 } catch(e){ const b = document.getElementById("jb-body"); if (b){ b.innerHTML = '<p class="note flag">My jobs hit an error: ' + String(e && e.message || e).replace(/</g, "&lt;") + '. Your jobs are still saved on this phone. Download them so they\'re safe, then send the file and this message to Deklan.</p><div class="set-btns jb-top"><button type="button" class="btn" id="jb-rescue">Download my jobs data</button></div>';
