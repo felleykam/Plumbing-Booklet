@@ -14,8 +14,11 @@ An offline jobsite reference for **Utah residential new-construction plumbing**:
 4. Readable on a jobsite (hi-vis safety yellow/black is the default look, with big tap targets).
 
 ## Accuracy rules (most important)
-- **Code base: 2021 IPC + Utah amendments** (Utah Code Title 15A) for residential work, since that's what the owner's work runs under. When 2024 IPC or another edition differs and matters, label it clearly as a different edition. Never mix them up silently.
-- Before changing code content, **check Utah's current adoption status**. The app says Utah code law changes Jan 1, 2027, so recheck that date and what changes before trusting either edition.
+- **Which code applies (verified Nov 2026 from Utah Code 15A-2-103, effective 7/1/2026):**
+  - **Houses (one- and two-family, townhouses): 2021 IRC** plumbing, gas and mechanical chapters, plus Utah's amendments in Utah Code Title 15A ch. 3 (15A-3-2xx). This is the main code for the owner's residential new-construction work.
+  - **Everything else (commercial, multifamily beyond IRC scope): 2024 IPC, 2024 IMC, 2024 IFGC.**
+  - **2021 IPC**: older permits, plus the owner's MTECH schooling. Keep the "Code I work under" setting (2021 IPC / 2021 IRC / 2024 IPC) and label every code card with its edition. Never mix editions silently.
+  - The Jan 1, 2027 change (HB 41, 2026) only swaps the wildfire code (2006 Utah WUI → 2024 IWUIC). Houses stay on the 2021 IRC. Recheck 15A-2-103 at le.utah.gov before any code work in case later bills change it.
 - **Every fact needs a source and a checked date.** That covers code sections, sizing tables, phone numbers, addresses, city and utility info, product specs, and license rules. Show it on the card (for example "IPC 2021 §P3005.4.2 · checked Nov 2026") and use primary sources: ICC, Utah Legislature, DOPL, city or utility sites, and manufacturer pages.
 - **If you can't verify something from a primary source, leave it out and tell the owner** in your report, so he can ask a journeyman or an inspector. Never guess to fill a gap, and never write something because it "fits."
 - **Calculators:** when you touch any calculator, check its math against hand-worked examples, and say what you checked. A wrong offset, grade or sizing answer costs real money on a job.
@@ -25,7 +28,7 @@ An offline jobsite reference for **Utah residential new-construction plumbing**:
 ## Units and input
 - Measurements run in **inches with tape-style input**: in a length box a plain number means inches, and `'` means feet (`5'6`, `66`).
 - **Exception (since build Nov 15):** a box whose label explicitly asks for **feet** (a run, height or length in ft, such as the gas sizer or pressure-at-far-fixture) takes a plain number as feet, and `"` marks inches. Keep this behavior consistent, and make the box label say which unit it expects.
-- Fractions follow the user's setting (default 1/16).
+- **Answers show the nearest ⅛" by default**, because that's how most plumbers read a tape. The user can pick 1/16" or 1/32" in Settings → Behavior. Round only the answer that's displayed, never the math in between. When rounding to ⅛" could hide something that matters (like a total drop on a short run), show the finer value or a note.
 
 ## How the code is laid out
 - `index.html`: almost the whole app (about 11k lines). Cards are `<section data-sec="...">` and belong to pages listed in `const GROUPS` (tabs: home, calc, rough=Build, mech=Service, trim, inspect, contacts, site=Jobsite, learn, mine). Search keywords live in `data-kw`.
