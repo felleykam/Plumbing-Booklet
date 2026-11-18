@@ -384,6 +384,10 @@ details.math li::marker{font-weight:700;color:var(--muted)}
 #cl-rows .x-del,.t .x-del,.tk .x-del{appearance:none;width:48px;height:48px;border:var(--bw) solid var(--ctl);border-radius:var(--r);background:var(--sheet);color:var(--danger);font-size:18px;font-weight:800;cursor:pointer}
 .flag.ok-flag{background:var(--zebra);border-left-color:var(--ok)}
 #wx-flags .flag:first-child{border-top:0}
+.wx-startrow{padding-top:0}.wx-startrow label{max-width:220px}
+.wx-links{flex-wrap:wrap}.wx-links a{display:inline-flex;align-items:center;min-height:44px}
+.jb-wxb{font-weight:800}
+.jb-wxl{display:block;text-align:left;margin:4px 12px 2px;min-height:40px;font-size:14px}
 .flag.warn-flag{background:var(--zebra);border-left-color:var(--caution)}
 /* ===== weather ===== */
 .wx-loc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px 0}
@@ -3089,6 +3093,19 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Cold</th><td>Cure time stretches a lot below 40°F (see the CPVC table; ABS and PVC makers publish their own charts). Keep cans in the cab. Never warm cement or pipe with a flame: the vapor is very flammable. Below about 50°F cold plastic cracks under ratchet cutters: use a wheel or saw.</td></tr>
         <tr><th>Utah County</th><td>Design temps run 13°F to 95°F, so you'll hit both ends in one year. <b>Jobsite → Weather</b> flags glue days.</td></tr>
       </tbody></table></div>
+    <p class="card-h">Oatey cure times, PVC &amp; ABS (before a pressure test)</p>
+    <div class="x"><table class="t num"><thead><tr><th>Pipe</th><th>Test psi</th><th>60–100°F</th><th>40–60°F</th><th>20–40°F</th></tr></thead>
+      <tbody>
+        <tr><td>½–1¼"</td><td>Up to 180</td><td>15 min</td><td>20 min</td><td>30 min</td></tr>
+        <tr><td></td><td>180+</td><td>4 hr</td><td>8 hr</td><td>36 hr</td></tr>
+        <tr><td>1½–3"</td><td>Up to 180</td><td>30 min</td><td>45 min</td><td>1 hr</td></tr>
+        <tr><td></td><td>180+</td><td>8 hr</td><td>16 hr</td><td>3 days</td></tr>
+        <tr><td>4–5"</td><td>Up to 180</td><td>2 hr</td><td>4 hr</td><td>36 hr</td></tr>
+        <tr><td></td><td>180+</td><td>12 hr</td><td>24 hr</td><td>4 days</td></tr>
+        <tr><td>6–8"</td><td>Up to 180</td><td>8 hr</td><td>16 hr</td><td>3 days</td></tr>
+        <tr><td></td><td>180+</td><td>24 hr</td><td>48 hr</td><td>9 days</td></tr>
+      </tbody></table></div>
+    <p class="note">The temperature is during assembly <i>and</i> cure. For 60% humidity or less; damp or humid weather needs more (Oatey's product sheets say 50% more). 0–20°F, over 8", repairs and cut-ins: call Oatey Technical Services. Oatey says not to test PVC or CPVC with compressed air or gas. Source: Oatey, "How long does PVC glue take to dry?" (Aug 2026) and Oatey's cement spec sheet · checked Nov 2026.</p>
   </section>
   <section data-sec="materials" data-kw="copper solder flux lead free">
     <div class="sec-head"><h2>Copper &amp; solder</h2><small>Safe Drinking Water Act</small></div>
@@ -4680,11 +4697,12 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
 
   <!-- ================= SITE ================= -->
-  <section data-sec="wxnow" data-kw="weather now plan the day work window daylight sunset tonight low tomorrow morning wind chill frostbite thunder lightning storm freezing rain ice fog ground frost current temperature wind location gps jobsite live measured station feels like humidity dew point pressure alerts warning jobsite calls flags freeze water test glue cement cure wind ladder roof rain snow vent heat uv air quality inversion trench work today air quality aqi pm2.5 pm10 ozone inversion smoke dust respirator hourly next 24 hours chart temperature freeze line rain chance wind gust timeline 7 day week forecast daily high low rain snow wind nws national weather service text forecast tonight tomorrow weather forecast">
+  <section data-sec="wxnow" data-kw="weather now best day this week start time first light radar udot road cameras air test vacuum test gauge drop pex air test temperature today's job plan the day work window daylight sunset tonight low tomorrow morning wind chill frostbite thunder lightning storm freezing rain ice fog ground frost current temperature wind location gps jobsite live measured station feels like humidity dew point pressure alerts warning jobsite calls flags freeze water test glue cement cure wind ladder roof rain snow vent heat uv air quality inversion trench work today air quality aqi pm2.5 pm10 ozone inversion smoke dust respirator hourly next 24 hours chart temperature freeze line rain chance wind gust timeline 7 day week forecast daily high low rain snow wind nws national weather service text forecast tonight tomorrow weather forecast">
     <div class="sec-head"><h2>Weather</h2><small id="wx-clock">—</small></div>
     <div class="wx-loc">
       <div class="wx-place"><b id="wx-place">—</b><div class="sub" id="wx-placesub">Pick your jobsite</div></div>
       <button type="button" class="btn" id="wx-gps"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/></svg>My location</button>
+      <button type="button" class="btn" id="wx-job" hidden>📋 Today's job</button>
     </div>
     <div class="calc wx-searchrow">
       <label for="wx-search">Or search a town<input id="wx-search" type="search" placeholder="Herriman, Eagle Mountain, Heber…" autocomplete="off" enterkeyhint="search"></label>
@@ -4695,7 +4713,26 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div id="wx-flags"><p class="flag ok-flag">Waiting for the forecast…</p></div>
     <p class="card-h">Plan the day</p>
     <div class="x"><table class="t out"><tbody id="wx-plan"><tr><td class="sub">Loading…</td></tr></tbody></table></div>
-    <div class="wx-hero" id="wx-hero"><div class="sub">Loading the forecast…</div></div>
+    <div class="calc wx-startrow"><label for="wx-start">My start time<select id="wx-start"><option value="6">6:00 AM</option><option value="6.5">6:30 AM</option><option value="7">7:00 AM</option><option value="7.5">7:30 AM</option><option value="8">8:00 AM</option><option value="8.5">8:30 AM</option></select></label></div>
+    <p class="card-h">Best day this week</p>
+    <div class="x"><table class="t out"><tbody id="wx-best"><tr><td class="sub">Waiting for the 7-day forecast…</td></tr></tbody></table></div>
+    <p class="note">The app's picks from the forecast, not code: dry and above freezing for underground; the smallest afternoon-to-morning temperature drop for air and vacuum tests; the warmest dry day for glue-ups (Oatey's cure bands); the calmest dry day for roof and vent work.</p>
+    <details class="more fold"><summary>7 days</summary>
+    <div class="x"><table class="t num"><thead><tr><th>Day</th><th>Low / High</th><th>Rain</th><th>Gusts</th><th>Sky</th></tr></thead><tbody id="wx-days"></tbody></table></div>
+    </details>
+    <details class="more fold"><summary>More readings</summary>
+    <div class="x"><table class="t out"><tbody id="wx-now"></tbody></table></div>
+    </details>
+    <details class="more fold" id="wx-drift-fold"><summary>Air or vacuum test: will the weather move the gauge?</summary>
+    <div class="calc">
+      <label for="wx-dt">Test<select id="wx-dt"><option value="air">Air on PEX (psi)</option><option value="vac">Vacuum on DWV (inches of mercury)</option></select></label>
+      <label for="wx-dp">Gauge reading when you set it<input id="wx-dp" type="number" inputmode="decimal" min="0" step="any" placeholder="psi"></label>
+      <label for="wx-d0">Set it<select id="wx-d0"></select></label>
+      <label for="wx-d1">Read it<select id="wx-d1"></select></label>
+    </div>
+    <div class="x"><table class="t out"><tbody id="wx-drift"><tr><td class="sub">Enter the gauge reading.</td></tr></tbody></table></div>
+    <p class="note">Sealed air follows the temperature: cooler air reads lower, warmer air reads higher, with no leak at all. This assumes the pipe gets as warm or as cold as the outside air (true in unheated framing, less so once the house is closed in and heated), and it ignores the pipe stretching, so treat it as a rough size of the change. Pressure is figured from absolute pressure, using the air pressure at this spot's elevation. <b>Code:</b> the 2021 IRC allows air on PEX only where the PEX pipe and fitting makers' instructions allow it (P2503.7 exception); it doesn't list a positive air test for plastic DWV, but it does allow a vacuum test on plastic DWV (P2503.5.1, new in 2021). Utah's amendments don't change either section. Checked Nov 2026.</p>
+    </details>    <div class="wx-hero" id="wx-hero"><div class="sub">Loading the forecast…</div></div>
     <p class="card-h">Next 24 hours · <span id="wx-freeze-sum">—</span></p>
     <svg id="wx-chart" viewBox="0 0 400 210" role="img" aria-label="Line chart of the next 24 hours of temperature with a 32°F freezing line, and bars for chance of rain."></svg>
     <p class="card-h">Air quality · <span id="wx-air-age">—</span></p>
@@ -4703,12 +4740,8 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <details class="more fold"><summary>Hour by hour</summary>
     <div class="x"><table class="t num"><thead><tr><th>Time</th><th>Temp</th><th>Feels</th><th>Rain</th><th>Wind</th><th>Sky</th></tr></thead><tbody id="wx-hours"></tbody></table></div>
     </details>
-    <details class="more fold"><summary>7 days</summary>
-    <div class="x"><table class="t num"><thead><tr><th>Day</th><th>Low / High</th><th>Rain</th><th>Gusts</th><th>Sky</th></tr></thead><tbody id="wx-days"></tbody></table></div>
-    </details>
-    <details class="more fold"><summary>More readings</summary>
-    <div class="x"><table class="t out"><tbody id="wx-now"></tbody></table></div>
-    </details>
+    <p class="card-h">Radar &amp; official</p>
+    <div class="chips wx-links" id="wx-links"><a href="https://radar.weather.gov/" target="_blank" rel="noopener">NWS radar ↗</a><a id="wx-nwslink" href="https://forecast.weather.gov/" target="_blank" rel="noopener">NWS forecast for this spot ↗</a><a href="https://www.weather.gov/slc/" target="_blank" rel="noopener">NWS Salt Lake City office ↗</a><a href="https://air.utah.gov/" target="_blank" rel="noopener">Utah air quality (DAQ) ↗</a><a href="https://udottraffic.utah.gov/" target="_blank" rel="noopener">UDOT roads &amp; cameras ↗</a></div>
     <p class="note" id="wx-status">Waiting for the forecast…</p>
     <p class="note">Air quality is a model estimate (about 45 km grid); for an official reading check the Utah DAQ site. Wasatch Front winter inversions trap PM2.5.</p>
   </section>
@@ -5357,6 +5390,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 18, 2026 · Weather</th><td><b>Follows today's job:</b> Jobsite → Weather opens on your pinned job's town (else the job you changed last). Pick My location or a town and it holds for the day; the next morning it goes back to today's job. <b>Weather on your jobs:</b> active jobs show ❄ freeze, 🌧 rain, 💨 gusts and ⚡ storm badges for today and tomorrow, and each job page has a weather line that opens the forecast for that town (updated at most hourly). <b>Best day this week</b> for underground, air and vacuum tests, glue-ups and roof work. <b>Start time:</b> set yours (7:00 AM to start); Plan the day shows first light and sunrise against it. <b>Air or vacuum test drift:</b> enter the gauge reading and when you set and read it, and it shows how far the weather alone moves the gauge, figured for this spot's elevation; a 20°F+ drop now gets its own flag. <b>Glue-ups:</b> the flag and Build → Materials → Cement in heat &amp; cold now use Oatey's cure chart. <b>Frost line:</b> Saratoga Springs and Eagle Mountain show 30" from each city's own design criteria. <b>Radar &amp; official links:</b> NWS radar, NWS forecast for this spot, NWS Salt Lake City, Utah DAQ air, UDOT roads and cameras.</td></tr>
         <tr><th>Nov 17, 2026 · Jobs stickler pass</th><td><b>Hours you can trust:</b> logging hours now blocks a future date, blocks more than 24 hr on one day across all your jobs, and asks before a date over a year back (license hours have to be real). <b>Underground checklist, sourced:</b> three lines now match the 2021 IRC: water service 12" deep and 6" below your city's frost depth (P2603.5), when water and sewer can share a trench (P2906.4.1), and the toilet flange goes by the toilet's rough-in (usually 12"), which is the maker's spec, not code. Jobs you already have keep their checks on those lines. <b>Deleted jobs' hours:</b> emptying Recently deleted now asks whether to keep a deleted job's hours toward your license or drop them (for a test or duplicate job). <b>Job reports:</b> every date shows its year, and notes read the way they look in the app (☐ ☑ ⚠, bold, names). <b>Small fixes:</b> Pass, Partial or Fail can't go on an inspection that hasn't happened yet; "Nail plates" and "nail plates" count as the same checklist item; Subdivisions breaks as SUB-DIVISIONS on small phones; the Jobs list's settings link is named Jobs settings; the "phone full" warning points to Settings → Backup &amp; reset like everywhere else.</td></tr>
         <tr><th>Nov 17, 2026 · late</th><td><b>Answers round to ⅛" by default:</b> most plumbers read a tape to the eighth, so calculator answers now show the nearest ⅛". Want finer? Settings → Behavior → <b>Round answers to</b> → 1/16" or 1/32". If you already picked a setting there, it stays as you set it. Only the shown answer is rounded; the math underneath is exact.</td></tr>
         <tr><th>Nov 17, 2026 · stickler pass</th><td><b>Hours from the Time card:</b> Calc → Math → Time card now lists your active jobs under the answer; tap one and it opens with <b>Log hours</b> filled in. <b>Tests on the job:</b> each test in Inspect → Test log has <b>📋 Add to a job</b>, which puts it in that job's notes (Gas for a gas test), dated and in the report. <b>Move a photo:</b> open a photo and pick the stage it's <b>Filed under</b> (proof photos stay on the stage they were stamped with). <b>Fixed:</b> merging another phone's backup could change the checklists on jobs you already had; now every job keeps exactly the list it showed. Photos added while you switched stages could land on the wrong stage. The Proof section's <b>Whole job</b> report button was missing. "+ [ ]" boxes in notes weren't counted as to-dos. A booked inspection on a removed stage still showed on the job's row. The Log hours box stayed open the next time you opened the job. The notes guide now says where dates, boxes and questions show up (Next up), and what a 🗑 link means. Settings → Backup &amp; reset points to Jobs settings for hours, rules and Recently deleted. <b>Easier on a phone:</b> checklist lines on a job use the full width, with ⊘ 📷 ✎ on a short row underneath, so they read in one or two lines instead of five. The job search box has its full width back (⚙ Jobs settings moved to the line under the filters). Tapping <b>Jobs</b> while you're on a job or in Jobs settings goes back to the job list, like any app's tab bar. The calculator keys + − × ÷ and % now say their names to VoiceOver. <b>A cleaner look in My jobs:</b> Jobs, People, Builders and Subdivisions sit in one row with their counts, and Active, Done, Archived and All are four even buttons. A job's Map, Call, Hours, Proof and Report are one row of icon buttons (Quick view matches). In Next up, boxes, heads-ups and questions show in the same colors as in your notes. People, builders and subdivisions open with a title like a job does. Home's Coming up, Open on active jobs and Mentioned in job notes are clean rows (job name in bold, a › on the right) instead of underlined links, and so are the hours, backup and Jobs settings lines at the bottom of the job list. Jobs settings' three boxes match. <b>Two new themes</b> (Settings → Look): <b>Neon Sign</b> (hot magenta and electric cyan) and <b>Glow Stick</b> (neon mint with a pink pop). The High contrast switch is now the <b>Sun glare switch</b>, since it jumps to the Max contrast theme and back. <b>Job page tidy-up:</b> punch list and checklist lines read full width on a phone; the stage's dates are a plain date line; inspection results are colored badges (✎ changes one); a stage's hours list comes first, with <b>+ Log hours</b> folded under it; the note box comes before the notes guide; the selected stage chip in Photos &amp; files is highlighted; Home's My jobs shows just the name, stage and what's next. <b>Fixed:</b> an empty "Preview" box showed under the note box before you typed; a blank new job you left without tapping Back stayed on Home and in the list. The Vent size and Mech room map explainers open with "Use it when" like the rest, and the longest two are shorter. <b>Breaker &amp; stress tested:</b> damaged saved data, bad backup files, navigation chaos, hostile text, 300 jobs with 6,000 notes, rapid taps, a full phone and 200 photos on one job. <b>Fixed from those:</b> Restore now refuses a file from another app or one whose job data is damaged (nothing changes), and if a backup has no jobs in it, it says the jobs on this phone will be removed before you confirm. With lots of jobs, the job list draws about 4× faster and Back is quicker. When the phone is full, the "Jobs didn't save" warning no longer gets covered by "Note added". Impossible dates like @feb 30 stay plain text instead of turning into March 2 (Feb 29 still works in a leap year). Two records with the same id after a bad merge get told apart. <b>Two more themes:</b> <b>Blacklight</b> (fluorescent yellow on UV purple) and <b>Patina</b> (copper and verdigris, like old pipe). <b>New tab icons:</b> Build is a pipe elbow and Mine is a toolbox. <b>Job colors:</b> the color dots stay round on an iPhone (they could look like ovals), and there are 5 more: coral, mint, plum, slate and charcoal (23 in all, for jobs, stages and tags). <b>And one silly one:</b> <b>Rubber Ducky 🦆</b>, duck yellow and bathwater blue with soap bubbles floating behind the cards. <b>And Chrome:</b> gunmetal black with polished-silver buttons that shine like a faucet handle, a reflective chrome band up top and icy-blue links. ABS comes before PVC in the last three spots that had it the other way.</td></tr>
@@ -9161,7 +9195,7 @@ const CITIES = [
   {id:"af", n:"American Fork", book:'<a href="https://americanfork.cityinspect.com/login" target="_blank" rel="noopener">City Inspect portal ↗</a> · city <span class="pn">801-763-3000</span>. ' + GAP("Booking steps not confirmed online: ask your super."), pi:"Likely. Ask the city.", h:"13 gpg", f:FROST_UC},
   {id:"al", n:"Alpine", book:'Inspection line <span class="pn">801-756-0208</span>. Office 801-756-6347, M–F 8–3.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_UC, notes:"Every structure needs a permit, whatever its size."},
   {id:"cf", n:"Cedar Fort", book:'Online request form on the town site, 2 full business days ahead. Not booked until the town confirms; nothing in 24 hr, call <span class="pn">801-768-2147</span> x5.', pi:"Ask the town.", h:GAP("Not confirmed: test it."), f:FROST_UC, notes:"Septic and water connection are their own inspections."},
-  {id:"em", n:"Eagle Mountain", book:"Email buildinginspections@eaglemountain.gov with the permit number. No confirmation email back = not on the schedule. First come, first served.", pi:"Yes. Separate trench from the water service (no sharing).", h:GAP("Not confirmed: test it."), f:FROST_UC,
+  {id:"em", n:"Eagle Mountain", book:"Email buildinginspections@eaglemountain.gov with the permit number. No confirmation email back = not on the schedule. First come, first served.", pi:"Yes. Separate trench from the water service (no sharing).", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Eagle Mountain Building Design Criteria, rev. 7/2026 · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"",
     notes:"Order: underground → 4-way → frost-protection insulation → final. Final needs the meter set: lid at grade, setter 20\" ±2\" below the lid, nothing within 5 ft; $50 re-final if not."},
   {id:"hi", n:"Highland", book:'<a href="https://highland.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-772-4516</span>. Scheduled Mon–Thu 8–5; office closed Fridays.', pi:"Ask the city.", h:"11.4 gpg", f:FROST_UC, notes:"Underground plumbing and the sewer connection are separate inspections."},
   {id:"le", n:"Lehi", book:'<span class="pn">385-201-1035</span> Phone only: no voicemail, email or online booking. 24 hr notice.', pi:"Yes. One culinary and one PI connection per lot; connections off by Oct 15.", h:"≈9 gpg", f:"30\" (the city lists it), so service ≈36\".",
@@ -9173,7 +9207,7 @@ const CITIES = [
   {id:"vi", n:"Vineyard", book:'<a href="https://vineyard.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-226-1929</span>. Voicemail requests not honored; no same-day.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_UC},
   {id:"pr", n:"Provo", book:'<a href="https://www.provo.gov/1019/Schedule-Building-Inspection" target="_blank" rel="noopener">Schedule online ↗</a> through the city\'s self-service portal.', pi:"Ask the city.", h:"10–15 gpg", f:"30\" design (Provo design criteria), so service ≈36\".",
     notes:"Keep house pressure under 75 psi (city water report). Design temps 13°F winter, 95°F summer; elevation 4,491 ft."},
-  {id:"ss", n:"Saratoga Springs", book:'Email buildinginspectionrequest@saratogasprings-ut.gov or <span class="pn">801-766-6507</span> x120. One business day ahead: by 5 pm Mon–Thu, 4 pm Fri.', pi:"Yes. Green box near the property line, usually a 1\" ball valve. Drained the week of Oct 15.", h:"5.6 gpg", f:FROST_UC,
+  {id:"ss", n:"Saratoga Springs", book:'Email buildinginspectionrequest@saratogasprings-ut.gov or <span class="pn">801-766-6507</span> x120. One business day ahead: by 5 pm Mon–Thu, 4 pm Fri.', pi:"Yes. Green box near the property line, usually a 1\" ball valve. Drained the week of Oct 15.", h:"5.6 gpg", f:"Frost line 30\" (Saratoga Springs Design Criteria page · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"",
     notes:"No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test)."},
   {id:"sf", n:"Spanish Fork", book:'<a href="https://www.spanishfork.gov/living-in-our-community/building/building-permits-inspections/" target="_blank" rel="noopener">CitizenServe portal ↗</a>, 24 hr ahead. Help: <span class="pn">801-804-4540</span>', pi:"Yes.", h:GAP("Not confirmed: test it."), f:FROST_UC,
     notes:"Ready by 8 am the day of, or a $93 re-inspection fee. Underground plumbing and laterals inspected before cover, with the gas test. Rough plumbing on the 4-way; shower pan with framing."},
@@ -10876,8 +10910,10 @@ const WX = (() => {
       const till = fz.end ? ` to ${fmtH(fz.end)}` : " for the next day+";
       out.push(["danger", `${when}${till} (low ${r0(fz.low)}°F)`, `${fz.now ? "Water tests outside the heated space can freeze now." : `Drain water tests by about ${fmtH(new Date(fz.start.getTime() - 3600e3))} or switch to the vacuum test (2021 IRC).`} Cap and wrap exposed stub-outs; no water left in test caps or hose bibbs.${fz.low <= 20 ? " Hard freeze: heaters and lines in unheated garages and crawlspaces are at risk." : ""}`]);
     }
+    { const n18 = hs.slice(0, 18), hiA = n18.reduce((m, x) => x.temp > m.temp ? x : m, n18[0] || {temp: 0}), loA = n18.slice(n18.indexOf(hiA)).reduce((m, x) => x.temp < m.temp ? x : m, hiA);
+      if (hiA && loA && hiA.temp - loA.temp >= 20) out.push(["warn", `Air tests: ${r0(hiA.temp - loA.temp)}°F drop from ${fmtH(hiA.t)} to ${fmtH(loA.t)}`, "Sealed air reads lower as it cools, with no leak. Set the test after the drop or right before the inspector, or figure the drift: Weather → Air or vacuum test."]); }
     const minT = Math.min(...hs.slice(0, 10).map(x => x.temp)), rh = c.relative_humidity_2m;
-    if (minT < 45 || rh >= 80) out.push(["warn", minT < 45 ? `Cold glue-ups (${r0(minT)}°F in the next 10 h)` : `Humid (${r0(rh)}% RH)`, "Solvent cement cures slower when it's cold or humid: give joints longer before testing (CPVC: Build → Materials → CPVC cure before test). Keep primer and cement cans warm; below 40°F use cold-rated cement per the maker. PEX-A expansion joints shrink down slower in the cold too: give them longer before you test."]);
+    if (minT < 45 || rh >= 80) out.push(["warn", minT < 45 ? `Cold glue-ups (${r0(minT)}°F in the next 10 h)` : `Humid (${r0(rh)}% RH)`, `Solvent cement cures slower when it's cold or humid. Oatey's chart for PVC and ABS, up to 180 psi, ${minT >= 60 ? "60–100°F: 1½–3\" 30 min, 4–5\" 2 hr" : minT >= 40 ? "40–60°F: 1½–3\" 45 min, 4–5\" 4 hr" : minT >= 20 ? "20–40°F: 1½–3\" 1 hr, 4–5\" 36 hr" : "under 20°F: Oatey says call their tech line for a cure time"} before a test${rh > 60 ? `; at ${r0(rh)}% humidity add 50%` : ""} (Build → Materials → Cement in heat & cold; CPVC: CPVC cure before test). Keep primer and cement cans warm; below 40°F use cold-rated cement per the maker. PEX-A expansion joints shrink down slower in the cold too: give them longer before you test.`]);
     const maxG = Math.max(...hs.slice(0, 10).map(x => x.gust));
     if (maxG >= 25) { const at = hs.find(x => x.gust === maxG); out.push(["warn", `Gusts to ${r0(maxG)} mph around ${fmtH(at.t)}`, "Tie off or lower ladders, keep roof work (vent terminals) to calmer hours, weight down tarps, pipe stacks and test caps."]); }
     const wet = hs.slice(0, 12).find(x => x.pop >= 50 || x.pr >= 0.02);
@@ -10910,11 +10946,12 @@ const WX = (() => {
   /* ---- render ---- */
   const part = (name, fn) => { try { fn(); } catch(e){ console.warn("weather:", name, e); } };
   function render(){
+    jobBtn(); $("wx-nwslink").href = `https://forecast.weather.gov/MapClick.php?lat=${place.lat}&lon=${place.lon}`;
     $("wx-place").textContent = place.name; $("wx-placesub").textContent = `${place.sub || ""}${S.om && isFinite(S.om.elevation) ? `${place.sub ? " · " : ""}${Math.round(S.om.elevation * 3.28084).toLocaleString()} ft` : ""}`;
     if (blocked()){
       const nws = `https://forecast.weather.gov/MapClick.php?lat=${place.lat}&lon=${place.lon}`;
       $("wx-hero").innerHTML = `<div><b>Live weather runs in the installed app</b> (the GitHub version on your phone). This claude.ai viewer blocks outside data on purpose.</div><a href="${nws}" target="_blank" rel="noopener">National Weather Service forecast for ${esc(place.name)} ↗</a>`;
-      ["wx-now","wx-air","wx-hours","wx-days","wx-plan"].forEach(id => $(id).innerHTML = `<tr><td class="sub">Open the installed app for live data.</td></tr>`);
+      ["wx-now","wx-air","wx-hours","wx-days","wx-plan","wx-best","wx-drift"].forEach(id => $(id).innerHTML = `<tr><td class="sub">Open the installed app for live data.</td></tr>`);
       $("wx-flags").innerHTML = `<p class="flag ok-flag">Open the installed app for live jobsite calls.</p>`; $("wx-chart").innerHTML = "";
       return;
     }
@@ -10957,8 +10994,10 @@ const WX = (() => {
       const tom = new Date(now); tom.setDate(tom.getDate() + 1); tom.setHours(8, 0, 0, 0);
       const night = hsA.filter(x => x.t > now && x.t <= tom);
       if (night.length){ const lo = night.reduce((m, x) => x.temp < m.temp ? x : m); rows.push(["Tonight's low", `${r0(lo.temp)}°F`, `Around ${fmtH(lo.t)}${lo.temp <= 32 ? ": drain or protect anything holding water before you leave" : ""}`]); }
-      const t7 = hsA.find(x => x.t.toDateString() === tom.toDateString() && x.t.getHours() === 7);
-      if (t7) rows.push(["Tomorrow 7 AM", `${r0(t7.temp)}°F`, `Feels ${r0(t7.feels)}° · rain ${r0(t7.pop)}% · gusts ${r0(t7.gust)} mph${t7.temp <= 32 ? " · frozen hoses and ground first thing" : ""}`]);
+      const t7 = hsA.find(x => x.t.toDateString() === tom.toDateString() && x.t.getHours() === Math.floor(startH()));
+      { const st = new Date(tom); st.setHours(Math.floor(startH()), startH() % 1 ? 30 : 0, 0, 0); const dawn = sunAt(tom, place.lat, place.lon, 96, true), rise = sunAt(tom, place.lat, place.lon, 90.833, true);
+        if (dawn && rise) rows.push([`Tomorrow's start`, startLbl(), `First light ${fmtT(dawn)} · sunrise ${fmtT(rise)}: ${st < dawn ? "dark at start, bring lights" : st < rise ? "dusky at start, lights for the truck and the trench" : "daylight at start"}`]); }
+      if (t7) rows.push([`Tomorrow ${startLbl()}`, `${r0(t7.temp)}°F`, `Feels ${r0(t7.feels)}° · rain ${r0(t7.pop)}% · gusts ${r0(t7.gust)} mph${t7.temp <= 32 ? " · frozen hoses and ground first thing" : ""}`]);
       const sIdx = hsA[0] ? hsA[0].i : 0, s2 = om.hourly.soil_temperature_6cm && om.hourly.soil_temperature_6cm[sIdx], s7 = om.hourly.soil_temperature_18cm && om.hourly.soil_temperature_18cm[sIdx];
       if (s2 != null || s7 != null) rows.push(["Ground", `${r0(s2)}° · ${r0(s7)}°F`, `At 2" and 7" deep${s7 != null && s7 <= 32 ? ": frozen down past the top, dig with a plan" : s2 != null && s2 <= 32 ? ": frozen crust on top" : ": not frozen"}`]);
       $("wx-plan").innerHTML = rows.map(([a, b, d]) => `<tr><th>${a}</th><td class="big">${b}</td><td class="sub">${d}</td></tr>`).join("");
@@ -10980,6 +11019,30 @@ const WX = (() => {
       }
     });
 
+    part("best day", () => {
+      if (!d || !d.time || d.time.length < 2){ $("wx-best").innerHTML = `<tr><td class="sub">Waiting for the 7-day forecast…</td></tr>`; return; }
+      const N = d.time.length, day = i => D(typeof d.time[i] === "number" ? d.time[i] + 43200 : d.time[i] + "T12:00"), nm = i => i === 0 ? "Today" : i === 1 ? "Tomorrow" : day(i).toLocaleDateString([], {weekday: "short", month: "short", day: "numeric"});
+      const X = [...Array(N).keys()].map(i => ({i, hi: d.temperature_2m_max[i], lo: d.temperature_2m_min[i], pop: d.precipitation_probability_max ? d.precipitation_probability_max[i] : null, pr: d.precipitation_sum[i], sn: d.snowfall_sum ? d.snowfall_sum[i] : 0, g: d.wind_gusts_10m_max ? d.wind_gusts_10m_max[i] : null, c: d.weather_code[i]}));
+      const dry = x => (x.pop == null || x.pop < 30) && !(x.pr >= 0.05) && !(x.sn > 0) && ![95, 96, 99, 56, 57, 66, 67].includes(x.c);
+      const pick = (L, f) => L.slice().sort(f)[0];
+      const rows = [];
+      /* underground & trench: dry, above freezing in the day */
+      { const ok = X.filter(x => dry(x) && x.hi > 35), b = pick(ok, (a, c) => (a.pop || 0) - (c.pop || 0) || c.hi - a.hi);
+        const fr = (cityByName(place.name) || {}).frost;
+        rows.push(["Underground & trench", b ? nm(b.i) : "None this week", b ? `Dry, high ${r0(b.hi)}°F, rain ${r0(b.pop)}%${fr ? ` · frost line here ${fr}` : ""}` : "No dry day above freezing in the 7-day forecast"]); }
+      /* air & vacuum tests: set in the afternoon, read the next morning; the smallest drop moves the gauge least */
+      { const L = X.slice(0, N - 1).map(x => Object.assign({}, x, {drop: x.hi - X[x.i + 1].lo})).filter(x => ![95, 96, 99].includes(x.c)), b = pick(L, (a, c) => a.drop - c.drop);
+        rows.push(["Air & vacuum tests", b ? nm(b.i) : "—", b ? `About ${r0(b.drop)}°F from that afternoon's high to the next morning's low: the least drift on the gauge this week` : ""]); }
+      /* glue-ups: Oatey's cure bands (PVC & ABS); the warmest dry day, never over 100°F */
+      { const band = t => t >= 60 ? "60–100°F: 1½–3\" cures in 30 min, 4–5\" in 2 hr" : t >= 40 ? "40–60°F: 1½–3\" cures in 45 min, 4–5\" in 4 hr" : t >= 20 ? "20–40°F: 1½–3\" cures in 1 hr, 4–5\" in 36 hr" : "Under 20°F: Oatey says call their tech line";
+        const ok = X.filter(x => dry(x) && x.hi <= 100), b = pick(ok, (a, c) => c.hi - a.hi);
+        rows.push(["Glue-ups (PVC, ABS)", b ? nm(b.i) : "None dry", b ? `High ${r0(b.hi)}°F · Oatey, up to 180 psi: ${band(b.hi)}` : "Every day has rain or snow: cover the work and use a wet-rated cement"]); }
+      /* roof & vent work: dry, the calmest gusts */
+      { const ok = X.filter(x => dry(x) && x.g != null), b = pick(ok, (a, c) => a.g - c.g);
+        rows.push(["Roof & vent work", b ? nm(b.i) : "None dry", b ? `Gusts to ${r0(b.g)} mph${b.g >= 25 ? ": still windy, tie off ladders" : ""}, dry` : "No dry day in the 7-day forecast"]); }
+      $("wx-best").innerHTML = rows.map(([a, b, c]) => `<tr><th>${a}</th><td class="big">${esc(b)}</td><td class="sub">${esc(c)}</td></tr>`).join("");
+    });
+    part("test drift", () => drift());
     part("7 days", () => {
       if (d) $("wx-days").innerHTML = d.time.map((t, i) => `<tr${d.temperature_2m_min[i] <= 32 ? ' class="frz"' : ""}><td>${i === 0 ? (om.src === "nws" && new Date().getHours() >= 14 ? "Rest of today" : "Today") : D(typeof t === "number" ? t + 43200 : t + "T12:00").toLocaleDateString([], {weekday:"short", month:"numeric", day:"numeric"})}</td><td>${r0(d.temperature_2m_min[i])}° / ${r0(d.temperature_2m_max[i])}°</td><td>${r0(d.precipitation_probability_max[i])}%${d.snowfall_sum[i] > 0 ? ` · ${d.snowfall_sum[i].toFixed(1)}" snow` : ""}</td><td>${r0(d.wind_gusts_10m_max[i])} mph</td><td class="sub">${WMO(d.weather_code[i])}</td></tr>`).join("");
     });
@@ -11046,6 +11109,107 @@ const WX = (() => {
     $("wx-status").textContent = blocked() ? "Live data runs in the installed app." : !navigator.onLine ? `No signal: showing ${last}. It refreshes when you're back online.`
       : err.om ? `Couldn't reach the forecast service: ${last}. Trying again in ${dur(next)}.` : `Forecast ${G.om ? "updated " + ago(G.om) : "loading"} · next check in ${dur(next)}${place.src === "gps" ? " · following your location" : ""}.${S.om && S.om.src === "nws" ? " Backup source (National Weather Service): the main forecast service isn't answering, so there are no soil, UV, gust or snow-depth readings." : ""}`;
   }
+  /* ---- jobs: the weather follows today's job each morning, and every active job's town gets a badge ----
+     Today's job = the pinned active job, else the one changed most recently (jobs.js: jbTodayJob). Picking My location
+     or a town wins for the rest of that day; the next day it goes back to today's job. */
+  const GEO = (o => o && typeof o === "object" && !Array.isArray(o) ? o : {})(store.get("jpb-wx-geo", {}));   /* town → [lat, lon], looked up once */
+  const townLL = n => n ? TOWNS[n] || GEO[n] || null : null;
+  async function geo(n){ if (!n || townLL(n) || blocked() || !navigator.onLine) return townLL(n);
+    try { const j = await get(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(n)}&count=8&language=en&format=json&countryCode=US`);
+      const r = (j.results || []).find(x => x.admin1 === "Utah"); if (r){ GEO[n] = [+(+r.latitude).toFixed(3), +(+r.longitude).toFixed(3)]; store.set("jpb-wx-geo", GEO); } } catch(e){}
+    return townLL(n); }
+  const todayJob = () => { try { const J = window.jbTodayJob && jbTodayJob(); return J && J.city ? J : null; } catch(e){ return null; } };
+  const sameDay = t => t && new Date(t).toDateString() === new Date().toDateString();
+  async function toJob(force){
+    const J = todayJob(); if (!J) return false;
+    if (!force && PREFS.wxJob === false) return false;
+    if (!force && place.src !== "job" && sameDay(place.at)) return false;   /* a hand-picked spot holds for today */
+    const ll = await geo(J.city); if (!ll) return false;
+    if (!force && place.src === "job" && place.jid === J.id && Math.abs(place.lat - ll[0]) < 1e-3 && Math.abs(place.lon - ll[1]) < 1e-3) return true;
+    setPlace({name: J.city, sub: `Today's job · ${J.name}`, lat: ll[0], lon: ll[1], src: "job", jid: J.id, at: Date.now()}); return true;
+  }
+  const jobBtn = () => { const b = $("wx-job"), J = todayJob(); if (!b) return; b.hidden = !J || (place.src === "job" && place.jid === J.id); if (J) b.textContent = `📋 ${J.city}`; if (J) b.setAttribute("aria-label", `Weather for today's job: ${J.name}, ${J.city}`); };
+  $("wx-job").addEventListener("click", () => toJob(true));
+  /* badges: one Open-Meteo call for every active job's town (up to 8), at most once an hour, saved for no-signal days */
+  let JW = store.get("jpb-wx-jobs", null); if (!JW || typeof JW !== "object" || !JW.d) JW = {t: 0, d: {}};
+  let jwBusy = false;
+  async function fJobs(){
+    if (jwBusy || blocked() || !navigator.onLine || !window.jbActiveTowns) return;
+    const towns = [...new Set(jbActiveTowns())].slice(0, 8); if (!towns.length) return;
+    if (Date.now() - (JW.t || 0) < 3600e3 && towns.every(n => JW.d[n])) return;
+    jwBusy = true;
+    try {
+      const L = []; for (const n of towns){ const ll = await geo(n); if (ll) L.push([n, ll]); } if (!L.length) return;
+      const q = `latitude=${L.map(x => x[1][0]).join(",")}&longitude=${L.map(x => x[1][1]).join(",")}&timezone=auto&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch` +
+        "&daily=temperature_2m_min,temperature_2m_max,precipitation_probability_max,wind_gusts_10m_max,weather_code&forecast_days=2";
+      let r = await get("https://api.open-meteo.com/v1/forecast?" + q, null, 8000); if (!Array.isArray(r)) r = [r];
+      const d = {}, two = a => (Array.isArray(a) ? a : []).slice(0, 2); L.forEach(([n], i) => { const x = r[i] && r[i].daily; if (x) d[n] = {lo: two(x.temperature_2m_min), hi: two(x.temperature_2m_max), pop: two(x.precipitation_probability_max), g: two(x.wind_gusts_10m_max), c: two(x.weather_code)}; });
+      JW = {t: Date.now(), d}; store.set("jpb-wx-jobs", JW);
+      if (window.jbWxRedraw) jbWxRedraw();
+    } catch(e){} finally { jwBusy = false; }
+  }
+  const jw = n => { const d = n && JW.d[n]; return d && Date.now() - JW.t < 12 * 3600e3 ? d : null; };   /* older than 12 h: no badge rather than an old one */
+  const jwCalls = d => { const lo = Math.min(...d.lo.filter(isFinite)), pop = Math.max(...d.pop.filter(isFinite)), g = Math.max(...d.g.filter(isFinite)), out = [];
+    if (d.c.some(c => [95, 96, 99].includes(c))) out.push(["⚡", "Thunderstorms possible"]);
+    if (d.c.some(c => [56, 57, 66, 67].includes(c))) out.push(["🧊", "Freezing rain"]);
+    if (lo <= 32) out.push([`❄ ${r0(lo)}°`, `Freezing: low ${r0(lo)}°F`]);
+    if (pop >= 50) out.push([`🌧 ${r0(pop)}%`, `Rain or snow ${r0(pop)}%`]);
+    if (g >= 25) out.push([`💨 ${r0(g)}`, `Gusts to ${r0(g)} mph`]);
+    return {out, lo, pop, g}; };
+  window.wxJobBadge = town => { const d = jw(town); if (!d) return ""; const {out} = jwCalls(d);
+    return out.slice(0, 2).map(([b, t]) => `<span class="badge jb-wxb" title="${esc(t)} (today or tomorrow, ${esc(town)})">${esc(b)}</span>`).join(""); };
+  window.wxJobLine = (town, jid) => { const d = jw(town); if (!d) return "";
+    const {lo, pop, g} = jwCalls(d), sx = [d.c.some(c => [95, 96, 99].includes(c)) ? "⚡ storms" : "", d.c.some(c => [56, 57, 66, 67].includes(c)) ? "🧊 freezing rain" : ""].filter(Boolean);
+    return `<button type="button" class="linkish jb-wxl" data-wxjob="${esc(jid)}">${esc(town)}, today–tomorrow: ${lo <= 32 ? "❄ " : ""}low ${r0(lo)}°F · ${pop >= 50 ? "🌧 " : ""}rain ${r0(pop)}% · ${g >= 25 ? "💨 " : ""}gusts ${r0(g)} mph${sx.length ? " · " + sx.join(" · ") : ""} ›</button>`; };
+  window.wxJobsDue = () => { fJobs(); };
+  window.wxFollowJob = () => { if (shown()) toJob(false).then(ok => { if (!ok) jobBtn(); }); else jobBtn(); };   /* jobs.js loads after this card: it calls in once it's ready */
+  document.addEventListener("click", e => { const b = e.target.closest("[data-wxjob]"); if (!b) return; go("site", "wxnow"); toJob(true); });
+  /* ---- sun: first light (civil dawn, sun 6° below the horizon) and sunrise, from the standard almanac sunrise
+     equation. Checked against Open-Meteo's sunrise in the browser test: within 2 minutes. ---- */
+  function sunAt(date, lat, lon, zenith, rise){
+    const rad = Math.PI / 180, y0 = new Date(date.getFullYear(), 0, 0), N = Math.floor((date - y0) / 864e5), lh = lon / 15;
+    const t = N + ((rise ? 6 : 18) - lh) / 24, M = 0.9856 * t - 3.289;
+    let L = M + 1.916 * Math.sin(M * rad) + 0.020 * Math.sin(2 * M * rad) + 282.634; L = ((L % 360) + 360) % 360;
+    let RA = Math.atan(0.91764 * Math.tan(L * rad)) / rad; RA = ((RA % 360) + 360) % 360; RA = (RA + Math.floor(L / 90) * 90 - Math.floor(RA / 90) * 90) / 15;
+    const sd = 0.39782 * Math.sin(L * rad), cd = Math.cos(Math.asin(sd)), cH = (Math.cos(zenith * rad) - sd * Math.sin(lat * rad)) / (cd * Math.cos(lat * rad));
+    if (cH > 1 || cH < -1) return null;
+    const H = (rise ? 360 - Math.acos(cH) / rad : Math.acos(cH) / rad) / 15, T0 = H + RA - 0.06571 * t - 6.622, UT = ((T0 - lh) % 24 + 24) % 24;
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) + UT * 3600e3);
+  }
+  const startH = () => { const v = +PREFS.wxStart; return [6, 6.5, 7, 7.5, 8, 8.5].includes(v) ? v : 7; };
+  const startLbl = () => { const h = startH(), x = new Date(); x.setHours(Math.floor(h), h % 1 ? 30 : 0, 0, 0); return fmtT(x); };
+  $("wx-start").value = String(startH());
+  $("wx-start").addEventListener("change", e => { PREFS.wxStart = +e.target.value; savePrefs(); render(); });
+  const cityByName = n => { try { return CITIES.find(c => c && c.n === n); } catch(e){ return null; } };
+  /* ---- air or vacuum test drift: sealed air, pressure follows absolute temperature (Gay-Lussac).
+     Gauge change = absolute pressure × (T2 − T1) / T1 in °R. Air pressure at this elevation from the standard atmosphere. ---- */
+  const PSI_INHG = 2.03602;   /* 1 psi = 2.036 inches of mercury */
+  function driftOpts(){
+    const hs = hourly().slice(0, 36), keep = (id, i) => { const el = $(id); const v = el.value; el.innerHTML = hs.map((x, k) => `<option value="${k}">${k === 0 ? "Now" : x.t.toLocaleDateString([], {weekday: "short"}) + " " + fmtH(x.t)}</option>`).join(""); el.value = v && +v < hs.length ? v : String(i); };
+    if (!hs.length) return hs;
+    const sh = startH(), nx = hs.findIndex((x, k) => k > 0 && x.t.getHours() === Math.floor(sh) && x.t > new Date(Date.now() + 6 * 3600e3));
+    keep("wx-d0", 0); keep("wx-d1", nx > 0 ? nx : Math.min(hs.length - 1, 12)); return hs;
+  }
+  function drift(){
+    const out = $("wx-drift"); if (!out) return; const hs = driftOpts(), om = S.om;
+    if (!hs.length || !om){ out.innerHTML = `<tr><td class="sub">Waiting for the forecast…</td></tr>`; return; }
+    const type = $("wx-dt").value, g = parseFloat($("wx-dp").value), a = hs[+$("wx-d0").value], b = hs[+$("wx-d1").value];
+    if (!(g > 0) || !a || !b){ out.innerHTML = `<tr><td class="sub">Enter the gauge reading when you set the test${type === "air" ? " (psi)" : " (inches of mercury)"}.</td></tr>`; return; }
+    const elev = isFinite(om.elevation) ? om.elevation : 1400, atm = 14.696 * Math.pow(1 - 2.25577e-5 * elev, 5.25588);   /* psia */
+    const T1 = a.temp + 459.67, T2 = b.temp + 459.67;
+    let rows;
+    if (type === "air"){
+      const abs1 = g + atm, abs2 = abs1 * T2 / T1, d2 = abs2 - atm, ch = d2 - g;
+      rows = [["Expected reading", `${(Math.round(d2 * 10) / 10).toLocaleString()} psi`, `${ch < 0 ? "Down" : "Up"} ${Math.abs(Math.round(ch * 10) / 10)} psi with no leak: ${r0(a.temp)}°F when set, ${r0(b.temp)}°F when read`]];
+    } else {
+      const v = g / PSI_INHG; if (v >= atm){ out.innerHTML = `<tr><td class="sub">That's more vacuum than the air pressure here (about ${Math.round(atm * PSI_INHG * 10) / 10} inHg at ${Math.round(elev * 3.28084).toLocaleString()} ft).</td></tr>`; return; }
+      const in1 = atm - v, in2 = in1 * T2 / T1, v2 = (atm - in2) * PSI_INHG, ch = v2 - g;
+      rows = [["Expected reading", `${Math.round(v2 * 10) / 10} inHg`, `${ch < 0 ? "Loses" : "Gains"} ${Math.abs(Math.round(ch * 10) / 10)} inHg of vacuum with no leak: ${r0(a.temp)}°F when set, ${r0(b.temp)}°F when read${ch < 0 ? ". Warming loses vacuum, so a rising gauge isn't a leak" : ""}`]];
+    }
+    rows.push(["Air pressure here", `${Math.round(atm * 100) / 100} psi`, `At about ${Math.round(elev * 3.28084).toLocaleString()} ft (sea level is 14.7)`]);
+    out.innerHTML = rows.map(([x, y, z]) => `<tr><th>${x}</th><td class="big">${y}</td><td class="sub">${esc(z)}</td></tr>`).join("");
+  }
+  ["wx-dt", "wx-dp", "wx-d0", "wx-d1"].forEach(id => $(id).addEventListener(id === "wx-dp" ? "input" : "change", () => { if (id === "wx-dt") $("wx-dp").placeholder = $("wx-dt").value === "air" ? "psi" : "inHg"; drift(); }));
   /* ---- location ---- */
   function setPlace(p){ place = p; store.set("jpb-wx-place", place); for (const n in S) S[n] = null; for (const n in err) err[n] = null; fromCache();   /* the saved forecast, if it's for this town */
     /* the old tables stay until the new forecast lands: emptying them made the page jump shorter, then longer */
@@ -11059,7 +11223,7 @@ const WX = (() => {
       if (window.navReseat) navReseat();
       const lat = +p.coords.latitude.toFixed(4), lon = +p.coords.longitude.toFixed(4), moved = miles(lat, lon, place.lat, place.lon) > 0.3;
       T.gps = Date.now();
-      if (place.src !== "gps" || moved) setPlace({name: "My location", sub: `±${Math.round(p.coords.accuracy)} m`, lat, lon, src: "gps"});
+      if (place.src !== "gps" || moved) setPlace({name: "My location", sub: `±${Math.round(p.coords.accuracy)} m`, lat, lon, src: "gps", at: silent && place.src === "gps" ? place.at : Date.now()});
     }, () => { if (window.navReseat) navReseat(); if (!silent) $("wx-placesub").textContent = "Location blocked: search a town instead"; }, {enableHighAccuracy: true, timeout: 12000, maximumAge: 120000});
   }
   $("wx-gps").addEventListener("click", () => gps(false));
@@ -11079,23 +11243,23 @@ const WX = (() => {
     }, 350);
   });
   $("wx-results").addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (!b) return; const r = $("wx-results")._list[+b.dataset.i];
-    setPlace({name: r.name, sub: r.sub, lat: +(+r.lat).toFixed(4), lon: +(+r.lon).toFixed(4), src: "town"}); $("wx-search").value = ""; $("wx-results").innerHTML = ""; });
+    setPlace({name: r.name, sub: r.sub, lat: +(+r.lat).toFixed(4), lon: +(+r.lon).toFixed(4), src: "town", at: Date.now()}); $("wx-search").value = ""; $("wx-results").innerHTML = ""; });
   /* follow the phone if the user chose My location before and allowed it */
   const followGps = () => { if (place.src === "gps" && (!T.gps || Date.now() - T.gps > EVERY.gps) && navigator.permissions) navigator.permissions.query({name: "geolocation"}).then(s => { if (s.state === "granted") gps(true); }).catch(() => {}); };
   const bg = () => { if (PREFS.wxIcon !== false && !document.hidden) due(false, ["om"]); };   /* header button only */
   setInterval(() => { if (shown() && !document.hidden){ followGps(); due(false); tick(); } else bg(); }, 10000);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) shown() ? due(false) : bg(); });
   addEventListener("online", () => { shown() ? due(false) : bg(); });
-  const mo = new MutationObserver(() => { if (shown()){ render(); followGps(); due(false); } });
+  const mo = new MutationObserver(() => { if (shown()){ toJob(false); render(); followGps(); due(false); } });
   SECTIONS.filter(s => s.dataset.sec.startsWith("wx")).forEach(s => mo.observe(s, {attributes: true, attributeFilter: ["hidden"]}));
-  if (shown()){ render(); due(false); } else { headIcon(); bg(); }
+  if (shown()){ toJob(false); render(); due(false); } else { headIcon(); bg(); }
   return {render, due, state: () => ({place, S, T, err})};
 })();
 window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-17v";
+var BUILD = "handbook-2026-11-18a";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);

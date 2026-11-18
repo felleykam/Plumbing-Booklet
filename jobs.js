@@ -475,7 +475,7 @@ const jbRow = (j, attr = "data-open", extra = "") => { const n = jbNext(j), c = 
   const gist = last ? jnGist(last) : "";
   return `<button type="button" class="jb-row${j.color ? " jb-colored" : ""}"${j.color ? ` style="--jc:var(--pal-${j.color})"` : ""} ${attr}="${j.id}"${n && n.d < jbDay() && attr === "data-open" ? ` data-ostage="${esc(n.s)}"` : ""}><b>${j.pin ? '<span class="jb-pin" aria-label="Pinned">📌</span> ' : ""}${jbIco(jbIcon(j))}${esc(jbName(j))}</b><span>${[(j.name || "").trim() && j.a, eName("sub", j.sub), j.who, c && c.n, pName(j.lead) && "Lead " + pName(j.lead)].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
     + (extra || "")   /* the note line stays in Quick view and "Where you left off": rows stay clean */
-    + `<span class="jb-tags"><span class="badge jb-sbadge jt-k-${cs}">${esc(JB_SNAME[cs])}</span><span class="badge">${done}/${act.length} stages</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${jbArch(j) ? `<span class="badge">🗄 Archived</span>` : ""}${tk ? `<span class="badge">☐ ${tk} to do</span>` : ""}${qs ? `<span class="badge jb-qb">? ${qs} question${qs === 1 ? "" : "s"}</span>` : ""}${(li => li && li.r === "fail" ? `<span class="badge jb-fail">✗ Failed inspection</span>` : li && li.r === "partial" ? `<span class="badge jb-fail">◐ Partial inspection</span>` : "")(j.insp.filter(i => i.r !== "booked").sort(jbByDate)[0])}${n ? n.d < jbDay() ? `<span class="badge jb-fail">📋 Inspection ${jbNice(n.d)}: result?</span>` : `<span class="jb-insp">📋 Inspection ${jbNice(n.d)}</span>` : ""}</span><span class="jb-peek" data-peek="${j.id}" title="Quick view" aria-hidden="true">⇤</span></button>`; };
+    + `<span class="jb-tags">${j.st === "open" && !jbArch(j) && c && window.wxJobBadge ? wxJobBadge(c.n) : ""}<span class="badge jb-sbadge jt-k-${cs}">${esc(JB_SNAME[cs])}</span><span class="badge">${done}/${act.length} stages</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${jbArch(j) ? `<span class="badge">🗄 Archived</span>` : ""}${tk ? `<span class="badge">☐ ${tk} to do</span>` : ""}${qs ? `<span class="badge jb-qb">? ${qs} question${qs === 1 ? "" : "s"}</span>` : ""}${(li => li && li.r === "fail" ? `<span class="badge jb-fail">✗ Failed inspection</span>` : li && li.r === "partial" ? `<span class="badge jb-fail">◐ Partial inspection</span>` : "")(j.insp.filter(i => i.r !== "booked").sort(jbByDate)[0])}${n ? n.d < jbDay() ? `<span class="badge jb-fail">📋 Inspection ${jbNice(n.d)}: result?</span>` : `<span class="jb-insp">📋 Inspection ${jbNice(n.d)}</span>` : ""}</span><span class="jb-peek" data-peek="${j.id}" title="Quick view" aria-hidden="true">⇤</span></button>`; };
 const eRow = (t, x) => { const n = eJobs(t, x).length, c = t === "sub" && cityById(x.city);
   const sub = t === "bld" ? [x.ph, (n2 => `${n2 || "no"} subdivision${n2 === 1 ? "" : "s"}`)(jbD.subs.filter(s => s.bld === x.id).length)] : [c && c.n, eName("bld", x.bld)];
   return `<button type="button" class="jb-row" data-ent="${t}|${x.id}"><b>${t === "sub" ? jbIco(x.icon) : ""}${esc(x.n || "No name")}</b><span>${[...sub, `${n} job${n === 1 ? "" : "s"}`].filter(Boolean).map(esc).join(" · ")}</span></button>`; };
@@ -717,6 +717,7 @@ function jbJobHtml(j){
   <h3 class="jb-title">${jbIco(jbIcon(j))}<span>${esc((j.name || "").trim() || addr || "New job")}</span></h3>
   ${(eById("sub", j.sub) || {}).gate ? `<p class="jb-gate">🔑 Gate: <b>${esc(eById("sub", j.sub).gate)}</b> <button type="button" class="linkish" data-ent="sub|${j.sub}" aria-label="Change the gate code on the ${esc(eName("sub", j.sub))} page">change ›</button></p>` : ""}<p class="jb-sub">${esc([(j.name || "").trim() && addr, eName("sub", j.sub), eName("bld", j.bld), c && c.n].filter(Boolean).join(" · ")) || "Add a name and address in Job details below."}</p>
   <div class="jb-chips"><span class="badge jb-sbadge jt-k-${hs}">${esc(JB_SNAME[hs])}</span><span class="badge">${hDone} of ${hAct.length} stages</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${tk ? `<span class="badge">☐ ${tk} to do</span>` : ""}${hLead ? `<span class="badge">Lead ${esc(hLead.n)}</span>` : ""}</div>
+  ${j.st === "open" && c && window.wxJobLine ? wxJobLine(c.n, j.id) : ""}
   <div class="set-btns jb-hacts">${addr ? `<a class="btn ghost" href="https://maps.apple.com/?daddr=${q}" target="_blank" rel="noopener"><span class="jb-hi" aria-hidden="true">🧭</span>Map</a>` : ""}${hLead && pTel(hLead) ? `<a class="btn ghost" href="tel:${pTel(hLead)}"><span class="jb-hi" aria-hidden="true">📞</span>Call ${esc(hLead.n.split(" ")[0])}</a>` : ""}<button type="button" class="btn ghost" data-a="hd-hrs" aria-expanded="${JB.hrsBox === j.id}"><span class="jb-hi" aria-hidden="true">⏱</span>Hours</button><button type="button" class="btn ghost" data-a="hd-proof"><span class="jb-hi" aria-hidden="true">📷</span>Proof</button><button type="button" class="btn ghost" data-a="job-report"><span class="jb-hi" aria-hidden="true">${JF.rep && JF.rep.jid === j.id && !JF.rep.k ? "📤" : "📄"}</span>${JF.rep && JF.rep.jid === j.id && !JF.rep.k ? "Send" : "Report"}</button></div>
   </div>
   ${JB.hrsBox === j.id ? `<div class="jb-left jb-hrsq"><p class="jb-lefth">Log hours</p><div class="calc">
@@ -849,6 +850,7 @@ const jbTidy = away => { const n = jbD.jobs.length, now = Date.now();   /* away:
   jbD.jobs = jbD.jobs.filter(j => !jbBlank(j) || (j.id === JB.open && (!away || now - (+j.made || 0) < 5000)));
   if (JB.open && !jbD.jobs.some(j => j.id === JB.open)) JB.open = null; if (jbD.jobs.length !== n) jbSave(true); };
 function jbDraw(){
+  try { if (window.wxJobsDue) wxJobsDue(); } catch(e){}   /* weather badges: refreshed at most hourly, drawn from what's saved */
   JB_IX = null; JB_AC = new WeakMap(); JN_CARDS = null; jbTidy();
   const body = $("jb-body"), ae = document.activeElement, had = !!ae && ae !== document.body && body.contains(ae);
   if (had) ae.blur();   /* a box removed while the keyboard is up never says so, and the bar floats: close it properly first */
@@ -1215,6 +1217,11 @@ document.addEventListener("click", e => { const b = e.target.closest("[data-ckjo
   if (JB_XTRA.includes(k) && !j.xs.includes(k)){ j.xs.push(k); jbAct(j, `+ Stage added: ${JB_SNAME[k]}`, k); jbBump(j); jbSave(); }
   jbGoJob(id, k); });
 
+/* Jobsite → Weather: today's job (pinned first, else the latest changed) with a city, and every active job's town */
+window.jbTodayJob = () => { const j = jbD.jobs.filter(x => x.st === "open" && !jbArch(x) && cityById(x.city)).sort((a, b) => (+!!b.pin - +!!a.pin) || jbLast(b) - jbLast(a))[0];
+  return j ? {id: j.id, name: jbName(j), city: cityById(j.city).n} : null; };
+window.jbActiveTowns = () => jbD.jobs.filter(x => x.st === "open" && !jbArch(x) && cityById(x.city)).map(x => cityById(x.city).n);
+window.jbWxRedraw = () => { const B0 = $("jb-body"), ae = document.activeElement; if (!B0 || (ae && ae !== document.body && B0.contains(ae) && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))) return; jbDraw(); };
 /* other cards hand a job something (Time card hours, a Test log record): active jobs, pinned and latest first */
 const jbPickJobs = () => jbD.jobs.filter(j => j.st !== "done" && !jbArch(j)).sort((a, b) => (+!!b.pin - +!!a.pin) || jbLast(b) - jbLast(a));
 window.jbHrsJobs = h => { h = Math.round(+h * 100) / 100; if (!(h > 0 && h <= 24)) return ""; const J = jbPickJobs().slice(0, 4);
@@ -1823,6 +1830,7 @@ const jbBinHtml = () => !jbD.bin.length ? "" : `<details class="explain"><summar
 
 jbApplyColors();
 try { if (typeof ckDraw === "function") ckDraw(); } catch(e){}
+try { if (window.wxFollowJob) wxFollowJob(); } catch(e){}   /* Weather opened before the jobs loaded: follow today's job now */
 try { const mj = $("mt-jobs"), ma = $("mt-ans"); if (mj && ma) mj.innerHTML = window.jbHrsJobs(+ma.dataset.h || 0); if (typeof tlDraw === "function") tlDraw(); } catch(e){}   /* Time card and Test log can hand things to jobs now */   /* Inspect's checklist now reads the shared lists */
 jbBinPurge(false);   /* past 30 days: gone for good */
 jbDraw(); try { homeDraw(); } catch(e){}
