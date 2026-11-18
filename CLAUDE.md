@@ -50,7 +50,9 @@ An offline jobsite reference for **Utah residential new-construction plumbing**:
 - No new themes until the accuracy pass is done.
 
 ## Shipping
-- **Never push straight to `main`.** Work on a branch and open a PR. The owner tests it on his phone and merges it, and merging is what makes it live.
+- **Never push straight to `main`.** Work on a branch, open a PR, and send the owner the short report (below).
+- **Claude merges only after the owner says so in chat** ("ship it", "merge it", or something just as clear). Then Claude merges the PR itself so he never has to click through GitHub. Merging is what makes it live.
+- No approval, no merge. Never take silence, or approval of an earlier change, as approval of this one.
 - Commit messages are plain English (what changed, then the build number).
 
 ## Reporting back to the owner
