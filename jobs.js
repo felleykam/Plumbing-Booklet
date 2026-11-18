@@ -518,13 +518,13 @@ function jbListHtml(){
   const tags = [...new Set(jbD.jobs.flatMap(jbTags))].sort();
   const goal = +jbD.goal === 6000 ? 6000 : 8000, have = H.all + (+jbD.before || 0);
   const fq = (JB.q || "").trim();
-  return `${viewSeg}<div class="jb-toprow">${jbD.jobs.length ? `<input id="jb-q" type="search" autocomplete="off" autocorrect="off" enterkeyhint="search" value="${esc(JB.q || "")}" placeholder="Find a job: lot, address, person, any word" aria-label="Find a job">` : ""}<button type="button" class="btn" data-a="new">+ New job</button><button type="button" class="btn ghost" data-a="set-go" aria-label="Jobs settings" title="Jobs settings">⚙</button></div>
+  return `${viewSeg}<div class="jb-toprow">${jbD.jobs.length ? `<input id="jb-q" type="search" autocomplete="off" autocorrect="off" enterkeyhint="search" value="${esc(JB.q || "")}" placeholder="Find a job: lot, address, person, any word" aria-label="Find a job">` : ""}<button type="button" class="btn" data-a="new">+ New job</button></div>
   <div id="jb-res">${fq ? jbFindHtml(fq) : ""}</div>
   <div id="jb-main"${fq ? " hidden" : ""}>
   <div class="seg jb-seg jb-show" role="group" aria-label="Show">${[["open", "Active"], ["done", "Done"], ["arch", "Archived"], ["all", "All"]].map(([k, t]) => `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}">${t} · ${jbD.jobs.filter(j => jbIn(k, j)).length}</button>`).join("")}</div>
   ${tags.length ? `<div class="chips jn-tagbar">${JB.tag ? `<button type="button" data-tagclr="1" aria-pressed="true">#${esc(JB.tag)} ✕ show all</button>` : tags.map(t => `<button type="button" class="jn-tagchip" style="${jbTagStyle(t)}" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")}</div>` : ""}
   ${jbOpenHtml()}
-  <p class="note jb-sortnote">${JB.show === "arch" ? "Not opened or changed in 30 days, or archived by hand. Change one, or tap Bring it back on its page." : `A to Z · 📌 pinned first · ⇤ on a job for a quick look${JB.show === "open" ? " · untouched 30 days → Archived" : ""}`}</p>
+  <p class="note jb-sortnote">${JB.show === "arch" ? "Not opened or changed in 30 days, or archived by hand. Change one, or tap Bring it back on its page." : `A to Z · 📌 first · ⇤ quick look`} · <button type="button" class="linkish" data-a="set-go">⚙ Jobs settings</button></p>
   ${PIN.length ? `<div class="jb-grp"><div class="jb-th jb-th1"><span class="jb-tf"><b>📌 Pinned</b><span class="jb-tn">${PIN.length}</span></span></div><div class="jb-list">${PIN.map(j => jbRow(j)).join("")}</div></div>` : ""}
   ${L.length ? (L.length > PIN.length ? jbGroups(L.filter(j => !j.pin)) : "") : `<div class="jb-list"><p class="note">${jbD.jobs.length ? `No ${({open: "active ", done: "done ", arch: "archived "})[JB.show] || ""}jobs${JB.tag ? ` tagged <b>#${esc(JB.tag)}</b>` : ""}. ${JB.tag ? "Tap the tag above to show all." : JB.show !== "all" ? "Tap <b>All</b> to see every job." : ""}` : "No jobs yet. Tap <b>+ New job</b>. Each job is a timeline, Underground to Final, with the blanks ready to fill in as you go."}</p></div>`}
   </div>
@@ -565,7 +565,7 @@ function jbSetHtml(){
   ${jbBytes() > 15e5 ? `<p class="note${jbBytes() > 35e5 ? " flag" : ""}">Jobs use about ${(jbBytes() / 1e6).toFixed(1)} MB of the roughly 5 MB this phone gives them. Back up and delete finished jobs before it fills: past that, new entries won't save.</p>` : ""}
   <div class="set-btns"><button type="button" class="btn" data-a="bk-all">Back up everything</button></div>
   <p class="note" id="jf-say" aria-live="polite"></p><p class="note" id="jf-use"></p>
-  <p class="note">Restore, merge a backup from another phone, back up with a password, and the daily safety copies are in <button type="button" class="linkish" data-a="bk-settings">Settings › Backup &amp; reset ›</button></p></div>
+  <p class="note">Restore, merge a backup from another phone, back up with a password, and the daily safety copies are in <button type="button" class="linkish" data-a="bk-settings">Settings → Backup &amp; reset ›</button></p></div>
   <p class="card-h">Recently deleted</p>
   ${jbBinHtml() || `<div class="jb-in"><p class="note">Empty. Deleted jobs, people, notes and photos wait here 30 days.</p></div>`}`;
 }
@@ -1187,6 +1187,12 @@ window.jbAddNote = (id, b, hint, d) => { const j = jbD.jobs.find(x => x.id === i
   j.log.push({id: jbId(), d: /^\d{4}-\d{2}-\d{2}$/.test(d || "") ? d : jbDay(), at: Date.now(), b: String(b), s: k}); jbAct(j, "📝 Note added from the Test log", k); jbBump(j); jbSave();
   if (JB.open === id) jbDraw(); return `${jbName(j)} · ${JB_SNAME[k].replace(/ \(.*\)$/, "")}`; };
 
+/* tap Mine → Jobs while already there: back to the job list (a blank new job isn't kept, same as ‹ Back) */
+document.addEventListener("click", e => { const b = e.target.closest('button[data-sub="jobs"], nav.tabs button[data-group="mine"]'); if (!b || nav.group !== "mine" || nav.sub !== "jobs") return;
+  if (!JB.open && !JB.person && !JB.ent && JB.view !== "set") return;
+  for (let i = 0; i < 50 && (JB.open || JB.person || JB.ent); i++) jbBack();
+  JB.view = "jobs"; JB.hrsBox = null; JB.colOpen = false; jbDraw(); }, true);
+
 /* Home: MY JOBS box (homeDraw calls this) */
 window.jobsHome = () => {
   const open = jbD.jobs.filter(j => j.st === "open" && !jbArch(j)).sort((a, b) => (b.pin - a.pin) || b.t - a.t).slice(0, 3), H = jbHours();
@@ -1297,15 +1303,6 @@ function jfStampDraw(ctx, w, h0, b){
   ctx.fillStyle = "#111417"; ctx.fillRect(0, h0, w, b.h); ctx.fillStyle = "#c8ff00"; ctx.fillRect(0, h0, b.bar, b.h);
   ctx.textBaseline = "top"; let y = h0 + b.pad;
   b.rows.forEach(r => { y += r.gap; ctx.font = r.font; ctx.fillStyle = r.color; ctx.fillText(r.s, b.pad * 2, y); y += Math.round(r.size * 1.3); });
-}
-function jfStamp(ctx, w, h, lines){
-  const fs = Math.max(14, Math.round(Math.min(w, h * 1.4) / 40)), pad = Math.round(fs * .6), lh = Math.round(fs * 1.3), bh = pad * 2 + lh * lines.length;
-  ctx.fillStyle = "rgba(0,0,0,.66)"; ctx.fillRect(0, h - bh, w, bh);
-  ctx.fillStyle = "#c8ff00"; ctx.fillRect(0, h - bh, Math.max(4, Math.round(fs / 4)), bh);
-  ctx.textBaseline = "top"; ctx.fillStyle = "#fff";
-  lines.forEach((t, i) => { ctx.font = `${i === 0 ? 700 : 500} ${fs}px -apple-system, system-ui, sans-serif`;
-    let s = t; while (s.length > 8 && ctx.measureText(s + "…").width > w - pad * 3) s = s.slice(0, -1);   /* cut to fit the width */
-    ctx.fillText(s === t ? t : s + "…", pad * 2, h - bh + pad + i * lh); });
 }
 /* a proof photo taken for one checklist or punch item */
 { const i = document.createElement("input"); i.type = "file"; i.accept = "image/*"; i.setAttribute("capture", "environment"); i.id = "jf-proof-ln"; i.hidden = true; document.body.appendChild(i);

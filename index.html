@@ -619,6 +619,9 @@ p.jb-gh{cursor:default}
 .jb-rowed{border:0;padding:4px 0}
 .jb-rowbtns{padding:0 0 8px}
 .jb-punch li.jb-liedit{display:block;padding:4px 0}
+/* phones: a checklist line gets the full width, its ⊘ 📷 ✎ sit on a short row under it */
+@media (max-width:560px){.jb-punch li:has(.jb-ndb){flex-wrap:wrap;column-gap:4px;padding-bottom:2px}.jb-punch li:has(.jb-ndb)>label{flex:1 1 100%;min-height:40px}
+  .jb-punch li:has(.jb-ndb)>label+*{margin-left:auto}.jb-punch li:has(.jb-ndb)>.jb-x{min-height:36px;margin-top:-4px}}
 /* notes: questions, dates, facts, the colored how-to; job tree; folding */
 .jn-q span{color:var(--pal-blue)}
 .jn-q .jn-qm{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--pal-blue);color:var(--sheet);font-size:13px}
@@ -1774,8 +1777,8 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <label for="fi-expr" class="wide">Measurements<input id="fi-expr" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10' 4 3/8&quot; - 2 x 5 1/16&quot;" aria-describedby="fi-help"></label>
     </div>
     <div class="keys" role="group" aria-label="Quick keys">
-      <button type="button" data-k="'">ft '</button><button type="button" data-k='"'>in "</button><button type="button" data-k=" ">space</button><button type="button" data-k="/">/</button>
-      <button type="button" data-k=" + ">+</button><button type="button" data-k=" - ">−</button><button type="button" data-k=" x ">×</button><button type="button" data-k=" ÷ ">÷</button>
+      <button type="button" data-k="'">ft '</button><button type="button" data-k='"'>in "</button><button type="button" data-k=" ">space</button><button type="button" data-k="/" aria-label="Fraction slash">/</button>
+      <button type="button" data-k=" + " aria-label="Plus">+</button><button type="button" data-k=" - " aria-label="Minus">−</button><button type="button" data-k=" x " aria-label="Times">×</button><button type="button" data-k=" ÷ " aria-label="Divided by">÷</button>
       <button type="button" data-k="back" aria-label="Backspace">⌫</button><button type="button" data-k="clear">Clear</button>
     </div>
     <div class="x"><table class="t out"><tbody>
@@ -2365,7 +2368,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <label for="mf-a">First number<input id="mf-a" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="3 1/2"></label>
       <label for="mf-b">Second number<input id="mf-b" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="5/8"></label>
     </div>
-    <div class="mode" id="mf-op" role="group" aria-label="Sign"><button type="button" data-op="+" aria-pressed="true">+</button><button type="button" data-op="-" aria-pressed="false">−</button><button type="button" data-op="*" aria-pressed="false">×</button><button type="button" data-op="/" aria-pressed="false">÷</button></div>
+    <div class="mode" id="mf-op" role="group" aria-label="Sign"><button type="button" data-op="+" aria-pressed="true" aria-label="Add">+</button><button type="button" data-op="-" aria-pressed="false" aria-label="Subtract">−</button><button type="button" data-op="*" aria-pressed="false" aria-label="Multiply">×</button><button type="button" data-op="/" aria-pressed="false" aria-label="Divide">÷</button></div>
     <div class="calc"><div class="ans" id="mf-ans" role="status" aria-atomic="true"></div></div>
     <svg class="mviz" id="mf-viz" viewBox="0 0 320 86" role="img" aria-label="The answer's fraction of an inch marked on a ruler with sixteenths"></svg>
     <details class="math"><summary>Show the math</summary><ol id="mf-math"></ol></details>
@@ -2398,7 +2401,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <section data-sec="math" data-kw="slope angle converter degrees percent grade inches per foot ratio pitch roof pitch 1 in 48 rise over run">
     <div class="sec-head"><h2>Slope &amp; angle converter</h2><small>in/ft ↔ % ↔ degrees ↔ 1 in X</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> two people (or a plan and a level) say the same slope in different ways: ¼"/ft is 2.08%, about 1.2°, or 1 in 48. Works for roof pitch too (6 in 12 = 6"/ft).</p></div></details>
-    <div class="mode" id="ms-mode" role="group" aria-label="What you have"><button type="button" data-ms="inft" aria-pressed="true">in / ft</button><button type="button" data-ms="pct" aria-pressed="false">%</button><button type="button" data-ms="deg" aria-pressed="false">Degrees</button><button type="button" data-ms="ratio" aria-pressed="false">1 in X</button></div>
+    <div class="mode" id="ms-mode" role="group" aria-label="What you have"><button type="button" data-ms="inft" aria-pressed="true">in / ft</button><button type="button" data-ms="pct" aria-pressed="false" aria-label="Percent">%</button><button type="button" data-ms="deg" aria-pressed="false">Degrees</button><button type="button" data-ms="ratio" aria-pressed="false">1 in X</button></div>
     <div class="calc">
       <label for="ms-v" id="ms-v-l">Inches per foot<input id="ms-v" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="1/4"></label>
     </div>
@@ -9744,7 +9747,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-17a";
+{ const NEWS = "2026-11-17b";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -11002,7 +11005,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-17a";
+var BUILD = "handbook-2026-11-17b";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
