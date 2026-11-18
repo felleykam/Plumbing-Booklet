@@ -349,7 +349,7 @@ const JN_OOPS = [   /* [wrong, right, why] */
   ["final @11-20", "final @11/20", "Dates take a slash (@11/20) or a month (@Nov 20)."],
   ["call [[Sammy]]", "call [[Sam|Sammy]]", "A gray ＋ link means no page has that exact name. Fix the spelling, or keep the page name and show your word after a | bar."]];
 function jnIntro(n){
-  const st = jbD.fold["jn-help"], all = jbD.jobs.reduce((t, j) => t + j.log.length, 0), open = st === "open" || (st !== "shut" && all < 3);
+  const st = jbD.fold["jn-help"], all = jbD.jobs.reduce((t, j) => t + j.log.length, 0), open = st === "open" || (st !== "shut" && all === 0);
   jnForce = {"sam": "person", "abc homes": "bld", "sunny acres": "sub", "lot 12": "job", "offset calculator": "card"};
   const anat = JN_ANAT.map(([c, mk, ex, what, where]) => `<div class="jn-an k-${c}"><p class="jn-anh"><code>${esc(mk)}</code> ${what}</p>
       <div class="jn-flow"><code class="jn-src">${esc(ex)}</code><span class="jn-arrow" aria-label="becomes">→</span><div class="jn-b jn-out">${jnMd(ex, "cheat")}</div></div>
@@ -405,11 +405,12 @@ const jbTechHtml = () => { const T = jbD.tech || {}, f = (k, label, ph, type = "
   <p class="note">Your name, company and phone go on every new proof photo, proof card and report. Your license # is kept with them but not shown. Saved on this phone only.</p></div></details>`; };
 const jbRulesHtml = () => { const r = String(jbD.rules || "").trim(); if (!r) return "";
   return `<div class="jb-rules"><p class="jn-prevh">📌 Rules for every job · these come first</p><div class="jn-b">${jnMd(r, "rules").replace(/data-tk=/g, "disabled data-tk=")}</div><p class="note"><button type="button" class="linkish" data-a="rules-go">Change them</button> in Jobs settings.</p></div>`; };
-const jnBlock = (o, list, ph) => `${jnIntro(list.length)}<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label>
+const jnBlock = (o, list, ph) => `<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label>
     <label for="jn-d">Date<input id="jn-d" type="date" value="${jbDay()}"></label></div>
   ${JN_TOOLS}
   <div class="jn-b jn-prev" id="jn-prev"${o.draft.trim() ? "" : " hidden"}><p class="jn-prevh">Preview: how it'll look</p>${o.draft.trim() ? jnMd(o.draft, "prev") : ""}</div>
   <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-a="jn-add">Add note</button></div></div>
+  ${jnIntro(list.length)}
   ${list.length ? `<div class="jn-mode"><span>${list.length} note${list.length === 1 ? "" : "s"}</span><div class="seg jb-seg" role="group" aria-label="How notes show"><button type="button" data-jnmode="c" aria-pressed="${!jbD.jnFull}">Compact</button><button type="button" data-jnmode="f" aria-pressed="${!!jbD.jnFull}">Full</button></div></div>
   <div class="jn-log${jbD.jnFull ? "" : " jn-compact"}">${list.slice().sort(jnSort).map(jnEntry).join("")}</div>` : ""}`;
 
@@ -582,7 +583,7 @@ const jbInspQ = i => i.r !== "booked" ? "" : `<tr class="jb-iq"><td colspan="3">
 const jbInspRow = i => jbIsEd("insp", i.id)
   ? `<tr><td colspan="3"><div class="calc jb-rowed"><label for="re-d">Date<input id="re-d" type="date" value="${esc(i.d)}"></label><label for="re-r">Result<select id="re-r">${jbOpts(JB_RES, i.r)}</select></label>
      <label for="re-who" class="wide">Inspector<input id="re-who" type="text" list="jb-ppl" autocomplete="off" value="${esc(i.who)}"></label><label for="re-n" class="wide">Notes / corrections<input id="re-n" type="text" autocomplete="off" value="${esc(i.n)}"></label></div>${jbRowBtns}</td></tr>`
-  : `<tr><td><b>${jbNice(i.d)}</b>${i.who ? `<div class="sub">${esc(i.who)}</div>` : ""}${i.n ? `<div class="sub">${esc(i.n)}</div>` : ""}</td><td><select data-ir="${i.id}" aria-label="Result">${jbOpts(JB_RES, i.r)}</select></td><td class="jb-acts">${jbEdBtn("insp", i.id, "this inspection")}<button type="button" class="jb-x" data-del="insp|${i.id}" aria-label="Delete this inspection">×</button></td></tr>`;
+  : `<tr><td><b>${jbNice(i.d)}</b>${i.who ? `<div class="sub">${esc(i.who)}</div>` : ""}${i.n ? `<div class="sub">${esc(i.n)}</div>` : ""}</td><td><span class="jb-res r-${i.r}">${JB_RES[i.r]}</span></td><td class="jb-acts">${jbEdBtn("insp", i.id, "this inspection")}<button type="button" class="jb-x" data-del="insp|${i.id}" aria-label="Delete this inspection">×</button></td></tr>`;
 const jbHrsRow = h => jbIsEd("hrs", h.id)
   ? `<tr><td colspan="3"><div class="calc jb-rowed"><label for="re-d">Date<input id="re-d" type="date" value="${esc(h.d)}"></label><label for="re-h">Hours<input id="re-h" type="number" inputmode="decimal" min="0" max="24" step="any" value="${h.h}"></label>
      <label for="re-n" class="wide">What you did<input id="re-n" type="text" autocomplete="off" value="${esc(h.n)}"></label></div>${jbRowBtns}</td></tr>`
@@ -601,7 +602,7 @@ function jbStageHtml(j, k){
   const hr = hrs.reduce((n, h) => n + (+h.h || 0), 0);
   return `<div class="jt-head"><span class="jt-dot" aria-hidden="true">${JB_ICON[s.st]}</span><h3>${JB_SNAME[k]}</h3>${JB_XTRA.includes(k) ? `<button type="button" class="linkish jt-rm" data-xdel="${k}">Remove stage</button>` : ""}</div>
   <div class="seg jb-seg" role="group" aria-label="${JB_SNAME[k]} status">${Object.entries(JB_SST).map(([v, t]) => `<button type="button" data-sst="${v}" aria-pressed="${s.st === v}">${t}</button>`).join("")}</div>
-  <details class="explain jt-dates"><summary>${esc([s.d0 ? "Started " + jbNice(s.d0) : "No start date", s.d1 && "done " + jbNice(s.d1), (pName(s.lead) || pName(j.lead)) && "lead " + (pName(s.lead) || pName(j.lead))].filter(Boolean).join(" · "))} · change</summary><div class="calc">
+  <details class="explain jt-dates"><summary>📅 ${esc([s.d0 ? "Started " + jbNice(s.d0) : "No start date", s.d1 && "done " + jbNice(s.d1), (pName(s.lead) || pName(j.lead)) && "lead " + (pName(s.lead) || pName(j.lead))].filter(Boolean).join(" · "))} · change</summary><div class="calc">
     <label for="js-d0">Started<input id="js-d0" data-sf="d0" type="date" value="${esc(s.d0)}"></label>
     <label for="js-d1">Done<input id="js-d1" data-sf="d1" type="date" value="${esc(s.d1)}"></label>
     <label for="js-lead" class="wide">Lead on this stage<input id="js-lead" data-sp="1" list="jb-ppl" type="text" autocomplete="off" value="${esc(pName(s.lead))}" placeholder="${esc(pName(j.lead) || "Who ran it")}"></label>
@@ -623,13 +624,12 @@ function jbStageHtml(j, k){
   </div><div class="set-btns jb-top"><button type="button" class="btn" data-a="insp-add">Add inspection</button></div></div></details>
 
   <p class="card-h" data-fold="s-hrs">Hours · ${jbHr(hr)} hr</p>
-  <div class="calc">
+  ${hrs.length ? `<div class="x"><table class="t wrap jb-t"><tbody>${hrs.map(jbHrsRow).join("")}</tbody></table></div>` : ""}
+  <details class="explain"${hrs.length ? "" : " open"}><summary>+ Log hours on ${esc(JB_SNAME[k].replace(/ \(.*\)$/, ""))}</summary><div><div class="calc">
     <label for="jh-d">Date<input id="jh-d" type="date" value="${jbDay()}"></label>
     <label for="jh-h">Hours<input id="jh-h" type="number" inputmode="decimal" min="0" max="24" step="any" placeholder="8"></label>
     <label for="jh-n" class="wide">What you did <i>(optional)</i><input id="jh-n" type="text" autocomplete="off" placeholder="Set tubs, ran vents"></label>
-  </div>
-  <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-a="hrs-add">Log hours</button></div></div>
-  ${hrs.length ? `<div class="x"><table class="t wrap jb-t"><tbody>${hrs.map(jbHrsRow).join("")}</tbody></table></div>` : ""}
+  </div><div class="set-btns jb-top"><button type="button" class="btn" data-a="hrs-add">Log hours</button></div></div></details>
 
   <p class="card-h" data-fold="s-notes">Notes</p>
   ${jbRulesHtml()}
@@ -716,16 +716,16 @@ function jbJobHtml(j){
     return k === sel ? `<li class="jt-i jt-${s.st} jt-k-${k} jt-open" id="jt-open">${jbStageHtml(j, k)}</li>`
       : `<li class="jt-i jt-${s.st} jt-k-${k}"><button type="button" class="jt-sum" data-stage="${k}"><span class="jt-dot" aria-hidden="true">${JB_ICON[s.st]}</span><span class="jt-txt"><b>${name}</b><span>${jbStageSum(j, k)}</span></span></button></li>`; }).join("")}</ol>
   ${JB_XTRA.some(k => !j.xs.includes(k)) ? `<div class="chips jn-tagbar jt-add" role="group" aria-label="Add a stage">${JB_XTRA.filter(k => !j.xs.includes(k)).map(k => `<button type="button" data-xadd="${k}" data-xk="${k}">${esc(jbXChip(j, k, JF.phS && JF.phS.job === j.id ? JF.phS.n[k] || 0 : 0))}</button>`).join("")}</div>
-  <div class="jb-in"><p class="note">Gas, Final and Warranty are extra stages: add them when a job needs them. Taking one off keeps what's in it; <b>Put back</b> shows it again.</p></div>` : ""}
+  <div class="jb-in"><p class="note">Extra stages: add one only when the job needs it.</p></div>` : ""}
 
   <p class="card-h" data-fold="punch">Punch list &amp; materials</p>
+  ${j.punch.length ? `<ul class="jb-punch">${j.punch.map(p => jbIsEd("punch", p.id) ? `<li class="jb-liedit">${jbTextEd(p.t)}</li>` : `<li><label><input type="checkbox" data-pk="${p.id}"${p.done ? " checked" : ""}><span>${esc(p.t)}${p.done && p.at ? `<small class="jb-when">✓ ${jbShort(p.at)}</small>` : p.add ? `<small class="jb-when">added ${jbShort(p.add)}</small>` : ""}</span></label>${p.ph ? `<button type="button" class="jb-x" data-v="${esc(p.ph)}" aria-label="See the proof photo for ${esc(p.t)}">📷</button>` : `<button type="button" class="jb-x jb-cam" data-pkph="${p.id}" aria-label="Check off ${esc(p.t)} with a proof photo">📷</button>`}${jbEdBtn("punch", p.id, esc(p.t))}<button type="button" class="jb-x" data-del="punch|${p.id}" aria-label="Delete ${esc(p.t)}">×</button></li>`).join("")}</ul>` : ""}
   <div class="calc"><label for="jp-t" class="wide">Add an item<input id="jp-t" type="text" autocomplete="off" enterkeyhint="done" placeholder="Nail plates, 2 × 1/2 PEX stub-outs"></label></div>
   <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-a="punch-add">Add item</button>${j.punch.some(p => p.done) ? `<button type="button" class="btn ghost" data-a="punch-clear">Clear checked</button>` : ""}</div></div>
-  ${j.punch.length ? `<ul class="jb-punch">${j.punch.map(p => jbIsEd("punch", p.id) ? `<li class="jb-liedit">${jbTextEd(p.t)}</li>` : `<li><label><input type="checkbox" data-pk="${p.id}"${p.done ? " checked" : ""}><span>${esc(p.t)}${p.done && p.at ? `<small class="jb-when">✓ ${jbShort(p.at)}</small>` : p.add ? `<small class="jb-when">added ${jbShort(p.add)}</small>` : ""}</span></label>${p.ph ? `<button type="button" class="jb-x" data-v="${esc(p.ph)}" aria-label="See the proof photo for ${esc(p.t)}">📷</button>` : `<button type="button" class="jb-x jb-cam" data-pkph="${p.id}" aria-label="Check off ${esc(p.t)} with a proof photo">📷</button>`}${jbEdBtn("punch", p.id, esc(p.t))}<button type="button" class="jb-x" data-del="punch|${p.id}" aria-label="Delete ${esc(p.t)}">×</button></li>`).join("")}</ul>` : ""}
 
   <p class="card-h" data-fold="media">Photos &amp; files</p>
   <div class="jb-in"><div class="set-btns"><input type="file" id="jf-proof" accept="image/*" capture="environment" hidden><label class="btn ghost">Add photos<input type="file" id="jf-ph" accept="image/*" multiple hidden></label><label class="btn ghost">Add files (PDF, plans)<input type="file" id="jf-fi" multiple hidden></label><button type="button" class="btn ghost" data-a="jf-all" id="jf-all" hidden>Save or send all</button></div>
-    <p class="note">Each photo is filed under a stage. Tap a stage to see its photos, or <b>All</b>. New photos go under the stage you're looking at. Files (plans, the permit) show under every stage. Proof photos (📍) are stamped with the time, GPS and job. Tap one to describe, save or send it.</p></div>
+    <p class="note">Photos are filed by stage: tap one, or <b>All</b>. 📍 = proof photo (time, GPS, job). Tap a photo to describe, move, save or send it.</p></div>
   <div class="chips jn-tagbar jf-chips" id="jf-chips" role="group" aria-label="Show photos from"></div>
   <div class="jf-grid" id="jf-photos"></div>
   <div class="jb-list" id="jf-files"></div>
@@ -808,8 +808,15 @@ function jbEntHtml(t, x){
   ${jnBlock(x, x.log, t === "bld" ? "How they want things done. Who pays. - [ ] get the new super's number" : "Where the meters are, HOA rules, which lots are left")}
   <div class="set-btns jb-end"><button type="button" class="del" data-a="e-del">Delete this ${C.one}</button></div>`;
 }
+/* a job with nothing in it at all: never named, never changed (adding a photo or anything else writes to its activity log) */
+const jbBlank = j => !(j.a || "").trim() && !(j.name || "").trim() && !String(j.who || "").trim() && !j.bld && !j.sub && !j.log.length && !String(j.draft || "").trim() && !j.insp.length && !j.hrs.length && !j.punch.length && !j.lead && !j.sup
+  && !j.color && !j.icon && !j.pin && !(j.act || []).some(e => e.t !== "Job created")
+  && JB_STG.every(([k]) => { const s = j.stages[k]; return !s || (!s.done.length && !s.extra.length && !s.d1 && !s.lead && !(s.hide || []).length && !(s.ord || []).length); });
+const jbTidy = away => { const n = jbD.jobs.length, now = Date.now();   /* away: you've left My jobs, so the open one goes too (unless it was made a moment ago) */
+  jbD.jobs = jbD.jobs.filter(j => !jbBlank(j) || (j.id === JB.open && (!away || now - (+j.made || 0) < 5000)));
+  if (JB.open && !jbD.jobs.some(j => j.id === JB.open)) JB.open = null; if (jbD.jobs.length !== n) jbSave(true); };
 function jbDraw(){
-  JB_IX = null; JN_CARDS = null;
+  JB_IX = null; JN_CARDS = null; jbTidy();
   const body = $("jb-body"), ae = document.activeElement, had = !!ae && ae !== document.body && body.contains(ae);
   if (had) ae.blur();   /* a box removed while the keyboard is up never says so, and the bar floats: close it properly first */
   const en = eCur(), j = jbCur(), p = JB.person && pById(JB.person); if (JB.open && !j) JB.open = null; if (JB.person && !p) JB.person = null; if (JB.ent && !en) JB.ent = null;
@@ -823,7 +830,7 @@ function jbDraw(){
   else if (JB.view === "set"){ $("jb-goal").value = String(+jbD.goal === 6000 ? 6000 : 8000); jfUse(); }
   body.querySelectorAll(".card-h[data-fold]").forEach(h => { const k = h.dataset.fold, f = k === "details" && j ? (JB.dState && JB.dState.id === j.id ? !JB.dState.open : !!(JB.dPos && JB.dPos.id === j.id ? JB.dPos.named : (j.name || "").trim() || (j.a || "").trim())) : !!jbD.fold[k];
     h.classList.add("jb-fh"); h.classList.toggle("jb-folded", f); h.setAttribute("role", "button"); h.tabIndex = 0; h.setAttribute("aria-expanded", String(!f));
-    for (let n = h.nextElementSibling; n && !n.matches(".card-h, .jb-end"); n = n.nextElementSibling) n.hidden = f; });
+    for (let n = h.nextElementSibling; n && !n.matches(".card-h, .jb-end"); n = n.nextElementSibling){ if (f){ if (!n.hidden){ n.hidden = true; n.dataset.fh = "1"; } } else if (n.dataset.fh){ n.hidden = false; delete n.dataset.fh; } } });
   bindPn(body);
   if (had) jbReseat();
   const cj = $("ck-jobs"); if (cj && window.jbCkJobs && typeof ckPh === "string") cj.innerHTML = window.jbCkJobs(ckPh);
@@ -846,10 +853,7 @@ function jbBack(){
     if (p && !p.n.trim() && !p.log.length && !pJobs(p).length && !["co", "ph", "em", "draft"].some(k => String(p[k] || "").trim())) jbD.people = jbD.people.filter(x => x !== p);
     jbGoBack(); return; }
   const j = jbCur();
-  if (j && !(j.a || "").trim() && !(j.name || "").trim() && !j.who.trim() && !j.bld && !j.sub && !j.log.length && !j.draft.trim() && !j.insp.length && !j.hrs.length && !j.punch.length && !j.lead && !j.sup && !JF.n
-    && !j.color && !j.icon && !j.pin && !(j.act || []).some(e => e.t !== "Job created")
-    && JB_STG.every(([k]) => { const s = j.stages[k]; return !s.done.length && !s.extra.length && !s.d1 && !s.lead && !(s.hide || []).length && !(s.ord || []).length; }))
-    jbD.jobs = jbD.jobs.filter(x => x !== j);   /* a new job left blank isn't kept */
+  if (j && !JF.n && jbBlank(j)) jbD.jobs = jbD.jobs.filter(x => x !== j);   /* a new job left blank isn't kept */
   jbGoBack();
 }
 /* a deleted person, builder, subdivision or job with exactly this name */
@@ -1197,9 +1201,10 @@ document.addEventListener("click", e => { const b = e.target.closest('button[dat
 
 /* Home: MY JOBS box (homeDraw calls this) */
 window.jobsHome = () => {
+  if (!(nav.group === "mine" && nav.sub === "jobs")) jbTidy(true);   /* away from My jobs: a blank new job doesn't sit on Home */
   const open = jbD.jobs.filter(j => j.st === "open" && !jbArch(j)).sort((a, b) => (b.pin - a.pin) || b.t - a.t).slice(0, 3), H = jbHours();
   return `<p class="card-h">My jobs <button type="button" class="linkish" data-hj="all">All</button></p>`
-    + (open.length ? `<div class="jb-list">${open.map(j => jbRow(j, "data-hj")).join("")}</div>`
+    + (open.length ? `<div class="jb-list jb-mini">${open.map(j => jbRow(j, "data-hj")).join("")}</div>`
       : `<p class="note"><button type="button" class="linkish" data-hj="new">Add a job</button>: a timeline from Underground to Final, with the blanks ready to fill in.</p>`)
     + (H.wk ? `<p class="note">${jbHr(H.today)} hr today · ${jbHr(H.wk)} hr this week</p>` : "")
     + (() => { const now = jbDay(), wk = new Date(now + "T12:00:00"); wk.setDate(wk.getDate() + 7); const end = jbDay(wk);

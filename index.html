@@ -423,8 +423,18 @@ section[data-sec]{content-visibility:auto;contain-intrinsic-size:auto 500px}
 .jb-show button{padding:4px 2px;font-size:14px;letter-spacing:.02em;min-height:44px}
 .jb-rulesd{margin:8px 12px}
 .jb-techd summary{overflow-wrap:anywhere}
-.jt-dates{margin:6px 12px 2px}
-.jt-dates summary{font-size:15px;color:var(--muted)}
+.jt-dates{margin:6px 12px 2px;background:none;border:0}
+.jt-dates summary{font-size:15px;color:var(--muted);min-height:40px;padding:6px 0}
+.jt-dates summary::before{content:none}
+.jt-dates[open]{border-bottom:1px solid var(--rule)}
+/* Home's My jobs: the name, the stage and what's next; the full row is one tap away */
+.jb-mini .jb-row>span:not(.jb-tags):not(.jb-peek){display:none}
+.jb-mini .jb-tags .badge:not(.jb-sbadge):not(.jb-fail){display:none}
+.jb-mini .jb-row{padding-top:8px;padding-bottom:8px}
+.jf-chips button[aria-pressed="true"]{background:var(--k);color:var(--hv);border-color:var(--k)}
+:root[data-theme="dark"] .jf-chips button[aria-pressed="true"]{background:var(--hv);color:var(--k);border-color:var(--hv)}
+.jb-res{display:inline-block;padding:2px 9px;border-radius:99px;border:2px solid currentColor;font-weight:800;font-size:13px;white-space:nowrap}
+.jb-res.r-booked{color:var(--pal-purple)}.jb-res.r-pass{color:var(--ok,var(--pal-green))}.jb-res.r-partial{color:var(--pal-orange)}.jb-res.r-fail{color:var(--danger)}
 .jb-reps{flex-wrap:wrap}
 .jb-act li.jb-aday{padding:10px 0 2px;border-bottom:0;font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .jb-act time{display:inline;margin-right:6px}
@@ -632,8 +642,8 @@ p.jb-gh{cursor:default}
 .jb-rowbtns{padding:0 0 8px}
 .jb-punch li.jb-liedit{display:block;padding:4px 0}
 /* phones: a checklist line gets the full width, its ⊘ 📷 ✎ sit on a short row under it */
-@media (max-width:560px){.jb-punch li:has(.jb-ndb){flex-wrap:wrap;column-gap:4px;padding-bottom:2px}.jb-punch li:has(.jb-ndb)>label{flex:1 1 100%;min-height:40px}
-  .jb-punch li:has(.jb-ndb)>label+*{margin-left:auto}.jb-punch li:has(.jb-ndb)>.jb-x{min-height:36px;margin-top:-4px}}
+@media (max-width:560px){.jb-punch li:is(:has(.jb-ndb),:has(input[data-pk])){flex-wrap:wrap;column-gap:4px;padding-bottom:2px}.jb-punch li:is(:has(.jb-ndb),:has(input[data-pk]))>label{flex:1 1 100%;min-height:40px}
+  .jb-punch li:is(:has(.jb-ndb),:has(input[data-pk]))>label+*{margin-left:auto}.jb-punch li:is(:has(.jb-ndb),:has(input[data-pk]))>.jb-x{min-height:36px;margin-top:-4px}}
 /* notes: questions, dates, facts, the colored how-to; job tree; folding */
 .jn-q span{color:var(--pal-blue)}
 .jn-q .jn-qm{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--pal-blue);color:var(--sheet);font-size:13px}
@@ -9764,7 +9774,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-17g";
+{ const NEWS = "2026-11-17k";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -11022,7 +11032,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-17g";
+var BUILD = "handbook-2026-11-17k";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
