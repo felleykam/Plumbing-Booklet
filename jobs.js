@@ -228,12 +228,12 @@ window.jbTplPut = (k, list) => { jbTplSet(k, list); jbSave(); if (!JB.open && !J
 const jbCurKeys = (j, k) => jbCk(j, k).items.map(x => x.key);
 const jbCkRow = (x, i, n) => {
   if (!x.tpl && jbIsEd("ck", x.id)) return `<li class="jb-liedit">${jbTextEd(x.t)}</li>`;
-  const ed = x.tpl ? `<button type="button" class="jb-x" data-ckconv="${esc(x.key)}" aria-label="Edit ${esc(x.t)}">✎</button>` : jbEdBtn("ck", x.id, esc(x.t));   /* always there (it asks first); only × and the arrows wait for Edit */
+  const ed = !JB.ckEdit ? "" : x.tpl ? `<button type="button" class="jb-x" data-ckconv="${esc(x.key)}" aria-label="Edit ${esc(x.t)}">✎</button>` : jbEdBtn("ck", x.id, esc(x.t));   /* on site a row is the box and 📷; ⊘ ✎ ↑ ↓ × wait for Edit (a ⊘ already set stays, to clear it) */
   const mv = JB.ckEdit ? `<button type="button" class="jb-x" data-ckmv="${esc(x.key)}" data-dir="-1" aria-label="Move ${esc(x.t)} up"${i === 0 ? " disabled" : ""}>↑</button><button type="button" class="jb-x" data-ckmv="${esc(x.key)}" data-dir="1" aria-label="Move ${esc(x.t)} down"${i === n - 1 ? " disabled" : ""}>↓</button>` : "";
   const cam = JB.ckEdit ? "" : x.ph ? `<button type="button" class="jb-x" data-v="${esc(x.ph)}" aria-label="See the proof photo for ${esc(x.t)}">📷</button>`
     : `<button type="button" class="jb-x jb-cam" data-ckph="${esc(x.key)}" aria-label="Check off ${esc(x.t)} with a proof photo">📷</button>`;
   const del = !JB.ckEdit ? "" : `<button type="button" class="jb-x" data-ckdel="${esc(x.key)}" aria-label="Remove ${esc(x.t)}">×</button>`;
-  return `<li><label><input type="checkbox" data-ck="${esc(x.key)}"${x.done ? " checked" : ""}><span${x.nd && !x.done ? ' class="jb-ndt"' : ""}>${esc(x.t)}${x.done && x.at ? `<small class="jb-when">✓ ${jbShort(x.at)}</small>` : ""}${x.nd && !x.done ? `<small class="jb-when jb-ndw">⊘ Not done: ${esc(x.nd.why)} · ${jbShort(x.nd.at)}</small>` : ""}</span></label>${mv}${JB.ckEdit ? "" : `<button type="button" class="jb-x jb-ndb${x.nd && !x.done ? " on" : ""}" data-cknd="${esc(x.key)}" aria-label="${x.nd && !x.done ? "Clear not done for" : "Mark not done, with why:"} ${esc(x.t)}">⊘</button>`}${cam}${ed}${del}</li>`;
+  return `<li><label><input type="checkbox" data-ck="${esc(x.key)}"${x.done ? " checked" : ""}><span${x.nd && !x.done ? ' class="jb-ndt"' : ""}>${esc(x.t)}${x.done && x.at ? `<small class="jb-when">✓ ${jbShort(x.at)}</small>` : ""}${x.nd && !x.done ? `<small class="jb-when jb-ndw">⊘ Not done: ${esc(x.nd.why)} · ${jbShort(x.nd.at)}</small>` : ""}</span></label>${mv}${!JB.ckEdit && !(x.nd && !x.done) ? "" : `<button type="button" class="jb-x jb-ndb${x.nd && !x.done ? " on" : ""}" data-cknd="${esc(x.key)}" aria-label="${x.nd && !x.done ? "Clear not done for" : "Mark not done, with why:"} ${esc(x.t)}">⊘</button>`}${cam}${ed}${del}</li>`;
 };
 
 /* notes: a dated log with our own light markup (see "How to write notes") */
@@ -350,17 +350,12 @@ const JN_CHEAT = [
   ["```\n3/4 x 8' 6\"\n1/2 x 4'\n```", "Three backticks above and below: shows exactly as typed (cut lists, model numbers)."],
   ["801-555-0100", "Phone numbers and web links are tappable."],
   ["## Did\n- set tubs\n## Didn't, and why\n- no water heater on site\n## Next\n- [ ] trim kit @fri", "📝 Day log: the button lays this out for you. What got done, what didn't and why, what's next: the three things a daily log needs."]];
-function jnHelpHtml(){
+function jnHelpHtml(){   /* the marks the 7 main ones don't cover (the note box itself has a live preview, so no separate try box) */
   jnForce = {"sam": "person", "abc homes": "bld", "sunny acres": "sub", "lot 12": "job", "offset calculator": "card"};   /* the examples always show every color */
-  const rows = JN_CHEAT.map(([src, what]) => `<div class="jn-cr"><code class="jn-src">${esc(src)}</code><div class="jn-b jn-out">${jnMd(src, "cheat")}</div><p class="jn-what">${what}</p></div>`).join("");
+  const rows = JN_CHEAT.slice(7).map(([src, what]) => `<div class="jn-cr"><code class="jn-src">${esc(src)}</code><div class="jn-b jn-out">${jnMd(src, "cheat")}</div><p class="jn-what">${what}</p></div>`).join("");
   jnForce = null;
-  const tryIt = "- [ ] call [[Sam]] #warranty\n!! gas not tested\n?? vent through roof or wall\nfinal @Nov 20\nPSI: 80";
-  return `<details class="explain"><summary>Every mark, with examples</summary><div>
-    <p class="note jn-lead">Type the marks on the left; the note shows what's on the right. The buttons above the box put them in for you, in the same colors.</p>
-    <div class="jn-cheat">${rows}</div>
-    <p class="card-h">Try it</p>
-    <div class="calc"><label for="jn-try" class="wide">Type here: nothing is saved<textarea id="jn-try" rows="3">${esc(tryIt)}</textarea></label></div>
-    <div class="jn-b jn-prev" id="jn-tryout">${jnMd(tryIt, "try")}</div></div></details>`;
+  return `<details class="explain jn-les"><summary>3 · More marks: links with your words, headings, lists, bold, quotes, phone numbers</summary><div>
+    <div class="jn-cheat">${rows}</div></div></details>`;
 }
 /* one notes block, for a job stage or a person */
 const jnOwner = () => eCur() || (JB.person ? pById(JB.person) : jbCur());
@@ -394,14 +389,12 @@ function jnIntro(n){
   <p class="note jn-lead"><b>A note is just what you'd text your lead.</b> Plain words work. A few marks make a line do more: a checkbox you can tick, a warning, a date that shows up on Home. Type them, or tap the colored buttons under the box and they type it for you. Each mark has its own color, and the button is the same color.</p>
   <div class="jn-key" aria-label="Color key"><span class="k k-task">☐ To do</span><span class="k k-flag">⚠ Heads-up</span><span class="k k-q">? Question</span><span class="k k-prop">Label: fact</span><span class="k k-date">📅 Date</span><span class="k k-tag"># Tag</span><span class="k k-link">👤 Link</span></div>
 
-  <details class="explain jn-les"><summary>1 · The 3 steps</summary><div>
+  <details class="explain jn-les"><summary>1 · The basics</summary><div>
     <p class="jn-step"><span class="jn-num">1</span><span>Type what happened: <i>"Set tubs. Inspector moved to Thursday."</i> That's a whole note. No marks needed.</span></p>
     <p class="jn-step"><span class="jn-num">2</span><span>Want a checkbox, a warning or a date? Tap a <b>colored button</b> under the box, then type after it. The <b>Preview</b> under the box shows how it'll look before you save.</span></p>
-    <p class="jn-step"><span class="jn-num">3</span><span>Tap <b>Add note</b>. It's saved with the date in the date box (today, unless you change it), newest on top. Tap <b>✎</b> on a note to fix it.</span></p>
-    <p class="note"><b>Where a note lives:</b> a note added while a stage is open belongs to that stage (Top-out notes stay on Top-out). People, builders and subdivisions have their own notes on their pages.</p></div></details>
-
-  <details class="explain jn-les"><summary>2 · Start of a line, or anywhere?</summary><div>
-    <p class="note jn-lead">This is the rule that matters most. Some marks only work as the <b>first thing on a line</b>. The rest work anywhere.</p>
+    <p class="jn-step"><span class="jn-num">3</span><span>Tap <b>Add note</b>. It's saved with the date in the <b>Dated</b> box next to it (today, unless you change it), newest on top. Tap <b>✎</b> on a note to fix it.</span></p>
+    <p class="note"><b>Where a note lives:</b> a note added while a stage is open belongs to that stage (Top-out notes stay on Top-out). People, builders and subdivisions have their own notes on their pages.</p>
+    <p class="note jn-lead"><b>The rule that matters most:</b> Some marks only work as the <b>first thing on a line</b>. The rest work anywhere.</p>
     <div class="jn-zones">
       <div class="jn-zone"><p class="jn-zh">At the start of a line, then a space</p><p class="jn-lineart"><span class="jn-here">- [ ]</span> call the super</p>
         <p><code>- [ ]</code> checkbox · <code>!!</code> heads-up · <code>??</code> question · <code>Label:</code> fact · <code>-</code> list · <code>1.</code> numbered · <code>#</code> heading · <code>&gt;</code> quote</p></div>
@@ -410,21 +403,17 @@ function jnIntro(n){
     </div>
     <p class="note"><b>One thing per line.</b> Two to-dos? Two lines, each starting with <code>- [ ]</code>. A line can still mix in-line marks: <code>- [ ] call [[Sam]] @fri #warranty</code> is a checkbox with a link, a date and a tag.</p></div></details>
 
-  <details class="explain jn-les"><summary>3 · What each mark does, and where it shows up</summary><div>
+  <details class="explain jn-les"><summary>2 · The 7 main marks, and where each shows up</summary><div>
     <p class="note jn-lead">Left: what you type. Middle: what the note shows. Bottom: where else the app uses it.</p>
     <div class="jn-cheat">${anat}</div></div></details>
+
+
+
+  ${jnHelpHtml()}
 
   <details class="explain jn-les"><summary>4 · Easy mistakes, side by side</summary><div>
     <p class="note jn-lead">If a mark didn't do anything, it's almost always one of these.</p>
     <div class="jn-cheat">${oops}</div></div></details>
-
-  <details class="explain jn-les"><summary>5 · A full note, start to finish</summary><div>
-    <p class="note jn-lead">A day on a top-out, the way you'd write it. Each line is a different mark.</p>
-    ${(() => { const ex = "## Did\n- set tubs and both shower valves\n## Didn't, and why\n- no water heater on site yet\n!! gas not tested\n?? does the super want the vent through the roof\n## Next\n- [ ] call [[Sam]] about the heater @tomorrow\nPSI: 80\n#callback"; jnForce = {"sam": "person"}; const out = jnMd(ex, "cheat"); jnForce = null;
-      return `<div class="jn-flow jn-flow2"><code class="jn-src">${esc(ex)}</code><div class="jn-b jn-out">${out}</div></div>`; })()}
-    <p class="note">The <b>📝 Day log</b> button types the three headings for you.</p></div></details>
-
-  ${jnHelpHtml().replace('<details class="explain">', '<details class="explain jn-les">').replace("<summary>Every mark, with examples</summary>", "<summary>6 · Every mark, plus a box to try them</summary>")}
   <p class="note"><b>Good notes are short, same-day and specific:</b> what got done, what didn't and why (delays!), who said what (use a <code>&gt;</code> quote), and a photo of anything that'll be hidden behind drywall. Every model and serial you install: write it as <code>Serial: …</code> so it's there for a warranty call.</p>
 </div></details>`;
 }
@@ -438,14 +427,14 @@ const jbTechHtml = () => { const T = jbD.tech || {}, f = (k, label, ph, type = "
   <p class="note">Your name, company and phone go on every new proof photo, proof card and report. Your license # is kept with them but not shown. Saved on this phone only.</p></div></details>`; };
 const jbRulesHtml = () => { const r = String(jbD.rules || "").trim(); if (!r) return "";
   return `<div class="jb-rules"><p class="jn-prevh">📌 Rules for every job · these come first</p><div class="jn-b">${jnMd(r, "rules").replace(/data-tk=/g, "disabled data-tk=")}</div><p class="note"><button type="button" class="linkish" data-a="rules-go">Change them</button> in Jobs settings.</p></div>`; };
-const jnBlock = (o, list, ph) => `<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label>
-    <label for="jn-d">Date<input id="jn-d" type="date" value="${jbDay()}"></label></div>
+/* new note on top, then the notes, then the guide (folded once you've written a few) */
+const jnBlock = (o, list, ph) => `<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label></div>
   ${JN_TOOLS}
   <div class="jn-b jn-prev" id="jn-prev"${o.draft.trim() ? "" : " hidden"}><p class="jn-prevh">Preview: how it'll look</p>${o.draft.trim() ? jnMd(o.draft, "prev") : ""}</div>
-  <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-a="jn-add">Add note</button></div></div>
-  ${jnIntro(list.length)}
+  <div class="jb-in"><div class="set-btns jn-addrow"><button type="button" class="btn" data-a="jn-add">Add note</button><label for="jn-d" class="jn-dl">Dated<input id="jn-d" type="date" value="${jbDay()}"></label></div></div>
   ${list.length ? `<div class="jn-mode"><span>${list.length} note${list.length === 1 ? "" : "s"}</span><div class="seg jb-seg" role="group" aria-label="How notes show"><button type="button" data-jnmode="c" aria-pressed="${!jbD.jnFull}">Compact</button><button type="button" data-jnmode="f" aria-pressed="${!!jbD.jnFull}">Full</button></div></div>
-  <div class="jn-log${jbD.jnFull ? "" : " jn-compact"}">${list.slice().sort(jnSort).map(jnEntry).join("")}</div>` : ""}`;
+  <div class="jn-log${jbD.jnFull ? "" : " jn-compact"}">${list.slice().sort(jnSort).map(jnEntry).join("")}</div>` : ""}
+  ${jnIntro(list.length)}`;
 
 /* a row of color dots; "None"/"Auto" first. data-col = what|which|color */
 const jbSwatches = (what, which, cur, none) => `<div class="jb-sw" role="group" aria-label="Color">${none ? `<button type="button" class="jb-swa" data-col="${what}|${which}|" aria-pressed="${!cur}">${none}</button>` : ""}${JB_PAL.map(c => `<button type="button" data-col="${what}|${which}|${c}" aria-pressed="${cur === c}" style="--sw:var(--pal-${c})" aria-label="${c}"></button>`).join("")}</div>`;
@@ -640,16 +629,16 @@ function jbStageHtml(j, k){
     <label for="js-d1">Done<input id="js-d1" data-sf="d1" type="date" value="${esc(s.d1)}"></label>
     <label for="js-lead" class="wide">Lead on this stage<input id="js-lead" data-sp="1" list="jb-ppl" type="text" autocomplete="off" value="${esc(pName(s.lead))}" placeholder="${esc(pName(j.lead) || "Who ran it")}"></label>
   </div></details>
-  <p class="card-h" data-fold="s-check">Checklist · ${C.done} of ${C.total}${C.nd ? ` · ⊘ ${C.nd} not done` : ""} <button type="button" class="btn ghost jb-ckedit" data-a="ck-edit" aria-pressed="${JB.ckEdit}">${JB.ckEdit ? "✓ Done" : "↕ Reorder · remove"}</button></p>
-  ${C.items.length ? `<ul class="jb-punch">${C.items.map((x, i) => jbCkRow(x, i, C.items.length)).join("")}</ul>` : `<div class="jb-in"><p class="note">Empty. Add what this stage needs below.</p></div>`}
-  ${JB.ckEdit ? `<div class="jb-in"><p class="note">↑ ↓ change the order, × takes it off, ✎ changes the words. Add your own below. Then save it as your list for ${JB_SNAME[k]} on every new job${["under", "rough", "final"].includes(k) ? " (it's also the list on Inspect → Before you call it in)" : ""}.${Array.isArray((jbD.tpl || {})[k]) ? " You're using your own list for this stage." : " Right now it starts from the book's list."}</p>
+  <p class="card-h" data-fold="s-check">Checklist · ${C.done} of ${C.total}${C.nd ? ` · ⊘ ${C.nd} not done` : ""} <button type="button" class="btn ghost jb-ckedit" data-a="ck-edit" aria-pressed="${JB.ckEdit}">${JB.ckEdit ? "✓ Done editing" : "✎ Edit · not done"}</button></p>
+  ${C.items.length ? `<ul class="jb-punch">${C.items.map((x, i) => jbCkRow(x, i, C.items.length)).join("")}</ul>` : `<div class="jb-in"><p class="note">Empty. ${JB.ckEdit ? "Add what this stage needs below." : "Tap ✎ Edit to add what this stage needs."}</p></div>`}
+  ${JB.ckEdit ? `<div class="jb-in"><p class="note">⊘ marks a line not done (with why), ✎ changes the words, ↑ ↓ change the order, × takes it off. Add your own below. Then save it as your list for ${JB_SNAME[k]} on every new job${["under", "rough", "final"].includes(k) ? " (it's also the list on Inspect → Before you call it in)" : ""}.${Array.isArray((jbD.tpl || {})[k]) ? " You're using your own list for this stage." : " Right now it starts from the book's list."}</p>
     <div class="set-btns"><button type="button" class="btn" data-a="ck-save">Use this list on new jobs</button>${Array.isArray((jbD.tpl || {})[k]) ? `<button type="button" class="btn ghost" data-a="ck-book">Back to the book's list</button>` : ""}</div></div>` : ""}
-  <div class="calc"><label for="jc-t" class="wide">Add to the checklist<input id="jc-t" type="text" autocomplete="off" enterkeyhint="done" placeholder="Something your lead or city wants"></label></div>
-  <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-a="ck-add">Add item</button></div></div>
+  ${JB.ckEdit ? `<div class="calc"><label for="jc-t" class="wide">Add to the checklist<input id="jc-t" type="text" autocomplete="off" enterkeyhint="done" placeholder="Something your lead or city wants"></label></div>
+  <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-a="ck-add">Add item</button></div></div>` : ""}
 
   <p class="card-h" data-fold="s-insp">Inspections</p>
   ${ins.length ? `<div class="x"><table class="t wrap jb-t"><tbody>${ins.map(i => jbInspRow(i) + (jbIsEd("insp", i.id) ? "" : jbInspQ(i))).join("")}</tbody></table></div>` : ""}
-  <details class="explain"${ins.length ? "" : " open"}><summary>+ Add an inspection</summary><div><div class="calc">
+  <details class="explain"><summary>+ Add an inspection</summary><div><div class="calc">
     <label for="ji-d">Date<input id="ji-d" type="date" value="${jbDay()}"></label>
     <label for="ji-r">Result<select id="ji-r">${jbOpts(JB_RES, "booked")}</select></label>
     <label for="ji-who" class="wide">Inspector <i>(optional)</i><input id="ji-who" type="text" list="jb-ppl" autocomplete="off"></label>
@@ -670,7 +659,7 @@ function jbStageHtml(j, k){
 }
 
 const jbActHtml = j => { const A = (j.act || []).slice().reverse(), n = JB.actAll ? A.length : 25;
-  return `<p class="card-h" data-fold="proof">Proof: job report and activity log</p>
+  return `<p class="card-h" data-fold="proof">Report &amp; activity log</p>
   <div class="jb-in"><p class="note">Every change is logged here with its time and can't be edited. The report is the whole job in one file: send it right away so the text or email stamps the time too.</p>
   <div class="set-btns jb-reps">${[["", "Whole job"], ...jbStages(j)].map(([k, name]) => { const ready = JF.rep && JF.rep.jid === j.id && (JF.rep.k || "") === k;
     return `<button type="button" class="btn${k ? " ghost" : ""}" data-a="job-report" data-k="${k}">${ready ? "📤 Send " : "📄 "}${k ? JB_SNAME[k].replace(/ \(.*\)$/, "") : "Whole job"}</button>`; }).join("")}</div></div>
@@ -790,7 +779,7 @@ function jbJobHtml(j){
   ${(() => { const F = new Map(); j.log.slice().sort((a, b) => jnSort(b, a)).forEach(e => jnProps(e.b).forEach(([k, v]) => F.set(k.toLowerCase(), [k, v, e.d])));
     return (F.size ? `<p class="card-h" data-fold="facts">From your notes</p><div class="x"><table class="t wrap jb-facts"><tbody>${[...F.values()].map(([k, v, d]) => `<tr><th>${esc(k)}</th><td>${jnInline(v)}<div class="sub">${jbNice(d)}</div></td></tr>`).join("")}</tbody></table></div>` : ""); })()}
   ${jbActHtml(j)}
-  <p class="card-h" data-fold="look">Look: pin, icon, color <span class="jb-hint">so you spot it fast in the list</span></p>
+  <p class="card-h" data-fold="look">Pin, icon &amp; color</p>
   <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-a="pin" aria-pressed="${j.pin}">${j.pin ? "📌 Pinned to top · unpin" : "📌 Pin to top of the list"}</button>${jbArch(j) || j.pin ? "" : `<button type="button" class="btn ghost" data-a="job-arch">🗄 Archive it now</button>`}</div></div>
   <details class="explain jb-pickd"><summary>Icon: ${jbIco(jbIcon(j))}${j.icon ? JB_ISO[j.icon][0] : (eById("sub", j.sub) || {}).icon ? `the subdivision's (${esc(eName("sub", j.sub))})` : "none"} · change</summary>
     ${jbIcoPick(j.icon, (eById("sub", j.sub) || {}).icon ? "Use the subdivision's" : "None")}</details>
@@ -849,6 +838,8 @@ const jbBlank = j => !(j.a || "").trim() && !(j.name || "").trim() && !String(j.
 const jbTidy = away => { const n = jbD.jobs.length, now = Date.now();   /* away: you've left My jobs, so the open one goes too (unless it was made a moment ago) */
   jbD.jobs = jbD.jobs.filter(j => !jbBlank(j) || (j.id === JB.open && (!away || now - (+j.made || 0) < 5000)));
   if (JB.open && !jbD.jobs.some(j => j.id === JB.open)) JB.open = null; if (jbD.jobs.length !== n) jbSave(true); };
+/* sections that start folded (open one and it stays open): the activity log and pin/icon/color are rarely needed on site */
+const JB_FOLD0 = {proof: 1, look: 1};
 function jbDraw(){
   try { if (window.wxJobsDue) wxJobsDue(); } catch(e){}   /* weather badges: refreshed at most hourly, drawn from what's saved */
   JB_IX = null; JB_AC = new WeakMap(); JN_CARDS = null; jbTidy();
@@ -863,7 +854,7 @@ function jbDraw(){
   else if (p){}
   else if (j){ $("jb-city").value = j.city || ""; jfDraw(j.id); }
   else if (JB.view === "set"){ $("jb-goal").value = String(+jbD.goal === 6000 ? 6000 : 8000); jfUse(); }
-  body.querySelectorAll(".card-h[data-fold]").forEach(h => { const k = h.dataset.fold, f = k === "details" && j ? (JB.dState && JB.dState.id === j.id ? !JB.dState.open : !!(JB.dPos && JB.dPos.id === j.id ? JB.dPos.named : (j.name || "").trim() || (j.a || "").trim())) : !!jbD.fold[k];
+  body.querySelectorAll(".card-h[data-fold]").forEach(h => { const k = h.dataset.fold, f = k === "details" && j ? (JB.dState && JB.dState.id === j.id ? !JB.dState.open : !!(JB.dPos && JB.dPos.id === j.id ? JB.dPos.named : (j.name || "").trim() || (j.a || "").trim())) : JB_FOLD0[k] ? jbD.fold[k] !== false : !!jbD.fold[k];
     h.classList.add("jb-fh"); h.classList.toggle("jb-folded", f); h.setAttribute("role", "button"); h.tabIndex = 0; h.setAttribute("aria-expanded", String(!f));
     for (let n = h.nextElementSibling; n && !n.matches(".card-h, .jb-end"); n = n.nextElementSibling){ if (f){ if (!n.hidden){ n.hidden = true; n.dataset.fh = "1"; } } else if (n.dataset.fh){ n.hidden = false; delete n.dataset.fh; } } });
   bindPn(body);
@@ -931,7 +922,7 @@ B.addEventListener("click", e => {
   const oi = e.target.closest("details[data-oi] > summary"); if (oi) JB.openItems = !oi.parentNode.open;   /* remember it open across redraws */
   const fh = e.target.closest(".card-h[data-fold]");
   if (fh && fh.dataset.fold === "details" && JB.open && !e.target.closest("button, a, input, select, label")){ JB.dState = {id: JB.open, open: fh.classList.contains("jb-folded")}; jbDraw(); return; }
-  if (fh && !e.target.closest("button, a, input, select, label")){ const k = fh.dataset.fold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(true); jbDraw(); return; }   /* fold or open a section; remembered */
+  if (fh && !e.target.closest("button, a, input, select, label")){ const k = fh.dataset.fold, now = !fh.classList.contains("jb-folded"); if (now === !!JB_FOLD0[k]) delete jbD.fold[k]; else jbD.fold[k] = now; jbSave(true); jbDraw(); return; }   /* fold or open a section; remembered */
   const tf = e.target.closest("[data-tfold]"); if (tf){ const k = tf.dataset.tfold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(true); jbDraw(); return; }
   const t = e.target.closest("[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ckmv],[data-ckconv],[data-ckph],[data-pkph],[data-iq],[data-cknd],[data-ent],[data-xadd],[data-xdel],[data-binr],[data-redit],[data-col],[data-tfold],[data-ico],[data-jfflt]"); if (!t) return;
   const j = jbCur(), o = jnOwner(), a = t.dataset.a, v = id => $(id).value.trim(), st = j && j.stages[JB.stage];
@@ -1119,7 +1110,6 @@ B.addEventListener("input", e => { const t = e.target, j = jbCur(), p = JB.perso
   if (t.dataset.tech){ jbD.tech = Object.assign({}, jbD.tech, {[t.dataset.tech]: t.value.slice(0, 80)}); clearTimeout(jbT); jbDirty = true; jbT = setTimeout(jbSave, 500); return; }
   if (t.id === "jb-rules"){ jbD.rules = t.value; clearTimeout(jbT); jbDirty = true; jbT = setTimeout(jbSave, 500); return; }
   if (t.id === "jb-q"){ JB.q = t.value; const r = $("jb-res"), m = $("jb-main"), fq = t.value.trim(); if (r) r.innerHTML = fq ? jbFindHtml(fq) : ""; if (m) m.hidden = !!fq; return; }
-  if (t.id === "jn-try"){ const out = $("jn-tryout"); if (out) out.innerHTML = jnMd(t.value, "try"); return; }
   if (t.id === "jn-new"){ const pv = $("jn-prev"); if (pv){ pv.hidden = !t.value.trim(); pv.innerHTML = '<p class="jn-prevh">Preview: how it\'ll look</p>' + jnMd(t.value, "prev"); }
     const o = jnOwner(); if (o){ o.draft = t.value; clearTimeout(jbT); jbT = setTimeout(() => store.set("jpb-jobs", jbD), 500); } } });   /* a half-written note survives leaving the page */
 B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.person && pById(JB.person), st = j && j.stages[JB.stage], en = eCur();
