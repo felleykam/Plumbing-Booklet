@@ -170,6 +170,8 @@ function jbClean(){
 }
 jbClean();
 jbD.jobs.forEach(jbFix);
+/* a subdivision made from a job before 18b never got that job's builder: if all its jobs share one builder, it takes it */
+jbD.subs.forEach(S => { if (S.bld) return; const B = [...new Set(jbD.jobs.filter(j => j.sub === S.id && j.bld && jbD.builders.some(b => b.id === j.bld)).map(j => j.bld))]; if (B.length === 1) S.bld = B[0]; });
 /* build 17v reworded three Underground lines to match the 2021 IRC. Jobs keep their checks, dates, "not done" notes and proof
    photos: the old words are renamed to the new ones once. Skipped if you keep your own Underground list (it has your words). */
 { const REN = {
@@ -541,13 +543,13 @@ function jbListHtml(){
   const tags = [...new Set(jbD.jobs.flatMap(jbTags))].sort();
   const goal = +jbD.goal === 6000 ? 6000 : 8000, have = H.all + (+jbD.before || 0);
   const fq = (JB.q || "").trim();
-  return `${viewSeg}<div class="jb-toprow">${jbD.jobs.length ? `<input id="jb-q" type="search" autocomplete="off" autocorrect="off" enterkeyhint="search" value="${esc(JB.q || "")}" placeholder="Find a job: lot, address, person, any word" aria-label="Find a job">` : ""}<button type="button" class="btn" data-a="new">+ New job</button></div>
+  return `${viewSeg}<div class="jb-toprow">${jbD.jobs.length ? `<input id="jb-q" type="search" autocomplete="off" autocorrect="off" enterkeyhint="search" value="${esc(JB.q || "")}" placeholder="Find a job (any word)" aria-label="Find a job">` : ""}<button type="button" class="btn" data-a="new">+ New job</button></div>
   <div id="jb-res">${fq ? jbFindHtml(fq) : ""}</div>
   <div id="jb-main"${fq ? " hidden" : ""}>
   <div class="seg jb-seg jb-show" role="group" aria-label="Show">${[["open", "Active"], ["done", "Done"], ["arch", "Archived"], ["all", "All"]].map(([k, t]) => { const n = jbD.jobs.filter(j => jbIn(k, j)).length; return `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}" aria-label="${t}, ${n}"><span class="jb-vl">${t}</span><b class="jb-vn">${n}</b></button>`; }).join("")}</div>
   ${tags.length ? `<div class="chips jn-tagbar">${JB.tag ? `<button type="button" data-tagclr="1" aria-pressed="true">#${esc(JB.tag)} ✕ show all</button>` : tags.map(t => `<button type="button" class="jn-tagchip" style="${jbTagStyle(t)}" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")}</div>` : ""}
   ${jbOpenHtml()}
-  <div class="jb-sortrow"><p class="note jb-sortnote">${JB.show === "arch" ? "Not opened or changed in 30 days, or archived by hand. Change one, or tap Bring it back on its page." : `A to Z · 📌 first · ⇤ quick look`}</p><button type="button" class="linkish jb-setlink" data-a="set-go">⚙ Jobs settings</button></div>
+  <div class="jb-sortrow"><p class="note jb-sortnote">${JB.show === "arch" ? "Not opened or changed in 30 days, or archived by hand. Change one, or tap Bring it back on its page." : `A to Z, 📌 pinned on top · ⇤ quick look`}</p><button type="button" class="linkish jb-setlink" data-a="set-go">⚙ Jobs settings</button></div>
   ${PIN.length ? `<div class="jb-grp"><div class="jb-th jb-th1"><span class="jb-tf"><b>📌 Pinned</b><span class="jb-tn">${PIN.length}</span></span></div><div class="jb-list">${PIN.map(j => jbRow(j)).join("")}</div></div>` : ""}
   ${L.length ? (L.length > PIN.length ? jbGroups(L.filter(j => !j.pin)) : "") : `<div class="jb-list"><p class="note">${jbD.jobs.length ? `No ${({open: "active ", done: "done ", arch: "archived "})[JB.show] || ""}jobs${JB.tag ? ` tagged <b>#${esc(JB.tag)}</b>` : ""}. ${JB.tag ? "Tap the tag above to show all." : JB.show !== "all" ? "Tap <b>All</b> to see every job." : ""}` : "No jobs yet. Tap <b>+ New job</b>. Each job is a timeline, Underground to Final, with the blanks ready to fill in as you go."}</p></div>`}
   </div>
@@ -581,7 +583,7 @@ function jbSetHtml(){
   <details class="explain"><summary>Set the license goal</summary><div>
     <div class="calc"><label for="jb-goal">Goal<select id="jb-goal"><option value="6000">Residential journeyman · 6,000 hr</option><option value="8000">Journeyman · 8,000 hr</option></select></label>
     <label for="jb-before">Hours before this app<input id="jb-before" type="number" inputmode="decimal" min="0" step="any" value="${+jbD.before || ""}" placeholder="0"></label></div>
-    <p class="note">Your own count, so you can see where you stand. DOPL goes by the hours your sponsor reports, so keep those records too. The goals are the on-the-job hours in Learn → License → Path to a license.</p></div></details>
+    <p class="note">Your own count, so you can see where you stand. DOPL goes by the hours your supervisor verifies, so keep those records too. DOPL: <b>Residential Journeyman</b> 6,000 hr as a licensed apprentice plus a 3-year (432 classroom hr) program; <b>Journeyman</b> 8,000 hr plus 576 classroom hr. DOPL's experience form credits at most 3,000 hr per 12 months. More in Learn → License → Path to a license. Checked Nov 2026.</p></div></details>
   <p class="card-h" id="jb-bk">Backup</p>
   <div class="jb-in"><p class="note">${jbLastBk()}</p>
   ${jbBytes() > 15e5 ? `<p class="note${jbBytes() > 35e5 ? " flag" : ""}">Jobs use about ${(jbBytes() / 1e6).toFixed(1)} MB of the roughly 5 MB this phone gives them. Back up and delete finished jobs before it fills: past that, new entries won't save.</p>` : ""}
@@ -1116,6 +1118,7 @@ B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.pers
   if (en && t.dataset.ef){ const k = t.dataset.ef; if (k === "bld"){ const b = eGet("bld", t.value); en.bld = b ? b.id : ""; } else en[k] = t.value.trim(); if (k !== "n" || en.n) jbTouch(en); return; }
   if (j && t.dataset.je){ const k = t.dataset.je, x = eGet(k, t.value); j[k] = x ? x.id : ""; jbAct(j, `✎ ${k === "bld" ? "Builder" : "Subdivision"}: ${x ? x.n : "none"}`);
     if (k === "sub" && x){ if (!j.city && x.city) j.city = x.city; if (!j.bld && x.bld) j.bld = x.bld; }   /* a subdivision fills in its city and builder */
+    { const S = eById("sub", j.sub); if (S && !S.bld && eById("bld", j.bld)){ S.bld = j.bld; jbBump(S); } }   /* and the other way: a subdivision with no builder takes this job's, so the builder's page lists it */
     jbTouch(j); return; }
   if (t.tagName === "SELECT" || /^(date|file)$/.test(t.type)) jbReseat();   /* a picker wheel or the photo sheet just closed */
   if (p && t.dataset.pf){ p[t.dataset.pf] = t.value.trim(); jbTouch(p); return; }
@@ -1201,7 +1204,7 @@ window.jbCkJobs = ph => { if (!JB_SNAME[ph]) return ""; const nm = JB_SNAME[ph].
   <div class="jb-in"><p class="note">The ticks above are a scratch list, not saved to any job. Tap a job to tick its ${nm} list instead: each check gets a date and goes in that job's report.</p></div>
   ${J.length ? `<div class="jb-list">${J.map(j => { const C = jbCk(j, ph), has = jbStages(j).some(([k]) => k === ph);
     return `<button type="button" class="jb-row" data-ckjob="${j.id}|${ph}"><b>${jbIco(jbIcon(j))}${esc(jbName(j))} ›</b><span>${has ? `${nm} checklist · ${C.done} of ${C.total} checked` : `No ${nm} stage on this job yet · tap to add it`}</span></button>`; }).join("")}</div>`
-    : `<div class="jb-in"><p class="note">No active jobs. Add one in Mine → My jobs.</p></div>`}`; };
+    : `<div class="jb-in"><p class="note">No active jobs. Add one in Mine → Jobs.</p></div>`}`; };
 document.addEventListener("click", e => { const b = e.target.closest("[data-ckjob]"); if (!b) return;
   const [id, k] = b.dataset.ckjob.split("|"), j = jbD.jobs.find(x => x.id === id); if (!j || !JB_SNAME[k]) return;
   if (JB_XTRA.includes(k) && !j.xs.includes(k)){ j.xs.push(k); jbAct(j, `+ Stage added: ${JB_SNAME[k]}`, k); jbBump(j); jbSave(); }
