@@ -384,6 +384,7 @@ details.math li::marker{font-weight:700;color:var(--muted)}
 #cl-rows .x-del,.t .x-del,.tk .x-del{appearance:none;width:48px;height:48px;border:var(--bw) solid var(--ctl);border-radius:var(--r);background:var(--sheet);color:var(--danger);font-size:18px;font-weight:800;cursor:pointer}
 .flag.ok-flag{background:var(--zebra);border-left-color:var(--ok)}
 #wx-flags .flag:first-child{border-top:0}
+.wx-lh{white-space:nowrap}
 .wx-startrow{padding-top:0}.wx-startrow label{max-width:220px}
 .wx-links{flex-wrap:wrap}.wx-links a{display:inline-flex;align-items:center;min-height:44px}
 .jb-wxb{font-weight:800}
@@ -550,6 +551,8 @@ dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 p.jb-gh{cursor:default}
 .jn-tools{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);padding-right:40px}
 .jn-tools button{min-height:44px}
+.jn-tools{flex-wrap:wrap;overflow:visible;-webkit-mask-image:none;mask-image:none;padding-right:12px}   /* 4 main marks + More: they fit, so no hidden sideways scroll */
+.jn-morebtn{border-style:dashed!important}
 .jn-tagbar{padding:8px 12px 0;gap:6px}
 .jn-log{display:flex;flex-direction:column;gap:10px;padding:8px 12px 12px}
 .jn-e{border:var(--bw) solid var(--rule);border-left:5px solid var(--acc,var(--edge));border-radius:var(--r);background:var(--sheet);overflow:hidden}
@@ -715,7 +718,8 @@ p.jb-gh{cursor:default}
 .jb-iq td{padding-top:0}
 .jb-iqh{display:block;font-size:14px;color:var(--muted);margin:2px 0}
 .jb-iq .set-btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.jb-iq .btn{min-height:48px;padding:4px 6px}
+.jb-iq .btn{min-height:48px;padding:4px 4px;font-size:14px;letter-spacing:.02em;white-space:nowrap}
+.jb-iq td{padding-left:8px;padding-right:8px}
 .jb-iqp{border-color:var(--pal-green)!important}.jb-iqf{border-color:var(--danger)!important}
 /* easier on the eyes: what you type in a job reads in the book's own font (the typewriter font stays for numbers in calculators) */
 #jb-body .calc input:not([type=number]):not([type=date]),#jb-body textarea,.jf-dlg textarea{font-family:var(--body);font-weight:600;letter-spacing:0}
@@ -4708,6 +4712,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <button type="button" class="btn" id="wx-gps"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/></svg>My location</button>
       <button type="button" class="btn" id="wx-job" hidden>📋 Today's job</button>
     </div>
+    <p class="note" id="wx-jobhint" hidden>Your active jobs have no city set, so the weather can't follow them. Pick a city in a job's details (Job details → City).</p>
     <div class="calc wx-searchrow">
       <label for="wx-search">Or search a town<input id="wx-search" type="search" placeholder="Herriman, Eagle Mountain, Heber…" autocomplete="off" enterkeyhint="search"></label>
     </div>
@@ -4727,6 +4732,14 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <details class="more fold"><summary>More readings</summary>
     <div class="x"><table class="t out"><tbody id="wx-now"></tbody></table></div>
     </details>
+    <div class="wx-hero" id="wx-hero"><div class="sub">Loading the forecast…</div></div>
+    <p class="card-h">Next 24 hours · <span id="wx-freeze-sum">—</span></p>
+    <svg id="wx-chart" viewBox="0 0 400 210" role="img" aria-label="Line chart of the next 24 hours of temperature with a 32°F freezing line, and bars for chance of rain."></svg>
+    <p class="card-h">Air quality · <span id="wx-air-age">—</span></p>
+    <div class="x"><table class="t out"><tbody id="wx-air"><tr><td class="sub">Loading…</td></tr></tbody></table></div>
+    <details class="more fold"><summary>Hour by hour</summary>
+    <div class="x"><table class="t num"><thead><tr><th>Time</th><th>Temp</th><th>Feels</th><th>Rain</th><th>Wind</th><th>Sky</th></tr></thead><tbody id="wx-hours"></tbody></table></div>
+    </details>
     <details class="more fold" id="wx-drift-fold"><summary>Air or vacuum test: will the weather move the gauge?</summary>
     <div class="calc">
       <label for="wx-dt">Test<select id="wx-dt"><option value="air">Air on PEX (psi)</option><option value="vac">Vacuum on DWV (inches of mercury)</option></select></label>
@@ -4736,13 +4749,6 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </div>
     <div class="x"><table class="t out"><tbody id="wx-drift"><tr><td class="sub">Enter the gauge reading.</td></tr></tbody></table></div>
     <p class="note">Sealed air follows the temperature: cooler air reads lower, warmer air reads higher, with no leak at all. This assumes the pipe gets as warm or as cold as the outside air (true in unheated framing, less so once the house is closed in and heated), and it ignores the pipe stretching, so treat it as a rough size of the change. Pressure is figured from absolute pressure, using the air pressure at this spot's elevation. <b>Code:</b> the 2021 IRC allows air on PEX only where the PEX pipe and fitting makers' instructions allow it (P2503.7 exception); it doesn't list a positive air test for plastic DWV, but it does allow a vacuum test on plastic DWV (P2503.5.1, new in 2021). Utah's amendments don't change either section. Checked Nov 2026.</p>
-    </details>    <div class="wx-hero" id="wx-hero"><div class="sub">Loading the forecast…</div></div>
-    <p class="card-h">Next 24 hours · <span id="wx-freeze-sum">—</span></p>
-    <svg id="wx-chart" viewBox="0 0 400 210" role="img" aria-label="Line chart of the next 24 hours of temperature with a 32°F freezing line, and bars for chance of rain."></svg>
-    <p class="card-h">Air quality · <span id="wx-air-age">—</span></p>
-    <div class="x"><table class="t out"><tbody id="wx-air"><tr><td class="sub">Loading…</td></tr></tbody></table></div>
-    <details class="more fold"><summary>Hour by hour</summary>
-    <div class="x"><table class="t num"><thead><tr><th>Time</th><th>Temp</th><th>Feels</th><th>Rain</th><th>Wind</th><th>Sky</th></tr></thead><tbody id="wx-hours"></tbody></table></div>
     </details>
     <p class="card-h">Radar &amp; official</p>
     <div class="chips wx-links" id="wx-links"><a href="https://radar.weather.gov/" target="_blank" rel="noopener">NWS radar ↗</a><a id="wx-nwslink" href="https://forecast.weather.gov/" target="_blank" rel="noopener">NWS forecast for this spot ↗</a><a href="https://www.weather.gov/slc/" target="_blank" rel="noopener">NWS Salt Lake City office ↗</a><a href="https://air.utah.gov/" target="_blank" rel="noopener">Utah air quality (DAQ) ↗</a><a href="https://udottraffic.utah.gov/" target="_blank" rel="noopener">UDOT roads &amp; cameras ↗</a></div>
@@ -5394,7 +5400,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 18, 2026 · Notes</th><td><b>Folded notes say what's in them:</b> each one shows its date (📝 for a day log), badges for ⚠ heads-ups, ? questions, ☐ open boxes and tags, a full title (two lines, not cut at 20 letters), the first heads-up in red, and two lines of the rest. A day log's title is its first line of work, not "Did". <b>Earlier stages' notes don't vanish:</b> on Top-out, Underground's notes (the super's number, the gate code) sit in <b>Notes on other stages</b>, one tap away. <b>Notes · 4</b> on the header. <b>📝 Day log</b> is the first button under the box, and the box's hint no longer crams every mark into one line (marks like ☐ only work at the start of a line). People, builder and subdivision pages skip the long guide.</td></tr>
+        <tr><th>Nov 18, 2026 · Notes</th><td><b>Folded notes say what's in them:</b> each one shows its date (📝 for a day log), badges for ⚠ heads-ups, ? questions, ☐ open boxes and tags, a full title (two lines, not cut at 20 letters), the first heads-up in red, and two lines of the rest. A day log's title is its first line of work, not "Did". <b>Earlier stages' notes don't vanish:</b> on Top-out, Underground's notes (the super's number, the gate code) sit in <b>Notes on other stages</b>, one tap away. <b>Notes · 4</b> on the header. <b>📝 Day log</b> is the first button under the box, and the box's hint no longer crams every mark into one line (marks like ☐ only work at the start of a line). People, builder and subdivision pages skip the long guide. <b>Cleaner saves:</b> a Day log's unfilled lines (an empty "- " or "- [ ]") and empty headings drop out when you save, so an empty box never counts as a to-do; the preview shows the note as it'll be saved. The note box grows as you write. <b>Mark buttons:</b> Day log, Task, Heads-up and Question up front, the rest under <b>More marks…</b> (no more hidden sideways scroll). <b>Editing a note:</b> the box first, Save and Cancel with the date beside them, Delete set apart; saving it empty asks you to delete instead. <b>Inspections:</b> after a Fail or Partial, <b>↻ Book the re-inspection</b> opens the form ready to go; the Pass / Partial / Fail buttons fit small phones. <b>Weather:</b> the gauge-drift helper moved to the bottom so today's temperature comes sooner; 7 days reads 18–45° on one line; with no signal and nothing saved, every part says so instead of "Loading…"; if your active jobs have no city, it tells you how to make the weather follow them.</td></tr>
         <tr><th>Nov 18, 2026 · Job page tidy</th><td><b>Less scrolling:</b> a job page is about 40% shorter. Checklist lines are just the box and 📷; ⊘ not done, ✎ wording, reorder, remove and adding a line live under <b>✎ Edit · not done</b> (a line already marked not done still shows its ⊘). <b>+ Add an inspection</b> starts folded. <b>Report &amp; activity log</b> and <b>Pin, icon &amp; color</b> start folded; open one and it stays open. <b>Notes:</b> the box, then <b>Add note</b> with the date beside it, then your notes, then the guide. The guide went from 6 parts to 4 (the basics, the 7 main marks, more marks, easy mistakes); the separate try box is gone because the note box already previews as you type. <b>Builders:</b> a subdivision now takes its job's builder when it doesn't have one (old ones are fixed on open), so a builder's page lists its subdivisions instead of "no subdivisions". <b>License:</b> the hours goal shows DOPL's own numbers (6,000 residential, 8,000 journeyman, at most 3,000 credited per 12 months); renewal no longer quotes a fee DOPL's page doesn't list. <b>Settings:</b> a note on the fun themes (Neon Sign through Chrome) that they aren't tuned for sun or rain. <b>Home:</b> "Calculators" and other long shortcut names break cleanly instead of "CALCULATOR / S".</td></tr>
         <tr><th>Nov 18, 2026 · Weather</th><td><b>Follows today's job:</b> Jobsite → Weather opens on your pinned job's town (else the job you changed last). Pick My location or a town and it holds for the day; the next morning it goes back to today's job. <b>Weather on your jobs:</b> active jobs show ❄ freeze, 🌧 rain, 💨 gusts and ⚡ storm badges for today and tomorrow, and each job page has a weather line that opens the forecast for that town (updated at most hourly). <b>Best day this week</b> for underground, air and vacuum tests, glue-ups and roof work. <b>Start time:</b> set yours (7:00 AM to start); Plan the day shows first light and sunrise against it. <b>Air or vacuum test drift:</b> enter the gauge reading and when you set and read it, and it shows how far the weather alone moves the gauge, figured for this spot's elevation; a 20°F+ drop now gets its own flag. <b>Glue-ups:</b> the flag and Build → Materials → Cement in heat &amp; cold now use Oatey's cure chart. <b>Frost line:</b> Saratoga Springs and Eagle Mountain show 30" from each city's own design criteria. <b>Radar &amp; official links:</b> NWS radar, NWS forecast for this spot, NWS Salt Lake City, Utah DAQ air, UDOT roads and cameras.</td></tr>
         <tr><th>Nov 17, 2026 · Jobs stickler pass</th><td><b>Hours you can trust:</b> logging hours now blocks a future date, blocks more than 24 hr on one day across all your jobs, and asks before a date over a year back (license hours have to be real). <b>Underground checklist, sourced:</b> three lines now match the 2021 IRC: water service 12" deep and 6" below your city's frost depth (P2603.5), when water and sewer can share a trench (P2906.4.1), and the toilet flange goes by the toilet's rough-in (usually 12"), which is the maker's spec, not code. Jobs you already have keep their checks on those lines. <b>Deleted jobs' hours:</b> emptying Recently deleted now asks whether to keep a deleted job's hours toward your license or drop them (for a test or duplicate job). <b>Job reports:</b> every date shows its year, and notes read the way they look in the app (☐ ☑ ⚠, bold, names). <b>Small fixes:</b> Pass, Partial or Fail can't go on an inspection that hasn't happened yet; "Nail plates" and "nail plates" count as the same checklist item; Subdivisions breaks as SUB-DIVISIONS on small phones; the Jobs list's settings link is named Jobs settings; the "phone full" warning points to Settings → Backup &amp; reset like everywhere else.</td></tr>
@@ -11050,13 +11056,15 @@ const WX = (() => {
     });
     part("test drift", () => drift());
     part("7 days", () => {
-      if (d) $("wx-days").innerHTML = d.time.map((t, i) => `<tr${d.temperature_2m_min[i] <= 32 ? ' class="frz"' : ""}><td>${i === 0 ? (om.src === "nws" && new Date().getHours() >= 14 ? "Rest of today" : "Today") : D(typeof t === "number" ? t + 43200 : t + "T12:00").toLocaleDateString([], {weekday:"short", month:"numeric", day:"numeric"})}</td><td>${r0(d.temperature_2m_min[i])}° / ${r0(d.temperature_2m_max[i])}°</td><td>${r0(d.precipitation_probability_max[i])}%${d.snowfall_sum[i] > 0 ? ` · ${d.snowfall_sum[i].toFixed(1)}" snow` : ""}</td><td>${r0(d.wind_gusts_10m_max[i])} mph</td><td class="sub">${WMO(d.weather_code[i])}</td></tr>`).join("");
+      if (d) $("wx-days").innerHTML = d.time.map((t, i) => `<tr${d.temperature_2m_min[i] <= 32 ? ' class="frz"' : ""}><td>${i === 0 ? (om.src === "nws" && new Date().getHours() >= 14 ? "Rest of today" : "Today") : D(typeof t === "number" ? t + 43200 : t + "T12:00").toLocaleDateString([], {weekday:"short", month:"numeric", day:"numeric"})}</td><td class="wx-lh">${r0(d.temperature_2m_min[i])}–${r0(d.temperature_2m_max[i])}°</td><td>${r0(d.precipitation_probability_max[i])}%${d.snowfall_sum[i] > 0 ? ` · ${d.snowfall_sum[i].toFixed(1)}" snow` : ""}</td><td>${r0(d.wind_gusts_10m_max[i])} mph</td><td class="sub">${WMO(d.weather_code[i])}</td></tr>`).join("");
     });
 
 
 
 
-    if (!om && (err.om || !navigator.onLine)){ $("wx-chart").innerHTML = ""; ["wx-now","wx-hours","wx-days"].forEach(id => $(id).innerHTML = ""); }   /* nothing for this place: don't leave another town's numbers up */
+    if (!om && (err.om || !navigator.onLine)){ $("wx-chart").innerHTML = ""; ["wx-now","wx-hours","wx-days"].forEach(id => $(id).innerHTML = "");
+      ["wx-plan","wx-best","wx-drift"].forEach(id => $(id).innerHTML = `<tr><td class="sub">No forecast for this spot yet: it needs signal once, then it's saved.</td></tr>`);
+      $("wx-flags").innerHTML = `<p class="note">No forecast yet, so no go / no-go calls.</p>`; }   /* nothing for this place: don't leave another town's numbers up */
     if (!om && (err.om || !navigator.onLine)) $("wx-hero").innerHTML = `<div class="sub" role="alert">${navigator.onLine ? "Couldn't reach the forecast service. It tries again in a minute." : "No signal, and nothing saved for this spot yet. Open this tab once with signal and it keeps the last forecast."}</div>`;
     headIcon();
     tick();
@@ -11134,7 +11142,7 @@ const WX = (() => {
     if (!force && place.src === "job" && place.jid === J.id && Math.abs(place.lat - ll[0]) < 1e-3 && Math.abs(place.lon - ll[1]) < 1e-3) return true;
     setPlace({name: J.city, sub: `Today's job · ${J.name}`, lat: ll[0], lon: ll[1], src: "job", jid: J.id, at: Date.now()}); return true;
   }
-  const jobBtn = () => { const b = $("wx-job"), J = todayJob(); if (!b) return; b.hidden = !J || (place.src === "job" && place.jid === J.id); if (J) b.textContent = `📋 ${J.city}`; if (J) b.setAttribute("aria-label", `Weather for today's job: ${J.name}, ${J.city}`); };
+  const jobBtn = () => { const b = $("wx-job"), J = todayJob(); if (!b) return; { const h = $("wx-jobhint"); if (h) h.hidden = !!J || !(window.jbActiveNoCity && jbActiveNoCity()); } b.hidden = !J || (place.src === "job" && place.jid === J.id); if (J) b.textContent = `📋 ${J.city}`; if (J) b.setAttribute("aria-label", `Weather for today's job: ${J.name}, ${J.city}`); };
   $("wx-job").addEventListener("click", () => toJob(true));
   /* badges: one Open-Meteo call for every active job's town (up to 8), at most once an hour, saved for no-signal days */
   let JW = store.get("jpb-wx-jobs", null); if (!JW || typeof JW !== "object" || !JW.d) JW = {t: 0, d: {}};

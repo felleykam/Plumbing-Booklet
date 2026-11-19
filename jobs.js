@@ -323,8 +323,9 @@ function jnMd(src, eid, base){
   if (code !== null) h += `<pre class="jn-pre">${esc(code.join("\n"))}</pre>`;   /* a ``` never closed still shows */
   close(); return h;
 }
-const JN_TOOLS = `<div class="chips jn-tools">${[["day", "📝 Day log", ""], ["- [ ] ", "☐ Task", "task"], ["!! ", "⚠ Heads-up", "flag"], ["?? ", "? Question", "q"], ["#", "# Tag", "tag"], ["[[", "[[ Link ]]", "link"], ["@date", "📅 Date", "date"], ["@fact", "Label: fact", "prop"], ["- ", "• List", ""], ["# ", "Heading", ""], ["**", "Bold", ""]]
-  .map(([k, t, c]) => `<button type="button" data-ins="${esc(k)}"${c ? ` class="t-${c}"` : ""}>${t}</button>`).join("")}</div>`;
+const JN_TOOLS_ALL = [["day", "📝 Day log", ""], ["- [ ] ", "☐ Task", "task"], ["!! ", "⚠ Heads-up", "flag"], ["?? ", "? Question", "q"], ["#", "# Tag", "tag"], ["[[", "[[ Link ]]", "link"], ["@date", "📅 Date", "date"], ["@fact", "Label: fact", "prop"], ["- ", "• List", ""], ["# ", "Heading", ""], ["**", "Bold", ""]];
+let JN_MORE = false;   /* the extra mark buttons, shown or not (for this visit) */
+const jnTools = () => `<div class="chips jn-tools${JN_MORE ? " jn-more" : ""}">${JN_TOOLS_ALL.map(([k, t, c], i) => `<button type="button" data-ins="${esc(k)}"${c ? ` class="t-${c}"` : ""}${i > 3 && !JN_MORE ? " hidden" : ""}>${t}</button>`).join("")}<button type="button" class="jn-morebtn" data-a="jn-more" aria-expanded="${JN_MORE}">${JN_MORE ? "Fewer" : "More marks…"}</button></div>`;
 const jnWhen = e => { const t = new Date(e.at); return jbNice(e.d) + (jbDay(t) === e.d ? " · " + t.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"}) : ""); };
 /* compact notes: one line each (title, a preview, the date); tap to open the whole note, ▴ to fold it again */
 const JN_OPENED = new Set();
@@ -334,12 +335,13 @@ const jnRow = e => {   /* a folded note still says what matters: date (📝 for 
   const L = String(e.b || "").split("\n").filter(x => x.trim()), isH = x => /^\s*#{1,3}\s/.test(x), day = L.some(x => /^\s*#{1,3}\s*did\b/i.test(x));
   const tl = L.find(x => !isH(x)) || L[0] || "", fl = L.filter(x => /^\s*!!/.test(x)), q = L.filter(x => /^\s*\?\?/.test(x)).length, bx = L.filter(x => /^\s*[-*+] \[ \]/.test(x)).length;
   const tg = [...new Set([...String(e.b || "").matchAll(JN_TAG)].map(m => m[2].toLowerCase()))].slice(0, 2), f0 = fl[0] && fl[0] !== tl ? fl[0] : "";
-  const rest = jnGist({b: L.filter(x => x !== tl && x !== f0).join("\n"), d: e.d}, 4);
+  const rest = jnGist({b: L.filter(x => x !== tl && x !== f0 && !isH(x)).join("\n"), d: e.d}, 4);
   const bd = [fl.length && `<i class="k-flag">⚠ ${fl.length}</i>`, q && `<i class="k-q">? ${q}</i>`, bx && `<i class="k-task">☐ ${bx}</i>`, ...tg.map(t => `<i class="k-tag">#${esc(t)}</i>`)].filter(Boolean).join("");
   return `<button type="button" class="jn-row" data-jnx="${e.id}" aria-expanded="false"><span class="jn-rd">${day ? "📝 Day log · " : ""}${esc(jbNice(e.d))}</span>${bd ? `<span class="jn-rb">${bd}</span>` : ""}<span class="jn-rt">${esc(jnMark(tl) + (jnPlain(tl, e.d).replace(JN_TAG, "$1").replace(/\s{2,}/g, " ").trim() || jnPlain(tl, e.d) || "Note"))}</span>${f0 ? `<span class="jn-rf">⚠ ${esc(jnPlain(f0, e.d))}</span>` : ""}${rest ? `<span class="jn-rp">${esc(rest.slice(0, 220))}</span>` : ""}</button>`; };
 const jnEntry = e => !jbD.jnFull && JB.edit !== e.id && !JN_OPENED.has(e.id) ? jnRow(e) : JB.edit === e.id
-  ? `<article class="jn-e"><div class="calc"><label for="jn-ed-d">Date<input id="jn-ed-d" type="date" value="${esc(e.d)}"></label><label for="jn-ed" class="wide">Note<textarea id="jn-ed" class="jn-ta" rows="6">${esc(e.b)}</textarea></label></div>${JN_TOOLS}
-     <div class="set-btns jn-btns"><button type="button" class="btn" data-a="jn-save">Save</button><button type="button" class="btn ghost" data-a="jn-cancel">Cancel</button><button type="button" class="del" data-a="jn-del">Delete</button></div></article>`
+  ? `<article class="jn-e"><div class="calc"><label for="jn-ed" class="wide">Note<textarea id="jn-ed" class="jn-ta" rows="6">${esc(e.b)}</textarea></label></div>${jnTools()}
+     <div class="set-btns jn-btns jn-addrow"><button type="button" class="btn" data-a="jn-save">Save</button><button type="button" class="btn ghost" data-a="jn-cancel">Cancel</button><label for="jn-ed-d" class="jn-dl">Dated<input id="jn-ed-d" type="date" value="${esc(e.d)}"></label></div>
+     <div class="set-btns jb-end"><button type="button" class="del" data-a="jn-del">Delete this note</button></div></article>`
   : `<article class="jn-e"><header><span>${jnWhen(e)}${e.ed ? ` · edited ${jbShort(e.ed)}` : ""}</span><span class="jn-hb">${jbD.jnFull ? "" : `<button type="button" class="jb-x" data-jnx="${e.id}" aria-expanded="true" aria-label="Fold this note">▴</button>`}<button type="button" class="jb-x" data-edit="${e.id}" aria-label="Edit this note">✎</button></span></header><div class="jn-b">${jnMd(e.b, e.id, e.d)}</div>${(e.hist || []).length ? `<details class="jn-hist"><summary>Earlier versions · ${e.hist.length}</summary>${e.hist.slice().reverse().map(v => `<div class="jn-hv"><p class="jn-hvh">Said this until ${esc(jbWhenAt(v.until))}${v.d !== e.d ? ` · dated ${esc(jbNice(v.d))}` : ""}</p><div class="jn-b">${jnMd(v.b, "h", v.d).replace(/data-tk=/g, "disabled data-tk=")}</div></div>`).join("")}</details>` : ""}</article>`;
 const JN_CHEAT = [
   ["- [ ] call the super", "A checkbox. Tap it off when it's done; the job counts the open ones."],
@@ -436,8 +438,8 @@ const jbRulesHtml = () => { const r = String(jbD.rules || "").trim(); if (!r) re
   return `<div class="jb-rules"><p class="jn-prevh">📌 Rules for every job · these come first</p><div class="jn-b">${jnMd(r, "rules").replace(/data-tk=/g, "disabled data-tk=")}</div><p class="note"><button type="button" class="linkish" data-a="rules-go">Change them</button> in Jobs settings.</p></div>`; };
 /* new note on top, then the notes, then the guide (folded once you've written a few) */
 const jnBlock = (o, list, ph, more = "") => `<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label></div>
-  ${JN_TOOLS}
-  <div class="jn-b jn-prev" id="jn-prev"${o.draft.trim() ? "" : " hidden"}><p class="jn-prevh">Preview: how it'll look</p>${o.draft.trim() ? jnMd(o.draft, "prev") : ""}</div>
+  ${jnTools()}
+  <div class="jn-b jn-prev" id="jn-prev"${o.draft.trim() ? "" : " hidden"}><p class="jn-prevh">Preview: how it'll be saved</p>${o.draft.trim() ? jnMd(jnTidy(o.draft), "prev") : ""}</div>
   <div class="jb-in"><div class="set-btns jn-addrow"><button type="button" class="btn" data-a="jn-add">Add note</button><label for="jn-d" class="jn-dl">Dated<input id="jn-d" type="date" value="${jbDay()}"></label></div></div>
   ${list.length ? `<div class="jn-mode"><span>${list.length} note${list.length === 1 ? "" : "s"}</span><div class="seg jb-seg" role="group" aria-label="How notes show"><button type="button" data-jnmode="c" aria-pressed="${!jbD.jnFull}">Compact</button><button type="button" data-jnmode="f" aria-pressed="${!!jbD.jnFull}">Full</button></div></div>
   <div class="jn-log${jbD.jnFull ? "" : " jn-compact"}">${list.slice().sort(jnSort).map(jnEntry).join("")}</div>` : ""}
@@ -646,7 +648,8 @@ function jbStageHtml(j, k){
 
   <p class="card-h" data-fold="s-insp">Inspections</p>
   ${ins.length ? `<div class="x"><table class="t wrap jb-t"><tbody>${ins.map(i => jbInspRow(i) + (jbIsEd("insp", i.id) ? "" : jbInspQ(i))).join("")}</tbody></table></div>` : ""}
-  <details class="explain"><summary>+ Add an inspection</summary><div><div class="calc">
+  ${(L => L && (L.r === "fail" || L.r === "partial") ? `<div class="jb-in"><button type="button" class="btn ghost" data-a="insp-re">↻ Book the re-inspection</button></div>` : "")(ins.slice().sort((a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : 0)[0])}
+  <details class="explain" id="ji-fold"><summary>+ Add an inspection</summary><div><div class="calc">
     <label for="ji-d">Date<input id="ji-d" type="date" value="${jbDay()}"></label>
     <label for="ji-r">Result<select id="ji-r">${jbOpts(JB_RES, "booked")}</select></label>
     <label for="ji-who" class="wide">Inspector <i>(optional)</i><input id="ji-who" type="text" list="jb-ppl" autocomplete="off"></label>
@@ -913,6 +916,13 @@ function jnGo(x){
 }
 /* toolbar: put the markup in for you, at the cursor or at the start of the line */
 let jnTa = null;
+/* a note as saved: the Day log's unfilled lines ("- ", "- [ ] ") and headings left with nothing under them drop out, so an empty box never counts as a to-do */
+function jnTidy(b){
+  const L = String(b || "").replace(/\r/g, "").split("\n").map(x => x.replace(/\s+$/, "")).filter(x => !/^\s*(?:[-*+](?:\s*\[[ xX]?\])?|\d+[.)]|!!|\?\?)\s*$/.test(x));
+  const H = x => /^\s*#{1,3}\s/.test(x);
+  const out = L.filter((x, i) => { if (!H(x)) return true; const nx = L.slice(i + 1).find(y => y.trim()); return nx !== undefined && !H(nx); });
+  return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+}
 function jnInsert(k){
   const ta = jnTa && document.body.contains(jnTa) ? jnTa : $("jn-new"); if (!ta) return;
   const v = ta.value, s = ta.selectionStart ?? v.length, en = ta.selectionEnd ?? s, sel = v.slice(s, en); let nv, cs, ce;
@@ -928,7 +938,7 @@ const B = $("jb-body");
 B.addEventListener("toggle", e => { const d = e.target; if (d.matches && d.matches("details[data-jnother]")){ if (d.open) JN_OTHER.add(d.dataset.jnother); else JN_OTHER.delete(d.dataset.jnother); return; } }, true);
 B.addEventListener("toggle", e => { const d = e.target; if (!d.matches || !d.matches("details[data-help]")) return; const v = d.open ? "open" : "shut";
   if (jbD.fold["jn-help"] !== v){ jbD.fold["jn-help"] = v; store.set("jpb-jobs", jbD); } }, true);
-B.addEventListener("focusin", e => { if (e.target.classList.contains("jn-ta")) jnTa = e.target; });
+B.addEventListener("focusin", e => { if (e.target.classList.contains("jn-ta")){ jnTa = e.target; jnGrow(e.target); } });
 ["pointerdown", "mousedown"].forEach(ev => B.addEventListener(ev, e => { if (e.target.closest("[data-ins]")) e.preventDefault(); }));   /* keep the keyboard up */
 B.addEventListener("click", e => {
   const oi = e.target.closest("details[data-oi] > summary"); if (oi) JB.openItems = !oi.parentNode.open;   /* remember it open across redraws */
@@ -1054,9 +1064,11 @@ B.addEventListener("click", e => {
     jbD.people = jbD.people.filter(x => x !== p);
     jbD.jobs.forEach(x => { if (x.lead === p.id) x.lead = ""; if (x.sup === p.id) x.sup = ""; x.ppl = x.ppl.filter(y => y.p !== p.id); JB_STG.forEach(([k]) => { if (x.stages[k].lead === p.id) x.stages[k].lead = ""; }); });
     jbGoBack(); jbUndo(bid); return; }
-  if (a === "jn-add" && o){ const b = $("jn-new").value.trim(); if (!b){ toast("Write the note first."); return; }
+  if (a === "insp-re"){ const f = $("ji-fold"); if (f){ f.open = true; $("ji-r").value = "booked"; $("ji-n").value = "Re-inspection"; const d = $("ji-d"); d.focus(); d.scrollIntoView({block: "center"}); } return; }   /* after a Fail or Partial: the add form, set up as a booked re-inspection */
+  if (a === "jn-more"){ JN_MORE = !JN_MORE; document.querySelectorAll(".jn-tools").forEach(T => { T.classList.toggle("jn-more", JN_MORE); T.querySelectorAll("[data-ins]").forEach((x, i) => { x.hidden = i > 3 && !JN_MORE; }); const m = T.querySelector(".jn-morebtn"); m.textContent = JN_MORE ? "Fewer" : "More marks…"; m.setAttribute("aria-expanded", String(JN_MORE)); }); return; }
+  if (a === "jn-add" && o){ const b = jnTidy($("jn-new").value); if (!b){ toast("Write the note first."); return; }
     o.log.push(Object.assign({id: jbId(), d: $("jn-d").value || jbDay(), at: Date.now(), b}, (JB.person || JB.ent) ? {} : {s: JB.stage})); if (!JB.person && !JB.ent) jbAct(o, "📝 Note added", JB.stage); o.draft = ""; jnTa = null; jbTouch(o); toast("Note added.", 1600); return; }
-  if (a === "jn-save" && o){ const n = o.log.find(x => x.id === JB.edit); if (n){ const nb = $("jn-ed").value.trim() || n.b, nd = $("jn-ed-d").value || n.d;
+  if (a === "jn-save" && o){ const n = o.log.find(x => x.id === JB.edit); if (n){ const nb = jnTidy($("jn-ed").value) || n.b; if (!jnTidy($("jn-ed").value)){ toast("That would leave the note empty. To get rid of it, tap Delete this note.", 3200); return; } const nd = $("jn-ed-d").value || n.d;
       if (nb !== n.b || nd !== n.d){ n.hist = [...(n.hist || []), {b: n.b, d: n.d, at: n.ed || n.at, until: Date.now()}].slice(-20);   /* the old words are kept, with when they were replaced */
         n.b = nb; n.d = nd; n.ed = Date.now(); if (!JB.person && !JB.ent) jbAct(o, "✎ Note edited (the earlier version is kept)", n.s); } }
     JB.edit = null; jnTa = null; jbTouch(o); return; }
@@ -1115,14 +1127,16 @@ B.addEventListener("click", e => { const x = e.target.closest("[data-jnx]"), m =
 B.addEventListener("keydown", e => { if (e.key !== "Enter") return;
   if (e.target.matches(".card-h[data-fold]")){ e.preventDefault(); e.target.click(); return; } const btn = {"jp-t": "punch-add", "jc-t": "ck-add", "jhq-h": "hq-add", "jhq-n": "hq-add"}[e.target.id];
   if (btn){ e.preventDefault(); B.querySelector(`[data-a="${btn}"]`).click(); } });
+const jnGrow = t => { t.style.height = "auto"; t.style.height = Math.min(t.scrollHeight + 4, Math.max(220, innerHeight * 0.55)) + "px"; };   /* the note box grows with what you write, up to about half the screen */
 B.addEventListener("input", e => { const t = e.target, j = jbCur(), p = JB.person && pById(JB.person), en = eCur();
+  if (t.classList && t.classList.contains("jn-ta")) jnGrow(t);
   if (en && t.dataset.ef && t.tagName !== "SELECT" && t.dataset.ef !== "bld"){ en[t.dataset.ef] = t.value; en.t = Date.now(); clearTimeout(jbT); jbDirty = true; jbT = setTimeout(jbSave, 500); }
   if (j && t.dataset.f && t.tagName !== "SELECT"){ j[t.dataset.f] = t.value; jbBump(j); clearTimeout(jbT); jbDirty = true; jbT = setTimeout(jbSave, 500); }
   if (p && t.dataset.pf && t.tagName !== "SELECT"){ p[t.dataset.pf] = t.value; p.t = Date.now(); clearTimeout(jbT); jbDirty = true; jbT = setTimeout(jbSave, 500); }
   if (t.dataset.tech){ jbD.tech = Object.assign({}, jbD.tech, {[t.dataset.tech]: t.value.slice(0, 80)}); clearTimeout(jbT); jbDirty = true; jbT = setTimeout(jbSave, 500); return; }
   if (t.id === "jb-rules"){ jbD.rules = t.value; clearTimeout(jbT); jbDirty = true; jbT = setTimeout(jbSave, 500); return; }
   if (t.id === "jb-q"){ JB.q = t.value; const r = $("jb-res"), m = $("jb-main"), fq = t.value.trim(); if (r) r.innerHTML = fq ? jbFindHtml(fq) : ""; if (m) m.hidden = !!fq; return; }
-  if (t.id === "jn-new"){ const pv = $("jn-prev"); if (pv){ pv.hidden = !t.value.trim(); pv.innerHTML = '<p class="jn-prevh">Preview: how it\'ll look</p>' + jnMd(t.value, "prev"); }
+  if (t.id === "jn-new"){ const pv = $("jn-prev"); if (pv){ pv.hidden = !t.value.trim(); pv.innerHTML = '<p class="jn-prevh">Preview: how it\'ll be saved</p>' + jnMd(jnTidy(t.value), "prev"); }
     const o = jnOwner(); if (o){ o.draft = t.value; clearTimeout(jbT); jbT = setTimeout(() => store.set("jpb-jobs", jbD), 500); } } });   /* a half-written note survives leaving the page */
 B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.person && pById(JB.person), st = j && j.stages[JB.stage], en = eCur();
   if (en && t.dataset.ef){ const k = t.dataset.ef; if (k === "bld"){ const b = eGet("bld", t.value); en.bld = b ? b.id : ""; } else en[k] = t.value.trim(); if (k !== "n" || en.n) jbTouch(en); return; }
@@ -1223,6 +1237,7 @@ document.addEventListener("click", e => { const b = e.target.closest("[data-ckjo
 /* Jobsite → Weather: today's job (pinned first, else the latest changed) with a city, and every active job's town */
 window.jbTodayJob = () => { const j = jbD.jobs.filter(x => x.st === "open" && !jbArch(x) && cityById(x.city)).sort((a, b) => (+!!b.pin - +!!a.pin) || jbLast(b) - jbLast(a))[0];
   return j ? {id: j.id, name: jbName(j), city: cityById(j.city).n} : null; };
+window.jbActiveNoCity = () => jbD.jobs.some(x => x.st === "open" && !jbArch(x) && !cityById(x.city));
 window.jbActiveTowns = () => jbD.jobs.filter(x => x.st === "open" && !jbArch(x) && cityById(x.city)).map(x => cityById(x.city).n);
 window.jbWxRedraw = () => { const B0 = $("jb-body"), ae = document.activeElement; if (!B0 || (ae && ae !== document.body && B0.contains(ae) && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))) return; jbDraw(); };
 /* other cards hand a job something (Time card hours, a Test log record): active jobs, pinned and latest first */
