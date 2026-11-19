@@ -650,7 +650,12 @@ p.jb-gh{cursor:default}
 .jb-rowed{border:0;padding:4px 0}
 .jb-rowbtns{padding:0 0 8px}
 .jb-punch li.jb-liedit{display:block;padding:4px 0}
-.jn-addrow{align-items:center}.jn-dl{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;margin:0}.jn-dl input{width:auto;min-height:44px}
+.jn-addrow{align-items:center}
+.hm-today{border-bottom:1px solid var(--rule);padding-bottom:10px}
+.hm-tj{appearance:none;display:flex;flex-direction:column;gap:4px;width:calc(100% - 24px);margin:0 12px;padding:12px;text-align:left;font:inherit;color:var(--ink);background:var(--sheet);border:2px solid var(--edge);border-radius:var(--r,10px);cursor:pointer}
+.hm-tj b{font-size:20px;display:flex;align-items:center;gap:6px}.hm-tj>span{color:var(--muted);font-size:15px}
+.hm-next{margin:8px 12px 0}.hm-hint{padding:6px 12px 0}.hm-today .jb-wxl{margin:8px 12px 0}
+.hm-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px 0}.hm-acts .btn{min-height:48px;justify-content:center;text-align:center}.jn-dl{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;margin:0}.jn-dl input{width:auto;min-height:44px}
 /* phones: a checklist line gets the full width, its ⊘ 📷 ✎ sit on a short row under it */
 @media (max-width:560px){.jb-punch li:is(:has(.jb-ndb),:has(input[data-pk])){flex-wrap:wrap;column-gap:4px;padding-bottom:2px}.jb-punch li:is(:has(.jb-ndb),:has(input[data-pk]))>label{flex:1 1 100%;min-height:40px}
   .jb-punch li:is(:has(.jb-ndb),:has(input[data-pk]))>label+*{margin-left:auto}.jb-punch li:is(:has(.jb-ndb),:has(input[data-pk]))>.jb-x{min-height:36px;margin-top:-4px}}
@@ -1569,7 +1574,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 
   <!-- ================= CALC ================= -->
     <section data-sec="home" id="home-card" data-kw="home start dashboard recent offline emergency my jobs">
-    <div class="sec-head"><h2>Home</h2><small>Jobs · recent · pinned</small></div>
+    <div class="sec-head"><h2>Home</h2><small>Today · shortcuts · jobs</small></div>
     <div id="home-body"></div>
     <button type="button" class="tip" id="tip" hidden aria-expanded="false"><span class="badge">TIP</span> <span id="tip-q"></span><span class="tip-a" id="tip-a" hidden></span></button>
     <button type="button" class="news-line" id="news-go"><span class="dot" id="news-dot" hidden></span><b>What's new:</b> <span id="news-txt"></span> ›</button>
@@ -5400,6 +5405,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 18, 2026 · night: Home &amp; break tests</th><td><b>Home starts with Today:</b> the job you're on (📌 pinned first, else the one you changed last) with its stage, hours today, its weather, the next 3 things to do, and one-tap <b>⏱ Log hours</b> (the hours box opens ready to type), <b>📝 Note</b> (the note box, keyboard up), <b>☑ Checklist</b> and <b>🧭 Map</b>. Your other jobs, Coming up (without repeating Today) and the shortcuts follow. <b>Back gesture:</b> on Android or in a Safari tab, swiping back from a job, person or settings page now steps back to the list instead of leaving the book. <b>Skip a stage:</b> skipping the stage you're on starts the next one, the same as Done. <b>Tested hard:</b> junk in every box (code-like text, emoji, 5,000-letter lines, regex symbols), 300 jobs, scrambled saved data, bad backup files, a 320-px-wide screen and junk in every calculator: no errors, nothing broken, no NaN.</td></tr>
         <tr><th>Nov 18, 2026 · Notes</th><td><b>Folded notes say what's in them:</b> each one shows its date (📝 for a day log), badges for ⚠ heads-ups, ? questions, ☐ open boxes and tags, a full title (two lines, not cut at 20 letters), the first heads-up in red, and two lines of the rest. A day log's title is its first line of work, not "Did". <b>Earlier stages' notes don't vanish:</b> on Top-out, Underground's notes (the super's number, the gate code) sit in <b>Notes on other stages</b>, one tap away. <b>Notes · 4</b> on the header. <b>📝 Day log</b> is the first button under the box, and the box's hint no longer crams every mark into one line (marks like ☐ only work at the start of a line). People, builder and subdivision pages skip the long guide. <b>Cleaner saves:</b> a Day log's unfilled lines (an empty "- " or "- [ ]") and empty headings drop out when you save, so an empty box never counts as a to-do; the preview shows the note as it'll be saved. The note box grows as you write. <b>Mark buttons:</b> Day log, Task, Heads-up and Question up front, the rest under <b>More marks…</b> (no more hidden sideways scroll). <b>Editing a note:</b> the box first, Save and Cancel with the date beside them, Delete set apart; saving it empty asks you to delete instead. <b>Inspections:</b> after a Fail or Partial, <b>↻ Book the re-inspection</b> opens the form ready to go; the Pass / Partial / Fail buttons fit small phones. <b>Weather:</b> the gauge-drift helper moved to the bottom so today's temperature comes sooner; 7 days reads 18–45° on one line; with no signal and nothing saved, every part says so instead of "Loading…"; if your active jobs have no city, it tells you how to make the weather follow them.</td></tr>
         <tr><th>Nov 18, 2026 · Job page tidy</th><td><b>Less scrolling:</b> a job page is about 40% shorter. Checklist lines are just the box and 📷; ⊘ not done, ✎ wording, reorder, remove and adding a line live under <b>✎ Edit · not done</b> (a line already marked not done still shows its ⊘). <b>+ Add an inspection</b> starts folded. <b>Report &amp; activity log</b> and <b>Pin, icon &amp; color</b> start folded; open one and it stays open. <b>Notes:</b> the box, then <b>Add note</b> with the date beside it, then your notes, then the guide. The guide went from 6 parts to 4 (the basics, the 7 main marks, more marks, easy mistakes); the separate try box is gone because the note box already previews as you type. <b>Builders:</b> a subdivision now takes its job's builder when it doesn't have one (old ones are fixed on open), so a builder's page lists its subdivisions instead of "no subdivisions". <b>License:</b> the hours goal shows DOPL's own numbers (6,000 residential, 8,000 journeyman, at most 3,000 credited per 12 months); renewal no longer quotes a fee DOPL's page doesn't list. <b>Settings:</b> a note on the fun themes (Neon Sign through Chrome) that they aren't tuned for sun or rain. <b>Home:</b> "Calculators" and other long shortcut names break cleanly instead of "CALCULATOR / S".</td></tr>
         <tr><th>Nov 18, 2026 · Weather</th><td><b>Follows today's job:</b> Jobsite → Weather opens on your pinned job's town (else the job you changed last). Pick My location or a town and it holds for the day; the next morning it goes back to today's job. <b>Weather on your jobs:</b> active jobs show ❄ freeze, 🌧 rain, 💨 gusts and ⚡ storm badges for today and tomorrow, and each job page has a weather line that opens the forecast for that town (updated at most hourly). <b>Best day this week</b> for underground, air and vacuum tests, glue-ups and roof work. <b>Start time:</b> set yours (7:00 AM to start); Plan the day shows first light and sunrise against it. <b>Air or vacuum test drift:</b> enter the gauge reading and when you set and read it, and it shows how far the weather alone moves the gauge, figured for this spot's elevation; a 20°F+ drop now gets its own flag. <b>Glue-ups:</b> the flag and Build → Materials → Cement in heat &amp; cold now use Oatey's cure chart. <b>Frost line:</b> Saratoga Springs and Eagle Mountain show 30" from each city's own design criteria. <b>Radar &amp; official links:</b> NWS radar, NWS forecast for this spot, NWS Salt Lake City, Utah DAQ air, UDOT roads and cameras.</td></tr>
@@ -10444,6 +10450,7 @@ function homeDraw(){
   const renew = now.getFullYear() % 2 === 0 && now.getMonth() >= 8 && days >= 0   /* plumbing licenses expire Nov 30 of even years */
     ? `<button type="button" class="renew-line" data-hg="learn|career|Path to a license|renew-row"><b>License renewal due Nov 30</b> · ${days ? days + (days === 1 ? " day" : " days") + " left" : "today"} · 12 CE hr, 8 core ›</button>` : "";
   $("home-body").innerHTML = `<p class="off-badge ${off.cls}">${off.t}</p>${renew}
+    ${(() => { try { return window.jobsToday ? jobsToday() : ""; } catch(e){ return ""; } })()}
     <div class="home-go">
       <button type="button" class="hg-em" data-hg="contacts|emergency"><b>Emergency</b><span>Gas, 911, water main</span></button>
       ${homeGoList().map(k => `<button type="button" data-hg="${HOME_GO[k][0]}"><b>${HOME_GO[k][1]}</b><span>${HOME_GO[k][2]}</span></button>`).join("")}
@@ -11273,7 +11280,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-18c";
+var BUILD = "handbook-2026-11-18d";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);

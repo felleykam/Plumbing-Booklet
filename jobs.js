@@ -875,7 +875,22 @@ function jbDraw(){
   if (had) jbReseat();
   const cj = $("ck-jobs"); if (cj && window.jbCkJobs && typeof ckPh === "string") cj.innerHTML = window.jbCkJobs(ckPh);
   const mj = $("mt-jobs"), ma = $("mt-ans"); if (mj && ma && window.jbHrsJobs) mj.innerHTML = window.jbHrsJobs(+ma.dataset.h || 0);
+  jbHistSync();
 }
+/* the phone's back gesture (Android, a Safari tab) steps back out of a job, person or settings page, the same as ‹ Back,
+   instead of leaving the book: each level in gets its own history step, and ‹ Back takes it off again */
+let JB_HD = 0, JB_HIGN = 0;
+const jbDepth = () => (JB.view === "set" || JB.open || JB.person || JB.ent ? 1 : 0) + JB.hist.length;
+function jbHistSync(){ try {
+  const d = jbDepth();
+  while (JB_HD < d){ history.pushState(Object.assign({}, history.state || {}, {jb: JB_HD + 1}), ""); JB_HD++; }
+  if (JB_HD > d){ const n = JB_HD - d; JB_HD = d; JB_HIGN++; history.go(-n); }
+} catch(e){} }
+addEventListener("popstate", e => {
+  if (JB_HIGN > 0){ JB_HIGN--; return; }   /* our own step back after ‹ Back */
+  const st = e.state || {}, want = +st.jb || 0;
+  if (st.g === "mine" && st.s === "jobs" && want < JB_HD && jbDepth() > 0){ JB_HD = want; JB_HIGN = 0; if (JB.view === "set" && !JB.open && !JB.person && !JB.ent){ JB.view = "jobs"; jbDraw(); jbTop(); } else jbBack(); }
+});
 const jbTouch = o => { jbBump(o); jbSave(); jbDraw(); };
 const jbTop = () => { const c = $("jobs-card"); if (c) c.scrollIntoView({block: "start"}); };
 /* Jobs settings, opened at a section (a details opens; a heading scrolls into view) */
@@ -966,9 +981,9 @@ B.addEventListener("click", e => {
   if (t.dataset.stage && j){ JB.stage = t.dataset.stage; JB.edit = null; JB.ckEdit = false; JB.rowEdit = null; jbDraw(); jbOpenStage(); return; }
   if (t.dataset.sst && st){ const val = t.dataset.sst, was = st.st; st.st = val; if (was !== val) jbAct(j, `${JB_SNAME[JB.stage]}: ${JB_SST[was] || was} → ${JB_SST[val]}`, JB.stage);
     if (val === "doing" && !st.d0) st.d0 = jbDay();
-    if (val === "done"){ if (!st.d1) st.d1 = jbDay(); if (!st.d0) st.d0 = st.d1;
-      const S = jbStages(j), i = S.findIndex(([k]) => k === JB.stage), nx = S.slice(i + 1).find(([k]) => j.stages[k].st === "todo");
-      if (nx){ const n = j.stages[nx[0]]; n.st = "doing"; if (!n.d0) n.d0 = jbDay(); jbAct(j, `${JB_SNAME[nx[0]]}: To do → Doing (started when ${JB_SNAME[JB.stage]} was done)`, nx[0]); toast(`${JB_SNAME[JB.stage]} done. ${JB_SNAME[nx[0]]} is next.`, 2400); JB.stage = nx[0]; jbTouch(j); jbOpenStage(); return; } }
+    if (val === "done" || (val === "skip" && was === "doing")){ if (val === "done"){ if (!st.d1) st.d1 = jbDay(); if (!st.d0) st.d0 = st.d1; }   /* done, or skipping the stage you were on: the next one starts */
+      const S = jbStages(j), i = S.findIndex(([k]) => k === JB.stage), nx = S.slice(i + 1).find(([k]) => j.stages[k].st === "todo"), how = val === "done" ? "done" : "skipped";
+      if (nx && !S.some(([k]) => k !== JB.stage && j.stages[k].st === "doing")){ const n = j.stages[nx[0]]; n.st = "doing"; if (!n.d0) n.d0 = jbDay(); jbAct(j, `${JB_SNAME[nx[0]]}: To do → Doing (started when ${JB_SNAME[JB.stage]} was ${how})`, nx[0]); toast(`${JB_SNAME[JB.stage]} ${how}. ${JB_SNAME[nx[0]]} is next.`, 2400); JB.stage = nx[0]; jbTouch(j); jbOpenStage(); return; } }
     jbTouch(j); return; }
   if (t.dataset.pdel && j){ j.pplOut = [...new Set([...(j.pplOut || []), t.dataset.pdel])].slice(-200); const q = j.ppl.find(x => x.id === t.dataset.pdel); if (q) jbAct(j, `Took ${pName(q.p) || "someone"} (${q.r}) off the job`); j.ppl = j.ppl.filter(x => x.id !== t.dataset.pdel); jbTouch(j); return; }
   if (t.dataset.ckdel && st){ const k = t.dataset.ckdel, di = jbCk(j, JB.stage).items.find(y => y.key === k);
@@ -1127,7 +1142,7 @@ B.addEventListener("click", e => { const x = e.target.closest("[data-jnx]"), m =
 B.addEventListener("keydown", e => { if (e.key !== "Enter") return;
   if (e.target.matches(".card-h[data-fold]")){ e.preventDefault(); e.target.click(); return; } const btn = {"jp-t": "punch-add", "jc-t": "ck-add", "jhq-h": "hq-add", "jhq-n": "hq-add"}[e.target.id];
   if (btn){ e.preventDefault(); B.querySelector(`[data-a="${btn}"]`).click(); } });
-const jnGrow = t => { t.style.height = "auto"; t.style.height = Math.min(t.scrollHeight + 4, Math.max(220, innerHeight * 0.55)) + "px"; };   /* the note box grows with what you write, up to about half the screen */
+const jnGrow = t => { const n = Math.min(14, Math.max(t.id === "jn-ed" ? 6 : 3, t.value.split("\n").length + 1)); if (t.rows !== n) t.rows = n; };   /* the note box grows a line at a time with what you write (counts lines, so typing never makes the page re-measure) */
 B.addEventListener("input", e => { const t = e.target, j = jbCur(), p = JB.person && pById(JB.person), en = eCur();
   if (t.classList && t.classList.contains("jn-ta")) jnGrow(t);
   if (en && t.dataset.ef && t.tagName !== "SELECT" && t.dataset.ef !== "bld"){ en[t.dataset.ef] = t.value; en.t = Date.now(); clearTimeout(jbT); jbDirty = true; jbT = setTimeout(jbSave, 500); }
@@ -1264,23 +1279,41 @@ document.addEventListener("click", e => { const b = e.target.closest('button[dat
   JB.view = "jobs"; JB.hrsBox = null; JB.colOpen = false; jbDraw(); }, true);
 
 /* Home: MY JOBS box (homeDraw calls this) */
+/* Home → Today: the job you're on (pinned first, else the one changed last), with its weather, what's next and one-tap jumps */
+const jbToday = () => jbD.jobs.filter(j => j.st === "open" && !jbArch(j)).sort((a, b) => (+!!b.pin - +!!a.pin) || jbLast(b) - jbLast(a))[0] || null;
+window.jobsToday = () => {
+  if (!(nav.group === "mine" && nav.sub === "jobs")) jbTidy(true);
+  const j = jbToday(); if (!j) return "";
+  const c = cityById(j.city), addr = (j.a || "").trim(), k = jbStageNow(j), N = jbNextUp(j), H = jbHours();
+  return `<div class="hm-today"><p class="card-h">Today <button type="button" class="linkish" data-hj="${j.id}">Open the job ›</button></p>
+    <button type="button" class="hm-tj" data-hj="${j.id}"><b>${jbIco(jbIcon(j))}${esc(jbName(j))}</b><span>${esc([(j.name || "").trim() && addr, eName("sub", j.sub), c && c.n].filter(Boolean).join(" · "))}</span>
+      <span class="jb-tags"><span class="badge jb-sbadge jt-k-${k}">${esc(JB_SNAME[k])}</span>${H.today ? `<span class="badge">⏱ ${jbHr(H.today)} hr today</span>` : ""}</span></button>
+    ${c ? (window.wxJobLine ? wxJobLine(c.n, j.id) : "") : `<p class="note hm-hint">No city on this job yet: add it in the job's details and the weather and map follow it.</p>`}
+    ${N.length ? jbNextHtml(N, 3, "jb-leftl hm-next") : `<p class="note">Nothing open on this job. Nice.</p>`}
+    <div class="hm-acts"><button type="button" class="btn" data-hj="hrs:${j.id}">⏱ Log hours</button><button type="button" class="btn ghost" data-hj="note:${j.id}">📝 Note</button><button type="button" class="btn ghost" data-hj="ck:${j.id}">☑ Checklist</button>${addr ? `<a class="btn ghost" href="https://maps.apple.com/?daddr=${encodeURIComponent(addr + (c ? ", " + c.n + ", UT" : ""))}" target="_blank" rel="noopener">🧭 Map</a>` : ""}</div></div>`;
+};
 window.jobsHome = () => {
   if (!(nav.group === "mine" && nav.sub === "jobs")) jbTidy(true);   /* away from My jobs: a blank new job doesn't sit on Home */
-  const open = jbD.jobs.filter(j => j.st === "open" && !jbArch(j)).sort((a, b) => (b.pin - a.pin) || b.t - a.t).slice(0, 3), H = jbHours();
-  return `<p class="card-h">My jobs <button type="button" class="linkish" data-hj="all">All</button></p>`
+  const tj = jbToday(), open = jbD.jobs.filter(j => j.st === "open" && !jbArch(j) && (!tj || j.id !== tj.id)).sort((a, b) => (b.pin - a.pin) || b.t - a.t).slice(0, 3), H = jbHours();
+  return `<p class="card-h">${tj ? "Other jobs" : "My jobs"} <button type="button" class="linkish" data-hj="all">All</button> <button type="button" class="linkish" data-hj="new">+ New</button></p>`
     + (open.length ? `<div class="jb-list jb-mini">${open.map(j => jbRow(j, "data-hj")).join("")}</div>`
-      : `<p class="note"><button type="button" class="linkish" data-hj="new">Add a job</button>: a timeline from Underground to Final, with the blanks ready to fill in.</p>`)
-    + (H.wk ? `<p class="note">${jbHr(H.today)} hr today · ${jbHr(H.wk)} hr this week</p>` : "")
+      : tj ? "" : `<p class="note"><button type="button" class="linkish" data-hj="new">Add a job</button>: a timeline from Underground to Final, with the blanks ready to fill in.</p>`)
+    + (H.wk ? `<p class="note">${jbHr(H.today)} hr today · ${jbHr(H.wk)} hr this week · ${jbHr(H.all + (+jbD.before || 0))} toward license</p>` : "")
     + (() => { const now = jbDay(), wk = new Date(now + "T12:00:00"); wk.setDate(wk.getDate() + 7); const end = jbDay(wk);
-        const up = jbD.jobs.filter(j => j.st !== "done" && !jbArch(j)).flatMap(j => jbNextUp(j).filter(x => x.d && (x.late || x.d <= end)).map(x => [x, j])).sort((a, b) => a[0].d < b[0].d ? -1 : a[0].d > b[0].d ? 1 : 0).slice(0, 5);
+        const seen = new Set(tj ? jbNextUp(tj).slice(0, 3).map(x => tj.id + "|" + x.d + "|" + x.t) : []);   /* already shown in Today */
+        const up = jbD.jobs.filter(j => j.st !== "done" && !jbArch(j)).flatMap(j => jbNextUp(j).filter(x => x.d && (x.late || x.d <= end) && !seen.has(j.id + "|" + x.d + "|" + x.t)).map(x => [x, j])).sort((a, b) => a[0].d < b[0].d ? -1 : a[0].d > b[0].d ? 1 : 0).slice(0, 5);
         return up.length ? `<p class="card-h">Coming up</p><ul class="jb-soon">${up.map(([x, j]) => `<li><button type="button" class="linkish" data-hj="${j.id}"><span class="jn-date${x.d === now ? " now" : ""}">${x.m} ${jbNice(x.d)}</span> <b>${esc(jbName(j))}</b> · ${esc(x.t.slice(0, 60))}${x.late ? " · <b>result?</b>" : ""}</button></li>`).join("")}</ul>` : ""; })()
     + (jbBkDue() ? `<button type="button" class="renew-line" data-hj="backup"><b>${+store.get("jpb-lastbk", 0) ? "Last backup " + jbAgo(+store.get("jpb-lastbk", 0)) : "No backup yet"}</b> · Back up now ›</button>` : "");
 };
 $("home-body").addEventListener("click", e => { const b = e.target.closest("[data-hj]"); if (!b) return; const k = b.dataset.hj;
   JF.n = 0; JB.edit = null; JB.person = null; JB.ent = null; JB.hist = []; JB.stage = null; JB.view = "jobs";
   if (k === "backup"){ JB.open = null; JB.view = "set"; go("mine", "jobs"); jbDraw(); const h = $("jb-bk"); if (h) h.scrollIntoView({block: "start"}); JF.sayId = "jf-say"; jbBackupAll(); return; }
-  if (k === "new") jbNew(); else JB.open = k === "all" ? null : k;
-  go("mine", "jobs"); jbDraw(); jbTop(); });
+  const [act, id] = k.includes(":") ? k.split(":") : ["", k];
+  if (id === "new") jbNew(); else JB.open = id === "all" ? null : id;
+  go("mine", "jobs"); jbDraw(); jbTop();
+  if (act === "hrs" && JB.open){ JB.hrsBox = JB.open; jbDraw(); const h = $("jhq-h"); if (h){ h.scrollIntoView({block: "center"}); h.focus(); } }   /* the quick hours box, ready to type */
+  else if (act === "note"){ const t = $("jn-new"); if (t){ t.scrollIntoView({block: "center"}); t.focus(); } }
+  else if (act === "ck") jbOpenStage(); });
 
 /* ---- photos & files: IndexedDB */
 let jfDbP = null;
