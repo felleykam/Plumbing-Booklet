@@ -539,16 +539,11 @@ dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .jb-show .jb-vn{font-size:15px;line-height:1.1}
 .jb-sortrow{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:6px 12px 0}
 .jb-sortrow .jb-sortnote{padding:0;margin:0}
-.jb-setlink{flex:none;white-space:nowrap;padding:8px 0;min-height:40px}
 .set-btns.jb-hacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(58px,1fr));gap:6px;margin-top:10px}
 .jb-hacts .btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px;padding:6px 2px;font-size:12px;letter-spacing:.02em;line-height:1.1;text-align:center;text-decoration:none;min-width:0;overflow-wrap:anywhere}
 .jb-hi{font-size:22px;line-height:1;letter-spacing:0}
 .jb-nm{display:inline-block;min-width:1.35em;margin-right:4px;font-weight:800;text-align:center}
 .jb-nmck{color:var(--muted)}
-.jb-gh{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;min-height:44px;margin:12px 0 0;padding:6px 12px 2px;border:0;border-top:2px solid var(--edge);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
-.jb-gh b{font-family:var(--display);font-size:18px;text-transform:uppercase;letter-spacing:.05em;overflow-wrap:anywhere}
-.jb-gh span{flex:none;color:var(--muted);font-weight:700}
-p.jb-gh{cursor:default}
 .jn-tools{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);padding-right:40px}
 .jn-tools button{min-height:44px}
 .jn-tools{flex-wrap:wrap;overflow:visible;-webkit-mask-image:none;mask-image:none;padding-right:12px}   /* 4 main marks + More: they fit, so no hidden sideways scroll */
@@ -681,7 +676,6 @@ p.jb-gh{cursor:default}
 .jn-an > *{color:var(--ink)}
 .jn-anh{margin:0 0 6px;font-weight:700}.jn-anh code{color:inherit;font-family:var(--mono);background:var(--zebra);padding:1px 6px;border-radius:4px;margin-right:4px}
 .jn-flow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
-.jn-flow2{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
 .jn-flow .jn-src{margin:0}
 .jn-arrow{font-weight:800;font-size:20px;color:var(--muted)}
 .jn-where{margin:6px 0 0;font-size:14.5px}.jn-wl{display:inline-block;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:1px 6px;margin-right:4px;border-radius:4px;background:var(--zebra);color:var(--muted)}
@@ -772,7 +766,6 @@ details.explain.jb-fold[open]>summary::before{content:"▾"}
 .jb-tf .iso{width:24px;height:24px}
 .jb-insp{font-weight:700}
 .jb-sortnote{padding:6px 12px 0}
-.jb-find{padding-bottom:0}
 .jb-snip mark{padding:0 1px}
 .jb-oi .linkish{display:block;width:100%;text-align:left;font-weight:400}
 .jb-oik{display:inline-block;min-width:1.2em;font-weight:800;color:var(--c-link,var(--ink))}.jb-oik.q{color:var(--pal-blue)}
@@ -5415,6 +5408,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 19, 2026 · My jobs trim</th><td><b>Less doubled-up:</b> one way to log hours (the ⏱ box at the top of the job); each stage's Hours has a <b>⏱ Log hours on Top-out</b> button that opens that same box set to that stage, instead of a second form. The Timeline header no longer repeats the to-do and question counts (they're in the job's header and What's next). The whole-job report is just the 📄 Report button up top; Report &amp; activity log keeps the per-stage ones. The gate code shows once, up top. Behind the scenes: Job details is one form instead of two copies, and leftover code and styles from the old notes layout are gone (about 30 lines lighter).</td></tr>
         <tr><th>Nov 19, 2026 · My jobs cleanup</th><td><b>One place for notes:</b> a job's notes are now one list right under What's next, newest on top, each tagged with its stage (no more hunting under "Notes on other stages"). A <b>Stage</b> box next to Add note picks where a new note goes; it follows the stage you tap in the Timeline. Long lists show the newest 6, with <b>Show all</b>. <b>From your notes</b> (PSI, serials, gate codes) sits right under the notes. The <b>Preview</b> only shows when you've used a mark. <b>What's next</b> (was "Where you left off") folds with one tap and stays that way; folded, it still shows the first thing. Tap any line in it to jump to the note, the stage or the punch list. Tapping an open box or question on the job list opens that exact note. <b>Tidier:</b> the stage now holds just status, checklist, inspections and hours, so the other stages sit right below it; "+ Add" folds show a + and plain folds a ▸ (the ? is only on "What is this?" help); Log hours starts folded (the ⏱ Hours button up top is faster); the Done/Archived row hides until you have done or archived jobs; one Jobs settings link instead of two; "✎ Edit · not done" is now <b>✎ Edit list</b>.</td></tr>
         <tr><th>Nov 19, 2026: fact check</th><td><b>Checked against the Utah Code and a second source, then fixed:</b> roof vent height cards now all cite the same Utah rule (12" through the roof, Utah IPC 903.1.1) instead of two different section numbers. <b>Air on plastic DWV:</b> Utah also allows it on houses (it amends IRC P2503.5.1), at 6 psi max for 15 min max, only when water can't be used or would freeze. The Code quick reference and test table now say so, with the Utah Code sections. <b>Gas test:</b> labeled IRC G2417.4 / IFGC 406.4 (3 psi, 10 min minimum). Removed "many Utah cities want 5 psi for 15 min": only Herriman's sheet says that, so the tip now says to ask your inspector. <b>DOPL and cities:</b> license-renewal, no-school hours, frost lines (Orem, Spanish Fork) and design temps now show their source and check date. <b>Also checked:</b> Utah flow limits (lav 1.5, shower 2.0) and the failed 2022 toilet bill (SB 73); cleanouts (base of each stack is an IRC rule for houses, not the 2021 IPC); water hammer arresters (on houses Utah adds "If installed," to IRC P2903.5, so ask your inspector); seismic straps (Utah rewrote IRC P2801.8: upper and lower third); lav clearances (Utah: 12" center to side wall, 24" × 21" clear in front, now on the card instead of "ask"); water heater pan into a stack (Utah allows it only with the code official's OK: now said everywhere); fixture shutoffs study card reworded to match Utah's P2903.9.3 (tubs and showers excepted; a wall-mount valve counts); removed "Provo: keep the house under 75 psi" from three places (couldn't find it on any Provo page); 30" frost line for SLC, Lehi, Springville and Vineyard (now sourced on the city cards). Inspection phone numbers and emails rechecked against city sites for Saratoga Springs, Eagle Mountain, Lehi, Herriman, Riverton, Bluffdale, Orem and SLC: all still right. Enbridge gas-leak line and ThermWise water-heater rebates: still right.</td></tr>
         <tr><th>Nov 18, 2026 · night: Home &amp; break tests</th><td><b>Home starts with Today:</b> the job you're on (📌 pinned first, else the one you changed last) with its stage, hours today, its weather, the next 3 things to do, and one-tap <b>⏱ Log hours</b> (the hours box opens ready to type), <b>📝 Note</b> (the note box, keyboard up), <b>☑ Checklist</b> and <b>🧭 Map</b>. Your other jobs, Coming up (without repeating Today) and the shortcuts follow. <b>Back gesture:</b> on Android or in a Safari tab, swiping back from a job, person or settings page now steps back to the list instead of leaving the book. <b>Skip a stage:</b> skipping the stage you're on starts the next one, the same as Done. <b>Tested hard:</b> junk in every box (code-like text, emoji, 5,000-letter lines, regex symbols), 300 jobs, scrambled saved data, bad backup files, a 320-px-wide screen and junk in every calculator: no errors, nothing broken, no NaN.</td></tr>
@@ -11292,7 +11286,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-19b";
+var BUILD = "handbook-2026-11-19c";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
