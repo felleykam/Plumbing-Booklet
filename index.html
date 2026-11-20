@@ -447,8 +447,8 @@ section[data-sec]{content-visibility:auto;contain-intrinsic-size:auto 500px}
 .jn-row{appearance:none;display:grid;grid-template-columns:1fr auto;gap:2px 10px;width:100%;min-height:52px;padding:9px 12px;text-align:left;font:inherit;color:var(--ink);background:var(--sheet);border:0;border-bottom:1px solid var(--rule);border-left:5px solid var(--acc,var(--edge));cursor:pointer}
 .jn-compact .jn-row:first-child{border-top:1px solid var(--rule)}
 .jn-rt{grid-column:1/-1;font-weight:700;font-size:16px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
-.jn-rd{font-size:13.5px;color:var(--muted);white-space:nowrap;align-self:center}
-.jn-rb{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px}.jn-rb i{font-style:normal;font-weight:800;font-size:13px;padding:1px 7px;border-radius:99px;border:2px solid currentColor;line-height:1.3}
+.jn-rd{font-size:13.5px;color:var(--muted);align-self:center;min-width:0}
+.jn-rb{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px}.jn-rb i{white-space:nowrap;font-style:normal;font-weight:800;font-size:13px;padding:1px 7px;border-radius:99px;border:2px solid currentColor;line-height:1.3}
 .jn-rf{grid-column:1/-1;font-size:15px;font-weight:700;color:var(--danger);overflow-wrap:anywhere}
 .jn-rp{grid-column:1/-1;font-size:14.5px;color:var(--muted);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
 .jn-compact .jn-e{margin:6px 0}
@@ -539,16 +539,11 @@ dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .jb-show .jb-vn{font-size:15px;line-height:1.1}
 .jb-sortrow{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:6px 12px 0}
 .jb-sortrow .jb-sortnote{padding:0;margin:0}
-.jb-setlink{flex:none;white-space:nowrap;padding:8px 0;min-height:40px}
 .set-btns.jb-hacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(58px,1fr));gap:6px;margin-top:10px}
 .jb-hacts .btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px;padding:6px 2px;font-size:12px;letter-spacing:.02em;line-height:1.1;text-align:center;text-decoration:none;min-width:0;overflow-wrap:anywhere}
 .jb-hi{font-size:22px;line-height:1;letter-spacing:0}
 .jb-nm{display:inline-block;min-width:1.35em;margin-right:4px;font-weight:800;text-align:center}
 .jb-nmck{color:var(--muted)}
-.jb-gh{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;min-height:44px;margin:12px 0 0;padding:6px 12px 2px;border:0;border-top:2px solid var(--edge);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
-.jb-gh b{font-family:var(--display);font-size:18px;text-transform:uppercase;letter-spacing:.05em;overflow-wrap:anywhere}
-.jb-gh span{flex:none;color:var(--muted);font-weight:700}
-p.jb-gh{cursor:default}
 .jn-tools{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent);padding-right:40px}
 .jn-tools button{min-height:44px}
 .jn-tools{flex-wrap:wrap;overflow:visible;-webkit-mask-image:none;mask-image:none;padding-right:12px}   /* 4 main marks + More: they fit, so no hidden sideways scroll */
@@ -651,6 +646,7 @@ p.jb-gh{cursor:default}
 .jb-rowbtns{padding:0 0 8px}
 .jb-punch li.jb-liedit{display:block;padding:4px 0}
 .jn-addrow{align-items:center}
+.jb-in .jn-addrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.jb-in .jn-addrow>.btn{grid-column:1/-1;order:3;justify-content:center}.jb-in .jn-addrow .jn-dl{display:flex;flex-direction:column;align-items:stretch;gap:2px}.jb-in .jn-addrow .jn-dl input,.jb-in .jn-addrow .jn-dl select{width:100%;min-height:44px;font-size:16px}
 .hm-today{border-bottom:1px solid var(--rule);padding-bottom:10px}
 .hm-tj{appearance:none;display:flex;flex-direction:column;gap:4px;width:calc(100% - 24px);margin:0 12px;padding:12px;text-align:left;font:inherit;color:var(--ink);background:var(--sheet);border:2px solid var(--edge);border-radius:var(--r,10px);cursor:pointer}
 .hm-tj b{font-size:20px;display:flex;align-items:center;gap:6px}.hm-tj>span{color:var(--muted);font-size:15px}
@@ -680,7 +676,6 @@ p.jb-gh{cursor:default}
 .jn-an > *{color:var(--ink)}
 .jn-anh{margin:0 0 6px;font-weight:700}.jn-anh code{color:inherit;font-family:var(--mono);background:var(--zebra);padding:1px 6px;border-radius:4px;margin-right:4px}
 .jn-flow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
-.jn-flow2{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
 .jn-flow .jn-src{margin:0}
 .jn-arrow{font-weight:800;font-size:20px;color:var(--muted)}
 .jn-where{margin:6px 0 0;font-size:14.5px}.jn-wl{display:inline-block;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:1px 6px;margin-right:4px;border-radius:4px;background:var(--zebra);color:var(--muted)}
@@ -720,6 +715,15 @@ p.jb-gh{cursor:default}
 .jb-leftp{margin:4px 0;font-size:16px}
 .jb-leftl{margin:4px 0;padding:0;list-style:none;font-size:16px}
 .jb-leftl li{padding:3px 0}
+.jb-ltog{appearance:none;display:flex;align-items:center;gap:8px;width:100%;min-height:44px;margin:-6px 0 0;padding:0;border:0;background:none;text-align:left;cursor:pointer}
+.jb-ltog .jb-car{font-size:14px;color:var(--ink)}
+.jb-lpeek{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-family:var(--body);font-weight:600;font-size:15px;letter-spacing:0;text-transform:none;color:var(--ink)}
+.jb-lshut{padding-bottom:4px}
+.jb-nxb{appearance:none;display:block;width:100%;min-height:36px;padding:3px 0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}.jb-leftl li:has(.jb-nxb){padding:0}.jb-nxb:active{background:color-mix(in srgb,var(--hv) 30%,transparent)}
+.jn-stg{font-weight:700;color:var(--sc,var(--muted))}
+details.explain.jb-add summary::before{content:"+"}
+details.explain.jb-fold summary::before{content:"▸";background:none;color:var(--ink);width:16px;font-size:14px}
+details.explain.jb-fold[open]>summary::before{content:"▾"}
 .jb-iq td{padding-top:0}
 .jb-iqh{display:block;font-size:14px;color:var(--muted);margin:2px 0}
 .jb-iq .set-btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
@@ -762,7 +766,6 @@ p.jb-gh{cursor:default}
 .jb-tf .iso{width:24px;height:24px}
 .jb-insp{font-weight:700}
 .jb-sortnote{padding:6px 12px 0}
-.jb-find{padding-bottom:0}
 .jb-snip mark{padding:0 1px}
 .jb-oi .linkish{display:block;width:100%;text-align:left;font-weight:400}
 .jb-oik{display:inline-block;min-width:1.2em;font-weight:800;color:var(--c-link,var(--ink))}.jb-oik.q{color:var(--pal-blue)}
@@ -1216,7 +1219,7 @@ details.explain{border-bottom:1px solid var(--rule);background:color-mix(in srgb
 details.explain summary{cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 12px;min-height:44px;font-weight:700;font-size:15.5px;color:var(--ink);list-style:none}
 details.explain summary::-webkit-details-marker{display:none}
 details.explain summary::before{content:"?";flex:0 0 auto;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--k);color:var(--hv);font-family:var(--display);font-weight:800;font-size:15px}
-details.explain[open] summary::before{content:"–"}
+details.explain[open]>summary::before{content:"–"}
 details.explain div{padding:0 12px 10px;font-size:15.5px;line-height:1.45}
 details.explain p{margin:6px 0 0}
 
@@ -2697,7 +2700,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>Underground</h2><small>Ground work before the pour</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Water service depth</th><td>At least <b>12" deep and 6" below the frost line</b> (IRC P2603.5 / IPC 305.4). SLC, Provo, Springville and Lehi all design to a 30" frost line, so plan on <b>36"</b>. Many water providers want more (North Salt Lake: 42"); theirs wins.</td></tr>
+        <tr><th>Water service depth</th><td>At least <b>12" deep and 6" below the frost line</b> (IRC P2603.5 / IPC 305.4). SLC, Provo, Springville and Lehi all design to a 30" frost line (city design criteria · checked Nov 2026), so plan on <b>36"</b>. Many water providers want more (North Salt Lake: 42"); theirs wins.</td></tr>
         <tr><th>Water service size</th><td>¾" minimum (IPC 603.1). Bigger for a long run or a big fixture load.</td></tr>
         <tr><th>Water + sewer</th><td>5 ft of undisturbed or compacted earth apart (IPC 603.2). Closer only by an exception: the water line's bottom at least 12" above the top of the sewer within those 5 ft, or a shared trench when the sewer pipe is a material the code allows for that. Many cities also want the water on a shelf to one side. <b>The city's standard drawing wins:</b> check it before you dig.</td></tr>
         <tr><th>Through the foundation</th><td>Sleeve two pipe sizes bigger, or a relieving arch, so the wall can settle without crushing the pipe.</td></tr>
@@ -2736,7 +2739,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tbody>
         <tr><th>Trap arm rules</th><td>Measured from the trap weir to the vent opening. The arm can't fall more than one pipe diameter, and the vent can't be closer than two pipe diameters to the weir.</td></tr>
         <tr><th>Trap seal</th><td>2" min, 4" max. One trap per fixture, never double-trapped. Trap no bigger than the drain it empties into.</td></tr>
-        <tr><th>Cleanouts</th><td>Base of each stack, near where the building drain leaves, every 100 ft of horizontal drain, and at changes over 45°. Clearance in front: <b>houses 12" for pipe under 3", 18" for 3" and up</b> (IRC P3005.2.9); IPC 18".</td></tr>
+        <tr><th>Cleanouts</th><td>Houses (IRC P3005.2): base of each stack (the 2021 IPC has no general base-of-stack rule), near where the building drain leaves, every 100 ft of horizontal drain, and at changes over 45°. Clearance in front: <b>houses 12" for pipe under 3", 18" for 3" and up</b> (IRC P3005.2.9); IPC 18".</td></tr>
         <tr><th>Fittings</th><td>San tee: horizontal → vertical only. Combo or long sweep for vertical → horizontal and horizontal → horizontal.</td></tr>
         <tr><th>Washer standpipe</th><td>18"–42" above the trap weir.</td></tr>
       </tbody></table></div>
@@ -2809,7 +2812,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Not the 1" rule</th><td>The "never less than 1 inch" you'll hear is the <b>drinking-water</b> air gap rule (faucets, fill valves). Don't mix the two.</td></tr>
         <tr><th>Air break</th><td>The pipe ends <b>inside</b> the receptor, below its rim but above the trap seal. Less protection; only where the code allows it.</td></tr>
         <tr><th>The receptor</th><td>Trapped and vented like any fixture, big enough for the flow, where you can see and reach it.</td></tr>
-        <tr><th><span class="badge ut">UT</span> Heater pan</th><td>Utah lets a water heater pan drain into a stack or branch if it's trapped and vented and has a trap primer, barrier seal or deep-seal trap (15A-3-205).</td></tr>
+        <tr><th><span class="badge ut">UT</span> Heater pan</th><td>With the code official's OK, Utah lets a water heater pan drain into a stack or branch if it's trapped and vented and has a trap primer, barrier seal or deep-seal trap. Never into a vent (Utah's IRC P2801.6.2, Utah Code 15A-3-205 · checked Nov 2026).</td></tr>
 </tbody></table></div>
     <p class="note">Air gap wording: <a href="https://codes.ohio.gov/assets/laws/administrative-code/rules/4101/3/4101$3-8-01_eff_11_1_17.pdf" target="_blank" rel="noopener">IPC-based code text (Ohio)</a>. Softener drains: <b>Service → Treatment → Treatment code</b>.</p>
   </section>
@@ -2948,7 +2951,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td>Kitchen faucet</td><td class="n"><b>2.2 gpm</b></td><td class="n">2.2</td><td>—</td></tr>
         <tr><td>Toilet</td><td class="n"><b>1.6 gpf</b></td><td class="n">1.6</td><td class="n">1.28</td></tr>
       </tbody></table></div>
-    <p class="note"><span class="badge ut">UT</span> Lav 1.5 gpm @ 60 psi and showerhead 2.0 gpm @ 80 psi are Utah amendments (15A-3-205). Toilets stay at the model code's 1.6 gpf; many builders spec 1.28 anyway. A 2022 bill for a statewide 1.28 didn't pass.</p>
+    <p class="note"><span class="badge ut">UT</span> Lav 1.5 gpm @ 60 psi and showerhead 2.0 gpm @ 80 psi are Utah amendments (Utah Code 15A-3-205 · checked Nov 2026). Toilets stay at the model code's 1.6 gpf; many builders spec 1.28 anyway. A 2022 bill for a statewide 1.28 (SB 73) didn't pass.</p>
   </section>
   <section data-sec="supply" data-kw="water hammer arrester arrestor sizing pdi wh-201 a b c d e f fixture units asse 1010 quick closing valve washer dishwasher ice maker bang">
     <div class="sec-head"><h2>Water hammer arresters</h2><small>Where they go · PDI sizes</small></div>
@@ -2964,7 +2967,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 </tbody></table></div>
     <div class="x"><table class="t wrap">
       <tbody>
-        <tr><th>Where</th><td>At <b>quick-closing valves</b>: washer box, dishwasher, ice maker and other solenoid valves (IPC 604.9, ASSE 1010). As close to the valve as you can.</td></tr>
+        <tr><th>Where</th><td>At <b>quick-closing valves</b>: washer box, dishwasher, ice maker and other solenoid valves (ASSE 1010). As close to the valve as you can. IPC 604.9 requires them there. <span class="badge ut">UT</span> On houses, Utah adds "If installed," to that sentence of IRC P2903.5 (Utah Code 15A-3-205 · checked Nov 2026), so ask your inspector whether they want them.</td></tr>
         <tr><th>Sizing</th><td>Add up the fixture units on that hot or cold branch and pick the letter. A house washer box usually takes the small ones built into the box.</td></tr>
         <tr><th>High pressure</th><td>Above about 65 psi flowing, go <b>one size up</b> (Watts, Zurn). Over 80 psi static the house needs a PRV anyway (<b>Build → Water supply → Water supply</b>).</td></tr>
         <tr><th>Why</th><td><b>Learn → How it works → Why water hammer happens</b>.</td></tr>
@@ -2995,7 +2998,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Toilet</th><td><b>≥ 15"</b> center to any side wall or obstruction. <b>≥ 30"</b> center to center between toilets or bidets. <b>≥ 21"</b> clear in front to a wall, fixture or door (IRC P2705.1).</td></tr>
-        <tr><th>Lav</th><td>≥ 21" clear in front. <span class="badge ut">UT</span> Utah amends lav clearances (15A-3-205): check the plans and ask the inspector.</td></tr>
+        <tr><th><span class="badge ut">UT</span>Lav</th><td><b>≥ 12"</b> center to any side wall or partition. A clear space <b>24" wide × 21" deep</b> in front, to any wall, partition or obstruction (Utah's IRC P2705 item 9, Utah Code 15A-3-205 · checked Nov 2026).</td></tr>
         <tr><th>Shower</th><td><b>≥ 900 in²</b> inside, and a <b>30" circle</b> must fit. Door or opening ≥ <b>22"</b> clear (IRC P2708.1).</td></tr>
         <tr><th>Slip joints</th><td>Must stay reachable: a slip-joint tub waste needs an access opening (IRC P2704.1).</td></tr>
       </tbody></table></div>
@@ -3104,7 +3107,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tbody>
         <tr><th>Hot (95°F+)</th><td>Pipe lying in sun runs <b>20–30°F hotter</b> than the air, and solvent flashes off before you push the joint. Shade the pipe and the cans. Cool the ends with a damp rag, then dry them. Make the critical joints in the morning. Use a heavier-bodied cement, keep both surfaces wet when you join, and work fast (Weldon/IPS hot-weather guide).</td></tr>
         <tr><th>Cold</th><td>Cure time stretches a lot below 40°F (see the CPVC table; ABS and PVC makers publish their own charts). Keep cans in the cab. Never warm cement or pipe with a flame: the vapor is very flammable. Below about 50°F cold plastic cracks under ratchet cutters: use a wheel or saw.</td></tr>
-        <tr><th>Utah County</th><td>Design temps run 13°F to 95°F, so you'll hit both ends in one year. <b>Jobsite → Weather</b> flags glue days.</td></tr>
+        <tr><th>Utah County</th><td>City design criteria put winter design temps at 0°F (Eagle Mountain) to 8°F (Orem), and Eagle Mountain's summer design temp at 98°F (city sheets, checked Nov 2026), so you'll hit both ends in one year. <b>Jobsite → Weather</b> flags glue days.</td></tr>
       </tbody></table></div>
     <p class="card-h">Oatey cure times, PVC &amp; ABS (before a pressure test)</p>
     <div class="x"><table class="t num"><thead><tr><th>Pipe</th><th>Test psi</th><th>60–100°F</th><th>40–60°F</th><th>20–40°F</th></tr></thead>
@@ -3245,7 +3248,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tbody>
         <tr><th>T&amp;P line</th><td>Full size of the valve outlet, one line per valve. No valves, tees or threaded end. Drains by gravity, no sags or traps. Ends through an air gap <b>in the same room</b>, in plain view, ≤ 6" above the floor or a receptor; never piped straight into a drain. <b>PEX or PE-RT: one size bigger</b> than the valve outlet, end fastened (IRC P2804.6.1). <span class="badge ut">UT</span> ≤ 180° of total bends.</td></tr>
         <tr><th>Pan</th><td>Where a leak would do damage (attic, upper floor, finished space): 1½" deep, ¾" drain to an indirect receptor or outside 6"–24" above grade. <span class="badge ut">UT</span> With the code official's OK, the pan may drain into a stack or branch: individually trapped and vented, never connected to any vent, heater discharge only (Utah P2801.6.2–.3).</td></tr>
-        <tr><th>Seismic straps</th><td>Upper and lower third of the tank, the lower strap at least 4" above the controls (IRC P2801.8). Utah is seismic: inspectors look for both straps.</td></tr>
+        <tr><th><span class="badge ut">UT</span>Seismic straps</th><td>Straps within the upper and lower third of the tank (Utah's IRC P2801.8, Utah Code 15A-3-205 · checked Nov 2026). Utah replaced the base IRC text, which also put the lower strap at least 4" above the controls; keep it clear of the gas valve anyway. Inspectors look for both straps.</td></tr>
         <tr><th><span class="badge ut">UT</span>Ultra-low NOx</th><td>In the Wasatch Front and Uinta Basin pollution (nonattainment) areas, a new gas water heater must be ultra-low NOx: <b>10 ng/J</b> at 75,000 BTU/h or less, 14 above (Utah Code 15A-6-102). The areas don't follow city lines: <a href="https://utahdeq.maps.arcgis.com/apps/instant/lookup/index.html?appid=030663dce9d54d6c9141e348ff980902" target="_blank" rel="noopener">check the address ↗</a>. The NOx number is on the label.</td></tr>
         <tr><th>Cold shutoff</th><td>Full-open valve on the cold supply at the heater.</td></tr>
         <tr><th>Expansion tank</th><td>Closed system (PRV, check or backflow device): yes. Set its air charge to house pressure with the water off.</td></tr>
@@ -3442,7 +3445,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>On the job</th><td>Scale in tanks (rumble, ticking, anode wear) and in tankless heat exchangers. Rinnai's warranty excludes scale and water-quality failures, so tankless always gets isolation/flush valves. Crusty aerators look like a pressure problem and aren't.</td></tr>
         <tr><th>Softeners</th><td>Common. No Utah amendment covers the discharge: base code applies, so an <b>air gap</b> on the regen drain into an indirect receptor. Loop location is your shop's standard. Check anodes more often on softened water.</td></tr>
         <tr><th>Disinfection</th><td>Free chlorine in every Utah County system checked (CUWCD, Saratoga, Eagle Mountain). No chloramine found.</td></tr>
-        <tr><th>Pressure</th><td>Swings with lot elevation: bench lots and valley floors differ a lot. Provo says keep the house under 75 psi. <b>Gauge the hose bibb at the setter</b> before you set the PRV and the expansion-tank charge.</td></tr>
+        <tr><th>Pressure</th><td>Swings with lot elevation: bench lots and valley floors differ a lot. <b>Gauge the hose bibb at the setter</b> before you set the PRV and the expansion-tank charge.</td></tr>
               <tr><th>Fluoride</th><td>Utah systems stopped adding fluoride May 7, 2025 (HB 81). Some wells still carry natural fluoride (Eagle Mountain up to 2.0 ppm in 2025, under the 4.0 limit). No plumbing effect reported.</td></tr>
         <tr><th>Seasonal swing</th><td>A softener set in October on river water under-softens in summer on well water (Herriman). Test at the house, don't trust the average.</td></tr>
 </tbody></table></div>
@@ -3839,7 +3842,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>Navien tankless codes</h2><small>NPE series · from the Navien manual</small></div>
     <div class="chips code-brands" role="group" aria-label="Jump to a brand"><button type="button" data-go="mech|codes|Rinnai tankless codes">Rinnai</button><button type="button" data-go="mech|codes|Bradford White ICON light">Bradford White</button><button type="button" data-go="mech|codes|A.O. Smith, Rheem and others">A.O. Smith · Rheem · others</button></div>
     <div class="x"><table class="t"><tbody><tr data-search="e003 ignition failure is the main gas valve open?"><th class="k">E003</th><td><b>Ignition failure</b><div class="sub">Is the main gas valve open?</div></td></tr><tr data-search="e004 false flame detection is the cord properly grounded?"><th class="k">E004</th><td><b>False flame detection</b><div class="sub">Is the cord properly grounded?</div></td></tr><tr data-search="e012 flame loss clean the intake air filter; check the ground."><th class="k">E012</th><td><b>Flame loss</b><div class="sub">Clean the intake air filter; check the ground.</div></td></tr><tr data-search="e016 heat exchanger overheating off 30 min, restart; clean the cold inlet filter; flush the heat exchanger."><th class="k">E016</th><td><b>Heat exchanger overheating</b><div class="sub">Off 30 min, restart; clean the cold inlet filter; flush the heat exchanger.</div></td></tr><tr data-search="e030 exhaust overheating (flue over 149°f) off 30 min, restart; clean the inlet filter; flush."><th class="k">E030</th><td><b>Exhaust overheating (flue over 149°F)</b><div class="sub">Off 30 min, restart; clean the inlet filter; flush.</div></td></tr><tr data-search="e046 limit control call navien tech support."><th class="k">E046</th><td><b>Limit control</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e047 exhaust thermostat call navien tech support."><th class="k">E047</th><td><b>Exhaust thermostat</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e109 fan motor clean the intake air filter."><th class="k">E109</th><td><b>Fan motor</b><div class="sub">Clean the intake air filter.</div></td></tr><tr data-search="e110 abnormal air pressure exhaust clear? clean the intake air filter."><th class="k">E110</th><td><b>Abnormal air pressure</b><div class="sub">Exhaust clear? Clean the intake air filter.</div></td></tr><tr data-search="e407 hot outlet thermistor open or short call navien tech support."><th class="k">E407</th><td><b>Hot outlet thermistor open or short</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e421 cold inlet thermistor open or short call navien tech support."><th class="k">E421</th><td><b>Cold inlet thermistor open or short</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e438 circulation pump external recirc: supply and return lines open? internal: check the 2-way valve direction."><th class="k">E438</th><td><b>Circulation pump</b><div class="sub">External recirc: supply and return lines open? Internal: check the 2-way valve direction.</div></td></tr><tr data-search="e439 flow sensor call navien tech support."><th class="k">E439</th><td><b>Flow sensor</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e515 pcb is the cord properly grounded?"><th class="k">E515</th><td><b>PCB</b><div class="sub">Is the cord properly grounded?</div></td></tr><tr data-search="e517 dip switch setting call navien tech support."><th class="k">E517</th><td><b>DIP switch setting</b><div class="sub">Call Navien tech support.</div></td></tr><tr data-search="e760 flushing / service alarm time to flush and service the unit."><th class="k">E760</th><td><b>Flushing / service alarm</b><div class="sub">Time to flush and service the unit.</div></td></tr></tbody></table></div>
-    <p class="note">Codes and first checks from the Navien NPE operation manual. Not listed or still there: Navien tech support <span class="pn">1-800-519-8794</span>. Other Navien series use some different codes: read the unit's own manual.</p>
+    <p class="note">Codes and first checks from the Navien NPE operation manual. Not listed or still there: Navien tech support <span class="pn">1-800-519-8794</span>, option 2 (Navien support page · checked Nov 2026). Other Navien series use some different codes: read the unit's own manual.</p>
   </section>
   <section data-sec="codes" data-kw="error code fault code rinnai 10 11 12 14 16 25 lc tankless diagnostic">
     <div class="sec-head"><h2>Rinnai tankless codes</h2><small>From Rinnai's diagnostic code guide</small></div>
@@ -4476,14 +4479,14 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tbody>
         <tr><td>DWV</td><td>Water (2021 IRC and IPC)</td><td class="n">10 ft head</td><td class="n">15 min</td></tr>
         <tr><td>DWV metal</td><td>Air (base IPC: no plastic)</td><td class="n">5 psi</td><td class="n">15 min</td></tr>
-        <tr><td><span class="badge ut">UT</span>DWV plastic</td><td>Air, only if water can't be used or would freeze</td><td class="n">≤6 psi</td><td class="n">≤15 min</td></tr>
+        <tr><td><span class="badge ut">UT</span>DWV plastic</td><td>Air, only if water can't be used or would freeze<div class="sub">Utah amendments: IPC 312.3 and IRC P2503.5.1 (Utah Code 15A-3-303, 15A-3-204) · checked Nov 2026</div></td><td class="n">≤6 psi</td><td class="n">≤15 min</td></tr>
         <tr><td>DWV plastic</td><td>Vacuum: in the 2021 IRC (houses) and 2024 IPC, not the 2021 IPC</td><td class="n">−5 psi<br>(−10" Hg)</td><td class="n">15 min</td></tr>
         <tr><td>Water</td><td>Water</td><td class="n">≥ working</td><td>≥ 15 min, and keep it on for the inspector</td></tr>
-        <tr><td><span class="badge ut">UT</span>Water plastic<div class="sub">Utah IPC 312.5. On a house, get the inspector's OK first.</div></td><td>Air</td><td class="n">50–80 psi</td><td class="n">≤15 min</td></tr>
+        <tr><td><span class="badge ut">UT</span>Water plastic<div class="sub">Utah IPC 312.5 (Utah Code 15A-3-303 · checked Nov 2026). On a house (IRC), get the inspector's OK first.</div></td><td>Air</td><td class="n">50–80 psi</td><td class="n">≤15 min</td></tr>
         <tr><td>Shower pan</td><td>Water</td><td class="n">2" at threshold</td><td class="n">15 min</td></tr>
-        <tr><td>Gas</td><td>Air, nitrogen or CO₂, never oxygen</td><td class="n">1.5× working<br>≥3 psi</td><td class="n">10 min</td></tr>
+        <tr><td>Gas<div class="sub">IRC G2417.4 · IFGC 406.4</div></td><td>Air, nitrogen or CO₂, never oxygen</td><td class="n">1.5× working<br>≥3 psi</td><td class="n">10 min</td></tr>
       </tbody></table></div>
-    <p class="note">Many Utah cities want gas at <b>5 psi for 15 min</b>. <span class="badge ut">UT</span> plastic air tests are capped: watch the gauge, stand clear, bleed down slowly. A joint can blow.</p>
+    <p class="note">Gas: the code minimum is 3 psi for 10 min. Some inspectors or the gas company ask for more, so ask yours before you pump it up. <span class="badge ut">UT</span> plastic air tests are capped: watch the gauge, stand clear, bleed down slowly. A joint can blow.</p>
   
     </details>
   </section>
@@ -4524,7 +4527,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note" id="code-pick-note"></p>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Houses</th><td><b>2021 IRC</b> plumbing and gas chapters + Utah amendments. Utah did <b>not</b> move to the 2024 IRC.</td></tr>
+        <tr><th>Houses</th><td><b>2021 IRC</b> plumbing and gas chapters + Utah amendments. Utah did <b>not</b> move to the 2024 IRC.<div class="sub">Utah Code 15A-2-103; Salt Lake City and Bountiful's July 2026 design criteria say the same · checked Nov 2026. Some city web pages still list older editions: go by the state law and your permit.</div></td></tr>
         <tr><th>Everything else</th><td><b>2024</b> IPC, IFGC, IMC, IBC, IECC. 2023 NEC.</td></tr>
         <tr><th>Older permits</th><td>Applied for before 7/1/2026: usually the <b>2021 IPC</b> with that era's amendments. The permit card says.</td></tr>
         <tr><th>Utah changes</th><td>Utah Code Title 15A, chapter 3. Tagged <span class="badge ut">UT</span> in this book.</td></tr>
@@ -4570,7 +4573,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tbody>
         <tr><th colspan="3">Tests</th></tr>
         <tr><td class="n">312.2</td><td>DWV water test: <b>10 ft of head</b>, 15 min</td><td>Same</td></tr>
-        <tr><td class="n">312.3</td><td>DWV air test: <b>5 psi</b>, 15 min. No air on plastic. <span class="badge ut">UT</span> Plastic only if water can't be used or would freeze: ≤6 psi, ≤15 min</td><td>Also allows a vacuum test on plastic: −5 psi, 15 min</td></tr>
+        <tr><td class="n">312.3</td><td>DWV air test: <b>5 psi</b>, 15 min. No air on plastic. <span class="badge ut">UT</span> Plastic only if water can't be used or would freeze: ≤6 psi, ≤15 min</td><td>Also allows a vacuum test on plastic: −5 psi, 15 min. <span class="badge ut">UT</span> Air on plastic: same ≤6 psi, ≤15 min rule (Utah amends P2503.5.1)</td></tr>
         <tr><td class="n">312.5</td><td>Water supply: at least working pressure. <span class="badge ut">UT</span> Air on plastic 50–80 psi, ≤15 min</td><td>Get the inspector's OK before air on plastic</td></tr>
         <tr><td class="n">312.9</td><td>Shower pan: <b>2" at the threshold</b>, 15 min</td><td>Same (P2503.6)</td></tr>
         <tr><td class="n">—</td><td>No vacuum test in the 2021 IPC (2024 adds it as 312.4)</td><td>Allowed</td></tr>
@@ -4639,7 +4642,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th colspan="2">Utah County</th></tr>
         <tr><td><b>Eagle Mountain</b></td><td>Email <a href="mailto:buildinginspections@eaglemountain.gov">buildinginspections@eaglemountain.gov</a><div class="sub">Include the permit number. No confirmation email back = you're not on the schedule. First come, first served. Order: underground plumbing → 4-way → a separate <b>frost-protection insulation</b> inspection → final. Final needs the meter set: lid at grade, setter 20" ±2" below the lid, nothing within 5 ft; $50 re-final if it isn't.</div></td></tr>
         <tr><td><b>Lehi</b></td><td><span class="pn">385-201-1035</span><div class="sub">Phone only: no voicemail, email or online booking. 24 hr notice. Lists a 30" minimum frost line. Not-ready re-inspections get a fee. Sewer lateral: 2% minimum slope to the property line, inspected before backfill. One culinary and one PI connection per lot.</div></td></tr>
-        <tr><td><b>Provo</b></td><td><a href="https://www.provo.gov/1019/Schedule-Building-Inspection" target="_blank" rel="noopener">Schedule an inspection ↗</a><div class="sub">Booking is through the city's self-service portal. Design frost depth 30"; house pressure should stay under 75 psi (city water report).</div></td></tr>
+        <tr><td><b>Provo</b></td><td><a href="https://www.provo.gov/1019/Schedule-Building-Inspection" target="_blank" rel="noopener">Schedule an inspection ↗</a><div class="sub">Booking is through the city's self-service portal. Design frost depth 30" (Provo design criteria).</div></td></tr>
         <tr><td><b>Saratoga Springs</b></td><td>Email <a href="mailto:buildinginspectionrequest@saratogasprings-ut.gov">buildinginspectionrequest@saratogasprings-ut.gov</a> or <span class="pn">801-766-6507</span> x120<div class="sub">One business day ahead: by 5 pm Mon–Thu, 4 pm Fri. No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test set).</div></td></tr>
         <tr><td><b>Spanish Fork</b></td><td><a href="https://www.spanishfork.gov/living-in-our-community/building/building-permits-inspections/" target="_blank" rel="noopener">CitizenServe portal ↗</a> · help <span class="pn">801-804-4540</span><div class="sub">24 hr ahead. Ready by 8 am the day of, or a $93 re-inspection fee. Underground plumbing and water/sewer laterals inspected before cover; gas pressure test in that stage; rough plumbing on the 4-way; shower pan inspection with framing.</div></td></tr>
         <tr><td><b>Springville</b></td><td><a href="https://www.springvilleutah.gov/community-development/wp-content/uploads/sites/5/2025/06/My-City-Inspector-Directions.pdf" target="_blank" rel="noopener">City Inspect ↗</a> · building <span class="pn">801-489-2704</span><div class="sub">Booked online in AM/PM blocks once the permit is issued; some inspections wait on earlier ones. Frost depth 30". Secondary-water switch-over inspection, $50.</div></td></tr>
@@ -5405,6 +5408,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 19, 2026 · My jobs trim</th><td><b>Less doubled-up:</b> one way to log hours (the ⏱ box at the top of the job); each stage's Hours has a <b>⏱ Log hours on Top-out</b> button that opens that same box set to that stage, instead of a second form. The Timeline header no longer repeats the to-do and question counts (they're in the job's header and What's next). The whole-job report is just the 📄 Report button up top; Report &amp; activity log keeps the per-stage ones. The gate code shows once, up top. Behind the scenes: Job details is one form instead of two copies, and leftover code and styles from the old notes layout are gone (about 30 lines lighter).</td></tr>
+        <tr><th>Nov 19, 2026 · My jobs cleanup</th><td><b>One place for notes:</b> a job's notes are now one list right under What's next, newest on top, each tagged with its stage (no more hunting under "Notes on other stages"). A <b>Stage</b> box next to Add note picks where a new note goes; it follows the stage you tap in the Timeline. Long lists show the newest 6, with <b>Show all</b>. <b>From your notes</b> (PSI, serials, gate codes) sits right under the notes. The <b>Preview</b> only shows when you've used a mark. <b>What's next</b> (was "Where you left off") folds with one tap and stays that way; folded, it still shows the first thing. Tap any line in it to jump to the note, the stage or the punch list. Tapping an open box or question on the job list opens that exact note. <b>Tidier:</b> the stage now holds just status, checklist, inspections and hours, so the other stages sit right below it; "+ Add" folds show a + and plain folds a ▸ (the ? is only on "What is this?" help); Log hours starts folded (the ⏱ Hours button up top is faster); the Done/Archived row hides until you have done or archived jobs; one Jobs settings link instead of two; "✎ Edit · not done" is now <b>✎ Edit list</b>.</td></tr>
+        <tr><th>Nov 19, 2026: fact check</th><td><b>Checked against the Utah Code and a second source, then fixed:</b> roof vent height cards now all cite the same Utah rule (12" through the roof, Utah IPC 903.1.1) instead of two different section numbers. <b>Air on plastic DWV:</b> Utah also allows it on houses (it amends IRC P2503.5.1), at 6 psi max for 15 min max, only when water can't be used or would freeze. The Code quick reference and test table now say so, with the Utah Code sections. <b>Gas test:</b> labeled IRC G2417.4 / IFGC 406.4 (3 psi, 10 min minimum). Removed "many Utah cities want 5 psi for 15 min": only Herriman's sheet says that, so the tip now says to ask your inspector. <b>DOPL and cities:</b> license-renewal, no-school hours, frost lines (Orem, Spanish Fork) and design temps now show their source and check date. <b>Also checked:</b> Utah flow limits (lav 1.5, shower 2.0) and the failed 2022 toilet bill (SB 73); cleanouts (base of each stack is an IRC rule for houses, not the 2021 IPC); water hammer arresters (on houses Utah adds "If installed," to IRC P2903.5, so ask your inspector); seismic straps (Utah rewrote IRC P2801.8: upper and lower third); lav clearances (Utah: 12" center to side wall, 24" × 21" clear in front, now on the card instead of "ask"); water heater pan into a stack (Utah allows it only with the code official's OK: now said everywhere); fixture shutoffs study card reworded to match Utah's P2903.9.3 (tubs and showers excepted; a wall-mount valve counts); removed "Provo: keep the house under 75 psi" from three places (couldn't find it on any Provo page); 30" frost line for SLC, Lehi, Springville and Vineyard (now sourced on the city cards). Inspection phone numbers and emails rechecked against city sites for Saratoga Springs, Eagle Mountain, Lehi, Herriman, Riverton, Bluffdale, Orem and SLC: all still right. Enbridge gas-leak line and ThermWise water-heater rebates: still right.</td></tr>
         <tr><th>Nov 18, 2026 · night: Home &amp; break tests</th><td><b>Home starts with Today:</b> the job you're on (📌 pinned first, else the one you changed last) with its stage, hours today, its weather, the next 3 things to do, and one-tap <b>⏱ Log hours</b> (the hours box opens ready to type), <b>📝 Note</b> (the note box, keyboard up), <b>☑ Checklist</b> and <b>🧭 Map</b>. Your other jobs, Coming up (without repeating Today) and the shortcuts follow. <b>Back gesture:</b> on Android or in a Safari tab, swiping back from a job, person or settings page now steps back to the list instead of leaving the book. <b>Skip a stage:</b> skipping the stage you're on starts the next one, the same as Done. <b>Tested hard:</b> junk in every box (code-like text, emoji, 5,000-letter lines, regex symbols), 300 jobs, scrambled saved data, bad backup files, a 320-px-wide screen and junk in every calculator: no errors, nothing broken, no NaN.</td></tr>
         <tr><th>Nov 18, 2026 · Notes</th><td><b>Folded notes say what's in them:</b> each one shows its date (📝 for a day log), badges for ⚠ heads-ups, ? questions, ☐ open boxes and tags, a full title (two lines, not cut at 20 letters), the first heads-up in red, and two lines of the rest. A day log's title is its first line of work, not "Did". <b>Earlier stages' notes don't vanish:</b> on Top-out, Underground's notes (the super's number, the gate code) sit in <b>Notes on other stages</b>, one tap away. <b>Notes · 4</b> on the header. <b>📝 Day log</b> is the first button under the box, and the box's hint no longer crams every mark into one line (marks like ☐ only work at the start of a line). People, builder and subdivision pages skip the long guide. <b>Cleaner saves:</b> a Day log's unfilled lines (an empty "- " or "- [ ]") and empty headings drop out when you save, so an empty box never counts as a to-do; the preview shows the note as it'll be saved. The note box grows as you write. <b>Mark buttons:</b> Day log, Task, Heads-up and Question up front, the rest under <b>More marks…</b> (no more hidden sideways scroll). <b>Editing a note:</b> the box first, Save and Cancel with the date beside them, Delete set apart; saving it empty asks you to delete instead. <b>Inspections:</b> after a Fail or Partial, <b>↻ Book the re-inspection</b> opens the form ready to go; the Pass / Partial / Fail buttons fit small phones. <b>Weather:</b> the gauge-drift helper moved to the bottom so today's temperature comes sooner; 7 days reads 18–45° on one line; with no signal and nothing saved, every part says so instead of "Loading…"; if your active jobs have no city, it tells you how to make the weather follow them.</td></tr>
         <tr><th>Nov 18, 2026 · Job page tidy</th><td><b>Less scrolling:</b> a job page is about 40% shorter. Checklist lines are just the box and 📷; ⊘ not done, ✎ wording, reorder, remove and adding a line live under <b>✎ Edit · not done</b> (a line already marked not done still shows its ⊘). <b>+ Add an inspection</b> starts folded. <b>Report &amp; activity log</b> and <b>Pin, icon &amp; color</b> start folded; open one and it stays open. <b>Notes:</b> the box, then <b>Add note</b> with the date beside it, then your notes, then the guide. The guide went from 6 parts to 4 (the basics, the 7 main marks, more marks, easy mistakes); the separate try box is gone because the note box already previews as you type. <b>Builders:</b> a subdivision now takes its job's builder when it doesn't have one (old ones are fixed on open), so a builder's page lists its subdivisions instead of "no subdivisions". <b>License:</b> the hours goal shows DOPL's own numbers (6,000 residential, 8,000 journeyman, at most 3,000 credited per 12 months); renewal no longer quotes a fee DOPL's page doesn't list. <b>Settings:</b> a note on the fun themes (Neon Sign through Chrome) that they aren't tuned for sun or rain. <b>Home:</b> "Calculators" and other long shortcut names break cleanly instead of "CALCULATOR / S".</td></tr>
@@ -6088,11 +6094,11 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>1 · Apprentice license</th><td>Apply to DOPL; employer names your supervisor ($116 on the 2022 form).</td></tr>
         <tr><th>Supervision</th><td>Immediate supervision, max 3 apprentices per supervisor (R156-55c-401). 4th year: up to 8 hr unsupervised in any 24 (Utah Code 58-55-404, carried into the version effective 1/1/2027).</td></tr>
         <tr><th>2 · School + hours</th><td>≥72 classroom hr per semester at 75%+. Max 3,000 OJT hr per 12 months (R156-55c-302a).</td></tr>
-        <tr><th>No-school route</th><td>Journeyman without the 576 classroom hours takes <b>16,000 hr</b> as a licensed apprentice: twice the time. School is the shortcut.</td></tr>
+        <tr><th>No-school route</th><td>Journeyman without the 576 classroom hours takes <b>16,000 hr</b> of licensed experience under a journeyman or master: twice the time. School is the shortcut. (DOPL journeyman application page, checked Nov 2026.)</td></tr>
         <tr><th>MTECH</th><td>4 yr, 8 semesters, 576 hr. Test-out after semester 4A (6,000 hr) fits the <b>residential</b> path. Confirm which license you're testing for.</td></tr>
         <tr><th>3 · Exams</th><td>Written (remote OK) + Utah Plumber Practical in person. Pass, then apply.</td></tr>
         <tr><th>Exam reality</th><td>Statewide pass rates, Jun 2025–Jun 2026: theory 69%, residential theory 56%, practical 55%. The practical is a PVC project and a copper project, 37 points each; the average was 26.2 on PVC and <b>25.2 on copper</b>, so practice copper. MTECH beat the state: theory 85%, practical 60%. Weak spot statewide: hydronics (DOPL bulletin, May 2026).</td></tr>
-        <tr id="renew-row" tabindex="-1"><th>4 · Renew</th><td>Every 2 yr, by Nov 30 of even years (2026, 2028, 2030…). 12 CE hr, at least 8 core (Utah Admin. Code R156-55c-304). Fee: DOPL's current <a href="https://commerce.utah.gov/dopl/" target="_blank" rel="noopener">fee schedule</a> (DOPL's renewal page doesn't list it, checked Nov 2026). Renew online in <a href="https://utahdoc.mylicenseone.com/" target="_blank" rel="noopener">My License One</a> (UtahID login, easier on a computer); DOPL emails a notice 90 days ahead. Working on an expired license is unlawful, even if you renew later.</td></tr>
+        <tr id="renew-row" tabindex="-1"><th>4 · Renew</th><td>Every 2 yr, by Nov 30 of even years (2026, 2028, 2030…). 12 CE hr, at least 8 core (Utah Admin. Code R156-55c-304). Fee: DOPL's current <a href="https://commerce.utah.gov/dopl/" target="_blank" rel="noopener">fee schedule</a> (DOPL's renewal page doesn't list it, checked Nov 2026). Renew online in <a href="https://utahdoc.mylicenseone.com/" target="_blank" rel="noopener">My License One</a> (UtahID login; DOPL says it works best on a computer). Working on an expired license is unlawful, even if you renew later.</td></tr>
         <tr><th>Upgrade</th><td>Residential → journeyman: 2,000 hr non-residential + 4th-year class (144 hr).</td></tr>
       </tbody></table></div>
     <div class="x"><table class="t"><tbody id="list-career"></tbody></table></div>
@@ -6734,20 +6740,20 @@ const FACTS = [
   ["dwv","Ejector tie-in","Discharge enters the top of a horizontal drain through a wye, 10 diameters from a stack base. Minimum pump: 21 gpm on 2\", 30 on 2½\", 46 on 3\" (about 2 ft/s).","egE"],
   ["dwv","Ejector solids","A pump taking toilet waste passes a 2\" ball; others ½\". A macerating toilet's discharge can be as small as ¾\".","egE"],
   ["test","Water test","The 2021 IRC raised the DWV water test from 5 ft (2018) to 10 ft of head for 15 min. A vent stack's top 10 ft fills to the terminal.","sig"],
-  ["test","Air & vacuum","DWV air test: 5 psi for 15 min. Vacuum: −5 psi (−10\" Hg) for 15 min, new in the 2021 IRC for plastic.","sig"],
+  ["test","Air & vacuum","DWV air test: 5 psi for 15 min. Utah: plastic on air only if water can't be used, ≤6 psi, ≤15 min. Vacuum: −5 psi (−10\" Hg) for 15 min, new in the 2021 IRC for plastic.","sig"],
   ["test","Water piping","Test at working pressure with water, or 50 psi air for non-plastic, 15 min. Most PEX and CPVC makers forbid air: their rules win.","egT"],
   ["test","Final test","Peppermint (2 oz oil plus 10 qt hot water, vents capped) or smoke held at 1\" w.c. Nobody should smell it at a fixture.","egT"],
   ["test","Gas gauge","Gauge range no more than 5× the test pressure, so a small drop shows. Hold at least 10 min.","wagas"],
   ["test","Unpressed joints","ProPress Smart Connect: an unpressed fitting leaks during a 15–85 psi water or ½–45 psi air test, so you find it before the inspector does.","viega"],
   ["ut","Sewer hookup","A house within 300 ft of a public sewer must connect to it; otherwise an approved private system (R317).","ut205"],
-  ["ut","Fixture shutoffs","Every fixture supply gets its own shutoff, except tubs and showers (unless the valve is wall-mounted).","ut205"],
+  ["ut","Fixture shutoffs","Every fixture and appliance supply gets its own shutoff, except tubs and showers. None needed where the fixture has a wall-mount valve (Utah's IRC P2903.9.3).","ut205"],
   ["ut","Lav clearance","Lavatory: 12\" from its centerline to a side wall, and 24\" wide by 21\" deep clear in front.","ut205"],
   ["ut","Testing","Backflow assemblies: tested at install, after repair or relocation, and every year. Nothing more than 5 ft above the floor without a permanent platform.","ut205"],
   ["ut","RP","Horizontal, never in a pit or below grade, bottom 12\"+ above the floor, 12\" clearance, relief port never hard-piped to a drain.","ut205"],
   ["ut","DC & PVB","Double check: horizontal, 12\"+ above floor or grade, 12\" clearance (all sides in a pit). PVB: vertical, 12\" above the highest outlet it serves, never below grade.","ut205"],
-  ["ut","Pan drain","A water heater pan may drain straight into a stack or branch if it's trapped and vented and has a primer, barrier seal or deep-seal trap.","ut205"],
+  ["ut","Pan drain","With the code official's OK, a water heater pan may drain straight into a stack or branch if it's trapped and vented and has a primer, barrier seal or deep-seal trap.","ut205"],
   ["ut","T&P bends","T&P discharge: no more than 180° of total direction change.","ut205"],
-  ["mech","Seismic straps","Upper and lower thirds of the heater, the lower one at least 4\" above the controls (IRC P2801.8).","ut205"],
+  ["ut","Seismic straps","Straps within the upper and lower thirds of the heater (Utah's IRC P2801.8). Utah replaced the base IRC text, so its 4\" above the controls rule isn't in Utah's version; keep straps clear of the gas valve.","ut205"],
   ["ut","Below-grade vents","Below-grade floor drains and floor sinks may run a horizontal dry vent below the flood rim, with a cleanout in the vertical vent.","ut205"],
   ["ut","Pumps & tanks","No booster pump on a public main unless R309-540 allows it. A nonpotable tank's makeup water needs a 4\" air gap above the overflow, or an RP.","ut205"],
   ["bf","Standards","AVB: ASSE 1001. RP: ASSE 1013. Double check: ASSE 1015. PVB: ASSE 1020. Read the tag.","bfcn"],
@@ -9216,20 +9222,20 @@ const CITIES = [
   {id:"em", n:"Eagle Mountain", book:"Email buildinginspections@eaglemountain.gov with the permit number. No confirmation email back = not on the schedule. First come, first served.", pi:"Yes. Separate trench from the water service (no sharing).", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Eagle Mountain Building Design Criteria, rev. 7/2026 · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"",
     notes:"Order: underground → 4-way → frost-protection insulation → final. Final needs the meter set: lid at grade, setter 20\" ±2\" below the lid, nothing within 5 ft; $50 re-final if not."},
   {id:"hi", n:"Highland", book:'<a href="https://highland.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-772-4516</span>. Scheduled Mon–Thu 8–5; office closed Fridays.', pi:"Ask the city.", h:"11.4 gpg", f:FROST_UC, notes:"Underground plumbing and the sewer connection are separate inspections."},
-  {id:"le", n:"Lehi", book:'<span class="pn">385-201-1035</span> Phone only: no voicemail, email or online booking. 24 hr notice.', pi:"Yes. One culinary and one PI connection per lot; connections off by Oct 15.", h:"≈9 gpg", f:"30\" (the city lists it), so service ≈36\".",
+  {id:"le", n:"Lehi", book:'<span class="pn">385-201-1035</span> Phone only: no voicemail, email or online booking. 24 hr notice.', pi:"Yes. One culinary and one PI connection per lot; connections off by Oct 15.", h:"≈9 gpg", f:"Frost line 30\" min (Lehi Building & Inspections page · checked Nov 2026), so service ≈36\".",
     notes:"Sewer lateral 2% minimum to the property line, inspected before backfill. Not ready = re-inspection fee."},
   {id:"li", n:"Lindon", book:'Building &amp; Inspection <span class="pn">801-785-7687</span>, building@lindon.gov. ' + GAP("Booking method not posted: call."), pi:"Ask the city.", h:"6.9 gpg", f:FROST_UC},
-  {id:"or", n:"Orem", book:'Inspection line <span class="pn">801-229-7060</span>. Have the address, permit number, inspection type and building type ready.', pi:"No citywide PI.", h:"8.2 gpg", f:FROST_UC, notes:"Underground plumbing is tested at the underground inspection. Rough needs the roof, doors and windows in and shear approved."},
+  {id:"or", n:"Orem", book:'Inspection line <span class="pn">801-229-7060</span>. Have the address, permit number, inspection type and building type ready.', pi:"No citywide PI.", h:"8.2 gpg", f:"Frost line 30\" (Orem Current Adopted Codes page, frost line depth 30\" · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"", notes:"Underground plumbing is tested at the underground inspection. Rough needs the roof, doors and windows in and shear approved."},
   {id:"sq", n:"Santaquin", book:'<span class="pn">801-754-1011</span>, phone only, 24 hr ahead in office hours (M–Th 9–5, Fri 9–1). Monday inspections: call by 1 pm Friday.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_UC, notes:"Ready by 8 am or a $65 re-inspection fee."},
   {id:"uc", n:"Unincorporated Utah County", book:'<span class="pn">801-851-8342</span> or shaunal@utahcounty.gov, 3 days\' notice.', pi:"Ask the water provider.", h:GAP("Depends on the water source."), f:"30\" (county), so service ≈36\".", notes:"County building is on the 2024 IPC."},
-  {id:"vi", n:"Vineyard", book:'<a href="https://vineyard.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-226-1929</span>. Voicemail requests not honored; no same-day.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_UC},
+  {id:"vi", n:"Vineyard", book:'<a href="https://vineyard.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-226-1929</span>. Voicemail requests not honored; no same-day.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Vineyard design criteria sheet · checked Nov 2026), so service ≈36\"."},
   {id:"pr", n:"Provo", book:'<a href="https://www.provo.gov/1019/Schedule-Building-Inspection" target="_blank" rel="noopener">Schedule online ↗</a> through the city\'s self-service portal.', pi:"Ask the city.", h:"10–15 gpg", f:"30\" design (Provo design criteria), so service ≈36\".",
-    notes:"Keep house pressure under 75 psi (city water report). Design temps 13°F winter, 95°F summer; elevation 4,491 ft."},
+    notes:"Design temps 13°F winter, 95°F summer; elevation 4,491 ft."},
   {id:"ss", n:"Saratoga Springs", book:'Email buildinginspectionrequest@saratogasprings-ut.gov or <span class="pn">801-766-6507</span> x120. One business day ahead: by 5 pm Mon–Thu, 4 pm Fri.', pi:"Yes. Green box near the property line, usually a 1\" ball valve. Drained the week of Oct 15.", h:"5.6 gpg", f:"Frost line 30\" (Saratoga Springs Design Criteria page · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"",
     notes:"No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test)."},
-  {id:"sf", n:"Spanish Fork", book:'<a href="https://www.spanishfork.gov/living-in-our-community/building/building-permits-inspections/" target="_blank" rel="noopener">CitizenServe portal ↗</a>, 24 hr ahead. Help: <span class="pn">801-804-4540</span>', pi:"Yes.", h:GAP("Not confirmed: test it."), f:FROST_UC,
+  {id:"sf", n:"Spanish Fork", book:'<a href="https://www.spanishfork.gov/living-in-our-community/building/building-permits-inspections/" target="_blank" rel="noopener">CitizenServe portal ↗</a>, 24 hr ahead. Help: <span class="pn">801-804-4540</span>', pi:"Yes.", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Spanish Fork design criteria, frost depth 30\" · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"",
     notes:"Ready by 8 am the day of, or a $93 re-inspection fee. Underground plumbing and laterals inspected before cover, with the gas test. Rough plumbing on the 4-way; shower pan with framing."},
-  {id:"sv", n:"Springville", book:'<a href="https://www.springvilleutah.gov/community-development/wp-content/uploads/sites/5/2025/06/My-City-Inspector-Directions.pdf" target="_blank" rel="noopener">City Inspect ↗</a>, AM/PM blocks after the permit is issued. Building: <span class="pn">801-489-2704</span>', pi:"Yes. Purple PE, purple tape ≈12\" above, tracer wire, 30\" cover, green IRRIGATION box. 40–125 psi by lot elevation. $50 switch-over inspection.", h:GAP("Not confirmed: test it."), f:"30\" (city), so service ≈36\"."},
+  {id:"sv", n:"Springville", book:'<a href="https://www.springvilleutah.gov/community-development/wp-content/uploads/sites/5/2025/06/My-City-Inspector-Directions.pdf" target="_blank" rel="noopener">City Inspect ↗</a>, AM/PM blocks after the permit is issued. Building: <span class="pn">801-489-2704</span>', pi:"Yes. Purple PE, purple tape ≈12\" above, tracer wire, 30\" cover, green IRRIGATION box. 40–125 psi by lot elevation. $50 switch-over inspection.", h:GAP("Not confirmed: test it."), f:"Frost depth 30\" (Springville design criteria handouts, 2026 · checked Nov 2026), so service ≈36\"."},
   ["Salt Lake & Summit"],
   {id:"bl", n:"Bluffdale", book:'<span class="pn">801-849-9425</span> (or -9414, -9424) by 3:30 pm the business day before. Voicemail OK; they don\'t call back to confirm.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL, notes:"A 4-way with power needs the Rocky Mountain Power work order number."},
   {id:"dr", n:"Draper", book:'<a href="https://draper.onlama.com" target="_blank" rel="noopener">Online portal ↗</a> only: Inspections → "I\'m Ready." No same-day. Don\'t call the inspector before 8:30 am.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
@@ -9312,7 +9318,7 @@ const TL_SPEC = {"DWV water test": ["10 ft of head (≈4.3 psi at the bottom), h
   "DWV air test": ["5 psi, hold 15 min. UT plastic: only if water can't be used or would freeze, ≤6 psi, ≤15 min.", 5],
   "DWV vacuum test": ["−5 psi (−10\" Hg), hold 15 min. In the 2021 IRC (houses) and 2024 IPC.", null],
   "Water supply test": ["Water at working pressure or more, until inspected. UT air on plastic: 50–80 psi, ≤15 min, inspector's OK first on a house.", 80],
-  "Gas test": ["1.5× working pressure and at least 3 psi, 10 min. Many Utah cities want 5 psi for 15 min.", 5],
+  "Gas test": ["1.5× working pressure and at least 3 psi, 10 min (IRC G2417.4). Some cities ask for more (Herriman: 5 psi, 15 min), so ask yours.", 5],
   "Shower pan flood test": ["2\" of water at the threshold, hold 15 min.", null]};
 function tlSpec(fill){ const x = TL_SPEC[$("tl-type").value]; if (!x) return; $("tl-spec").innerHTML = `<b>Must hold:</b> ${esc(x[0])}`;
   if (fill && x[1] != null){ $("at-p").value = String(x[1]); $("at-p").dispatchEvent(new Event("input", {bubbles: true})); } }
@@ -9467,7 +9473,7 @@ const CARDS = [
   ["Vents","Where does a vent take off a horizontal drain?","Above the drain's centerline","Tap below centerline and waste runs into the vent and clogs it. Above, it stays dry and keeps breathing."],
   ["Vents","AAV height above the drain it vents?","At least 4\" (and 6\" above attic insulation)","If the drain backs up, waste can't reach the valve's seal. In an attic, insulation could bury it and choke the air."],
   ["Vents","Minimum vent size?","½ the drain diameter, never under 1¼\"","Too small a vent chokes the airflow and lets frost or crud close it off."],
-  ["Vents","Roof vent height on a house?","6\" above the roof or expected snow, whichever is greater (IRC). Utah IPC: 12\". Run at least 12\", higher if the snow gets deeper","Snow can bury a short vent and seal it. Utah's deeper snow is why the IPC number here is 12 in."],
+  ["Vents","Roof vent height on a house?","6\" above the roof or expected snow, whichever is greater (IRC). Utah IPC 903.1.1: 12\". Run at least 12\", higher if the snow gets deeper","Snow can bury a short vent and seal it. Utah's deeper snow is why the IPC number here is 12 in."],
   ["Vents","Utah through-wall vent ends how?","≥12\" out from the wall, elbow pointing down","Out and down keeps sewer gas and condensation off the siding and away from windows, and rain can't fall in."],
   ["Sizing","DFU of a lavatory?","1","1 DFU is the base unit. A lavatory is the yardstick the whole table is built on."],
   ["Sizing","DFU of a kitchen sink (with disposer/dishwasher)?","2","A sink basin full of water, plus a dishwasher or disposer, dumps a bigger slug at once."],
@@ -9592,7 +9598,7 @@ const CARDS = [
   ["Drains","Two ⅛ bends joined together count as what?","A long sweep of the same material","Two 45s make a gentle 90, which is the whole point of a long sweep."],
   ["Drains","Sewage ejector pit minimum size?","18\" diameter, 24\" deep, gastight lid","Room for the pump to cycle without short-running, and the lid keeps sewer gas in."],
   ["Drains","Where does ejector discharge enter the gravity drain?","Top of a horizontal drain, through a wye, 10 diameters from a stack base","Coming in on top keeps pumped flow from backing up the drain or fighting the stack's flow."],
-  ["Utah","Utah: which fixtures don't need their own shutoff?","Tubs and showers (unless the valve is wall-mounted)","Utah amended the IRC so every other fixture can be serviced without shutting off the house."],
+  ["Utah","Utah: which fixtures don't need their own shutoff?","Tubs and showers, plus any fixture with a wall-mount valve","Utah amended the IRC so every other fixture can be serviced without shutting off the house."],
   ["Utah","Utah lav clearance?","12\" center to side wall; 24\" wide × 21\" deep clear in front","Utah added its own lav row to the IRC fixture clearances."],
   ["Utah","Utah: how high can a backflow assembly sit without a platform?","5 ft above the floor","Testers have to reach the test cocks safely every year."],
   ["Utah","Utah RP placement?","Horizontal, bottom 12\"+ above the floor, never in a pit or below grade","An RP dumps water from its relief port. In a pit it can flood and suck that water back in."],
@@ -9629,7 +9635,7 @@ const CARDS = [
   ["Supply","Air gap size?","2× the outlet's opening, never less than 1\"","Water can't jump a gap that big, even if the supply goes to vacuum. No moving parts, so it's the best backflow protection."],
   ["Supply","Atmospheric vacuum breaker (AVB): can a shutoff go after it?","No: an AVB can't stay under pressure","Its float opens to air when pressure drops. A valve after it keeps it pressurized with the float held shut, so it never gets the chance to work."],
   ["Heaters","Closed system, 30-gal heater, 80 psi at 74°F, no expansion tank: pressure at 90°F?","About 400 psi (A.O. Smith test)","Water barely compresses. Warming it just 16°F with nowhere to go buckled the tank bottom. The T&P is the only thing left."],
-  ["Heaters","Seismic straps: where on the tank?","Upper third and lower third; the lower strap at least 4\" above the controls","Two points keep a heavy, full tank from tipping. Above the controls so the strap doesn't crush the gas valve."],
+  ["Heaters","Seismic straps: where on the tank?","Within the upper third and lower third (Utah's IRC P2801.8)","Two points keep a heavy, full tank from tipping. The base IRC also says 4\" above the controls; Utah's version dropped that, but keep the strap off the gas valve anyway."],
   ["Materials","CPVC ½\"–1\" cure before a test in a cold shell (under 40°F)?","4 hours (above 60°F: 1 hr; 40–60°F: 2 hr)","Solvent evaporates slower in the cold, so the joint stays soft longer. Times are for a 150 psi test; the cement maker's chart wins."],
   ["Fixtures","Utah flow limits are rated at what pressure?","Showerhead 2.0 gpm at 80 psi; lav 1.5 gpm at 60 psi","Utah's amendment to IRC Table P2903.2 sets them. Flow depends on pressure, so the limit names the test pressure."],
   ["License","Journeyman with no classroom hours: how many apprentice hours?","16,000","Twice the 8,000 hr school route. The 576 hours of class are worth a lot of field time."],
@@ -10942,7 +10948,7 @@ const WX = (() => {
     const uv = Math.max(...hs.slice(0, 12).map(x => x.uv || 0));
     if (uv >= 8) out.push(["warn", `UV ${r0(uv)} (very high)`, "Sunscreen and eye protection. Keep stored PEX out of the sun (UV limits in Build → Materials → PEX install)."]);
     const snowIn = toIn(S.om.hourly.snow_depth[hourly()[0]?.i ?? 0], S.om.hourly_units.snow_depth);
-    if (snowIn != null && snowIn >= 4) out.push(["warn", `Snow on the ground: about ${r0(snowIn)}"`, "Vent terminals must clear the expected snow (IRC: 6\" above roof or snow; Utah IPC 12\"). Check roofs and low wall vents."]);
+    if (snowIn != null && snowIn >= 4) out.push(["warn", `Snow on the ground: about ${r0(snowIn)}"`, "Vent terminals must clear the expected snow (2021 IRC P3103.1: at least 6\" above the roof and above the snow that piles up there; Utah IPC 903.1.1: 12\"). Check roofs and low wall vents."]);
     const soil = S.om.hourly.soil_temperature_6cm[hourly()[0]?.i ?? 0];
     if (soil != null && soil <= 32) out.push(["warn", `Top of the ground is frozen (${r0(soil)}°F at 2")`, "Digging is harder; protect underground work and bedding from frost. Don't backfill with frozen chunks."]);
     const aqi = S.air && S.air.current && S.air.current.us_aqi;
@@ -11280,7 +11286,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-18d";
+var BUILD = "handbook-2026-11-19c";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
