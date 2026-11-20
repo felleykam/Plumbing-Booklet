@@ -139,7 +139,7 @@ function jbClean(){
   jbD.binOut = Array.isArray(jbD.binOut) ? jbD.binOut.filter(x => typeof x === "string").slice(0, 1000) : [];
   if (!isO(jbD.fold)) jbD.fold = {};
   jbD.tech = isO(jbD.tech) ? Object.fromEntries(["n", "lic", "co", "ph"].map(k => [k, str(jbD.tech[k]).slice(0, 80)])) : {};
-  jbD.rules = str(jbD.rules); jbD.jnFull = jbD.jnFull === true;
+  jbD.rules = str(jbD.rules); jbD.jnFull = jbD.jnFull === true; if (!["new", "stage", "tag", "day"].includes(jbD.jnView)) delete jbD.jnView;
   if (jbD.tpl != null && !isO(jbD.tpl)) jbD.tpl = {}; if (jbD.tpl) Object.keys(jbD.tpl).forEach(k => { if (!JB_SNAME[k] || !Array.isArray(jbD.tpl[k])) delete jbD.tpl[k]; else jbD.tpl[k] = jbD.tpl[k].map(str).filter(Boolean); });
   jbD.subs.forEach(x => { if (!JB_ICONS.includes(x.icon)) x.icon = ""; });
   ['stageCol', 'tagCol'].forEach(k => { const o = isO(jbD[k]) ? jbD[k] : {}; jbD[k] = {}; Object.keys(o).forEach(x => { if (JB_PAL.includes(o[x])) jbD[k][x] = o[x]; }); });
@@ -149,7 +149,7 @@ function jbClean(){
     j.id = jbSafeId(j.id); ["name", "a", "who", "city", "draft"].forEach(k => { j[k] = str(j[k]); });
     if (!Array.isArray(j.log)){ j.log = str(j.note).trim() ? [{id: jbId(), d: jbDay(new Date(+j.t || Date.now())), at: +j.t || Date.now(), b: str(j.note)}] : []; delete j.note; }
     ["log", "insp", "hrs", "punch", "ppl", "act"].forEach(k => { j[k] = arrO(j[k]); j[k].forEach(x => { x.id = jbSafeId(x.id); }); });
-    j.log.forEach(e => { e.b = str(e.b); e.d = str(e.d) || jbDay(); if (typeof e.at !== "number") e.at = 0; });
+    j.log.forEach(e => { e.b = str(e.b); e.d = str(e.d) || jbDay(); if (typeof e.at !== "number") e.at = 0; if (e.pin !== true) delete e.pin; });
     j.hrs = j.hrs.filter(h => +h.h > 0 && +h.h <= 24); j.hrs.forEach(h => { h.h = +h.h; h.d = str(h.d) || jbDay(); h.n = str(h.n); });
     j.insp.forEach(i => { i.d = str(i.d); if (!JB_RES[i.r]) i.r = "booked"; ["who", "n", "k"].forEach(k => { i[k] = str(i[k]); }); });
     j.punch.forEach(x => { x.t = str(x.t); x.done = !!x.done; if (typeof x.ph !== "string") delete x.ph; });
@@ -196,7 +196,7 @@ jbD.subs.forEach(S => { if (S.bld) return; const B = [...new Set(jbD.jobs.filter
   if (fresh || !jbD.seenV){ const now = Date.now(); jbD.jobs.forEach(j => { j.seen = Math.max(+j.seen || 0, now); }); jbD.seenV = 1; jbSave(true); } }
 jbD.jobs.forEach(j => { if (!Array.isArray(j.xs)) j.xs = JB_XTRA.filter(k => { const s = j.stages[k];   /* older jobs keep an extra that has anything in it */
   return s.st === "done" || s.st === "doing" || s.d0 || s.d1 || s.lead || s.done.length || s.extra.length || j.insp.some(i => i.s === k) || j.hrs.some(h => h.s === k) || j.log.some(e => e.s === k); }); });
-[...jbD.people, ...jbD.builders, ...jbD.subs].forEach(p => { if (!Array.isArray(p.log)) p.log = []; if (typeof p.draft !== "string") p.draft = ""; });
+[...jbD.people, ...jbD.builders, ...jbD.subs].forEach(p => { if (!Array.isArray(p.log)) p.log = []; if (typeof p.draft !== "string") p.draft = ""; p.log.forEach(e => { if (e && e.pin !== true) delete e.pin; }); });
 const jbStageNow = j => { const S = jbStages(j); return (S.find(([k]) => j.stages[k].st === "doing") || S.find(([k]) => j.stages[k].st === "todo") || S[S.length - 1])[0]; };
 const jbTpl = k => Array.isArray((jbD.tpl || {})[k]) ? jbD.tpl[k] : JB_TPL[k]();   /* your saved list for a stage, else the book's */
 function jbCk(j, k){ const s = j.stages[k], dn = new Set(s.done), hide = new Set(s.hide || []), T = jbTpl(k), TS = new Set(T);
@@ -312,7 +312,7 @@ function jnMd(src, eid, base){
     if ((m = ln.match(/^>\s?(.*)$/))){ if (list){ h += `</${list.tag}>`; list = null; } if (!quote){ h += "<blockquote>"; quote = true; } else h += "<br>"; h += jnInline(m[1]); gap = false; return; }
     close();
     if ((m = ln.match(/^(#{1,3})\s+(.*)$/))) h += `<p class="jn-h jn-h${m[1].length}">${jnInline(m[2])}</p>`;
-    else if ((m = ln.match(/^!!\s*(.*)$/))) h += `<p class="flag jn-flag">${jnInline(m[1])}</p>`;
+    else if ((m = ln.match(/^!(!|✓)\s*(.*)$/))) h += `<label class="jn-task jn-flag${m[1] === "✓" ? " jn-fdone" : " flag"}"><input type="checkbox" data-tk="${eid}|${i}"${m[1] === "✓" ? " checked" : ""} aria-label="Handled"><span>${m[1] === "✓" ? '<b class="jn-qm" aria-hidden="true">✔</b> ' : ""}${jnInline(m[2])}</span></label>`;
     else if ((m = ln.match(/^\s*\?(\?|✓)\s*(.*)$/))) h += `<label class="jn-task jn-q"><input type="checkbox" data-tk="${eid}|${i}"${m[1] === "✓" ? " checked" : ""}><span><b class="jn-qm" aria-hidden="true">${m[1] === "✓" ? "✔" : "?"}</b> ${jnInline(m[2])}</span></label>`;
     else if ((m = ln.match(JN_PROP)) && !/^https?$/i.test(m[1])) h += `<p class="jn-prop"><b>${esc(m[1].trim())}</b><span>${jnInline(m[2])}</span></p>`;
     else if (/^\s*(-{3,}|_{3,}|\*{3,})\s*$/.test(ln)) h += "<hr>";
@@ -330,19 +330,19 @@ const jnStg = e => e.s && JB_SNAME[e.s] && JB.open ? ` · <span class="jn-stg jt
 const jnWhen = e => { const t = new Date(e.at); return jbNice(e.d) + (jbDay(t) === e.d ? " · " + t.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"}) : ""); };
 /* compact notes: one line each (title, a preview, the date); tap to open the whole note, ▴ to fold it again */
 const JN_OPENED = new Set();
-const jnMark = ln => /^\s*[-*+] \[ \]/.test(ln) ? "☐ " : /^\s*[-*+] \[[xX]\]/.test(ln) ? "☑ " : /^\s*!!/.test(ln) ? "⚠ " : /^\s*\?\?/.test(ln) ? "? " : /^\s*\?✓/.test(ln) ? "✔ " : "";
+const jnMark = ln => /^\s*[-*+] \[ \]/.test(ln) ? "☐ " : /^\s*[-*+] \[[xX]\]/.test(ln) ? "☑ " : /^\s*!!/.test(ln) ? "⚠ " : /^\s*!✓/.test(ln) ? "✔ " : /^\s*\?\?/.test(ln) ? "? " : /^\s*\?✓/.test(ln) ? "✔ " : "";
 const jnRow = e => {   /* a folded note still says what matters: date (📝 for a day log), counts of ⚠ ? ☐, tags, a real title, the first heads-up in red, then a 2-line gist */
   const L = String(e.b || "").split("\n").filter(x => x.trim()), isH = x => /^\s*#{1,3}\s/.test(x), day = L.some(x => /^\s*#{1,3}\s*did\b/i.test(x));
   const tl = L.find(x => !isH(x)) || L[0] || "", fl = L.filter(x => /^\s*!!/.test(x)), q = L.filter(x => /^\s*\?\?/.test(x)).length, bx = L.filter(x => /^\s*[-*+] \[ \]/.test(x)).length;
   const tg = [...new Set([...String(e.b || "").matchAll(JN_TAG)].map(m => m[2].toLowerCase()))].slice(0, 2), f0 = fl[0] && fl[0] !== tl ? fl[0] : "";
   const rest = jnGist({b: L.filter(x => x !== tl && x !== f0 && !isH(x)).join("\n"), d: e.d}, 4);
   const bd = [fl.length && `<i class="k-flag">⚠ ${fl.length}</i>`, q && `<i class="k-q">? ${q}</i>`, bx && `<i class="k-task">☐ ${bx}</i>`, ...tg.map(t => `<i class="k-tag">#${esc(t)}</i>`)].filter(Boolean).join("");
-  return `<button type="button" class="jn-row" data-jnx="${e.id}" aria-expanded="false"><span class="jn-rd">${day ? "📝 Day log · " : ""}${esc(jbNice(e.d))}${jnStg(e)}</span>${bd ? `<span class="jn-rb">${bd}</span>` : ""}<span class="jn-rt">${esc(jnMark(tl) + (jnPlain(tl, e.d).replace(JN_TAG, "$1").replace(/\s{2,}/g, " ").trim() || jnPlain(tl, e.d) || "Note"))}</span>${f0 ? `<span class="jn-rf">⚠ ${esc(jnPlain(f0, e.d))}</span>` : ""}${rest ? `<span class="jn-rp">${esc(rest.slice(0, 220))}</span>` : ""}</button>`; };
+  return `<button type="button" class="jn-row" data-jnx="${e.id}" aria-expanded="false"><span class="jn-rd">${e.pin ? "📌 " : ""}${day ? "📝 Day log · " : ""}${esc(jbNice(e.d))}${jnStg(e)}</span>${bd ? `<span class="jn-rb">${bd}</span>` : ""}<span class="jn-rt">${esc(jnMark(tl) + (jnPlain(tl, e.d).replace(JN_TAG, "$1").replace(/\s{2,}/g, " ").trim() || jnPlain(tl, e.d) || "Note"))}</span>${f0 ? `<span class="jn-rf">⚠ ${esc(jnPlain(f0, e.d))}</span>` : ""}${rest ? `<span class="jn-rp">${esc(rest.slice(0, 220))}</span>` : ""}</button>`; };
 const jnEntry = e => !jbD.jnFull && JB.edit !== e.id && !JN_OPENED.has(e.id) ? jnRow(e) : JB.edit === e.id
   ? `<article class="jn-e"><div class="calc"><label for="jn-ed" class="wide">Note<textarea id="jn-ed" class="jn-ta" rows="6">${esc(e.b)}</textarea></label></div>${jnTools()}
      <div class="set-btns jn-btns jn-addrow"><button type="button" class="btn" data-a="jn-save">Save</button><button type="button" class="btn ghost" data-a="jn-cancel">Cancel</button><label for="jn-ed-d" class="jn-dl">Dated<input id="jn-ed-d" type="date" value="${esc(e.d)}"></label></div>
      <div class="set-btns jb-end"><button type="button" class="del" data-a="jn-del">Delete this note</button></div></article>`
-  : `<article class="jn-e"><header><span>${jnWhen(e)}${jnStg(e)}${e.ed ? ` · edited ${jbShort(e.ed)}` : ""}</span><span class="jn-hb">${jbD.jnFull ? "" : `<button type="button" class="jb-x" data-jnx="${e.id}" aria-expanded="true" aria-label="Fold this note">▴</button>`}<button type="button" class="jb-x" data-edit="${e.id}" aria-label="Edit this note">✎</button></span></header><div class="jn-b">${jnMd(e.b, e.id, e.d)}</div>${(e.hist || []).length ? `<details class="jn-hist"><summary>Earlier versions · ${e.hist.length}</summary>${e.hist.slice().reverse().map(v => `<div class="jn-hv"><p class="jn-hvh">Said this until ${esc(jbWhenAt(v.until))}${v.d !== e.d ? ` · dated ${esc(jbNice(v.d))}` : ""}</p><div class="jn-b">${jnMd(v.b, "h", v.d).replace(/data-tk=/g, "disabled data-tk=")}</div></div>`).join("")}</details>` : ""}</article>`;
+  : `<article class="jn-e"><header><span>${jnWhen(e)}${jnStg(e)}${e.ed ? ` · edited ${jbShort(e.ed)}` : ""}</span><span class="jn-hb"><button type="button" class="jb-x jn-pin" data-jnpin="${e.id}" aria-pressed="${!!e.pin}" aria-label="${e.pin ? "Unpin" : "Pin"} this note">📌</button>${jbD.jnFull ? "" : `<button type="button" class="jb-x" data-jnx="${e.id}" aria-expanded="true" aria-label="Fold this note">▴</button>`}<button type="button" class="jb-x" data-edit="${e.id}" aria-label="Edit this note">✎</button></span></header><div class="jn-b">${jnMd(e.b, e.id, e.d)}</div>${(e.hist || []).length ? `<details class="jn-hist"><summary>Earlier versions · ${e.hist.length}</summary>${e.hist.slice().reverse().map(v => `<div class="jn-hv"><p class="jn-hvh">Said this until ${esc(jbWhenAt(v.until))}${v.d !== e.d ? ` · dated ${esc(jbNice(v.d))}` : ""}</p><div class="jn-b">${jnMd(v.b, "h", v.d).replace(/data-tk=/g, "disabled data-tk=")}</div></div>`).join("")}</details>` : ""}</article>`;
 const JN_CHEAT = [
   ["[[Sam|the lead]]", "A link that shows your own words."],
   ["# Top-out walk", "A heading. Two ## for a smaller one."],
@@ -363,8 +363,8 @@ function jnHelpHtml(){   /* the marks the 7 main ones don't cover (the note box 
 const jnOwner = () => eCur() || (JB.person ? pById(JB.person) : jbCur());
 /* the notes guide: one fold that remembers open or shut (open by default for your first few notes), short lessons inside */
 const JN_ANAT = [   /* [color, the mark, an example line, what it is, where it shows up] */
-  ["task", "- [ ]", "- [ ] call the super", "A checkbox. Tap it when it's done.", "The job's <b>What's next</b> · ☐ count on the job's row · <b>Open on active jobs</b> at the top of the job list"],
-  ["flag", "!!", "!! gas not tested yet", "A red heads-up line, so it can't be missed.", "Right there in the note, in red"],
+  ["task", "- [ ]", "- [ ] call the super", "A checkbox. Tap it when it's done. In What's next, the <b>→</b> next to it moves it to the punch list or the stage checklist.", "The job's <b>What's next</b> · ☐ count on the job's row · <b>Open on active jobs</b> at the top of the job list"],
+  ["flag", "!!", "!! gas not tested yet", "A red heads-up line, so it can't be missed. Tick it once it's handled: it turns gray (!✓) and stops showing up as open.", "In red in the note · the job's <b>What's next</b> until you tick it · <b>Still open</b> on a person's or builder's page"],
   ["q", "??", "?? vent through the roof or the wall", "A blue question. Tap it when you get the answer: it turns into ?✓.", "The job's <b>What's next</b> · ? count on the job's row · <b>Open on active jobs</b>"],
   ["prop", "Label: value", "PSI: 80", "A fact. The words before the colon are its name.", "The <b>From your notes</b> table right under the job's notes. A newer note with the same label replaces the old value."],
   ["date", "@", "inspection @fri", "A purple date, counted from the note's own date.", "The job's <b>What's next</b> and Quick view · Home's <b>Coming up</b> (next 7 days)"],
@@ -395,6 +395,7 @@ function jnIntro(n){
     <p class="jn-step"><span class="jn-num">1</span><span>Type what happened: <i>"Set tubs. Inspector moved to Thursday."</i> That's a whole note. No marks needed.</span></p>
     <p class="jn-step"><span class="jn-num">2</span><span>Want a checkbox, a warning or a date? Tap a <b>colored button</b> under the box, then type after it. The <b>Preview</b> under the box shows how it'll look before you save.</span></p>
     <p class="jn-step"><span class="jn-num">3</span><span>Tap <b>Add note</b>. It's saved with the date in the <b>Dated</b> box next to it (today, unless you change it), newest on top. Tap <b>✎</b> on a note to fix it.</span></p>
+    <p class="note"><b>Keeping them sorted:</b> <b>Show</b> above the notes lists them newest first, by stage, by tag, or day logs only (it remembers). Tap <b>📌</b> on an open note to pin it at the top: the gate code, the super's number, the walk-through. Open boxes, questions and heads-ups gather in the job's <b>What's next</b> (or <b>Still open</b> on a person's or builder's page), where you can tick them without opening the note.</p>
     <p class="note"><b>Where a note lives:</b> all of a job's notes are in one list, newest on top, each tagged with its stage. A new note goes on the stage in the <b>Stage</b> box next to Add note (the one you're on, unless you pick another). People, builders and subdivisions have their own notes on their pages.</p>
     <p class="note jn-lead"><b>The rule that matters most:</b> Some marks only work as the <b>first thing on a line</b>. The rest work anywhere.</p>
     <div class="jn-zones">
@@ -431,15 +432,41 @@ const jbRulesHtml = () => { const r = String(jbD.rules || "").trim(); if (!r) re
   return `<div class="jb-rules"><p class="jn-prevh">📌 Rules for every job · these come first</p><div class="jn-b">${jnMd(r, "rules").replace(/data-tk=/g, "disabled data-tk=")}</div><p class="note"><button type="button" class="linkish" data-a="rules-go">Change them</button> in Jobs settings.</p></div>`; };
 /* new note on top, then the notes, then the guide (folded once you've written a few) */
 /* marks that change how a line looks: only then is the preview worth its space */
-const jnHasMarks = v => /^\s*([-*+] \[|!!|\?\?|#{1,3}\s|>|\d+[.)]\s|[-*+]\s|[^\n:@#[]{1,30}:\s\S)|\[\[|(^|\s)[@#]\w|\*\*|==|~~|```/m.test(String(v || ""));
+const jnHasMarks = v => /^\s*([-*+] \[|!!|!✓|\?\?|#{1,3}\s|>|\d+[.)]\s|[-*+]\s|[^\n:@#[]{1,30}:\s\S)|\[\[|(^|\s)[@#]\w|\*\*|==|~~|```/m.test(String(v || ""));
 const JN_SHOW = 6;   /* a job shows its newest few notes; the rest are one tap away */
-const jnBlock = (o, list, ph, more = "", stg = "") => { const S = list.slice().sort(jnSort), all = !o.stages || JB.notesAll === o.id || S.length <= JN_SHOW + 2, V = all ? S : S.slice(0, JN_SHOW);
-  return `<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label></div>
+/* how a notes list is laid out: newest first, by stage (jobs), by tag, or day logs only. Pinned notes always come first. Remembered. */
+const JN_VIEWS = [["new", "Newest first"], ["stage", "By stage"], ["tag", "By tag"], ["day", "Day logs only"]];
+const jnIsDay = e => /^\s*#{1,3}\s*did\b/im.test(e.b || "");
+function jnGroups(o, S){
+  const v = jbD.jnView === "stage" && !o.stages ? "new" : (JN_VIEWS.some(([k]) => k === jbD.jnView) ? jbD.jnView : "new");
+  const pins = S.filter(e => e.pin), rest = S.filter(e => !e.pin), G = [];
+  if (v === "stage"){ jbStages(o).forEach(([k, nm]) => { const L = rest.filter(e => e.s === k); if (L.length) G.push([nm.replace(/ \(.*\)$/, ""), L, k]); });
+    const other = rest.filter(e => !jbStages(o).some(([k]) => k === e.s)); if (other.length) G.push(["Other", other]); }
+  else if (v === "tag"){ const by = new Map(); rest.forEach(e => { const T = [...new Set([...e.b.matchAll(JN_TAG)].map(m => m[2].toLowerCase()))]; (T.length ? T : [""]).forEach(t => { if (!by.has(t)) by.set(t, []); by.get(t).push(e); }); });
+    [...by.keys()].filter(Boolean).sort().forEach(t => G.push(["#" + t, by.get(t)])); if (by.has("")) G.push(["No tag", by.get("")]); }
+  else if (v === "day") G.push(["", rest.filter(jnIsDay)]);
+  else G.push(["", rest]);
+  return {v, pins, G, hid: v === "day" ? rest.filter(e => !jnIsDay(e)).length : 0};
+}
+/* every open box, question and heads-up in one owner's notes (a person's or builder's page; a job has What's next) */
+function jnOpenBox(o){
+  const L = []; o.log.slice().sort(jnSort).forEach(e => e.b.split("\n").forEach((ln, i) => { if (/^\s*([-*+] \[ \]|\?\?|!!)/.test(ln)) L.push({e, i, ln}); }));
+  if (!L.length) return "";
+  return `<div class="jb-left jn-openbox"><p class="jb-lefth">Still open · ${L.length}</p><ul class="jb-leftl">${L.slice(0, 12).map(x => { const m = jnMark(x.ln).trim();
+    return `<li class="jb-nxi"><input type="checkbox" class="jb-nxck" data-tk="${x.e.id}|${x.i}" aria-label="${m === "⚠" ? "Handled" : m === "?" ? "Answered" : "Done"}"><button type="button" class="jb-nxb" data-jnopen="${x.e.id}"><span class="jb-nm ${JB_MK[m] || ""}" aria-hidden="true">${esc(m)}</span>${esc(jnPlain(x.ln, x.e.d).slice(0, 90))} <span class="sub">${esc(jbNice(x.e.d))}</span></button></li>`; }).join("")}${L.length > 12 ? `<li class="jq-more">+${L.length - 12} more in the notes</li>` : ""}</ul></div>`;
+}
+const jnBlock = (o, list, ph, more = "", stg = "") => { const S = list.slice().sort(jnSort), R = jnGroups(o, S), many = R.v === "new" && o.stages && JB.notesAll !== o.id && R.G[0][1].length > JN_SHOW + 2;
+  if (many) R.G[0] = ["", R.G[0][1].slice(0, JN_SHOW)];
+  const grp = (h, L, k) => L.length ? `${h ? `<p class="jn-gh${k ? " jt-k-" + k : ""}">${esc(h)} · ${L.length}</p>` : ""}<div class="jn-log${jbD.jnFull ? "" : " jn-compact"}">${L.map(jnEntry).join("")}</div>` : "";
+  return `${o.stages ? "" : jnOpenBox(o)}<div class="calc"><label for="jn-new" class="wide">New note<textarea id="jn-new" class="jn-ta" rows="3" placeholder="${ph}">${esc(o.draft)}</textarea></label></div>
   ${jnTools()}
   <div class="jn-b jn-prev" id="jn-prev"${jnHasMarks(o.draft) ? "" : " hidden"}><p class="jn-prevh">Preview: how it'll be saved</p>${jnHasMarks(o.draft) ? jnMd(jnTidy(o.draft), "prev") : ""}</div>
   <div class="jb-in"><div class="set-btns jn-addrow"><button type="button" class="btn" data-a="jn-add">Add note</button><label for="jn-d" class="jn-dl">Dated<input id="jn-d" type="date" value="${jbDay()}"></label>${stg}</div></div>
-  ${S.length ? `<div class="jn-mode"><span>${S.length} note${S.length === 1 ? "" : "s"}${all ? "" : `, newest ${JN_SHOW} shown`}</span><div class="seg jb-seg" role="group" aria-label="How notes show"><button type="button" data-jnmode="c" aria-pressed="${!jbD.jnFull}">Compact</button><button type="button" data-jnmode="f" aria-pressed="${!!jbD.jnFull}">Full</button></div></div>
-  <div class="jn-log${jbD.jnFull ? "" : " jn-compact"}">${V.map(jnEntry).join("")}</div>${all ? "" : `<div class="jb-in"><button type="button" class="btn ghost" data-a="jn-all">Show all ${S.length} notes</button></div>`}` : ""}
+  ${S.length ? `<div class="jn-mode"><label for="jn-v" class="jn-dl jn-vl">Show<select id="jn-v">${JN_VIEWS.filter(([k]) => k !== "stage" || o.stages).map(([k, t]) => `<option value="${k}"${k === R.v ? " selected" : ""}>${t}</option>`).join("")}</select></label><div class="seg jb-seg" role="group" aria-label="How notes show"><button type="button" data-jnmode="c" aria-pressed="${!jbD.jnFull}">Compact</button><button type="button" data-jnmode="f" aria-pressed="${!!jbD.jnFull}">Full</button></div></div>
+  ${grp(R.pins.length ? "📌 Pinned" : "", R.pins)}${R.G.map(([h, L, k]) => grp(h, L, k)).join("")}
+  ${R.v === "day" && !R.G[0][1].length ? `<div class="jb-in"><p class="note">No day logs yet. Tap <b>📝 Day log</b> above to start one.</p></div>` : ""}
+  ${R.hid ? `<div class="jb-in"><p class="note">${R.hid} other note${R.hid === 1 ? " is" : "s are"} hidden. Pick <b>Newest first</b> to see ${R.hid === 1 ? "it" : "them"}.</p></div>` : ""}
+  ${many ? `<div class="jb-in"><button type="button" class="btn ghost" data-a="jn-all">Show all ${S.length} notes</button></div>` : ""}` : ""}
   ${more}
   ${o && o.stages ? jnIntro(list.length) : `<div class="jb-in"><p class="note">Same marks as job notes: the guide is under any job's notes.</p></div>`}`; };   /* the guide lives on job pages only */
 
@@ -460,7 +487,7 @@ function jbNew(){
   jbD.jobs.push(j); JB.open = j.id; JB.person = null; JB.ent = null; JB.edit = null; JB.stage = null; jbSave(); return j;
 }
 /* a note line as plain words: marks taken off, @dates spelled out (row previews, open items, mentions, search) */
-const jnPlain = (x, base) => x.replace(/^\s*([-*+] \[[ xX]\]|[-*+•](?=\s)|\d+[.)](?=\s)|#{1,3}(?=\s)|!!|>|\?\?|\?✓)\s*/, "")
+const jnPlain = (x, base) => x.replace(/^\s*([-*+] \[[ xX]\]|[-*+•](?=\s)|\d+[.)](?=\s)|#{1,3}(?=\s)|!!|!✓|>|\?\?|\?✓)\s*/, "")
   .replace(JN_DATE, (m, a, tok) => { const iso = jnResolve(tok, base); return iso ? a + "📅 " + jbShort(new Date(iso + "T12:00:00").getTime()) : m; })
   .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, "$2").replace(/\*\*|==|~~|\[\[|\]\]|`/g, "").trim();
 /* a note in one line: its content lines (headings skipped, unless that's all there is), joined with dots */
@@ -637,7 +664,8 @@ function jbStageHtml(j, k){
     <label for="js-lead" class="wide">Lead on this stage<input id="js-lead" data-sp="1" list="jb-ppl" type="text" autocomplete="off" value="${esc(pName(s.lead))}" placeholder="${esc(pName(j.lead) || "Who ran it")}"></label>
   </div></details>
   <p class="card-h" data-fold="s-check">Checklist · ${C.done} of ${C.total}${C.nd ? ` · ⊘ ${C.nd} not done` : ""} <button type="button" class="btn ghost jb-ckedit" data-a="ck-edit" aria-pressed="${JB.ckEdit}">${JB.ckEdit ? "✓ Done editing" : "✎ Edit list"}</button></p>
-  ${C.items.length ? `<ul class="jb-punch">${C.items.map((x, i) => jbCkRow(x, i, C.items.length)).join("")}</ul>` : `<div class="jb-in"><p class="note">Empty. ${JB.ckEdit ? "Add what this stage needs below." : "Tap ✎ Edit to add what this stage needs."}</p></div>`}
+  ${C.items.length ? (JB.ckEdit ? `<ul class="jb-punch">${C.items.map((x, i) => jbCkRow(x, i, C.items.length)).join("")}</ul>`   /* editing: the whole list in your order, so ↑ ↓ work */
+    : `${C.done < C.total ? `<ul class="jb-punch">${C.items.filter(x => !x.done).map((x, i) => jbCkRow(x, i, C.total)).join("")}</ul>` : `<div class="jb-in"><p class="note">✓ All ${C.total} checked.</p></div>`}${jbDoneFold("ckdshow", C.items.filter(x => x.done).map((x, i) => jbCkRow(x, i, C.total)))}`) : `<div class="jb-in"><p class="note">Empty. ${JB.ckEdit ? "Add what this stage needs below." : "Tap ✎ Edit to add what this stage needs."}</p></div>`}
   ${JB.ckEdit ? `<div class="jb-in"><p class="note">⊘ marks a line not done (with why), ✎ changes the words, ↑ ↓ change the order, × takes it off. Add your own below. Then save it as your list for ${JB_SNAME[k]} on every new job${["under", "rough", "final"].includes(k) ? " (it's also the list on Inspect → Before you call it in)" : ""}.${Array.isArray((jbD.tpl || {})[k]) ? " You're using your own list for this stage." : " Right now it starts from the book's list."}</p>
     <div class="set-btns"><button type="button" class="btn" data-a="ck-save">Use this list on new jobs</button>${Array.isArray((jbD.tpl || {})[k]) ? `<button type="button" class="btn ghost" data-a="ck-book">Back to the book's list</button>` : ""}</div></div>` : ""}
   ${JB.ckEdit ? `<div class="calc"><label for="jc-t" class="wide">Add to the checklist<input id="jc-t" type="text" autocomplete="off" enterkeyhint="done" placeholder="Something your lead or city wants"></label></div>
@@ -673,19 +701,40 @@ const jbActHtml = j => { const A = (j.act || []).slice().reverse(), n = JB.actAl
 function jbNextUp(j){
   const now = jbDay(), live = k => !k || jbStages(j).some(([x]) => x === k), dated = [], rest = [], k = jbStageNow(j);
   j.insp.filter(i => i.r === "booked" && live(i.s)).forEach(i => dated.push({d: i.d, m: "📋", t: `${(JB_SNAME[i.s] || i.k || "").replace(/ \(.*\)$/, "")} inspection`.trim(), late: i.d < now, s: i.s, insp: 1, go: "stage|" + i.s}));
-  j.log.filter(e => jnLive(j, e)).sort(jnSort).forEach(e => e.b.split("\n").forEach(ln => {
-    if (/^\s*[-*+] \[[xX]\]|^\s*\?✓/.test(ln)) return;   /* ticked or answered */
+  j.log.filter(e => jnLive(j, e)).sort(jnSort).forEach(e => e.b.split("\n").forEach((ln, li) => {
+    if (/^\s*[-*+] \[[xX]\]|^\s*\?✓|^\s*!✓/.test(ln)) return;   /* ticked, answered or handled */
     const box = JN_OPEN.test(ln), flag = /^\s*!!/.test(ln), d = jnDates(ln, e.d).map(([x]) => x).filter(x => x >= now).sort()[0];
-    if (d) dated.push({d, m: box ? jnMark(ln).trim() : "📅", t: jnPlain(ln.replace(JN_DATE, "$1"), e.d).replace(/\s{2,}/g, " ") || "Note", s: e.s, go: "note|" + e.id});
-    else if (box || flag) rest.push({m: jnMark(ln).trim(), t: jnPlain(ln, e.d), s: e.s, o: flag ? 0 : 1, go: "note|" + e.id}); }));
+    if (d) dated.push({d, m: box ? jnMark(ln).trim() : "📅", t: jnPlain(ln.replace(JN_DATE, "$1"), e.d).replace(/\s{2,}/g, " ") || "Note", s: e.s, go: "note|" + e.id, tk: (box || flag) && e.id + "|" + li, box: /^\s*[-*+] \[ \]/.test(ln)});
+    else if (box || flag) rest.push({m: jnMark(ln).trim(), t: jnPlain(ln, e.d), s: e.s, o: flag ? 0 : 1, go: "note|" + e.id, tk: e.id + "|" + li, box: /^\s*[-*+] \[ \]/.test(ln)}); }));
   rest.sort((a, b) => a.o - b.o);
   dated.sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : (b.insp || 0) - (a.insp || 0));
   const ck = jbCk(j, k).items.filter(x => !x.done && !x.nd).map(x => ({m: "☐", t: x.t, s: k, ck: 1}));
-  return [...dated, ...rest.filter(x => x.t), ...j.punch.filter(p => !p.done).map(p => ({m: "☐", t: p.t, punch: 1, go: "punch|"})), ...ck.map(x => Object.assign(x, {go: "stage|" + k}))];
+  return [...dated, ...rest.filter(x => x.t), ...j.punch.filter(p => !p.done).map(p => ({m: "☐", t: p.t, punch: 1, go: "punch|", pk: p.id})), ...ck.map(x => Object.assign(x, {go: "stage|" + k}))];
 }
 const JB_MK = {"☐": "k-task", "⚠": "k-flag", "?": "k-q", "✔": "k-q"};
-const jbNextLi = (x, tap) => `<li>${tap && x.go ? `<button type="button" class="jb-nxb" data-nx="${esc(x.go)}">` : ""}${x.d ? `<span class="jn-date${x.d === jbDay() ? " now" : ""}">${x.m} ${esc(jbNice(x.d))}</span> ` : `<span class="jb-nm ${x.ck ? "jb-nmck" : JB_MK[x.m] || ""}" aria-hidden="true">${esc(x.m)}</span>`}${esc(x.t.slice(0, 90))}${x.late ? " · <b>result?</b>" : ""}${x.punch ? ' <span class="sub">(punch)</span>' : x.ck ? ` <span class="sub">(${esc(JB_SNAME[x.s].replace(/ \(.*\)$/, ""))} checklist)</span>` : ""}${tap && x.go ? "</button>" : ""}</li>`;
+const jbNextTxt = (x, bx) => `${x.d ? `<span class="jn-date${x.d === jbDay() ? " now" : ""}">${bx && x.m !== "📋" ? "📅" : x.m} ${esc(jbNice(x.d))}</span> ` : bx && x.m === "☐" ? "" : `<span class="jb-nm ${x.ck ? "jb-nmck" : JB_MK[x.m] || ""}" aria-hidden="true">${esc(x.m)}</span>`}${esc(x.t.slice(0, 90))}${x.late ? " · <b>result?</b>" : ""}${x.punch ? ' <span class="sub">(punch)</span>' : x.ck ? ` <span class="sub">(${esc(JB_SNAME[x.s].replace(/ \(.*\)$/, ""))} checklist)</span>` : ""}`;
+const jbNextLi = (x, tap) => { if (!tap) return `<li>${jbNextTxt(x)}</li>`;
+  const box = x.tk ? `<input type="checkbox" class="jb-nxck" data-tk="${esc(x.tk)}" aria-label="${x.m === "⚠" ? "Handled" : x.m === "?" ? "Answered" : "Done"}: ${esc(x.t.slice(0, 60))}">` : x.pk ? `<input type="checkbox" class="jb-nxck" data-pk="${esc(x.pk)}" aria-label="Done: ${esc(x.t.slice(0, 60))}">` : "";
+  const open = x.box && JB.sendOpen === x.tk, st = x.box && (k => k && JB_SNAME[k] ? k : jbStageNow(jbCur()))(x.s);
+  return `<li class="jb-nxi${box ? "" : " jb-nxnb"}">${box}${x.go ? `<button type="button" class="jb-nxb" data-nx="${esc(x.go)}">${jbNextTxt(x, !!box)}</button>` : `<span class="jb-nxb">${jbNextTxt(x, !!box)}</span>`}${x.box ? `<button type="button" class="jb-x jb-send" data-send="${esc(x.tk)}" aria-expanded="${open}" aria-label="Send to the punch list or a checklist">→</button>` : ""}</li>`
+    + (open ? `<li class="jb-sendrow"><span class="sub">Send this to-do to:</span><button type="button" class="btn ghost" data-sendto="punch|${esc(x.tk)}">Punch list</button><button type="button" class="btn ghost" data-sendto="ck|${esc(x.tk)}">${esc(JB_SNAME[st].replace(/ \(.*\)$/, ""))} checklist</button></li>` : ""); };
 const jbNextHtml = (N, n, cls, tap) => `<ul class="${cls}">${N.slice(0, n).map(x => jbNextLi(x, tap)).join("")}${N.length > n ? `<li class="jq-more">+${N.length - n} more${(c => !c ? "" : c === N.length - n ? " on the checklist" : ` (${c} on the checklist)`)(N.slice(n).filter(x => x.ck).length)}</li>` : ""}</ul>`;
+/* a note's to-do → the punch list or a stage checklist. The note's box is ticked and says where it went, so it isn't counted twice. Undo puts both back. */
+function jnSend(j, eid, i, where){
+  const n = j.log.find(x => x.id === eid), L = n ? n.b.split("\n") : [], ln = L[i];
+  if (!n || !/^\s*[-*+] \[ \]/.test(ln || "")){ toast("That to-do changed. Nothing was moved."); JB.sendOpen = null; jbDraw(); return; }
+  const txt = jnPlain(ln, n.d).replace(/\s{2,}/g, " ").trim(); if (!txt){ toast("That to-do is empty."); return; }
+  const k = where === "ck" ? (n.s && jbStages(j).some(([x]) => x === n.s) ? n.s : jbStageNow(j)) : "", st = k && j.stages[k];
+  const label = k ? JB_SNAME[k].replace(/ \(.*\)$/, "") + " checklist" : "punch list";
+  if (k ? jbCk(j, k).items.some(y => y.t.trim().toLowerCase() === txt.toLowerCase()) : j.punch.some(p => !p.done && p.t.trim().toLowerCase() === txt.toLowerCase())){ toast(`That's already on the ${label}.`); return; }
+  const item = k ? {id: jbId(), t: txt, done: false} : {id: jbId(), t: txt, done: false, add: Date.now()}, was = n.b;
+  if (k) st.extra.push(item); else j.punch.push(item);
+  L[i] = ln.replace(/\[ \]/, "[x]") + ` → ${label}`; n.b = L.join("\n"); n.tk = Date.now();
+  jbAct(j, `→ "${txt}" moved from a note to the ${label}`, n.s || k); JB.sendOpen = null; jbTouch(j);
+  undoToast(`On the ${esc(label)} now. The note's box is ticked.`, () => { const J = jbD.jobs.find(x => x.id === j.id); if (!J) return "The job is gone.";
+    if (k) J.stages[k].extra = J.stages[k].extra.filter(x => x.id !== item.id); else J.punch = J.punch.filter(x => x.id !== item.id);
+    const N = J.log.find(x => x.id === eid); if (N && N.b === L.join("\n")) N.b = was; jbAct(J, `↶ Undid moving "${txt}" to the ${label}`, n.s || k); jbSave(); jbDraw(); return "Put back."; });
+}
 /* coming back to a job: what's next, then the last note, before anything else. One tap folds it; folded, it still shows the first thing */
 function jbLeftOff(j){
   const N = jbNextUp(j), last = j.log.filter(e => jnLive(j, e)).sort(jnSort)[0];
@@ -696,6 +745,10 @@ function jbLeftOff(j){
     ${shut ? "" : `${N.length ? jbNextHtml(N, 5, "jb-leftl", true) : ""}
     ${last ? `<p class="jb-leftp"><b>Last note ${esc(jbNice(last.d))}:</b> ${esc(jnGist(last, 2) || "Note")}</p>` : ""}`}</div>`;
 }
+/* one punch item: check, proof photo, edit, delete */
+const jbPunchRow = p => jbIsEd("punch", p.id) ? `<li class="jb-liedit">${jbTextEd(p.t)}</li>` : `<li><label><input type="checkbox" data-pk="${p.id}"${p.done ? " checked" : ""}><span>${esc(p.t)}${p.done && p.at ? `<small class="jb-when">✓ ${jbShort(p.at)}</small>` : p.add ? `<small class="jb-when">added ${jbShort(p.add)}</small>` : ""}</span></label>${p.ph ? `<button type="button" class="jb-x" data-v="${esc(p.ph)}" aria-label="See the proof photo for ${esc(p.t)}">📷</button>` : `<button type="button" class="jb-x jb-cam" data-pkph="${p.id}" aria-label="Check off ${esc(p.t)} with a proof photo">📷</button>`}${jbEdBtn("punch", p.id, esc(p.t))}<button type="button" class="jb-x" data-del="punch|${p.id}" aria-label="Delete ${esc(p.t)}">×</button></li>`;
+/* checked items fold under "✓ N done" (tap to show them; remembered) so the open ones are what you see */
+const jbDoneFold = (key, rows) => !rows.length ? "" : `<button type="button" class="jb-donef" data-tfold="${key}" aria-expanded="${!!jbD.fold[key]}"><span class="jb-car" aria-hidden="true">${jbD.fold[key] ? "▾" : "▸"}</span>✓ ${rows.length} done</button>${jbD.fold[key] ? `<ul class="jb-punch jb-dones">${rows.join("")}</ul>` : ""}`;
 /* name, address, builder, subdivision, city, status: first on a brand-new job, folded at the bottom once it has a name */
 const jbDetailsHtml = j => `  <p class="card-h" data-fold="details">Job details</p>
   <div class="calc">
@@ -750,7 +803,7 @@ function jbJobHtml(j){
   <div class="jb-in"><p class="note">Extra stages: add one only when the job needs it.</p></div>` : ""}
 
   <p class="card-h" data-fold="punch">Punch list &amp; materials</p>
-  ${j.punch.length ? `<ul class="jb-punch">${j.punch.map(p => jbIsEd("punch", p.id) ? `<li class="jb-liedit">${jbTextEd(p.t)}</li>` : `<li><label><input type="checkbox" data-pk="${p.id}"${p.done ? " checked" : ""}><span>${esc(p.t)}${p.done && p.at ? `<small class="jb-when">✓ ${jbShort(p.at)}</small>` : p.add ? `<small class="jb-when">added ${jbShort(p.add)}</small>` : ""}</span></label>${p.ph ? `<button type="button" class="jb-x" data-v="${esc(p.ph)}" aria-label="See the proof photo for ${esc(p.t)}">📷</button>` : `<button type="button" class="jb-x jb-cam" data-pkph="${p.id}" aria-label="Check off ${esc(p.t)} with a proof photo">📷</button>`}${jbEdBtn("punch", p.id, esc(p.t))}<button type="button" class="jb-x" data-del="punch|${p.id}" aria-label="Delete ${esc(p.t)}">×</button></li>`).join("")}</ul>` : ""}
+  ${j.punch.length ? `<ul class="jb-punch">${j.punch.filter(p => !p.done).map(p => jbPunchRow(p)).join("")}</ul>${jbDoneFold("pkdshow", j.punch.filter(p => p.done).map(p => jbPunchRow(p)))}` : ""}
   <div class="calc"><label for="jp-t" class="wide">Add an item<input id="jp-t" type="text" autocomplete="off" enterkeyhint="done" placeholder="Nail plates, 2 × 1/2 PEX stub-outs"></label></div>
   <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-a="punch-add">Add item</button>${j.punch.some(p => p.done) ? `<button type="button" class="btn ghost" data-a="punch-clear">Clear checked</button>` : ""}</div></div>
 
@@ -938,7 +991,7 @@ B.addEventListener("click", e => {
   if (fh && fh.dataset.fold === "details" && JB.open && !e.target.closest("button, a, input, select, label")){ JB.dState = {id: JB.open, open: fh.classList.contains("jb-folded")}; jbDraw(); return; }
   if (fh && !e.target.closest("button, a, input, select, label")){ const k = fh.dataset.fold, now = !fh.classList.contains("jb-folded"); if (now === !!JB_FOLD0[k]) delete jbD.fold[k]; else jbD.fold[k] = now; jbSave(true); jbDraw(); return; }   /* fold or open a section; remembered */
   const tf = e.target.closest("[data-tfold]"); if (tf){ const k = tf.dataset.tfold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(true); jbDraw(); return; }
-  const t = e.target.closest("[data-nx],[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ckmv],[data-ckconv],[data-ckph],[data-pkph],[data-iq],[data-cknd],[data-ent],[data-xadd],[data-xdel],[data-binr],[data-redit],[data-col],[data-tfold],[data-ico],[data-jfflt]"); if (!t) return;
+  const t = e.target.closest("[data-send],[data-sendto],[data-jnpin],[data-jnopen],[data-nx],[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ckmv],[data-ckconv],[data-ckph],[data-pkph],[data-iq],[data-cknd],[data-ent],[data-xadd],[data-xdel],[data-binr],[data-redit],[data-col],[data-tfold],[data-ico],[data-jfflt]"); if (!t) return;
   const j = jbCur(), o = jnOwner(), a = t.dataset.a, v = id => $(id).value.trim(), st = j && j.stages[JB.stage];
   if (t.dataset.ins){ jnInsert(t.dataset.ins); return; }
   if (t.dataset.jfflt && j){ JF.fltJob = j.id; JF.flt = t.dataset.jfflt; JF.allReady = null; jfDraw(j.id); return; }
@@ -956,6 +1009,10 @@ B.addEventListener("click", e => {
     const on = t.dataset.onote; if (on){ JN_OPENED.add(on); JB.notesAll = JB.open; }   /* from a note line: open that note in the job's notes */
     jbDraw(); const ne = on && (document.querySelector(`[data-edit="${on}"]`) || document.querySelector(`[data-jnx="${on}"]`));
     if (ne) (ne.closest(".jn-e, .jn-row") || ne).scrollIntoView({block: "center"}); else if (os) jbOpenStage(); else jbTop(); return; }
+  if (t.dataset.send && j){ JB.sendOpen = JB.sendOpen === t.dataset.send ? null : t.dataset.send; jbDraw(); const r = document.querySelector(".jb-sendrow"); if (r) r.scrollIntoView({block: "nearest"}); return; }
+  if (t.dataset.sendto && j){ const [w, eid, i] = t.dataset.sendto.split("|"); jnSend(j, eid, +i, w); return; }
+  if (t.dataset.jnopen){ const id = t.dataset.jnopen; JN_OPENED.add(id); jbDraw(); const ne = document.querySelector(`[data-edit="${id}"]`) || document.querySelector(`[data-jnx="${id}"]`); if (ne) (ne.closest(".jn-e, .jn-row") || ne).scrollIntoView({block: "center"}); return; }
+  if (t.dataset.jnpin && o){ const n = o.log.find(x => x.id === t.dataset.jnpin); if (n){ if (n.pin) delete n.pin; else n.pin = true; if (jbD.jobs.includes(o)) jbAct(o, `${n.pin ? "📌 Pinned" : "Unpinned"} a note: "${jnGist(n, 1).slice(0, 60)}"`, n.s); toast(n.pin ? "Pinned: it stays at the top of the notes." : "Unpinned.", 1800); jbTouch(o); } return; }
   if (t.dataset.nx && j){ const [w, id] = t.dataset.nx.split("|");   /* What's next: tap a line to go where it came from */
     if (w === "note"){ JN_OPENED.add(id); JB.notesAll = j.id; jbDraw(); const ne = document.querySelector(`[data-edit="${id}"]`) || document.querySelector(`[data-jnx="${id}"]`); if (ne) (ne.closest(".jn-e, .jn-row") || ne).scrollIntoView({block: "center"}); return; }
     if (w === "stage" && id){ JB.stage = id; jbDraw(); jbOpenStage(); return; }
@@ -1143,9 +1200,10 @@ B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.pers
     jbTouch(j); return; }
   if (t.tagName === "SELECT" || /^(date|file)$/.test(t.type)) jbReseat();   /* a picker wheel or the photo sheet just closed */
   if (p && t.dataset.pf){ p[t.dataset.pf] = t.value.trim(); jbTouch(p); return; }
+  if (t.id === "jn-v"){ jbD.jnView = t.value; jbSave(true); jbDraw(); return; }
   if (t.dataset.tk){ const o = jnOwner(), [eid, i] = t.dataset.tk.split("|"), n = o && o.log.find(x => x.id === eid);
-    if (n){ const L = n.b.split("\n"), before = L[+i]; L[+i] = /^\s*\?(\?|✓)/.test(L[+i]) ? L[+i].replace(/\?(\?|✓)/, m => m === "??" ? "?✓" : "??") : L[+i].replace(/\[( |x|X)\]/, m => m === "[ ]" ? "[x]" : "[ ]"); n.b = L.join("\n"); n.tk = Date.now();
-      if (jbD.jobs.includes(o)) jbAct(o, `${/\?✓|\[[xX]\]/.test(L[+i]) ? (/^\s*\?/.test(before) ? "✔ Answered" : "☑ Ticked") : "☐ Unticked"} in a note: "${jnPlain(L[+i], n.d)}"`, n.s); jbTouch(o); } return; }
+    if (n){ const L = n.b.split("\n"), before = L[+i]; L[+i] = /^\s*\?(\?|✓)/.test(L[+i]) ? L[+i].replace(/\?(\?|✓)/, m => m === "??" ? "?✓" : "??") : /^\s*!(!|✓)/.test(L[+i]) ? L[+i].replace(/!(!|✓)/, m => m === "!!" ? "!✓" : "!!") : L[+i].replace(/\[( |x|X)\]/, m => m === "[ ]" ? "[x]" : "[ ]"); n.b = L.join("\n"); n.tk = Date.now();
+      if (jbD.jobs.includes(o)) jbAct(o, `${/\?✓|!✓|\[[xX]\]/.test(L[+i]) ? (/^\s*\?/.test(before) ? "✔ Answered" : /^\s*!/.test(before) ? "✔ Heads-up handled" : "☑ Ticked") : /^\s*!/.test(before) ? "⚠ Heads-up back on" : "☐ Unticked"} in a note: "${jnPlain(L[+i], n.d)}"`, n.s); jbTouch(o); } return; }
   if (j && t.dataset.f){ jbAct(j, `✎ ${({name: "Job name", a: "Address", who: "Customer", city: "City", st: "Job status"})[t.dataset.f] || "Job details"} changed${t.dataset.f === "st" ? " to " + (JB_ST[t.value] || t.value) : ""}`); if (t.tagName === "SELECT"){ j[t.dataset.f] = t.value; jbTouch(j); } else if (t.dataset.f === "a") jbTouch(j); else jbSave(); return; }   /* the address shows Directions */
   if (j && t.dataset.jp){ const per = pGet(t.value, t.dataset.jp === "lead" ? "Lead" : "Superintendent"); j[t.dataset.jp] = per ? per.id : ""; jbAct(j, `✎ ${t.dataset.jp === "lead" ? "Lead" : "Superintendent"}: ${per ? per.n : "none"}`); jbTouch(j); return; }
   if (st && t.dataset.sp){ const per = pGet(t.value, "Lead"); st.lead = per ? per.id : ""; jbAct(j, `✎ ${JB_SNAME[JB.stage]} lead: ${per ? per.n : "none"}`, JB.stage); jbTouch(j); return; }
@@ -1489,7 +1547,7 @@ async function jbReport(j0, only){
   const notes = j.log.slice().sort(jnSort);
   /* notes read the way they look in the app (boxes, warnings, links as plain names, bold), every character escaped first */
   const nMd = t => String(t).split("\n").map(L => E(L)
-    .replace(/^(\s*)[-*+] \[ \]\s*/, "$1☐ ").replace(/^(\s*)[-*+] \[[xX]\]\s*/, "$1☑ ").replace(/^(\s*)!!\s*/, "$1⚠ ").replace(/^(\s*)\?\?\s*/, "$1❓ ").replace(/^(\s*)\?✓\s*/, "$1✔ ")
+    .replace(/^(\s*)[-*+] \[ \]\s*/, "$1☐ ").replace(/^(\s*)[-*+] \[[xX]\]\s*/, "$1☑ ").replace(/^(\s*)!!\s*/, "$1⚠ ").replace(/^(\s*)!✓\s*/, "$1✔ handled: ").replace(/^(\s*)\?\?\s*/, "$1❓ ").replace(/^(\s*)\?✓\s*/, "$1✔ ")
     .replace(/^(\s*)[-*+](?=\s)/, "$1•").replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, "$2").replace(/\[\[([^\]]+)\]\]/g, "$1").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")).join("\n");
   if (notes.length) h += `<h2>Notes</h2>${notes.map(e => `<div class="nt"><p class="m">${E(jbNice(e.d))} · written ${E(when(e.at))}${e.ed ? " · edited " + E(when(e.ed)) : ""}${e.s && JB_SNAME[e.s] ? " · " + E(JB_SNAME[e.s]) : ""}</p><pre>${nMd(e.b)}</pre>${(e.hist || []).map(v => `<div class="hv"><p class="m">Earlier version, said this until ${E(when(v.until))}:</p><pre>${E(v.b)}</pre></div>`).join("")}</div>`).join("")}`;
   if (proofs.length){ h += `<h2>Proof photos</h2>`;
@@ -1796,7 +1854,7 @@ function jbMerge(o){
   jbD.jobs.forEach(j => { if (!Array.isArray(j.xs)) j.xs = []; });
   r.add = [...ids()].filter(id => !before.has(id)).length;   /* counted after deletions, so a job deleted here isn't "new" */
   const now = Date.now(); jbD.jobs.forEach(j => { if (!before.has(j.id)) j.seen = Math.max(+j.seen || 0, now); });   /* new on this phone: not straight to Archived */
-  [...jbD.people, ...jbD.builders, ...jbD.subs].forEach(p => { if (!Array.isArray(p.log)) p.log = []; if (typeof p.draft !== "string") p.draft = ""; });
+  [...jbD.people, ...jbD.builders, ...jbD.subs].forEach(p => { if (!Array.isArray(p.log)) p.log = []; if (typeof p.draft !== "string") p.draft = ""; p.log.forEach(e => { if (e && e.pin !== true) delete e.pin; }); });
   return r;
 }
 
