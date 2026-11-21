@@ -47,7 +47,7 @@ An offline jobsite reference for **Utah residential new-construction plumbing**:
 ## Themes
 - Hi-vis is the default. The novelty themes (Neon Sign, Glow Stick, Rubber Ducky, Blacklight, Patina, Chrome, etc.) stay, but they **need a short disclaimer in Settings** saying they're for fun and not tuned for bright sun or rain.
 - **Remove a theme only if it breaks something:** unreadable answers or warnings (text contrast below 4.5:1), or code that errors. Say which one and why.
-- No new themes until the accuracy pass is done.
+- The accuracy pass is done (Nov 2026). Add a new theme only when the owner asks for one. Every new theme goes in the "Just for fun" group (or the right group), gets named in the Settings disclaimer if it's a novelty theme, and must pass the contrast check (4.5:1 text, 3:1 UI parts) in light and dark.
 
 ## Shipping
 - **Never push straight to `main`.** Work on a branch, open a PR, and send the owner the short report (below).
