@@ -5475,6 +5475,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 21, 2026 · Code pass</th><td><b>Fixed:</b> tapping a link that jumps to a card (Which tool?, On this page, search results, 📖 links in your notes) could stop partway down the page instead of on the card, mostly on a computer, or right after the keyboard closed. Now it always lands on the card. <b>Time card:</b> a break as long as the whole shift now says so, instead of showing 0 hr.</td></tr>
         <tr><th>Nov 21, 2026 · More how it works</th><td><b>New card:</b> Why a new house needs a flush (water that sits goes stale; EPA and Purdue research). <b>Added rows:</b> why a fixture can't be double trapped (Why traps need vents), whether low-flow toilets leave waste in the drain (How a toilet flushes), why heat makes scale (How tankless works), and what fights natural draft (How a gas burner stays lit). 3 new flashcards. Every fact lists its source.</td></tr>
         <tr><th>Nov 21, 2026 · Two fun themes</th><td><b>Avocado '74</b> (1970s harvest gold and avocado green) and <b>Locate Paint</b> (the 811 marking colors: blue water, green sewer). Settings → Theme → Just for fun. Both pass the contrast check.</td></tr>
         <tr><th>Nov 21, 2026 · Plumbing science</th><td><b>New card:</b> Why copper and brass wear out (Learn → How it works). <b>Added:</b> why a dry trap is a health problem (the 2003 Amoy Gardens outbreak), trap seals and pressure waves, the modern update to fixture units, and what each 811 paint color means (Jobsite → Electrical → Power lines). <b>Updated:</b> Legionella numbers follow CDC guidance. 4 new flashcards. Every fact lists its source.</td></tr>
@@ -9091,6 +9092,14 @@ function jumpToSec(sec, focusId, noPush){
   if (!noPush){ const y = scrY(); nav = {group: sec.dataset.g, sub: sec.dataset.sec}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrTo({top:0}); placeRemember(); histPush({card: sec.dataset.pid}, (sec.dataset.pid || "").split(":")[1], y); cardRemember(sec); }
   requestAnimationFrame(() => {
     sec.scrollIntoView({block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+    /* a smooth scroll can stop short: cards above that haven't drawn yet grow as it passes them (computers), or a re-seat
+       after the keyboard closes cuts it off. Once it settles, finish the jump, unless you've started scrolling yourself. */
+    { let n = 0, last = -1, mine = false; const stop = () => { mine = true; }, opts = {passive: true, once: true};
+      ["touchstart", "wheel", "keydown"].forEach(t => addEventListener(t, stop, opts));
+      const chk = () => { if (mine || ++n > 15) return; const y = scrY();
+        if (y !== last){ last = y; setTimeout(chk, 150); return; }
+        const t = sec.getBoundingClientRect().top; if (Math.abs(t - (parseFloat(getComputedStyle(sec).scrollMarginTop) || 0)) > 8) sec.scrollIntoView({block: "start"}); };
+      setTimeout(chk, 300); }
     const f = focusId && $(focusId); const h = sec.querySelector("h2");
     if (f){ for (let p = f.parentElement; p; p = p.parentElement) if (p.tagName === "DETAILS") p.open = true;
       setTimeout(() => { f.focus({preventScroll: true}); const r = f.getBoundingClientRect(); if (r.top < 0 || r.bottom > innerHeight - 90) f.scrollIntoView({block: "center"}); }, 350); }
@@ -10509,6 +10518,7 @@ function tapeDraw(){
     if (!isFinite(a) || !isFinite(b0)){ el.innerHTML = warn("Pick both times."); $("mt-viz").innerHTML = ""; jobsTo(0); return; }
     if (b0 === a){ el.innerHTML = warn("Start and end are the same time."); $("mt-viz").innerHTML = ""; jobsTo(0); return; }
     const b = b0 < a ? b0 + 1440 : b0, mins = Math.max(0, b - a - br), h = Math.floor(mins / 60), mm = mins % 60;
+    if (br && br >= b - a){ el.innerHTML = warn(`The ${br}-minute break is as long as the whole shift (${b - a} min). Check the times or the break.`); $("mt-viz").innerHTML = ""; jobsTo(0); return; }
     el.innerHTML = `${r2(mins / 60)} hr<small>${h} h ${mm} min${b0 < a ? " · past midnight" : ""}${br ? ` · after a ${br}-minute break` : ""}</small>`; jobsTo(Math.round(mins / 60 * 100) / 100);
     const X = t => 10 + (t % 1440) / 1440 * 300; let g = `<rect x="10" y="14" width="300" height="18" rx="3" fill="none" stroke="var(--d-pipe)" stroke-width="1.5"/>`;
     const seg = (s, e, col) => { if (s >= 1440) return seg(s - 1440, e - 1440, col); if (e <= s) return ""; if (e <= 1440) return `<rect x="${X(s)}" y="16" width="${(e - s) / 1440 * 300}" height="14" fill="${col}"/>`; return seg(s, 1440, col) + `<rect x="10" y="16" width="${(e - 1440) / 1440 * 300}" height="14" fill="${col}"/>`; };
@@ -11596,7 +11606,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-21i";
+var BUILD = "handbook-2026-11-21j";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
