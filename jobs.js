@@ -885,6 +885,11 @@ const jbTidy = away => { const n = jbD.jobs.length, now = Date.now();   /* away:
   if (JB.open && !jbD.jobs.some(j => j.id === JB.open)) JB.open = null; if (jbD.jobs.length !== n) jbSave(true); };
 /* sections that start folded (open one and it stays open): the activity log and pin/icon/color are rarely needed on site */
 const JB_FOLD0 = {proof: 1, look: 1};
+/* A job's sections start folded on every visit (like the timeline's stages): open one and it stays open while you're
+   on that job; leave the job or My jobs (or the app for a minute) and they're all folded again next time. Not saved. */
+const JB_JFOLD = new Set(["notes", "facts", "s-check", "s-insp", "s-hrs", "punch", "media", "people", "details", "proof", "look"]);
+const jbFv = () => { if (!JB.open) return null; if (!JB.fv || JB.fv.id !== JB.open) JB.fv = {id: JB.open, k: {}}; return JB.fv; };
+const jbOpenSec = (...ks) => { const v = jbFv(); if (v) ks.forEach(k => { v.k[k] = true; }); };   /* a jump into a section opens it */
 function jbDraw(){
   try { if (window.wxJobsDue) wxJobsDue(); } catch(e){}   /* weather badges: refreshed at most hourly, drawn from what's saved */
   JB_IX = null; JB_AC = new WeakMap(); JN_CARDS = null; jbTidy();
@@ -899,7 +904,8 @@ function jbDraw(){
   else if (p){}
   else if (j){ $("jb-city").value = j.city || ""; jfDraw(j.id); }
   else if (JB.view === "set"){ $("jb-goal").value = String(+jbD.goal === 6000 ? 6000 : 8000); jfUse(); }
-  body.querySelectorAll(".card-h[data-fold]").forEach(h => { const k = h.dataset.fold, f = k === "details" && j ? (JB.dState && JB.dState.id === j.id ? !JB.dState.open : !!(JB.dPos && JB.dPos.id === j.id ? JB.dPos.named : (j.name || "").trim() || (j.a || "").trim())) : JB_FOLD0[k] ? jbD.fold[k] !== false : !!jbD.fold[k];
+  if (!j || en || p) JB.fv = null;   /* off a job: next visit starts folded */
+  body.querySelectorAll(".card-h[data-fold]").forEach(h => { const k = h.dataset.fold, f = j && !en && !p && JB_JFOLD.has(k) ? (k in jbFv().k ? !jbFv().k[k] : k === "details" ? !!(JB.dPos && JB.dPos.id === j.id ? JB.dPos.named : (j.name || "").trim() || (j.a || "").trim()) : true) : JB_FOLD0[k] ? jbD.fold[k] !== false : !!jbD.fold[k];
     h.classList.add("jb-fh"); h.classList.toggle("jb-folded", f); h.setAttribute("role", "button"); h.tabIndex = 0; h.setAttribute("aria-expanded", String(!f));
     for (let n = h.nextElementSibling; n && !n.matches(".card-h, .jb-end"); n = n.nextElementSibling){ if (f){ if (!n.hidden){ n.hidden = true; n.dataset.fh = "1"; } } else if (n.dataset.fh){ n.hidden = false; delete n.dataset.fh; } } });
   bindPn(body);
@@ -988,7 +994,7 @@ B.addEventListener("focusin", e => { if (e.target.classList.contains("jn-ta")){ 
 B.addEventListener("click", e => {
   const oi = e.target.closest("details[data-oi] > summary"); if (oi) JB.openItems = !oi.parentNode.open;   /* remember it open across redraws */
   const fh = e.target.closest(".card-h[data-fold]");
-  if (fh && fh.dataset.fold === "details" && JB.open && !e.target.closest("button, a, input, select, label")){ JB.dState = {id: JB.open, open: fh.classList.contains("jb-folded")}; jbDraw(); return; }
+  if (fh && JB.open && JB_JFOLD.has(fh.dataset.fold) && !e.target.closest("button, a, input, select, label")){ jbFv().k[fh.dataset.fold] = fh.classList.contains("jb-folded"); jbDraw(); return; }   /* a job's section: open or fold it for this visit */
   if (fh && !e.target.closest("button, a, input, select, label")){ const k = fh.dataset.fold, now = !fh.classList.contains("jb-folded"); if (now === !!JB_FOLD0[k]) delete jbD.fold[k]; else jbD.fold[k] = now; jbSave(true); jbDraw(); return; }   /* fold or open a section; remembered */
   const tf = e.target.closest("[data-tfold]"); if (tf){ const k = tf.dataset.tfold; if (jbD.fold[k]) delete jbD.fold[k]; else jbD.fold[k] = true; jbSave(true); jbDraw(); return; }
   const t = e.target.closest("[data-send],[data-sendto],[data-jnpin],[data-jnopen],[data-nx],[data-a],[data-open],[data-show],[data-view],[data-del],[data-v],[data-ins],[data-edit],[data-wl],[data-tag],[data-tagclr],[data-stage],[data-sst],[data-person],[data-pdel],[data-ckdel],[data-ckmv],[data-ckconv],[data-ckph],[data-pkph],[data-iq],[data-cknd],[data-ent],[data-xadd],[data-xdel],[data-binr],[data-redit],[data-col],[data-tfold],[data-ico],[data-jfflt]"); if (!t) return;
@@ -1006,16 +1012,17 @@ B.addEventListener("click", e => {
   if (t.dataset.person){ jbOpenPerson(t.dataset.person); return; }
   if (t.dataset.edit){ JB.edit = t.dataset.edit; jbDraw(); const ta = $("jn-ed"); if (ta){ ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } return; }
   if (t.dataset.open){ const os = t.dataset.ostage; JB.rowEdit = null; jbPush(); JB.person = null; JB.ent = null; JB.open = t.dataset.open; JB.edit = null; JB.stage = os || null; JF.n = 0;
-    const on = t.dataset.onote; if (on){ JN_OPENED.add(on); JB.notesAll = JB.open; }   /* from a note line: open that note in the job's notes */
+    const on = t.dataset.onote; if (on){ JN_OPENED.add(on); JB.notesAll = JB.open; jbOpenSec("notes"); }   /* from a note line: open that note in the job's notes */
+    if (os) jbOpenSec("s-check");
     jbDraw(); const ne = on && (document.querySelector(`[data-edit="${on}"]`) || document.querySelector(`[data-jnx="${on}"]`));
     if (ne) (ne.closest(".jn-e, .jn-row") || ne).scrollIntoView({block: "center"}); else if (os) jbOpenStage(); else jbTop(); return; }
   if (t.dataset.send && j){ JB.sendOpen = JB.sendOpen === t.dataset.send ? null : t.dataset.send; jbDraw(); const r = document.querySelector(".jb-sendrow"); if (r) r.scrollIntoView({block: "nearest"}); return; }
   if (t.dataset.sendto && j){ const [w, eid, i] = t.dataset.sendto.split("|"); jnSend(j, eid, +i, w); return; }
-  if (t.dataset.jnopen){ const id = t.dataset.jnopen; JN_OPENED.add(id); jbDraw(); const ne = document.querySelector(`[data-edit="${id}"]`) || document.querySelector(`[data-jnx="${id}"]`); if (ne) (ne.closest(".jn-e, .jn-row") || ne).scrollIntoView({block: "center"}); return; }
+  if (t.dataset.jnopen){ const id = t.dataset.jnopen; JN_OPENED.add(id); jbOpenSec("notes"); jbDraw(); const ne = document.querySelector(`[data-edit="${id}"]`) || document.querySelector(`[data-jnx="${id}"]`); if (ne) (ne.closest(".jn-e, .jn-row") || ne).scrollIntoView({block: "center"}); return; }
   if (t.dataset.jnpin && o){ const n = o.log.find(x => x.id === t.dataset.jnpin); if (n){ if (n.pin) delete n.pin; else n.pin = true; if (jbD.jobs.includes(o)) jbAct(o, `${n.pin ? "📌 Pinned" : "Unpinned"} a note: "${jnGist(n, 1).slice(0, 60)}"`, n.s); toast(n.pin ? "Pinned: it stays at the top of the notes." : "Unpinned.", 1800); jbTouch(o); } return; }
   if (t.dataset.nx && j){ const [w, id] = t.dataset.nx.split("|");   /* What's next: tap a line to go where it came from */
-    if (w === "note"){ JN_OPENED.add(id); JB.notesAll = j.id; jbDraw(); const ne = document.querySelector(`[data-edit="${id}"]`) || document.querySelector(`[data-jnx="${id}"]`); if (ne) (ne.closest(".jn-e, .jn-row") || ne).scrollIntoView({block: "center"}); return; }
-    if (w === "stage" && id){ JB.stage = id; jbDraw(); jbOpenStage(); return; }
+    if (w === "note"){ JN_OPENED.add(id); JB.notesAll = j.id; jbOpenSec("notes"); jbDraw(); const ne = document.querySelector(`[data-edit="${id}"]`) || document.querySelector(`[data-jnx="${id}"]`); if (ne) (ne.closest(".jn-e, .jn-row") || ne).scrollIntoView({block: "center"}); return; }
+    if (w === "stage" && id){ JB.stage = id; jbOpenSec("s-check"); jbDraw(); jbOpenStage(); return; }
     if (w === "punch"){ const h = document.querySelector('.card-h[data-fold="punch"]'); if (h){ if (h.classList.contains("jb-folded")) h.click(); (document.querySelector('.card-h[data-fold="punch"]') || h).scrollIntoView({block: "start"}); } return; } }
   if (t.dataset.show){ JB.show = t.dataset.show; jbDraw(); return; }
   if (t.dataset.v){ jfView(t.dataset.v); return; }
@@ -1120,7 +1127,7 @@ B.addEventListener("click", e => {
     jbD.people = jbD.people.filter(x => x !== p);
     jbD.jobs.forEach(x => { if (x.lead === p.id) x.lead = ""; if (x.sup === p.id) x.sup = ""; x.ppl = x.ppl.filter(y => y.p !== p.id); JB_STG.forEach(([k]) => { if (x.stages[k].lead === p.id) x.stages[k].lead = ""; }); });
     jbGoBack(); jbUndo(bid); return; }
-  if (a === "insp-re"){ const f = $("ji-fold"); if (f){ f.open = true; $("ji-r").value = "booked"; $("ji-n").value = "Re-inspection"; const d = $("ji-d"); d.focus(); d.scrollIntoView({block: "center"}); } return; }   /* after a Fail or Partial: the add form, set up as a booked re-inspection */
+  if (a === "insp-re"){ if (jbFv() && !jbFv().k["s-insp"]){ jbOpenSec("s-insp"); jbDraw(); } const f = $("ji-fold"); if (f){ f.open = true; $("ji-r").value = "booked"; $("ji-n").value = "Re-inspection"; const d = $("ji-d"); d.focus(); d.scrollIntoView({block: "center"}); } return; }   /* after a Fail or Partial: the add form, set up as a booked re-inspection */
   if (a === "jn-more"){ JN_MORE = !JN_MORE; document.querySelectorAll(".jn-tools").forEach(T => { T.classList.toggle("jn-more", JN_MORE); T.querySelectorAll("[data-ins]").forEach((x, i) => { x.hidden = i > 3 && !JN_MORE; }); const m = T.querySelector(".jn-morebtn"); m.textContent = JN_MORE ? "Fewer" : "More marks…"; m.setAttribute("aria-expanded", String(JN_MORE)); }); return; }
   if (a === "jn-all" && j){ JB.notesAll = j.id; jbDraw(); return; }
   if (a === "jn-add" && o){ const b = jnTidy($("jn-new").value); if (!b){ toast("Write the note first."); return; }
@@ -1350,10 +1357,17 @@ $("home-body").addEventListener("click", e => { const b = e.target.closest("[dat
   if (k === "backup"){ JB.open = null; JB.view = "set"; go("mine", "jobs"); jbDraw(); const h = $("jb-bk"); if (h) h.scrollIntoView({block: "start"}); JF.sayId = "jf-say"; jbBackupAll(); return; }
   const [act, id] = k.includes(":") ? k.split(":") : ["", k];
   if (id === "new") jbNew(); else JB.open = id === "all" ? null : id;
+  JB.fv = null; if (act === "note") jbOpenSec("notes"); else if (act === "ck") jbOpenSec("s-check");   /* a fresh visit, with the section you tapped open */
   go("mine", "jobs"); jbDraw(); jbTop();
   if (act === "hrs" && JB.open){ JB.hrsBox = JB.open; jbDraw(); const h = $("jhq-h"); if (h){ h.scrollIntoView({block: "center"}); h.focus(); } }   /* the quick hours box, ready to type */
   else if (act === "note"){ const t = $("jn-new"); if (t){ t.scrollIntoView({block: "center"}); t.focus(); } }
   else if (act === "ck") jbOpenStage(); });
+
+/* leaving My jobs (another tab, a search) or the app for a minute folds the open job's sections again for next time */
+{ const card = $("jobs-card"); let away = false, hidAt = 0;
+  const back = () => { if (away && JB.open && !card.hidden){ away = false; JB.fv = null; jbDraw(); } };
+  if (card) new MutationObserver(() => { if (card.hidden){ if (JB.open) away = true; } else back(); }).observe(card, {attributes: true, attributeFilter: ["hidden"]});
+  document.addEventListener("visibilitychange", () => { if (document.hidden) hidAt = Date.now(); else if (hidAt && Date.now() - hidAt > 60e3 && JB.open){ away = true; back(); } }); }
 
 /* ---- photos & files: IndexedDB */
 let jfDbP = null;
