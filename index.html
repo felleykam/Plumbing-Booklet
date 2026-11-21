@@ -5424,6 +5424,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 21, 2026 · Night polish</th><td><b>Glossary:</b> added Deep seal trap, Fixture unit, Combination waste and vent and Waste receptor, and Air break now says where the pipe ends (below the flood rim, above the trap seal). <b>Checked:</b> every jump link and every "Tab → Page → Card" pointer in the book lands on a real card, and all the jobs, notes and backup tests pass.</td></tr>
         <tr><th>Nov 21, 2026 · More How it works</th><td><b>Five new cards in Learn → How it works:</b> How trap primers work (including the 2021 IPC's new lav-fed primer), Air gap vs air break (indirect waste, IPC ch. 8), How a backwater valve works (the manhole-cover rule), How fixture units work (why you add units, not gallons), and How the code books fit together (model code, Utah's adoption and amendments, appendices, why section numbers move). Plus 6 flashcards on them. Each card lists its source and check date. <b>Checked against the Build cards:</b> the indirect-waste air gap is 2× the pipe's opening; the "never under 1 inch" rule is for faucet and fill-valve air gaps, and the new card says so.</td></tr>
         <tr><th>Nov 21, 2026 · More 2021 IPC</th><td><b>New in How it works:</b> Ways to vent a trap: every 2021 IPC venting method side by side (individual, common, wet, waste stack, circuit, combination waste and vent, island, single stack, AAV). <b>New in Study:</b> Find it in the 2021 IPC (what each chapter covers), a Utah's IPC amendments fact file (20 rules from Utah Code 15A-3 Part 3, with the link), and 17 new 2021 IPC flashcards. <b>Fixed:</b> the 2021 IPC puts shower and tub valve rules in 412.3 and 412.5. The quick reference and a flashcard still had the 2018 numbers (424.3 and 424.5). The shower valve card now has the 2021 IPC rule too: the valve must be rated for the showerhead you install. <b>My jobs:</b> a job's sections (Notes, Checklist, Inspections, Hours, Punch list, Photos, People and the rest) now start folded every time you open the job, like the timeline's stages. Tap one to open it; it stays open while you're on that job. Leave the job, leave My jobs, or leave the app for over a minute, and they're folded again next time. Jumps still open the right one: 📝 Note, ☑ Checklist and a note in What's next.</td></tr>
         <tr><th>Nov 20, 2026 · Full check</th><td><b>Water heater size uses DOE's current numbers:</b> 20 gal a shower (the old sheet said 10), 3 for hand dishes, 7 for a dishwasher, and the clothes washer split into top-load (25) and front-load (15). The starting example is DOE's own (3 showers, a shave, hand dishes = 65 gal), so expect bigger answers than before. <b>Answers follow your tape setting everywhere:</b> Offset, Feet-inch, Square it and the bore line now round once, to ⅛" (or what you picked), and a small real amount never shows as 0". The stud bore limit shows the exact number instead of rounding up (a 2×6 bearing wall is 2.2", not 2¼"). <b>Fixes:</b> PEX 1¼" inside size is 1.054" (Uponor), used in the supply-demand pipe check. Cards now say which code edition they come from (2021 IRC, 2021 IPC, 2024 IFGC, 2023 NEC), and the electrical card names the 2023 NEC Utah adopted 7/1/2026. Sources and checked dates added to pipe sizes, the softener sizer, the gas table and supply demand. Diagram labels no longer get cut off on small phones, the Compact / Full switch on a job's notes no longer runs off a small screen, and searching "bluestakes" finds the 811 cards.</td></tr>
@@ -6468,7 +6469,11 @@ const GLOSS = [
   ["Passive radon system","frame","Pipe from the gravel under the slab up through the roof that vents soil gas. Not a plumbing vent: never tie it into the DWV."],
   /* ---- DWV ---- */
   ["AAV","dwv","Air admittance valve: one-way valve that lets air into the drain and closes against sewer gas. ASSE 1051."],
-  ["Air break","dwv","Open connection where a waste pipe ends inside a receptor below its rim. Less protection than an air gap."],
+  ["Air break","dwv","Open connection where a waste pipe ends inside a receptor, below its flood rim but above its trap seal. Less protection than an air gap."],
+  ["Deep seal trap","dwv","A trap with a seal of 4\" or more (Utah's definition). Slower to dry out."],
+  ["Fixture unit","dwv","A weight for how much water a fixture uses and how often. Add the units (DFU for drains, WSFU for supply), then a table turns the total into pipe size or gpm."],
+  ["Combination waste and vent","dwv","An oversized horizontal drain that vents itself through its top half. Floor drains, standpipes, sinks and lavs only (IPC 915)."],
+  ["Waste receptor","dwv","A trapped and vented hub, standpipe or floor sink that takes indirect waste."],
   ["Backwater valve","dwv","Check valve on the sewer that stops a city sewer backup from flooding low fixtures."],
   ["Bathroom group","dwv","Toilet + lav + tub or shower on one floor (a bidet and emergency floor drain are included), counted as one DFU load."],
   ["Branch","dwv","Any drain pipe that isn't a stack, riser or the building drain."],
@@ -11470,7 +11475,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-21b";
+var BUILD = "handbook-2026-11-21c";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
