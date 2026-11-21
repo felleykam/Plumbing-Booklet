@@ -1210,6 +1210,24 @@ body.sheet-open{overflow:hidden}
 :root[data-skin="chrome"] .btn,:root[data-skin="chrome"] :is(.seg,.mode,.ro-view) button[aria-pressed="true"],:root[data-skin="chrome"] nav.tabs button[aria-pressed="true"]{background:var(--chrome);color:#05070A;border-color:#05070A}
 :root[data-skin="chrome"][data-theme="dark"] .btn{box-shadow:3px 3px 0 #000,0 0 0 1px #6B7684}
 
+/* Avocado '74: harvest gold and avocado green, the 1970s fixture colors, with a retro stripe */
+:root[data-skin="avocado"][data-theme="light"]{
+  --hv:#E8B53A; --k:#2F3A10; --on-k:#FFFBEA; --on-k-sub:#E4DDB8; --paper:#F4EEDA; --sheet:#FFFDF4; --ink:#2A2410; --muted:#4E4528; --rule:#9A9070; --edge:#2F3A10; --zebra:#F7F1DC; --bar:#DDE3A6; --bar-ink:#2A2410; --hi:#F5E7B2; --hi-ink:#2A2410; --hi-edge:#2F3A10; --ctl:#2F3A10; --ul:#8A3F0C; --logo-tile:#E8B53A; --logo-ink:#2F3A10;
+  --stripe:linear-gradient(180deg,#6B3E12 0 25%,#C8641E 25% 50%,#E8B53A 50% 75%,#7A8B2A 75%)}
+:root[data-skin="avocado"][data-theme="dark"]{
+  --hv:#E8B53A; --k:#0F1106; --on-k:#F3ECD2; --on-k-sub:#D3C9A4; --paper:#1A1C0E; --sheet:#24271A; --ink:#F3ECD2; --muted:#D3C9A4; --rule:#6A6A48; --edge:#C9C29A; --zebra:#2B2E1E; --bar:#2F3816; --bar-ink:#F0C55A; --hi:#3C4720; --hi-ink:#FFFFFF; --hi-edge:#E8B53A; --ctl:#C9C29A; --ul:#F0A060; --logo-tile:#E8B53A; --logo-ink:#0F1106; --d-bg:#1A1C0E; --d-grid:#33361F;
+  --stripe:linear-gradient(180deg,#6B3E12 0 25%,#C8641E 25% 50%,#E8B53A 50% 75%,#7A8B2A 75%)}
+
+/* Locate Paint: the APWA / 811 marking colors in the stripe, potable-water blue for the accent */
+:root[data-skin="locate"][data-theme="light"]{
+  --hv:#5CC8FF; --k:#111214; --on-k:#FFFFFF; --on-k-sub:#D6D9DE; --paper:#F2F3F5; --sheet:#FFFFFF; --ink:#111214; --muted:#3A3D42; --rule:#868B93; --edge:#111214; --zebra:#EEF0F3; --bar:#DDF2E3; --bar-ink:#111214; --hi:#E3F5FF; --hi-ink:#111214; --hi-edge:#111214; --ctl:#111214; --ul:#0B5FA8; --logo-tile:#5CC8FF; --logo-ink:#111214;
+  --stripe:repeating-linear-gradient(-45deg,#E0201B 0 7px,#FFD400 7px 14px,#FF8A00 14px 21px,#1E7BE0 21px 28px,#8E44C9 28px 35px,#1FA24A 35px 42px,#FF6FB0 42px 49px)}
+:root[data-skin="locate"][data-theme="dark"]{
+  --hv:#5CC8FF; --k:#060708; --on-k:#F2F3F5; --on-k-sub:#C4C7CC; --paper:#0B0C0E; --sheet:#16181C; --ink:#F2F3F5; --muted:#C4C7CC; --rule:#5A5F67; --edge:#B9BEC6; --zebra:#1C1F24; --bar:#10301C; --bar-ink:#7FE0A0; --hi:#1C3A52; --hi-ink:#FFFFFF; --hi-edge:#5CC8FF; --ctl:#B9BEC6; --ul:#FF9ACB; --logo-tile:#5CC8FF; --logo-ink:#060708; --d-bg:#0B0C0E; --d-grid:#23272D;
+  --stripe:repeating-linear-gradient(-45deg,#E0201B 0 7px,#FFD400 7px 14px,#FF8A00 14px 21px,#1E7BE0 21px 28px,#8E44C9 28px 35px,#1FA24A 35px 42px,#FF6FB0 42px 49px,#FFFFFF 49px 56px)}
+/* a few faint paint flecks on the page behind the cards, like marks on a lot */
+:root[data-skin="locate"] body{background-image:radial-gradient(circle at 12% 30%,rgba(30,123,224,.16) 0 7px,transparent 8px),radial-gradient(circle at 78% 18%,rgba(31,162,74,.16) 0 5px,transparent 6px),radial-gradient(circle at 55% 72%,rgba(255,212,0,.22) 0 9px,transparent 10px),radial-gradient(circle at 30% 88%,rgba(224,32,27,.14) 0 4px,transparent 5px),radial-gradient(circle at 90% 60%,rgba(142,68,201,.14) 0 6px,transparent 7px);background-size:190px 190px,190px 190px,247px 247px,247px 247px,190px 190px;background-attachment:fixed}
+
 /* Night shift: red light only, so your eyes stay dark-adapted in a crawlspace or a dark basement at 6 a.m. Always dark. */
 :root[data-skin="night"]{
   --hv:#FF6359; --k:#000000; --on-k:#FF7066; --on-k-sub:#FF6359; --paper:#000000; --sheet:#070000; --ink:#FF7066; --muted:#FF6359; --rule:#9A2A20; --edge:#D23B30; --zebra:#120000;
@@ -1292,6 +1310,8 @@ details.explain p{margin:6px 0 0}
 /* ===== Home, More, card menu, search bar (2026-10-31) ===== */
 @media (max-width:759px){.stripe{display:none} nav.tabs .wide-tab{display:none}}
 @media (min-width:760px){nav.tabs .more-tab{display:none}}
+/* the two fun stripe themes keep a thin stripe on phones too: it's the whole point of them */
+@media (max-width:759px){:root:is([data-skin="avocado"],[data-skin="locate"]) .stripe{display:block;height:8px}}
 .card-h{margin:0;padding:10px 12px 4px;font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--rule)}
 details.fold{border-top:1px solid var(--rule)}
 .otp{margin:0 0 16px;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);overflow:hidden;break-inside:avoid}
@@ -1434,8 +1454,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
           <button type="button" data-s="patina"><span class="sw" style="--a:#F1F7F4;--b:#3FD6B0;--c:#24130B"></span><span class="nm">Patina</span><small>Copper and verdigris, like old pipe.</small></button>
           <button type="button" data-s="duck"><span class="sw" style="--a:#E6F6FF;--b:#FFD400;--c:#062C4A"></span><span class="nm">Rubber Ducky 🦆</span><small>Bath-time yellow and blue, with bubbles.</small></button>
           <button type="button" data-s="chrome"><span class="sw" style="--a:#12161B;--b:#C9D2DC;--c:#05070A"></span><span class="nm">Chrome</span><small>Polished silver on gunmetal black.</small></button>
+          <button type="button" data-s="avocado"><span class="sw" style="--a:#E8B53A;--b:#7A8B2A;--c:#6B3E12"></span><span class="nm">Avocado '74</span><small>Harvest gold and avocado, like a 1970s bathroom.</small></button>
+          <button type="button" data-s="locate"><span class="sw" style="--a:#1E7BE0;--b:#1FA24A;--c:#FF8A00"></span><span class="nm">Locate Paint</span><small>The 811 marking colors: blue water, green sewer.</small></button>
         </div></div>
-      <p class="note">Neon Sign, Glow Stick, Blacklight, Patina, Rubber Ducky and Chrome are for fun: they pass the same contrast check, but they aren't tuned for bright sun or rain. On site, Hi-Vis or Max contrast reads best. For long reading, Easy Eyes or Dawn: soft off-white by day, dark gray (not black) at night, which is easier on most eyes.</p>
+      <p class="note">Neon Sign, Glow Stick, Blacklight, Patina, Rubber Ducky, Chrome, Avocado '74 and Locate Paint are for fun: they pass the same contrast check, but they aren't tuned for bright sun or rain. On site, Hi-Vis or Max contrast reads best. For long reading, Easy Eyes or Dawn: soft off-white by day, dark gray (not black) at night, which is easier on most eyes.</p>
 
       <div class="row"><b>Sun or Night</b>
         <div class="seg" id="look-light" role="group" aria-label="Sun or Night"><button type="button" data-l="phone">Phone</button><button type="button" data-l="daylight">Daylight</button><button type="button" data-l="light">Sun</button><button type="button" data-l="dark">Night</button></div>
@@ -2751,7 +2773,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Under the slab</th><td>PEX water lines: one continuous run, no fittings under the slab, sleeved where they leave the concrete (<b>Build → Materials → PEX install</b>).</td></tr>
         <tr><th>Before cover</th><td>Under test and inspected before backfill or the pour. Flag stub-ups so the finisher doesn't bury or bend them.</td></tr>
       </tbody></table></div>
-    <p class="note">Before digging: <b>Blue Stakes 811</b> (<b>Contacts → Call → Utilities &amp; state lines</b>). Trench 5 ft or deeper: shore, shield or slope (<b>Jobsite → Safety</b>).</p>
+    <p class="note">Before digging: <b>Blue Stakes 811</b> (<b>Contacts → Call → Utilities &amp; state lines</b>). What the paint colors mean: <b>Jobsite → Electrical → Power lines</b>. Trench 5 ft or deeper: shore, shield or slope (<b>Jobsite → Safety</b>).</p>
   </section>
 <section data-sec="drains" data-kw="frost depth 30 ground soil collapsible settlement groundwater water table utah lake vineyard radon climate design temperature elevation">
     <div class="sec-head"><h2>Ground &amp; climate</h2><small>Utah County</small></div>
@@ -3769,7 +3791,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Controls</th><td>Running 24/7 wastes heat. Energy code wants the pump to start on a demand for hot water (button, motion, flow) and shut off when the loop's hot. A demand system using the cold line can't send back water over 104°F.</td></tr>
         <tr><th>Insulate</th><td>The loop pipe gets insulated, R-3 (energy code). Bare loop = space heater in the wall.</td></tr>
         <tr><th><span class="badge why">WHY</span>The wait</th><td>½" PEX holds about <b>0.0092 gal/ft</b>; ¾" about 0.018. 60 ft of ½" = half a gallon of cold to dump before hot shows: about 28 s at a 1.2 gpm lav, plus the time to warm the pipe itself.</td></tr>
-        <tr><th>Legionella</th><td>Germs grow at about 77–113°F. Keep the loop hot, not lukewarm.</td></tr>
+        <tr><th>Legionella</th><td>Legionella grows best at 77–113°F. CDC's guidance for building water programs: keep circulating hot water above 120°F and get rid of dead legs (pipe where water sits still). That's guidance, not a Utah code rule, and the 104°F limit above still applies to cold-line demand systems. <span class="sub">CDC · checked Nov 2026.</span></td></tr>
               <tr><th>Hot in the cold line</th><td>After an under-sink "instant hot" crossover goes in, warm water showing up in the cold taps is a classic callback. One fixture: suspect its cartridge. The whole house: suspect the crossover valve or a mixing valve. <span class="sub">Trade practice.</span></td></tr>
 </tbody></table></div>
   </section>
@@ -3824,7 +3846,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>The squeeze</th><td>Legionella grows at about 77–113°F and dies off above about 131°F. A tank kept at 140°F is cleaner, but too hot at the tap.</td></tr>
+        <tr><th>The squeeze</th><td>Legionella grows best at 77–113°F and can grow from about 68°F. CDC's guidance for building water programs (not a code rule): store hot water above 140°F and keep circulating hot water above 120°F. A 140°F tank is cleaner, but too hot at the tap. <span class="sub">CDC Legionella control toolkit · checked Nov 2026.</span></td></tr>
         <tr><th>ASSE 1017</th><td>One thermostatic mixing valve at the heater outlet tempers the whole house down (often ~120°F).</td></tr>
         <tr><th>ASSE 1016 / 1070</th><td>Point-of-use: shower valves (1016, limit stop ≤ 120°F) and tub fillers (1070). These are required whatever the tank is set to.</td></tr>
         <tr><th>Kids &amp; elders</th><td>Thin skin burns faster than the table. That's why the limit stop matters.</td></tr>
@@ -5334,7 +5356,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Flooded appliances</th><td>A heater, pump or furnace that sat in water stays off until it's checked or replaced. Controls and wiring that got wet can fail later.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="power" data-kw="power lines overhead lines 10 feet clearance ladder aluminum fiberglass service drop roof vent underground lines bluestakes blue stakes 811 dig private lines">
+  <section data-sec="power" data-kw="power lines overhead lines 10 feet clearance ladder aluminum fiberglass service drop roof vent underground lines bluestakes blue stakes 811 dig private lines paint colors locate marks flags apwa color code">
     <div class="sec-head"><h2>Power lines</h2><small>Overhead and underground</small></div>
     <div class="x"><table class="t">
       <tbody>
@@ -5342,6 +5364,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Long pipe</th><td>A 20 ft stick swung up on a roof near the service drop reaches the line faster than you think. Carry it low.</td></tr>
         <tr><th>Ladders</th><td>Fiberglass near anything electrical. Aluminum conducts.</td></tr>
         <tr><th>Digging</th><td>Call <b>811</b> (Blue Stakes) before you dig. It doesn't mark private lines (to a shop, hot tub, well pump or yard lights): ask the owner, and dig by hand near them.</td></tr>
+        <tr><th>The paint</th><td><b>Red</b> power · <b>Yellow</b> gas, oil, steam · <b>Orange</b> phone, cable, alarm · <b>Blue</b> drinking water · <b>Green</b> sewer and drains · <b>Purple</b> irrigation, reclaimed water · <b>Pink</b> survey marks · <b>White</b> where you plan to dig. <span class="sub">APWA Uniform Color Code; Blue Stakes of Utah · checked Nov 2026.</span></td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="power" data-kw="shocked electrocuted electric shock first aid victim cpr aed 911 burn report">
@@ -5452,6 +5475,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 21, 2026 · More how it works</th><td><b>New card:</b> Why a new house needs a flush (water that sits goes stale; EPA and Purdue research). <b>Added rows:</b> why a fixture can't be double trapped (Why traps need vents), whether low-flow toilets leave waste in the drain (How a toilet flushes), why heat makes scale (How tankless works), and what fights natural draft (How a gas burner stays lit). 3 new flashcards. Every fact lists its source.</td></tr>
+        <tr><th>Nov 21, 2026 · Two fun themes</th><td><b>Avocado '74</b> (1970s harvest gold and avocado green) and <b>Locate Paint</b> (the 811 marking colors: blue water, green sewer). Settings → Theme → Just for fun. Both pass the contrast check.</td></tr>
+        <tr><th>Nov 21, 2026 · Plumbing science</th><td><b>New card:</b> Why copper and brass wear out (Learn → How it works). <b>Added:</b> why a dry trap is a health problem (the 2003 Amoy Gardens outbreak), trap seals and pressure waves, the modern update to fixture units, and what each 811 paint color means (Jobsite → Electrical → Power lines). <b>Updated:</b> Legionella numbers follow CDC guidance. 4 new flashcards. Every fact lists its source.</td></tr>
         <tr><th>Nov 21, 2026 · Better organized</th><td><b>Long pages are grouped by topic:</b> How it works (Drains &amp; vents, Water supply, Fixtures, Water heaters &amp; mech room, Gas, Code &amp; math), Study (Practice, Code books, Fact files), Water heaters (Install, Sizing, Service), Layout (Offsets, Measure &amp; lay out) and Math (Calculators, Rules &amp; formulas). Cards that go together sit together, each card shows its topic over its subtitle, and "On this page" lists the cards under topic headings. <b>Settings:</b> Sun or Night now sits right under the themes, and the calculator and study settings have their own group (Calcs). Nothing was renamed, so pins, card notes and saved settings stay put.</td></tr>
         <tr><th>Nov 21, 2026 · Easier on the eyes</th><td><b>Two new themes built from the research on screen reading:</b> <b>Easy Eyes</b> (soft off-white page with white cards and soft-black text; at night a dark gray page, not black, with off-white text and a calm blue that color-blind eyes can still tell apart) and <b>Dawn</b> (warm cream and amber, warm brown-gray at night). <b>Themes are grouped</b> in Settings: On the jobsite, Easy on the eyes, Low light, Utah, Trade colors, Just for fun. <b>Hi-Vis at night</b> is now near-black and off-white instead of pure black and pure white, which blurs less for eyes with astigmatism (still over 16:1 contrast). <b>Fix:</b> the boxes on "Rules for every job" can be ticked now, and each job keeps its own ticks: ticking "No push fittings in walls" on Lot 14 doesn't tick it on every job. The job's activity log records each tick.</td></tr>
         <tr><th>Nov 21, 2026 · New icon, find a setting</th><td><b>Simpler icon:</b> a black P-trap on hi-vis yellow, on the home screen and in the header. On iPhone and iPad the home-screen icon only changes if you remove the app and add it again from Safari, and removing it can erase what's saved in it. So back up first (Settings → Backup &amp; reset → Back up everything) and restore after, or just keep the old icon: everything inside updates either way. <b>Find a setting:</b> a search box at the top of Settings. Type "rounding", "backup" or "dark" and only the matching settings show.</td></tr>
@@ -5518,7 +5544,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </details>
       <p class="note">Built by Deklan Patrick Kelley. © 2026 Deklan Patrick Kelley. All rights reserved. The book's writing, layout, calculators and code are his; please don't copy them without asking. Wrong number or dead link? <button type="button" class="linkish" id="about-open">About &amp; contact</button></p>
   </section>
-  <section data-sec="how" data-topic="Drains &amp; vents" data-kw="why vent trap siphon">
+  <section data-sec="how" data-topic="Drains &amp; vents" data-kw="why vent trap siphon double trap double trapped two traps air bound">
     <div class="sec-head"><h2>Why traps need vents</h2><small>The whole DWV idea</small></div>
     <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Drain diagram: a trap and trap arm run to a vertical stack. Air comes down the vent from the roof while water goes down the drain, so the moving water does not suck the trap dry."><defs><marker id="ar-vt" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><path d="M270 0V230" fill="none" stroke="var(--d-pipe)" stroke-width="34" stroke-linejoin="round"/><path d="M270 0V230" fill="none" stroke="var(--d-bg)" stroke-width="24" stroke-linejoin="round"/><path d="M50 30V110A30 30 0 0 0 110 110V96H253" fill="none" stroke="var(--d-pipe)" stroke-width="34" stroke-linejoin="round"/><path d="M50 30V110A30 30 0 0 0 110 110V96H270" fill="none" stroke="var(--d-bg)" stroke-width="24" stroke-linejoin="round"/><path d="M50 104V110A30 30 0 0 0 110 110V104" fill="none" stroke="var(--d-cut)" stroke-width="24" stroke-linejoin="round"/>
 <path d="M270 14V60" stroke="var(--d-roll)" stroke-width="3" marker-end="url(#ar-vt)"/><path d="M270 140V200" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-vt)"/><path d="M120 96H215" stroke="var(--d-cut)" stroke-width="3" marker-end="url(#ar-vt)"/>
@@ -5530,6 +5556,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>The fix</th><td>A vent lets air in and out right near the trap so pressure stays even.</td></tr>
         <tr><th><span class="badge why">WHY</span>Distance limit</th><td>On small pipe at ¼"/ft the max is pipe size × 4 ft (1½" → 6 ft, 2" → 8 ft): that's exactly where the arm has fallen one full pipe diameter. Any farther and the vent opening drops below the trap weir, the arm becomes an S-trap and siphons itself dry.</td></tr>
         <tr><th>Gurgle test</th><td>A drain that gurgles or a trap that keeps losing water usually means a vent problem.</td></tr>
+        <tr><th>One trap, not two</th><td>Two traps in a row trap a pocket of air between them. The drain runs slow, stops up more, and one trap can siphon the other. That's why a fixture can't be double trapped (2021 IPC §1002.1), and why a fixture with a built-in trap, like a toilet, gets no extra P-trap. <span class="sub">IPC 2021 §1002.1; IAPMO code commentary · checked Nov 2026.</span></td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="how" data-topic="Drains &amp; vents" data-kw="venting methods 2021 ipc individual vent common vent wet vent wet venting circuit vent circuit venting combination waste and vent island fixture venting island sink vent waste stack vent single stack aav air admittance valve relief vent stack vent vent stack 906.2 909.1 911 912 913 914 915 916 917 918">
@@ -5568,6 +5595,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td><b>Wind and momentum</b></td><td>Wind gusting over a vent bounces pressure down the line; a bucket dumped fast carries the seal with it.</td><td>Vent terminal in clear air and at the right height; a trap that refills (most do)</td></tr>
       </tbody></table></div>
     <p class="note"><span class="badge why">WHY</span> A trap seal is only 2"–4" of water: 0.07 to 0.14 psi. Any pressure swing bigger than that, either way, moves it. Vents exist to keep the swing smaller than the seal.</p>
+    <p class="note"><b>The science:</b> the Drainage Research Group at Heriot-Watt University (Scotland) showed these swings travel through drain and vent pipes as pressure waves, like water hammer in air. It's also why an AAV can't fix back pressure: it only lets air in. <span class="sub">Heriot-Watt research portal and UK REF impact case study · checked Nov 2026.</span></p>
   </section>
   <section data-sec="how" data-topic="Drains &amp; vents" data-kw="trap primer trap seal primer priming floor drain evaporation dry trap sewer smell asse 1018 1044 1072 barrier deep seal waterless seal 1002.4.1 seldom used">
     <div class="sec-head"><h2>How trap primers work</h2><small>Keeping a seldom-used trap wet</small></div>
@@ -5581,8 +5609,9 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Barrier device</th><td>An insert in the drain that opens for water and closes against gas (ASSE 1072). No water line needed.</td></tr>
         <tr><th>Deep seal trap</th><td>Just a deeper trap so it takes longer to dry out. Utah defines it as a seal of 4" or more and lists it as one way to protect a water heater pan drain that ties into a drain.</td></tr>
         <tr><th><span class="badge why">WHY</span>Smell check</th><td>A sewer smell in a basement with a floor drain nobody uses? Pour a gallon of water in it before you go hunting for a bad vent.</td></tr>
+        <tr><th>Why it matters</th><td>Hong Kong, 2003: in the Amoy Gardens SARS outbreak (321 cases by mid-April), the World Health Organization team found that many bathroom floor drain traps had dried out, leaving them open to the soil stack. Bathroom exhaust fans, run with the door shut, pulled contaminated droplets from the stack into apartments. A dry trap is a health problem, not just a smell.</td></tr>
       </tbody></table></div>
-    <p class="note">From ICC's 2021 IPC significant changes and Utah Code 15A-3-305 and 15A-3-302 · checked Nov 2026.</p>
+    <p class="note">From ICC's 2021 IPC significant changes, Utah Code 15A-3-305 and 15A-3-302, and the WHO environmental team's Amoy Gardens findings (Hong Kong government releases, April 17 and May 16, 2003) · checked Nov 2026.</p>
   </section>
   <section data-sec="how" data-topic="Drains &amp; vents" data-kw="slope why bigger pipe less fall scour">
     <div class="sec-head"><h2>Why big drains slope less</h2><small>¼" vs ⅛"</small></div>
@@ -5613,9 +5642,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>DFU</th><td>Drainage fixture units size drains and vents. Fixture values in Table 709.1, pipe limits in Table 710.1 (2021 IPC). Drains are sized to run partly full so air can move.</td></tr>
         <tr><th>WSFU</th><td>Water supply fixture units size the water pipe. In the 2021 IPC the full method is Appendix E; on houses, IRC P2903.6. Calc → Sizing does the adding for you.</td></tr>
         <tr><th>Where it came from</th><td>Roy B. Hunter at the National Bureau of Standards worked out the probability math in 1940 (report BMS65). Codes still use his idea, with updated numbers.</td></tr>
+        <tr><th>The update</th><td>Hunter's 1940s fixtures used far more water, so his method oversizes pipe for today's low-flow fixtures. IAPMO's <b>Water Demand Calculator</b> is the newer math for homes, in the Uniform Plumbing Code's Appendix M; Utah's houses still size with fixture units (2021 IRC Table P2903.6).</td></tr>
         <tr><th><span class="badge why">WHY</span>Takeaway</th><td>Fixture units aren't gallons. Never add gpm and units together, and never size off one fixture's flow alone.</td></tr>
       </tbody></table></div>
-    <p class="note">Hunter, <i>Methods of Estimating Loads in Plumbing Systems</i>, NBS BMS65 (1940); demand numbers from 2021 IRC Table P2903.6(1) · checked Nov 2026.</p>
+    <p class="note">Hunter, <i>Methods of Estimating Loads in Plumbing Systems</i>, NBS BMS65 (1940); demand numbers from 2021 IRC Table P2903.6(1); IAPMO Water Demand Calculator pages (iapmo.org) · checked Nov 2026.</p>
   </section>
   <section data-sec="how" data-topic="Drains &amp; vents" data-kw="indirect waste air gap air break receptor hub drain standpipe flood rim relief valve condensate clear water food equipment dishwasher high loop chapter 8 802">
     <div class="sec-head"><h2>Air gap vs air break</h2><small>Indirect waste · 2021 IPC ch. 8</small></div>
@@ -5764,6 +5794,17 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
     <p class="note">A hybrid (remote mini-manifolds off a trunk) sits in between.</p>
   </section>
+  <section data-sec="how" data-topic="Water supply" data-kw="new house flush stale water stagnant vacant empty move in closing water quality chlorine bacteria pex taste smell purdue epa">
+    <div class="sec-head"><h2>Why a new house needs a flush</h2><small>Water that sits goes stale</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>The idea</th><td>City water arrives with a little chlorine that keeps germs down. Water that sits in the pipes loses it, and the pipe walls start to matter. A new house can sit for weeks between your final and move-in.</td></tr>
+        <tr><th>The research</th><td>Purdue University tested a lived-in house for a year: water quality changed from room to room and season to season, and 10.3% of the time the water coming in had no chlorine they could detect. In new PEX, bacteria and organic carbon rose the longer water sat.</td></tr>
+        <tr><th>What EPA says</th><td>After low or no use, flush <b>both hot and cold</b> at every point of use: faucets, showers, toilets, and appliances like the dishwasher and fridge ice maker.</td></tr>
+        <tr><th><span class="badge why">WHY</span>On the job</th><td>Run every tap hot and cold at trim and pull the aerators (<b>Trim → Valves &amp; trim → Trim-out: rest of the house</b>). If the owner asks, tell them to flush the whole house before they move in.</td></tr>
+      </tbody></table></div>
+    <p class="note">EPA, <i>Maintaining or Restoring Water Quality in Buildings with Low or No Use</i> (2020); Purdue ReNEWW House study (Whelton, <i>Building and Environment</i>, 2019) · checked Nov 2026.</p>
+  </section>
   <section data-sec="how" data-topic="Water supply" data-kw="valve types ball valve gate valve globe valve stop check valve swing spring butterfly quarter turn multi turn full port throttle flow arrow which valve">
     <div class="sec-head"><h2>Valve types</h2><small>Ball, gate, globe, check</small></div>
     <figure class="cut"><svg viewBox="0 0 400 170" role="img" aria-label="Four small cutaways side by side. Ball: a drilled ball that turns a quarter turn. Gate: a wedge that slides up and down across the pipe. Globe: a disc that presses down onto a seat. Check: a flapper that swings open one way only."><defs><marker id="ar-vt2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-cut)"/></marker></defs><g font-size="12.5" fill="var(--d-text)" text-anchor="middle">
@@ -5815,6 +5856,19 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th><span class="badge why">WHY</span>The anode</th><td>A water heater's anode rod is the same trick on purpose: a more active metal that corrodes so the tank doesn't. Galvanic corrosion, working for you.</td></tr>
       </tbody></table></div>
   </section>
+  <section data-sec="how" data-topic="Water supply" data-kw="pinhole leak copper pitting erosion corrosion velocity ream burr recirculation pump dezincification brass meringue white powder dzr cr dr yellow brass aggressive water why copper fails">
+    <div class="sec-head"><h2>Why copper and brass wear out</h2><small>Pinholes, burrs and dezincification</small></div>
+    <div class="x"><table class="t">
+      <tbody>
+        <tr><th>Erosion</th><td>Fast, swirling water scrubs off copper's protective film and wears the wall thin, usually just past a fitting or elbow. The Copper Development Association's list of causes includes <b>tube ends that weren't reamed</b> (the burr makes turbulence and tiny collapsing bubbles), water that's simply too fast (pipe too small or a recirc pump too big), and hot water over 140°F.</td></tr>
+        <tr><th>Speed limits</th><td>Copper Development Association design limits: cold <b>5–8 ft/s</b> (8 max), hot <b>4–5 ft/s</b> up to 140°F, and only 2–3 ft/s above 140°F. A recirc loop runs hot all day, so it's the classic pinhole line.</td></tr>
+        <tr><th>Pitting</th><td>Some water pits copper on its own, even with perfect joints. Virginia Tech's research traced it to the water's chemistry, which is the water company's side, not your workmanship.</td></tr>
+        <tr><th>Dezincification</th><td>High-zinc yellow brass can lose its zinc in some water and turn weak and porous. Signs: white crusty "meringue" deposits that can block flow, and valve bodies that weep. Heat, slow or still water, and some water chemistry speed it up. The yellow-brass fitting recalls are in <b>Service → Troubleshoot → What fails &amp; what's recalled</b>.</td></tr>
+        <tr><th>Around the world</th><td>England and Wales require brass fittings hidden in walls or underground to resist dezincification (sold as <b>DZR</b> brass). Corrosion engineers advise brass with about 15% zinc or less, or a proven DZR alloy, where water is hard on fittings.</td></tr>
+        <tr><th><span class="badge why">WHY</span>On the job</th><td>Ream every cut, size so water isn't racing, and don't oversize a recirc pump. Check speed with <b>Calc → Flow → Flow velocity</b>. Quick rules: <b>Build → Materials → Copper &amp; solder</b>.</td></tr>
+      </tbody></table></div>
+    <p class="note">Copper Development Association, <i>Designing Piping Systems</i> (copper.org); Watts water velocity guide citing the Copper Tube Handbook; Virginia Tech copper pitting research (VTechWorks); AMPP (formerly NACE) and the UK National Physical Laboratory on dezincification; Water Supply (Water Fittings) Regulations 1999, Schedule 2 · checked Nov 2026.</p>
+  </section>
   <section data-sec="how" data-topic="Water supply" data-kw="why pipes sweat sweating condensation dew point cold water line drip humid summer basement toilet tank sweat anti-sweat tempering valve insulation closed cell vapor barrier mistaken for leak">
     <div class="sec-head"><h2>Why pipes sweat</h2><small>It's not a leak (yet)</small></div>
     <figure class="cut"><svg viewBox="0 0 400 160" role="img" aria-label="Warm damp air moves toward a cold water pipe. Drops of water form on the outside of the pipe and drip off."><g font-size="13" fill="var(--d-text)">
@@ -5858,7 +5912,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Vacuum breaker</th><td>The cap keeps a hose lying in a bucket of weed killer from being sucked back into the house water.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="how" data-topic="Fixtures" data-kw="toilet flush siphon jet trapway gulp gurgle weak flush fill valve refill tube rim holes hard water 1.28 1.6 gpf">
+  <section data-sec="how" data-topic="Fixtures" data-kw="toilet flush siphon jet trapway gulp gurgle weak flush fill valve refill tube rim holes hard water 1.28 1.6 gpf low flow 1.28 gpf drainline carry perc waste left in drain toilet paper">
     <div class="sec-head"><h2>How a toilet flushes</h2><small>It's a siphon</small></div>
     <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Toilet tank cross-section: the fill valve and float on the left, the overflow tube and flapper in the middle, water set half an inch below the top of the overflow. Lifting the flapper dumps the tank into the bowl."><defs><marker id="ar-to" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><rect x="40" y="20" width="240" height="140" rx="8" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><rect x="44" y="60" width="232" height="96" fill="var(--d-cut)" opacity=".25"/><path d="M44 60H276" stroke="var(--d-cut)" stroke-width="2"/>
 <path d="M80 156V40" stroke="var(--d-pipe)" stroke-width="10"/><rect x="66" y="40" width="40" height="18" fill="var(--d-fit)"/><path d="M200 156V48" stroke="var(--d-pipe)" stroke-width="10"/><path d="M168 150Q200 128 232 150" fill="none" stroke="var(--d-fit)" stroke-width="7"/><path d="M200 140V100" stroke="var(--d-dim)" stroke-width="2"/>
@@ -5870,6 +5924,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>3 · Gulp</th><td>When the bowl runs low, air gets into the trapway and breaks the siphon. That gurgle is the flush ending, not a problem.</td></tr>
         <tr><th>4 · Refill</th><td>The fill valve refills the tank, and its little refill tube tops up the bowl so the trap seal is back.</td></tr>
         <tr><th>Weak flush?</th><td>Tank water set low, rim holes and jet crusted with hard-water scale (common here), a partial clog in the trapway, or a flapper closing early.</td></tr>
+        <tr><th>Low-flow and long drains</th><td>Will a 1.28 gpf toilet leave waste in the drain? The Plumbing Efficiency Research Coalition (PERC) tested it: 1.6 and 1.28 gpf carried waste well. Trouble started at <b>1.0 gpf and below</b> on long, flat commercial drains, and strong "wet-strength" toilet paper was the biggest factor. PERC says that finding doesn't apply to houses, whose drains are short and get extra water from showers and washers. <span class="sub">PERC, <i>Drainline Transport of Solid Waste in Buildings</i>, Phase 2 (2016) · checked Nov 2026.</span></td></tr>
         <tr><th><span class="badge why">WHY</span>Less water</th><td>Federal max is 1.6 gal per flush; WaterSense models use 1.28. They lean on a better siphon jet and glazed trapway, so they're pickier about drain slope and long, flat runs.</td></tr>
       </tbody></table></div>
   </section>
@@ -5961,7 +6016,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th><span class="badge why">WHY</span>The aha</th><td>Water barely compresses, so a cup of expansion has nowhere to go and pressure spikes. The tank's air cushion squeezes instead. Set the air charge with the water off, or the bladder starts out already full.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="how" data-topic="Water heaters &amp; mech room" data-kw="how tankless works flow sensor burner heat exchanger modulate temperature rise gpm minimum flow cold water sandwich">
+  <section data-sec="how" data-topic="Water heaters &amp; mech room" data-kw="how tankless works flow sensor burner heat exchanger modulate temperature rise gpm minimum flow cold water sandwich why scale hard water heat calcium carbonate lime">
     <div class="sec-head"><h2>How tankless works</h2><small>Flow in, fire on</small></div>
     <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="Block diagram of a tankless heater: cold water passes a flow sensor; once flow is high enough the burner fires under the heat exchanger and turns up or down to hit the set temperature at the outlet sensor; exhaust goes out the vent."><defs><marker id="ar-tl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-text)"/></marker></defs><rect x="20" y="150" width="80" height="44" rx="6" fill="none" stroke="var(--d-pipe)" stroke-width="3"/><rect x="140" y="60" width="120" height="134" rx="6" fill="none" stroke="var(--d-pipe)" stroke-width="3"/><rect x="300" y="150" width="80" height="44" rx="6" fill="none" stroke="var(--d-pipe)" stroke-width="3"/>
 <path d="M150 112q10-20 20 0t20 0 20 0 20 0 20 0" fill="none" stroke="var(--d-cut)" stroke-width="3"/><path d="M160 188q8-26 16 0q8-26 16 0q8-26 16 0q8-26 16 0q8-26 16 0" fill="none" stroke="var(--d-fit)" stroke-width="3"/>
@@ -5974,6 +6029,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Heat exchanger</th><td>Water runs through a coil in the flame's path. Condensing units add a second exchanger that pulls heat out of the exhaust until it turns to water.</td></tr>
         <tr><th><span class="badge why">WHY</span>The aha</th><td>A tankless doesn't have a size in gallons, it has a <b>power limit</b>. gpm = BTU × eff ÷ (500 × rise). Colder incoming water means a bigger rise and fewer gpm: the same heater makes less hot water in a Utah January than in July.</td></tr>
         <tr><th>Scale</th><td>Hardness bakes onto the hot coil like a kettle. Less water to carry the heat → overheating codes. That's what flushing fixes.</td></tr>
+        <tr><th>Why heat does it</th><td>Most things dissolve better in hot water, but calcium carbonate (the main scale) does the opposite: the hotter the water, the less it can hold. So heating hard water drops it out as scale, worst on the hottest surface. That's why the heater scales up and the cold lines don't. <span class="sub">USGS Water Science School (hardness) · checked Nov 2026.</span></td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="how" data-topic="Water heaters &amp; mech room" data-kw="how a softener works ion exchange resin beads sodium calcium magnesium regeneration backwash brine draw rinse refill why salt">
@@ -6068,7 +6124,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th><span class="badge why">WHY</span>Test pressure</th><td>The test (1.5× working, at least <b>3 psi</b>) is about 12 times what the pipe normally sees. A joint that holds that holds at 7" w.c. for good.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="how" data-topic="Gas" data-kw="gas burner how works pilot light thermocouple thermopile millivolt gas valve magnet hot surface igniter flame sensor flame rod rectification lockout draft flue natural draft power vent pressure switch fvir flame arrestor ignition">
+  <section data-sec="how" data-topic="Gas" data-kw="gas burner how works pilot light thermocouple thermopile millivolt gas valve magnet hot surface igniter flame sensor flame rod rectification lockout draft flue natural draft power vent pressure switch fvir flame arrestor ignition backdraft backdrafting spillage exhaust fan tight house depressurization natural draft">
     <div class="sec-head"><h2>How a gas burner stays lit</h2><small>Prove the flame, or no gas</small></div>
     <figure class="cut"><svg viewBox="0 0 400 220" role="img" aria-label="Gas comes down into a gas valve. A main burner tube and a small pilot tube run out of the valve. The pilot flame heats the tip of a thermocouple, which runs back to the valve. Hot exhaust rises up the flue."><defs><marker id="ar-gb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--d-rise)"/></marker></defs><g font-size="12.5" fill="var(--d-text)">
 <path d="M60 20V92" stroke="var(--d-fit)" stroke-width="6"/><text x="70" y="32">Gas in</text>
@@ -6084,6 +6140,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Thermopile</th><td>A stack of thermocouples makes hundreds of millivolts: enough to run the whole gas valve with no plug-in power. Common on sealed-combustion (FVIR) tanks. Test numbers: <b>Service → Water heaters → Water heater repair: test it</b>.</td></tr>
         <tr><th>Igniter + flame rod</th><td>Furnaces, boilers and power-vent heaters: a hot surface igniter glows (fragile: don't touch it), the gas opens, and a <b>flame rod</b> sends a tiny current through the flame to prove it lit. No current in a few seconds, it shuts the gas and tries again or locks out. A dirty rod is the classic "lights, then shuts off."</td></tr>
         <tr><th>Draft</th><td>Hot exhaust is lighter than room air, so it rises up the vent and pulls fresh air in behind it. A natural-draft vent needs rise and a warm flue to pull. A power vent uses a fan, and a <b>pressure switch</b> proves the fan is moving air before the gas opens.</td></tr>
+        <tr><th>What fights draft</th><td>Natural draft is weak: it only works because the flue is hotter than outside. Exhaust fans pull air out of the house, and a tight new house can't easily let air back in, so the house can win and pull exhaust back down the vent (backdrafting). DOE: the risk goes up when the fan is close to the heater, when several fans run at once, and when the heater's room can't be closed off from them. Test it: <b>Service → Water heaters → Water heater install → Draft check</b>. <span class="sub">DOE Building America combustion safety; Lawrence Berkeley National Lab review · checked Nov 2026.</span></td></tr>
         <tr><th>FVIR screen</th><td>Newer gas tanks are sealed at the bottom with a flame arrestor so spilled gasoline vapor can't reach the burner. Lint or dust on that screen starves the burner of air.</td></tr>
         <tr><th><span class="badge why">WHY</span>After you work on one</th><td>Check that it drafts: <b>Jobsite → Safety → Heat, cold, asbestos, spillage</b>. At elevation the air is thinner, so burners are derated: <b>Learn → How it works → Altitude: what changes</b>.</td></tr>
       </tbody></table></div>
@@ -6845,7 +6902,6 @@ const FSRC = {
   recirc: ["Univ. of Illinois Smart Energy: hot water recirculation", "https://smartenergy.illinois.edu/wp-content/uploads/2021/02/Smart-Tip-HotWaterRecirc-Ver6.pdf"],
   navq: ["Navien NPE-2 quick facts", "https://www.navieninc.com/downloads/npe-2-quickfacts-en/download"],
   pbcm: ["CONTRACTOR: polybutylene settlements", "https://www.contractormag.com/plumbing/cm_newsarticle_328"],
-  jlcleg: ["JLC: proper water heater temperature", "https://www.jlconline.com/how-to/plumbing/proper-water-heater-temperature_o"],
   tklm: ["Tankless maintenance guide", "https://inspectandtest.net/guides/tankless-water-heater-maintenance/"],
   egCO: ["Study guide (ICC residential): cleanouts", "https://open-exam-prep.com/study-guides/icc-residential-plumbing/sanitary-drainage-traps/cleanout-size-location"],
   egV: ["Study guide (ICC residential): vents", "https://open-exam-prep.com/study-guides/icc-residential-plumbing/vent-systems/vent-design-installation"],
@@ -6859,6 +6915,7 @@ const FSRC = {
   sig: ["ICC 2021 IRC Significant Changes, P2503.5.1", "https://www.iccsafe.org/wp-content/uploads/2021_SigChanges_IRC_P2503.5.1.pdf"],
   wagas: ["IRC fuel gas inspection checklist (WA)", "https://MyBuildingpermit.com/sites/default/files/inline-files/15%20IRC%20Fuel%20Gas%20Piping%20Checklist_1.pdf"],
   viega: ["Viega ProPress instructions", "https://www.viega.us/content/dam/viegadm/download-assets/en_us/tech-marketing/propress/product-instructions/PI-PP_531438_ProPress_1-2_to_4.pdf"],
+  cdcleg: ["CDC: Controlling Legionella in Potable Water Systems", "https://www.cdc.gov/control-legionella/php/toolkit/potable-water-systems-module.html"],
   ut3: ["Utah Code 15A-3 Part 3: IPC amendments", "https://le.utah.gov/xcode/Title15A/Chapter3/C15A-3-P3_1800010118000101.pdf"],
   ut205: ["Utah Code 15A-3-205 (FindLaw)", "https://codes.findlaw.com/ut/title-15a-state-construction-and-fire-codes-act/ut-code-sect-15a-3-205/"],
   bfcn: ["ICC CodeNotes: Backflow, 2021", "https://iccsafe.org/wp-content/uploads/24-23632_PMG_CodeNotes_Backflow_2021_FINAL_HIRES.pdf"],
@@ -6987,7 +7044,7 @@ const FACTS = [
   ["mech","Salt-free","TAC keeps the minerals in the water but turns them into tiny crystals that don't stick. No ANSI/NSF standard covers it; DVGW W512 is the test.","tac"],
   ["mech","Ionizers","Alkaline water ionizers are electrolysis cells. Medical claims for alkaline water aren't supported: the body controls its own pH.","ion"],
   ["mech","Recirc rules","Demand recirc on the cold line can't send back water over 104°F, and the pump must start on demand and stop when the loop is hot.","recirc"],
-  ["mech","Legionella","Grows at about 77–113°F and starts dying above 131°F. Hence 140°F tanks with a 1017 mixing valve.","jlcleg"],
+  ["mech","Legionella","Grows best at 77–113°F and can grow from about 68°F. CDC: store hot above 140°F, keep circulating hot above 120°F, get rid of dead legs. Hence 140°F tanks with a 1017 mixing valve.","cdcleg"],
   ["mech","Tankless specs","Navien NPE-240: up to 199,900 BTU/h, ¾\" gas inlet, 3.5–10.5\" w.c. natural gas, 0.5 gpm to fire, rated to 10,100 ft.","navq"],
   ["mech","Inlet screen","Tankless units have a cold-inlet screen. A plugged one throws low-flow codes: clean it every flush.","tklm"],
   ["wh","T&P pipe","Rated 100 psi at 180°F. PEX with insert fittings goes one size up, with the end fastened.","whcn"],
@@ -9875,6 +9932,13 @@ const CARDS = [
   ["How it works","Why does a closed system need an expansion tank?","Water barely compresses; the tank's air cushion takes the expansion","Water expands about 1¼% from 40°F to 120°F (about 1¾% to 140°F), and it won't squeeze. The air in the tank will."],
   ["How it works","Why are cold-climate roof vents upsized?","Frost from warm, wet vent air can seal a small pipe","Warm, wet vent air freezes on the inside of the pipe where it passes the cold roof. A bigger pipe takes longer to close."],
   ["How it works","Why pitch a frost-free hose bibb?","The seat is inside the warm wall; the outside barrel must drain","Water trapped in the barrel freezes and splits it. Pitch lets it drain out."],
+  ["How it works","Why can't a fixture be double trapped?","Air gets stuck between the two traps","The drain runs slow and clogs more, and one trap can siphon the other (2021 IPC §1002.1). A toilet's built-in trap counts as its trap."],
+  ["How it works","Why does hard water scale the heater but not the cold lines?","Calcium carbonate dissolves less the hotter the water gets","Heat drops it out of the water, worst on the hottest surface (USGS)."],
+  ["How it works","What can pull exhaust back down a natural-draft vent?","Exhaust fans in a tight house (backdrafting)","Worse when the fan is close to the heater or several run at once (DOE). Do the draft check with fans on high."],
+  ["How it works","Why ream every copper cut?","The burr causes turbulence that wears through the wall (erosion-corrosion)","The Copper Development Association lists unreamed tube ends as a cause of pits just past the cut."],
+  ["How it works","Design speed for hot water in copper (up to 140°F)?","4–5 ft/s","Cold is 5–8 ft/s (CDA). Above 140°F, about 2–3 ft/s. Oversized recirc pumps break this all day long."],
+  ["How it works","White crusty \"meringue\" on a yellow-brass fitting means what?","Dezincification: the zinc is leaching out","The fitting is going porous and weak. England and Wales require dezincification-resistant (DZR) brass for hidden fittings."],
+  ["How it works","CDC: circulating hot water should stay above what?","120°F","CDC building guidance, not a code rule. Store hot water above 140°F. Legionella grows best at 77–113°F, so a lukewarm loop or a dead leg feeds it."],
   ["2021 IPC","2021 IPC: max vertical drop from a fixture outlet to its trap weir?","24\" (1002.1)","A long tailpiece builds speed and can siphon the trap, and it grows gunk."],
   ["2021 IPC","2021 IPC: which table has trap-to-vent distances?","Table 909.1","Know the table number and you can find any arm length in seconds on a test."],
   ["2021 IPC","2021 IPC: shower trap size (Table 709.1, ≤5.7 gpm)?","1½\". On a house (IRC): 2\"","The IPC sizes for one showerhead's flow. The IRC adds margin for body sprays."],
@@ -10141,7 +10205,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-17t";
+{ const NEWS = "2026-11-21i";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -11532,7 +11596,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-21f";
+var BUILD = "handbook-2026-11-21i";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
