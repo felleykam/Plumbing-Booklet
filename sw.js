@@ -4,7 +4,7 @@
    is the only step needed to push an update to phones. */
 const CACHE = "jpb-" + (new URL(location).searchParams.get("v") || "dev");
 const CORE = ["./index.html", "./manifest.webmanifest", "./jobs.js?v=" + encodeURIComponent(new URL(location).searchParams.get("v") || "dev")];   /* jobs.js under the same build name index.html asks for */                      /* must succeed */
-const EXTRA = ["./icon-180.png?v=2", "./icon-192.png?v=2", "./icon-512.png?v=2"];   /* the same addresses the page and manifest ask for */         /* nice to have: a missing icon never blocks the offline copy */
+const EXTRA = ["./icon-180.png?v=3", "./icon-192.png?v=3", "./icon-512.png?v=3"];   /* the same addresses the page and manifest ask for */         /* nice to have: a missing icon never blocks the offline copy */
 
 /* install: download fresh copies (skip the browser's HTTP cache) and take over right away */
 self.addEventListener("install", e => {
