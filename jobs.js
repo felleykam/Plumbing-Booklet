@@ -156,6 +156,7 @@ function jbClean(){
     j.act.forEach(e => { e.t = str(e.t); if (typeof e.at !== "number") e.at = 0; });
     ["insp", "hrs", "log", "act"].forEach(k => j[k].forEach(x => { if (x.s != null && x.s !== "" && !JB_SNAME[x.s]) delete x.s; }));   /* only real stage keys */
     j.log.forEach(e => { e.hist = arrO(e.hist).map(v => ({b: str(v.b), d: str(v.d), at: +v.at || 0, until: +v.until || 0})); if (!e.hist.length) delete e.hist; });
+    if (isO(j.rk)){ const o = {}; Object.keys(j.rk).slice(0, 300).forEach(k => { if (j.rk[k] === true) o[String(k).slice(0, 200)] = true; }); j.rk = o; } else delete j.rk;   /* which "rules for every job" lines are ticked on this job */
     if (!JB_ST[j.st]) j.st = "open";
     if (j.stages != null && !isO(j.stages)) j.stages = null;   /* jbFix builds it fresh */
     if (j.stages) JB_STG.forEach(([k]) => { const S = j.stages[k] = Object.assign({st: "todo", d0: "", d1: "", lead: "", done: [], extra: []}, isO(j.stages[k]) ? j.stages[k] : {});
@@ -428,8 +429,15 @@ const jbTechHtml = () => { const T = jbD.tech || {}, f = (k, label, ph, type = "
   return `<details class="explain jb-fold jb-rulesd jb-techd"${jbTech() ? "" : " open"}><summary>Technician (you)${jbTechPub() ? ` · ${esc(jbTechPub())}` : ": add your name"}</summary><div>
   <div class="calc">${f("n", "Your name", "First and last name")}${f("lic", "License #", "DOPL number")}${f("ph", "Phone", "801-555-0100", "tel")}${f("co", "Company <i>(optional)</i>", "Who you work for")}</div>
   <p class="note">Your name, company and phone go on every new proof photo, proof card and report. Your license # is kept with them but not shown. Saved on this phone only.</p></div></details>`; };
-const jbRulesHtml = () => { const r = String(jbD.rules || "").trim(); if (!r) return "";
-  return `<div class="jb-rules"><p class="jn-prevh">📌 Rules for every job · these come first</p><div class="jn-b">${jnMd(r, "rules").replace(/data-tk=/g, "disabled data-tk=")}</div><p class="note"><button type="button" class="linkish" data-a="rules-go">Change them</button> in Jobs settings.</p></div>`; };
+/* the rules' boxes tick per job: the shared text stays as written, each job keeps its own ticks (j.rk), keyed by the line's words */
+const JB_RMARK = /^(\s*)([-*+] \[( |x|X)\]|!(!|✓)|\?(\?|✓))\s*/;
+const jbRuleKey = ln => ln.replace(JB_RMARK, "").trim().toLowerCase().slice(0, 200);
+const jbRulesHtml = j => { const r = String(jbD.rules || "").trim(); if (!r) return "";
+  const L = r.replace(/\r/g, "").split("\n"), on = (j && j.rk) || {};
+  const src = L.map(ln => { const m = ln.match(JB_RMARK); if (!m) return ln; const done = !!on[jbRuleKey(ln)], rest = ln.slice(m[0].length);
+    return m[1] + (/^\?/.test(m[2]) ? (done ? "?✓ " : "?? ") : /^!/.test(m[2]) ? (done ? "!✓ " : "!! ") : (m[2][0] + (done ? " [x] " : " [ ] "))) + rest; }).join("\n");
+  const html = jnMd(src, "rules").replace(/data-tk="rules\|(\d+)"/g, (x, i) => j ? `data-rk="${i}"` : `disabled data-rk="${i}"`);
+  return `<div class="jb-rules"><p class="jn-prevh">📌 Rules for every job · these come first${j ? " · ticks are for this job" : ""}</p><div class="jn-b">${html}</div><p class="note"><button type="button" class="linkish" data-a="rules-go">Change them</button> in Jobs settings.</p></div>`; };
 /* new note on top, then the notes, then the guide (folded once you've written a few) */
 /* marks that change how a line looks: only then is the preview worth its space */
 const jnHasMarks = v => /^\s*([-*+] \[|!!|!✓|\?\?|#{1,3}\s|>|\d+[.)]\s|[-*+]\s|[^\n:@#[]{1,30}:\s\S)|\[\[|(^|\s)[@#]\w|\*\*|==|~~|```/m.test(String(v || ""));
@@ -791,7 +799,7 @@ function jbJobHtml(j){
   ${jbLeftOff(j)}
   ${named ? "" : jbDetailsHtml(j)}
   <p class="card-h" data-fold="notes">Notes${j.log.length ? ` · ${j.log.length}` : ""}</p>
-  ${jbRulesHtml()}
+  ${jbRulesHtml(j)}
   ${jnBlock(j, j.log, "What got done, what didn't and why.\nTap 📝 Day log to lay it out.", "", jbStages(j).length > 1 ? `<label for="jn-s" class="jn-dl">Stage<select id="jn-s">${jbStages(j).map(([k, nm]) => `<option value="${k}"${k === sel ? " selected" : ""}>${esc(nm.replace(/ \(.*\)$/, ""))}</option>`).join("")}</select></label>` : "")}
   ${(() => { const F = new Map(); j.log.slice().sort((a, b) => jnSort(b, a)).forEach(e => jnProps(e.b).forEach(([k, v]) => F.set(k.toLowerCase(), [k, v, e.d])));
     return (F.size ? `<p class="card-h" data-fold="facts">From your notes</p><div class="x"><table class="t wrap jb-facts"><tbody>${[...F.values()].map(([k, v, d]) => `<tr><th>${esc(k)}</th><td>${jnInline(v)}<div class="sub">${jbNice(d)}</div></td></tr>`).join("")}</tbody></table></div>` : ""); })()}
@@ -1208,6 +1216,9 @@ B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.pers
   if (t.tagName === "SELECT" || /^(date|file)$/.test(t.type)) jbReseat();   /* a picker wheel or the photo sheet just closed */
   if (p && t.dataset.pf){ p[t.dataset.pf] = t.value.trim(); jbTouch(p); return; }
   if (t.id === "jn-v"){ jbD.jnView = t.value; jbSave(true); jbDraw(); return; }
+  if (t.dataset.rk != null){ const j = jbCur(); if (!j) return; const ln = String(jbD.rules || "").trim().replace(/\r/g, "").split("\n")[+t.dataset.rk] || "", k = jbRuleKey(ln); if (!k) return;
+    if (!j.rk || typeof j.rk !== "object" || Array.isArray(j.rk)) j.rk = {}; if (t.checked) j.rk[k] = true; else delete j.rk[k];
+    jbAct(j, `${t.checked ? "☑ Rule done" : "☐ Rule unticked"}: "${ln.replace(JB_RMARK, "").trim().slice(0, 60)}"`); jbTouch(j); return; }
   if (t.dataset.tk){ const o = jnOwner(), [eid, i] = t.dataset.tk.split("|"), n = o && o.log.find(x => x.id === eid);
     if (n){ const L = n.b.split("\n"), before = L[+i]; L[+i] = /^\s*\?(\?|✓)/.test(L[+i]) ? L[+i].replace(/\?(\?|✓)/, m => m === "??" ? "?✓" : "??") : /^\s*!(!|✓)/.test(L[+i]) ? L[+i].replace(/!(!|✓)/, m => m === "!!" ? "!✓" : "!!") : L[+i].replace(/\[( |x|X)\]/, m => m === "[ ]" ? "[x]" : "[ ]"); n.b = L.join("\n"); n.tk = Date.now();
       if (jbD.jobs.includes(o)) jbAct(o, `${/\?✓|!✓|\[[xX]\]/.test(L[+i]) ? (/^\s*\?/.test(before) ? "✔ Answered" : /^\s*!/.test(before) ? "✔ Heads-up handled" : "☑ Ticked") : /^\s*!/.test(before) ? "⚠ Heads-up back on" : "☐ Unticked"} in a note: "${jnPlain(L[+i], n.d)}"`, n.s); jbTouch(o); } return; }
