@@ -84,12 +84,12 @@ try{var v=JSON.parse(localStorage.getItem("jpb-vest"));if(v==="yellow"||v==="ora
   color-scheme:light;
 }
 :root[data-theme="dark"]{
-  --paper:#000000; --sheet:#0D0D0D; --ink:#FFFFFF; --muted:#D9D9D9; --rule:#6E6E6E; /* dividers 3:1 on the sheet so rows stay apart in a dim crawlspace */ --edge:#BFBFBF; --zebra:#1A1A1A;
+  --paper:#0A0A0A; --sheet:#141414; --ink:#F0F0F0; --muted:#D9D9D9; --rule:#6E6E6E; /* dividers 3:1 on the sheet so rows stay apart in a dim crawlspace; near-black and off-white, not #000/#FFF: less halo on letters for eyes with astigmatism */ --edge:#BFBFBF; --zebra:#1F1F1F;
   --bar:#1F1F1F; --bar-ink:#CCFF00; --hi:#223000; --hi-ink:#FFFFFF; --hi-edge:#CCFF00;
   --danger:#FF5C5C; --danger-soft:#2A0808; --ok:#3DF58A;
   --g-calc:#7FA6FF; --g-rough:#4ADE80; --g-mech:#4FD1DB; --g-trim:#FF7AC6; --g-inspect:#FF9A4D; --g-calls:#FF6B7A; --g-learn:#C3A6FF; --g-parts:#4FD1DB; --g-mine:#FFFFFF;
   --ctl:#BFBFBF; --caution:#FFB020; --ul:#CCFF00; --wood:#B07A3A;
-  --d-bg:#000000; --d-grid:#333333; --d-pipe:#9A9A9A; --d-fit:#FF7A33; --d-cut:#5C9DFF; --d-cut-lbl:#8FBCFF; --d-rise:#FF66CC; --d-roll:#33E07A; --d-run:#FFFFFF; --d-tru:#B48CFF; --d-text:#FFFFFF; --d-dim:#CFCFCF;
+  --d-bg:#0A0A0A; --d-grid:#333333; --d-pipe:#9A9A9A; --d-fit:#FF7A33; --d-cut:#5C9DFF; --d-cut-lbl:#8FBCFF; --d-rise:#FF66CC; --d-roll:#33E07A; --d-run:#FFFFFF; --d-tru:#B48CFF; --d-text:#FFFFFF; --d-dim:#CFCFCF;
   color-scheme:dark}
 [data-g="calc"]{--acc:var(--g-calc)} [data-g="rough"]{--acc:var(--g-rough)} [data-g="mech"]{--acc:var(--g-mech)} [data-g="trim"]{--acc:var(--g-trim)}
 [data-g="inspect"]{--acc:var(--g-inspect)} [data-g="calls"]{--acc:var(--g-calls)} [data-g="learn"]{--acc:var(--g-learn)} [data-g="parts"]{--acc:var(--g-parts)} [data-g="site"]{--acc:var(--caution)} [data-g="contacts"]{--acc:var(--g-calls)} [data-g="mine"],[data-g="home"],[data-g="more"]{--acc:var(--g-mine)}
@@ -970,6 +970,7 @@ html[data-zsmall] .book :is(input:not([type=checkbox]):not([type=radio]):not([ty
 .sample{font-size:15px;color:var(--muted);margin:0}
 .skins{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
 .skins button>*{min-width:0}
+.skins .sk-h{grid-column:1/-1;margin:8px 0 -2px;font-family:var(--display);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink)}.skins .sk-h:first-child{margin-top:0}.skins .sk-h small{font-family:var(--body);font-weight:600;text-transform:none;letter-spacing:0;color:var(--muted)}
 .skins button{appearance:none;display:grid;grid-template-columns:38px 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;text-align:left;padding:8px;min-height:64px;border:var(--bw) solid var(--ctl);border-radius:var(--r);background:var(--sheet);color:var(--ink);font:inherit;cursor:pointer}
 .skins button[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 3px var(--hv),0 0 0 5px var(--ink)}
 .skins .sw{grid-row:1 / 3;width:38px;height:38px;border-radius:6px;border:2px solid var(--ink);background:linear-gradient(135deg,var(--a) 0 46%,var(--b) 46% 72%,var(--c) 72%)}
@@ -1131,6 +1132,18 @@ body.sheet-open{overflow:hidden}
 :root[data-skin="saltflats"][data-theme="dark"]{
   --hv:#7FD6F2; --k:#06141A; --on-k:#F5F3EE; --on-k-sub:#CFCBC2; --paper:#101214; --sheet:#1A1D20; --ink:#F5F3EE; --muted:#D3CFC6; --rule:#74777A; --edge:#B9BDC0; --zebra:#24282C; --bar:#14303B; --bar-ink:#9BE2F8; --hi:#1B4252; --hi-ink:#FFFFFF; --hi-edge:#7FD6F2; --ctl:#B9BDC0; --ul:#8EDCF5; --logo-tile:#7FD6F2; --logo-ink:#06141A; --d-bg:#101214; --d-grid:#30363B;
   --stripe:repeating-linear-gradient(0deg,#FFFFFF 0 5px,#7FD6F2 5px 8px,#06141A 8px 14px)}
+:root[data-skin="easy"][data-theme="light"]{   /* Easy Eyes: off-white page, white cards, soft black text, calm color-blind-safe blue */
+  --hv:#A9CBEA; --k:#22313F; --on-k:#F4F1EA; --on-k-sub:#CBD3DB; --paper:#EEEBE5; --sheet:#FAF9F6; --ink:#1D1F21; --muted:#45484C; --rule:#8A8D91; --edge:#2E3134; --zebra:#F1EFEA; --bar:#DCE8F3; --bar-ink:#1D1F21; --hi:#DCEBF8; --hi-ink:#1D1F21; --hi-edge:#2E3134; --ctl:#2E3134; --ul:#0B5A92; --logo-tile:#A9CBEA; --logo-ink:#22313F;
+  --stripe:repeating-linear-gradient(-45deg,#A9CBEA 0 8px,#22313F 8px 16px)}
+:root[data-skin="easy"][data-theme="dark"]{   /* Material-style dark: #121212 page, raised gray cards, 87%-white text, desaturated accent */
+  --hv:#9CC8F0; --k:#0A0A0A; --on-k:#E3E3E3; --on-k-sub:#B3B3B3; --paper:#121212; --sheet:#1E1E1E; --ink:#E3E3E3; --muted:#B8B8B8; --rule:#6B6B6B; --edge:#9E9E9E; --zebra:#262626; --bar:#1B2733; --bar-ink:#A9D1F5; --hi:#20364A; --hi-ink:#F0F0F0; --hi-edge:#9CC8F0; --ctl:#9E9E9E; --ul:#9CC8F0; --logo-tile:#9CC8F0; --logo-ink:#121212; --d-bg:#121212; --d-grid:#2E2E2E;
+  --stripe:repeating-linear-gradient(-45deg,#9CC8F0 0 8px,#121212 8px 16px)}
+:root[data-skin="dawn"][data-theme="light"]{   /* Dawn: warm cream and brown-black, amber accent, little blue */
+  --hv:#F2C27A; --k:#3A2A1C; --on-k:#FBF3E6; --on-k-sub:#E2D2BE; --paper:#F3EDE2; --sheet:#FBF8F2; --ink:#2A2118; --muted:#574738; --rule:#9A8A77; --edge:#3A2E22; --zebra:#EFE7DA; --bar:#F3DDB8; --bar-ink:#2A2118; --hi:#F8E3C0; --hi-ink:#2A2118; --hi-edge:#3A2E22; --ctl:#3A2E22; --ul:#8A4B00; --logo-tile:#F2C27A; --logo-ink:#3A2A1C;
+  --stripe:repeating-linear-gradient(-45deg,#F2C27A 0 8px,#3A2A1C 8px 16px)}
+:root[data-skin="dawn"][data-theme="dark"]{   /* warm brown-gray, not black; parchment text, soft amber */
+  --hv:#E8B66A; --k:#0F0B07; --on-k:#EDE1CF; --on-k-sub:#C4B39C; --paper:#18130E; --sheet:#221B14; --ink:#EDE1CF; --muted:#C4B39C; --rule:#7A6650; --edge:#B39C80; --zebra:#2A2119; --bar:#2C2116; --bar-ink:#F0C27D; --hi:#3E2E1B; --hi-ink:#F6EADA; --hi-edge:#E8B66A; --ctl:#B39C80; --ul:#F0C27D; --logo-tile:#E8B66A; --logo-ink:#18130E; --d-bg:#18130E; --d-grid:#3A2E22;
+  --stripe:repeating-linear-gradient(-45deg,#E8B66A 0 8px,#18130E 8px 16px)}
 :root[data-skin="crawl"][data-theme="light"]{
   --hv:#E8A33D; --k:#1A1208; --on-k:#F7EBD6; --on-k-sub:#DCC8A6; --paper:#F3ECDF; --sheet:#FCF8F1; --ink:#1A1208; --muted:#3E2F1A; --rule:#8C7656; --edge:#2E2210; --zebra:#F1E9DA; --bar:#EBCF9E; --bar-ink:#1A1208; --hi:#F0D7A8; --hi-ink:#1A1208; --hi-edge:#2E2210; --ctl:#2E2210; --ul:#5A3300; --logo-tile:#E8A33D; --logo-ink:#1A1208;
   --stripe:repeating-linear-gradient(-45deg,#E8A33D 0 6px,#1A1208 6px 18px)}
@@ -1386,33 +1399,41 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="set-grp" id="set-look"><h3>Look</h3>
       <div class="row"><b>Theme</b>
         <div class="skins" id="set-skin" role="group" aria-label="Theme">
+          <p class="sk-h">On the jobsite <small>· sun, glare, rain</small></p>
           <button type="button" data-s="hivis"><span class="sw" style="--a:#FFFFFF;--b:#CCFF00;--c:#000000"></span><span class="nm">Hi-Vis</span><small>Vest colors. Best in sun glare.</small></button>
           <button type="button" data-s="contrast"><span class="sw" style="--a:#FFFFFF;--b:#FFFF00;--c:#000000"></span><span class="nm">Max contrast</span><small>Black, white, yellow. Thickest lines.</small></button>
-          <button type="button" data-s="blueprint"><span class="sw" style="--a:#E6EEF9;--b:#8FD8FF;--c:#0B2A55"></span><span class="nm">Blueprint</span><small>Plan-sheet blue with a grid.</small></button>
+          <button type="button" data-s="cone"><span class="sw" style="--a:#FFF6EE;--b:#FF7A1F;--c:#160B03"></span><span class="nm">Safety Orange</span><small>Cone orange with a white stripe.</small></button>
+          <button type="button" data-s="steel"><span class="sw" style="--a:#E8EBEE;--b:#FF8A3D;--c:#15181C"></span><span class="nm">Galvanized</span><small>Steel gray, safety orange.</small></button>
+          <p class="sk-h">Easy on the eyes <small>· long reading, early and late</small></p>
+          <button type="button" data-s="easy"><span class="sw" style="--a:#EEEBE5;--b:#A9CBEA;--c:#1D1F21"></span><span class="nm">Easy Eyes</span><small>Soft white, calm blue. Gray, not black, at night.</small></button>
+          <button type="button" data-s="dawn"><span class="sw" style="--a:#F3EDE2;--b:#F2C27A;--c:#2A2118"></span><span class="nm">Dawn</span><small>Warm cream and amber. Easy for early starts.</small></button>
+          <button type="button" data-s="saltflats"><span class="sw" style="--a:#F7F5F0;--b:#7FD6F2;--c:#12303B"></span><span class="nm">Salt Flats</span><small>White salt, big sky.</small></button>
           <button type="button" data-s="copper"><span class="sw" style="--a:#FBF5EE;--b:#F2A65E;--c:#2B1810"></span><span class="nm">Copper</span><small>Warm and easy on the eyes.</small></button>
+          <p class="sk-h">Low light <small>· crawlspaces, night</small></p>
+          <button type="button" data-s="headlamp"><span class="sw" style="--a:#E9F0F2;--b:#5CE1E6;--c:#071317"></span><span class="nm">Headlamp</span><small>Crisp white and cyan, easy to read by headlamp.</small></button>
+          <button type="button" data-s="crawl"><span class="sw" style="--a:#EFE6D6;--b:#E8A33D;--c:#1A1208"></span><span class="nm">Crawlspace</span><small>Dim amber on black: low glare in the dark.</small></button>
+          <button type="button" data-s="night"><span class="sw" style="--a:#000000;--b:#FF6359;--c:#170000"></span><span class="nm">Night shift</span><small>Red only. Keeps night vision.</small></button>
+          <p class="sk-h">Utah</p>
           <button type="button" data-s="redrock"><span class="sw" style="--a:#F7EEE3;--b:#FF9157;--c:#2E1208"></span><span class="nm">Red Rock</span><small>Southern Utah sandstone.</small></button>
           <button type="button" data-s="wasatch"><span class="sw" style="--a:#F1F6F4;--b:#9BE8C4;--c:#0F2E22"></span><span class="nm">Wasatch</span><small>Pine green and snow.</small></button>
-          <button type="button" data-s="steel"><span class="sw" style="--a:#E8EBEE;--b:#FF8A3D;--c:#15181C"></span><span class="nm">Galvanized</span><small>Steel gray, safety orange.</small></button>
-          <button type="button" data-s="primer"><span class="sw" style="--a:#F5F1FB;--b:#C4A1FF;--c:#1E1033"></span><span class="nm">Primer</span><small>Purple primer, like the can.</small></button>
           <button type="button" data-s="powell"><span class="sw" style="--a:#EEF7F7;--b:#5FE0D8;--c:#062A33"></span><span class="nm">Lake Powell</span><small>Turquoise water, sandstone.</small></button>
           <button type="button" data-s="aspen"><span class="sw" style="--a:#FAF6E8;--b:#FFC93C;--c:#2A2108"></span><span class="nm">Aspen</span><small>Fall gold on bark.</small></button>
           <button type="button" data-s="alpenglow"><span class="sw" style="--a:#FBF1F5;--b:#FF9EC4;--c:#33101F"></span><span class="nm">Alpenglow</span><small>Pink light on the peaks.</small></button>
-          <button type="button" data-s="cone"><span class="sw" style="--a:#FFF6EE;--b:#FF7A1F;--c:#160B03"></span><span class="nm">Safety Orange</span><small>Cone orange with a white stripe.</small></button>
+          <p class="sk-h">Trade colors</p>
+          <button type="button" data-s="blueprint"><span class="sw" style="--a:#E6EEF9;--b:#8FD8FF;--c:#0B2A55"></span><span class="nm">Blueprint</span><small>Plan-sheet blue with a grid.</small></button>
+          <button type="button" data-s="primer"><span class="sw" style="--a:#F5F1FB;--b:#C4A1FF;--c:#1E1033"></span><span class="nm">Primer</span><small>Purple primer, like the can.</small></button>
           <button type="button" data-s="hotcold"><span class="sw" style="--a:#F1F5FB;--b:#7CC4FF;--c:#0B1F3A"></span><span class="nm">Hot &amp; Cold</span><small>Red and blue, like PEX.</small></button>
           <button type="button" data-s="castiron"><span class="sw" style="--a:#F3F1EC;--b:#E0A030;--c:#1C1B1A"></span><span class="nm">Cast Iron</span><small>Black iron and lead-gold.</small></button>
           <button type="button" data-s="torch"><span class="sw" style="--a:#F2F5FC;--b:#FFB020;--c:#0A1430"></span><span class="nm">Torch</span><small>Blue flame, yellow tip.</small></button>
-          <button type="button" data-s="saltflats"><span class="sw" style="--a:#F7F5F0;--b:#7FD6F2;--c:#12303B"></span><span class="nm">Salt Flats</span><small>White salt, big sky.</small></button>
-          <button type="button" data-s="crawl"><span class="sw" style="--a:#EFE6D6;--b:#E8A33D;--c:#1A1208"></span><span class="nm">Crawlspace</span><small>Dim amber on black: low glare in the dark.</small></button>
-          <button type="button" data-s="headlamp"><span class="sw" style="--a:#E9F0F2;--b:#5CE1E6;--c:#071317"></span><span class="nm">Headlamp</span><small>Crisp white and cyan, easy to read by headlamp.</small></button>
+          <p class="sk-h">Just for fun <small>· not tuned for sun</small></p>
           <button type="button" data-s="neon"><span class="sw" style="--a:#FBF2FC;--b:#FF3DCF;--c:#16002E"></span><span class="nm">Neon Sign</span><small>Hot magenta and electric cyan.</small></button>
           <button type="button" data-s="glow"><span class="sw" style="--a:#EFFBF6;--b:#00F5A0;--c:#03241A"></span><span class="nm">Glow Stick</span><small>Neon mint with a pink pop.</small></button>
           <button type="button" data-s="uv"><span class="sw" style="--a:#F6F1FF;--b:#F2FF3D;--c:#1A0638"></span><span class="nm">Blacklight</span><small>Fluorescent yellow on UV purple.</small></button>
           <button type="button" data-s="patina"><span class="sw" style="--a:#F1F7F4;--b:#3FD6B0;--c:#24130B"></span><span class="nm">Patina</span><small>Copper and verdigris, like old pipe.</small></button>
           <button type="button" data-s="duck"><span class="sw" style="--a:#E6F6FF;--b:#FFD400;--c:#062C4A"></span><span class="nm">Rubber Ducky 🦆</span><small>Bath-time yellow and blue, with bubbles.</small></button>
           <button type="button" data-s="chrome"><span class="sw" style="--a:#12161B;--b:#C9D2DC;--c:#05070A"></span><span class="nm">Chrome</span><small>Polished silver on gunmetal black.</small></button>
-          <button type="button" data-s="night"><span class="sw" style="--a:#000000;--b:#FF6359;--c:#170000"></span><span class="nm">Night shift</span><small>Red only. Keeps night vision.</small></button>
         </div></div>
-      <p class="note">Neon Sign, Glow Stick, Blacklight, Patina, Rubber Ducky and Chrome are for fun: they pass the same contrast check, but they aren't tuned for bright sun or rain. On site, Hi-Vis or Max contrast reads best.</p>
+      <p class="note">Neon Sign, Glow Stick, Blacklight, Patina, Rubber Ducky and Chrome are for fun: they pass the same contrast check, but they aren't tuned for bright sun or rain. On site, Hi-Vis or Max contrast reads best. For long reading, Easy Eyes or Dawn: soft off-white by day, dark gray (not black) at night, which is easier on most eyes.</p>
       <div class="tog-list">
         <button type="button" class="tog" role="switch" data-t="hc"><span><b>Sun glare switch</b><small>Jumps to the Max contrast theme for bright sun. Off goes back to the theme you had.</small></span></button>
       </div>
@@ -5427,6 +5448,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 21, 2026 · Easier on the eyes</th><td><b>Two new themes built from the research on screen reading:</b> <b>Easy Eyes</b> (soft off-white page with white cards and soft-black text; at night a dark gray page, not black, with off-white text and a calm blue that color-blind eyes can still tell apart) and <b>Dawn</b> (warm cream and amber, warm brown-gray at night). <b>Themes are grouped</b> in Settings: On the jobsite, Easy on the eyes, Low light, Utah, Trade colors, Just for fun. <b>Hi-Vis at night</b> is now near-black and off-white instead of pure black and pure white, which blurs less for eyes with astigmatism (still over 16:1 contrast). <b>Fix:</b> the boxes on "Rules for every job" can be ticked now, and each job keeps its own ticks: ticking "No push fittings in walls" on Lot 14 doesn't tick it on every job. The job's activity log records each tick.</td></tr>
         <tr><th>Nov 21, 2026 · New icon, find a setting</th><td><b>Simpler icon:</b> a black P-trap on hi-vis yellow, on the home screen and in the header. On iPhone and iPad the home-screen icon only changes if you remove the app and add it again from Safari, and removing it can erase what's saved in it. So back up first (Settings → Backup &amp; reset → Back up everything) and restore after, or just keep the old icon: everything inside updates either way. <b>Find a setting:</b> a search box at the top of Settings. Type "rounding", "backup" or "dark" and only the matching settings show.</td></tr>
         <tr><th>Nov 21, 2026 · Night polish</th><td><b>Glossary:</b> added Deep seal trap, Fixture unit, Combination waste and vent and Waste receptor, and Air break now says where the pipe ends (below the flood rim, above the trap seal). <b>Checked:</b> every jump link and every "Tab → Page → Card" pointer in the book lands on a real card, and all the jobs, notes and backup tests pass.</td></tr>
         <tr><th>Nov 21, 2026 · More How it works</th><td><b>Five new cards in Learn → How it works:</b> How trap primers work (including the 2021 IPC's new lav-fed primer), Air gap vs air break (indirect waste, IPC ch. 8), How a backwater valve works (the manhole-cover rule), How fixture units work (why you add units, not gallons), and How the code books fit together (model code, Utah's adoption and amendments, appendices, why section numbers move). Plus 6 flashcards on them. Each card lists its source and check date. <b>Checked against the Build cards:</b> the indirect-waste air gap is 2× the pipe's opening; the "never under 1 inch" rule is for faucet and fill-valve air gaps, and the new card says so.</td></tr>
@@ -11501,7 +11523,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-21d";
+var BUILD = "handbook-2026-11-21e";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
