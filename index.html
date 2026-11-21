@@ -1210,6 +1210,24 @@ body.sheet-open{overflow:hidden}
 :root[data-skin="chrome"] .btn,:root[data-skin="chrome"] :is(.seg,.mode,.ro-view) button[aria-pressed="true"],:root[data-skin="chrome"] nav.tabs button[aria-pressed="true"]{background:var(--chrome);color:#05070A;border-color:#05070A}
 :root[data-skin="chrome"][data-theme="dark"] .btn{box-shadow:3px 3px 0 #000,0 0 0 1px #6B7684}
 
+/* Avocado '74: harvest gold and avocado green, the 1970s fixture colors, with a retro stripe */
+:root[data-skin="avocado"][data-theme="light"]{
+  --hv:#E8B53A; --k:#2F3A10; --on-k:#FFFBEA; --on-k-sub:#E4DDB8; --paper:#F4EEDA; --sheet:#FFFDF4; --ink:#2A2410; --muted:#4E4528; --rule:#9A9070; --edge:#2F3A10; --zebra:#F7F1DC; --bar:#F1DE9E; --bar-ink:#2A2410; --hi:#F5E7B2; --hi-ink:#2A2410; --hi-edge:#2F3A10; --ctl:#2F3A10; --ul:#8A3F0C; --logo-tile:#E8B53A; --logo-ink:#2F3A10;
+  --stripe:repeating-linear-gradient(-45deg,#6B3E12 0 6px,#C8641E 6px 12px,#E8B53A 12px 18px,#7A8B2A 18px 24px)}
+:root[data-skin="avocado"][data-theme="dark"]{
+  --hv:#E8B53A; --k:#0F1106; --on-k:#F3ECD2; --on-k-sub:#D3C9A4; --paper:#1A1C0E; --sheet:#24271A; --ink:#F3ECD2; --muted:#D3C9A4; --rule:#6A6A48; --edge:#C9C29A; --zebra:#2B2E1E; --bar:#2F3816; --bar-ink:#F0C55A; --hi:#3C4720; --hi-ink:#FFFFFF; --hi-edge:#E8B53A; --ctl:#C9C29A; --ul:#F0A060; --logo-tile:#E8B53A; --logo-ink:#0F1106; --d-bg:#1A1C0E; --d-grid:#33361F;
+  --stripe:repeating-linear-gradient(-45deg,#6B3E12 0 6px,#C8641E 6px 12px,#E8B53A 12px 18px,#7A8B2A 18px 24px)}
+
+/* Locate Paint: the APWA / 811 marking colors in the stripe, potable-water blue for the accent */
+:root[data-skin="locate"][data-theme="light"]{
+  --hv:#5CC8FF; --k:#111214; --on-k:#FFFFFF; --on-k-sub:#D6D9DE; --paper:#F2F3F5; --sheet:#FFFFFF; --ink:#111214; --muted:#3A3D42; --rule:#868B93; --edge:#111214; --zebra:#EEF0F3; --bar:#D6F0FF; --bar-ink:#111214; --hi:#E3F5FF; --hi-ink:#111214; --hi-edge:#111214; --ctl:#111214; --ul:#0B5FA8; --logo-tile:#5CC8FF; --logo-ink:#111214;
+  --stripe:repeating-linear-gradient(-45deg,#E0201B 0 5px,#FF8A00 5px 10px,#FFD400 10px 15px,#1E7BE0 15px 20px,#1FA24A 20px 25px,#8E44C9 25px 30px,#FF6FB0 30px 35px,#FFFFFF 35px 40px)}
+:root[data-skin="locate"][data-theme="dark"]{
+  --hv:#5CC8FF; --k:#060708; --on-k:#F2F3F5; --on-k-sub:#C4C7CC; --paper:#0B0C0E; --sheet:#16181C; --ink:#F2F3F5; --muted:#C4C7CC; --rule:#5A5F67; --edge:#B9BEC6; --zebra:#1C1F24; --bar:#10283A; --bar-ink:#7FD4FF; --hi:#1C3A52; --hi-ink:#FFFFFF; --hi-edge:#5CC8FF; --ctl:#B9BEC6; --ul:#FF9ACB; --logo-tile:#5CC8FF; --logo-ink:#060708; --d-bg:#0B0C0E; --d-grid:#23272D;
+  --stripe:repeating-linear-gradient(-45deg,#E0201B 0 5px,#FF8A00 5px 10px,#FFD400 10px 15px,#1E7BE0 15px 20px,#1FA24A 20px 25px,#8E44C9 25px 30px,#FF6FB0 30px 35px,#FFFFFF 35px 40px)}
+/* a few faint paint flecks on the page behind the cards, like marks on a lot */
+:root[data-skin="locate"] body{background-image:radial-gradient(circle at 12% 30%,rgba(30,123,224,.16) 0 7px,transparent 8px),radial-gradient(circle at 78% 18%,rgba(31,162,74,.16) 0 5px,transparent 6px),radial-gradient(circle at 55% 72%,rgba(255,212,0,.22) 0 9px,transparent 10px),radial-gradient(circle at 30% 88%,rgba(224,32,27,.14) 0 4px,transparent 5px),radial-gradient(circle at 90% 60%,rgba(142,68,201,.14) 0 6px,transparent 7px);background-size:190px 190px;background-attachment:fixed}
+
 /* Night shift: red light only, so your eyes stay dark-adapted in a crawlspace or a dark basement at 6 a.m. Always dark. */
 :root[data-skin="night"]{
   --hv:#FF6359; --k:#000000; --on-k:#FF7066; --on-k-sub:#FF6359; --paper:#000000; --sheet:#070000; --ink:#FF7066; --muted:#FF6359; --rule:#9A2A20; --edge:#D23B30; --zebra:#120000;
@@ -1292,6 +1310,8 @@ details.explain p{margin:6px 0 0}
 /* ===== Home, More, card menu, search bar (2026-10-31) ===== */
 @media (max-width:759px){.stripe{display:none} nav.tabs .wide-tab{display:none}}
 @media (min-width:760px){nav.tabs .more-tab{display:none}}
+/* the two fun stripe themes keep a thin stripe on phones too: it's the whole point of them */
+@media (max-width:759px){:root:is([data-skin="avocado"],[data-skin="locate"]) .stripe{display:block;height:6px}}
 .card-h{margin:0;padding:10px 12px 4px;font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--rule)}
 details.fold{border-top:1px solid var(--rule)}
 .otp{margin:0 0 16px;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);overflow:hidden;break-inside:avoid}
@@ -1434,8 +1454,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
           <button type="button" data-s="patina"><span class="sw" style="--a:#F1F7F4;--b:#3FD6B0;--c:#24130B"></span><span class="nm">Patina</span><small>Copper and verdigris, like old pipe.</small></button>
           <button type="button" data-s="duck"><span class="sw" style="--a:#E6F6FF;--b:#FFD400;--c:#062C4A"></span><span class="nm">Rubber Ducky 🦆</span><small>Bath-time yellow and blue, with bubbles.</small></button>
           <button type="button" data-s="chrome"><span class="sw" style="--a:#12161B;--b:#C9D2DC;--c:#05070A"></span><span class="nm">Chrome</span><small>Polished silver on gunmetal black.</small></button>
+          <button type="button" data-s="avocado"><span class="sw" style="--a:#F4EEDA;--b:#E8B53A;--c:#2F3A10"></span><span class="nm">Avocado '74</span><small>Harvest gold and avocado, like a 1970s bathroom.</small></button>
+          <button type="button" data-s="locate"><span class="sw" style="--a:#F2F3F5;--b:#5CC8FF;--c:#111214"></span><span class="nm">Locate Paint</span><small>The 811 marking colors: blue water, green sewer.</small></button>
         </div></div>
-      <p class="note">Neon Sign, Glow Stick, Blacklight, Patina, Rubber Ducky and Chrome are for fun: they pass the same contrast check, but they aren't tuned for bright sun or rain. On site, Hi-Vis or Max contrast reads best. For long reading, Easy Eyes or Dawn: soft off-white by day, dark gray (not black) at night, which is easier on most eyes.</p>
+      <p class="note">Neon Sign, Glow Stick, Blacklight, Patina, Rubber Ducky, Chrome, Avocado '74 and Locate Paint are for fun: they pass the same contrast check, but they aren't tuned for bright sun or rain. On site, Hi-Vis or Max contrast reads best. For long reading, Easy Eyes or Dawn: soft off-white by day, dark gray (not black) at night, which is easier on most eyes.</p>
 
       <div class="row"><b>Sun or Night</b>
         <div class="seg" id="look-light" role="group" aria-label="Sun or Night"><button type="button" data-l="phone">Phone</button><button type="button" data-l="daylight">Daylight</button><button type="button" data-l="light">Sun</button><button type="button" data-l="dark">Night</button></div>
@@ -5334,7 +5356,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Flooded appliances</th><td>A heater, pump or furnace that sat in water stays off until it's checked or replaced. Controls and wiring that got wet can fail later.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="power" data-kw="power lines overhead lines 10 feet clearance ladder aluminum fiberglass service drop roof vent underground lines bluestakes blue stakes 811 dig private lines">
+  <section data-sec="power" data-kw="power lines overhead lines 10 feet clearance ladder aluminum fiberglass service drop roof vent underground lines bluestakes blue stakes 811 dig private lines paint colors locate marks flags apwa color code">
     <div class="sec-head"><h2>Power lines</h2><small>Overhead and underground</small></div>
     <div class="x"><table class="t">
       <tbody>
@@ -5342,6 +5364,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Long pipe</th><td>A 20 ft stick swung up on a roof near the service drop reaches the line faster than you think. Carry it low.</td></tr>
         <tr><th>Ladders</th><td>Fiberglass near anything electrical. Aluminum conducts.</td></tr>
         <tr><th>Digging</th><td>Call <b>811</b> (Blue Stakes) before you dig. It doesn't mark private lines (to a shop, hot tub, well pump or yard lights): ask the owner, and dig by hand near them.</td></tr>
+        <tr><th>The paint</th><td><b>Red</b> power · <b>Yellow</b> gas, oil, steam · <b>Orange</b> phone, cable, alarm · <b>Blue</b> drinking water · <b>Green</b> sewer and drains · <b>Purple</b> irrigation, reclaimed water · <b>Pink</b> survey marks · <b>White</b> where you plan to dig. <span class="sub">APWA Uniform Color Code; Blue Stakes of Utah · checked Nov 2026.</span></td></tr>
       </tbody></table></div>
   </section>
   <section data-sec="power" data-kw="shocked electrocuted electric shock first aid victim cpr aed 911 burn report">
@@ -5452,6 +5475,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 21, 2026 · Two fun themes</th><td><b>Avocado '74</b>: harvest gold and avocado green, the 1970s fixture colors, with a retro stripe. <b>Locate Paint</b>: the stripe is the 811 marking colors, with drinking-water blue. Both are in Settings → Theme → Just for fun, and both pass the contrast check. <b>Added:</b> what each locate paint color means, on Jobsite → Electrical → Power lines (APWA color code, as Blue Stakes uses it).</td></tr>
         <tr><th>Nov 21, 2026 · Plumbing science</th><td><b>New How it works card:</b> Why copper and brass wear out (erosion from burrs and fast water, the speed limits for copper, pitting, dezincification and the DZR / CR / DR marks used in the UK and Australia). <b>Added to existing cards:</b> the 2003 Amoy Gardens outbreak in Hong Kong and why a dry trap is a health problem (How trap primers work); Heriot-Watt University's pressure-wave research on trap seals (How a trap loses its seal); IAPMO's Water Demand Calculator, the modern update to Hunter's fixture units, and a note that Utah's codes don't use it (How fixture units work). <b>Updated:</b> Legionella numbers now follow CDC's guidance (store above 140°F, keep circulating hot water above 120°F, no dead legs) on Hot enough, Recirculation and the Mech fact file. 4 new flashcards. Every new fact lists its source.</td></tr>
         <tr><th>Nov 21, 2026 · Better organized</th><td><b>Long pages are grouped by topic:</b> How it works (Drains &amp; vents, Water supply, Fixtures, Water heaters &amp; mech room, Gas, Code &amp; math), Study (Practice, Code books, Fact files), Water heaters (Install, Sizing, Service), Layout (Offsets, Measure &amp; lay out) and Math (Calculators, Rules &amp; formulas). Cards that go together sit together, each card shows its topic over its subtitle, and "On this page" lists the cards under topic headings. <b>Settings:</b> Sun or Night now sits right under the themes, and the calculator and study settings have their own group (Calcs). Nothing was renamed, so pins, card notes and saved settings stay put.</td></tr>
         <tr><th>Nov 21, 2026 · Easier on the eyes</th><td><b>Two new themes built from the research on screen reading:</b> <b>Easy Eyes</b> (soft off-white page with white cards and soft-black text; at night a dark gray page, not black, with off-white text and a calm blue that color-blind eyes can still tell apart) and <b>Dawn</b> (warm cream and amber, warm brown-gray at night). <b>Themes are grouped</b> in Settings: On the jobsite, Easy on the eyes, Low light, Utah, Trade colors, Just for fun. <b>Hi-Vis at night</b> is now near-black and off-white instead of pure black and pure white, which blurs less for eyes with astigmatism (still over 16:1 contrast). <b>Fix:</b> the boxes on "Rules for every job" can be ticked now, and each job keeps its own ticks: ticking "No push fittings in walls" on Lot 14 doesn't tick it on every job. The job's activity log records each tick.</td></tr>
@@ -10162,7 +10186,7 @@ gaugeDraw();
 
 
 /* what's new: one line on Home, with a dot until you've opened it */
-{ const NEWS = "2026-11-21g";
+{ const NEWS = "2026-11-21h";
   const row = SECTIONS.find(s => s.querySelector("h2").textContent === "What's new"), top = row && row.querySelector("tbody tr");
   $("news-txt").textContent = top ? top.querySelector("th").textContent + ": " + top.querySelector("td").textContent.replace(/\s+/g, " ").slice(0, 90) + "…" : "";
   $("news-dot").hidden = store.get("jpb-news", "") === NEWS;
@@ -11553,7 +11577,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-21g";
+var BUILD = "handbook-2026-11-21h";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
