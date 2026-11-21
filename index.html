@@ -415,7 +415,7 @@ section[data-sec]{content-visibility:auto;contain-intrinsic-size:auto 500px}
 .jb-row .jb-tags .jb-fail{color:var(--danger);border-color:var(--danger)}
 .jb-row>span:not(.jb-tags):not(.jb-peek){font-size:14px}
 .jb-row>span.jb-peek{position:absolute;top:0;right:0;width:48px;height:100%;min-height:48px;display:grid;place-items:center;font-size:22px;color:var(--ink);border-left:1px solid var(--rule)}
-.jn-mode{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 12px 0;font-size:15px;color:var(--muted)}
+.jn-mode{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;padding:6px 12px 0;font-size:15px;color:var(--muted)}
 .jn-mode .seg{margin:0}
 .jn-mode>span{white-space:nowrap}
 .jt-open .jn-mode .jb-seg,.jn-mode .jb-seg{display:flex;flex:none;padding:0;gap:6px}
@@ -663,6 +663,7 @@ dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .jn-date.past{color:var(--muted);background:none;text-decoration:line-through}
 .jn-date.now{outline:2px solid var(--pal-purple);outline-offset:1px}
 .jn-b .jn-prop{display:flex;gap:8px;align-items:baseline;margin:4px 0}
+.jn-b .jn-prop>span{min-width:0;overflow-wrap:anywhere}
 .jn-prop b{flex:none;padding:0 8px;border-radius:6px;color:var(--pal-teal);background:color-mix(in srgb,var(--pal-teal) 13%,transparent);font-family:var(--mono);font-size:.92em}
 .jn-howto > div{padding:4px 12px 8px}
 .bt-clock{align-self:center;font-family:var(--mono);font-size:22px;font-weight:700;margin-left:6px}
@@ -1661,7 +1662,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </details>
   </section>
   <section data-sec="layout" data-kw="offset rolling roll rise travel run setback take-off cut length 45 fitting">
-    <div class="sec-head"><h2>Offset calculator</h2><small>Inches · answers to nearest ¹⁄₁₆"</small></div>
+    <div class="sec-head"><h2>Offset calculator</h2><small>Inches · answers to your tape setting (⅛" unless you change it)</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> a pipe has to move over (or up and over) to dodge something, and you need the length of the angled piece.</p><p><b>Words:</b> <i>offset</i> (rise) is how far the pipe has to move; <i>roll</i> is a second move at 90° to the first (that's a rolling offset); <i>travel</i> is the angled pipe measured fitting center to fitting center; <i>run</i> (setback) is how far down the line the second fitting lands; <i>take-off</i> is how much of the fitting eats into the length.</p><p><b>The idea:</b> it's one right triangle (two for a roll). For 45s, travel = offset × 1.414, every time.</p></div></details>
     <div class="mode" id="ro-mode" role="group" aria-label="Offset type">
       <button type="button" data-mode="simple" aria-pressed="false">Simple offset</button>
@@ -1889,7 +1890,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note"><span class="badge why">WHY</span> In any right triangle, the two short sides squared add up to the long side squared (Pythagoras): 3² + 4² = 9 + 16 = 25 = 5². Double every side and the shape doesn't change, only the size, so 6-8-10 works too. A box with equal opposite sides is a rectangle only when both diagonals match: lean it and one diagonal grows while the other shrinks.</p>
   </section>
   <section data-sec="layout" data-kw="feet inches fraction add subtract calculator tape measure ft in">
-    <div class="sec-head"><h2>Feet-inch calculator</h2><small>Add, subtract, ×, ÷ · to ¹⁄₁₆"</small></div>
+    <div class="sec-head"><h2>Feet-inch calculator</h2><small>Add, subtract, ×, ÷ · to your tape setting</small></div>
     <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> adding or subtracting tape measurements without converting to decimals: center-to-center minus take-offs, splitting a run in thirds.</p><p>Type it the way the tape reads. Answers come back to the nearest ¹⁄₁₆".</p></div></details>
     <div class="calc">
       <label for="fi-expr" class="wide">Measurements<input id="fi-expr" type="text" inputmode="text" autocomplete="off" spellcheck="false" value="10' 4 3/8&quot; - 2 x 5 1/16&quot;" aria-describedby="fi-help"></label>
@@ -2034,7 +2035,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </tbody></table></div>
     <div class="x"><table class="t num"><thead><tr><th>Pipe</th><th>ft/s</th><th>psi / 100 ft</th><th>Under 8 ft/s?</th></tr></thead><tbody id="ws-pipes"></tbody></table></div>
     <details class="math"><summary>Show the math</summary><ol id="ws-math"></ol></details>
-    <p class="note"><b>Count a group or its parts, never both</b>: a full bath group already includes its toilet, lav and tub. Values: IRC Table P2903.6 (private use), demand from the flush-tank conversion table (P2903.6(1)), checked against Phoenix and Louisville, CO sizing sheets. The 8 ft/s line is common copper guidance, not code; PEX makers publish their own limits. A learning tool: code sizing for the water service is IRC P2903.7 / Appendix P; then check the far fixture in <b>Calc → Flow → Pressure at the fixture</b>. <button type="button" class="linkish" id="ws-clear">Clear counts</button></p>
+    <p class="note"><b>Count a group or its parts, never both</b>: a full bath group already includes its toilet, lav and tub. Values: IRC Table P2903.6 (private use), demand from the flush-tank conversion table (P2903.6(1)) · 2021 IRC · checked Nov 2026. Every hose bibb counts 2.5 under the IRC; the IPC and UPC drop each additional one to 1.0, so their totals come out lower. The 8 ft/s line is common copper guidance, not code; PEX makers publish their own limits. A learning tool: code sizing for the water service is IRC P2903.7 / Appendix P; then check the far fixture in <b>Calc → Flow → Pressure at the fixture</b>. <button type="button" class="linkish" id="ws-clear">Clear counts</button></p>
   </section>
   <section data-sec="sizing" data-kw="gas pipe size sizing cfh btu longest length schedule 40 black iron steel table appliance load furnace range dryer fireplace">
     <div class="sec-head"><h2>Gas line sizer</h2><small>Sch 40 steel · under 2 psi · 0.5" w.c. drop</small></div>
@@ -2056,7 +2057,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <details class="more"><summary>See the table</summary>
       <div class="x"><table class="t num fit"><thead><tr><th>Length</th><th>½"</th><th>¾"</th><th>1"</th><th>1¼"</th><th>1½"</th><th>2"</th></tr></thead><tbody id="gl-tbl"></tbody></table></div>
     </details>
-    <p class="note">CFH capacities from <b>IFGC Table 402.4(2)</b> (same numbers as IRC Table G2413.4(1)): natural gas, 0.60 sp. gr., 1,000 BTU/ft³. <b>Each branch:</b> same longest length, but only the load that branch carries. <b>CSST:</b> use the maker's tables. 2 psi systems use different tables. A learning tool: check it against the code book before you buy pipe.</p>
+    <p class="note">CFH capacities from <b>IFGC Table 402.4(2)</b> (same numbers as 2021 IRC Table G2413.4(1)), all 60 values checked against ICC's published table · Nov 2026: natural gas, 0.60 sp. gr., 1,000 BTU/ft³. <b>Each branch:</b> same longest length, but only the load that branch carries. <b>CSST:</b> use the maker's tables. 2 psi systems use different tables. A learning tool: check it against the code book before you buy pipe.</p>
   </section>
   <section data-sec="sizing" data-kw="ejector sump pump basin pit cycle run time pump down gallons per inch tdh total dynamic head lift friction discharge velocity 2 ft/s check valve gate valve sewage">
     <div class="sec-head"><h2>Ejector &amp; sump pump</h2><small>Cycle, velocity and head</small></div>
@@ -2653,7 +2654,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note"><b>brg</b> = bearing stud, bored to 40% of its depth (2×4: 1.4", 2×6: 2.2"). <b>non</b> = non-bearing, or a doubled bearing stud: 60% (2×4: 2.1", 2×6: 3.3"). <b>small saw</b> = fits only with the smaller saw in the range. Keep ⅝" from either edge (IRC R602.6). Saw sizes are trade practice (OD + about ¼"–⅜"), not code. <span class="badge why">WHY</span> A 2" drain never fits a 2×4 and a 3" never fits a 2×6. That's why wet walls get planned as 2×6 (or furred out) before framing.</p>
   </section>
   <section data-sec="framing" data-kw="notch bore joist stud top plate strap drill sawn lumber 2x10 2x12 dimensional">
-    <div class="sec-head"><h2>Sawn lumber: notch &amp; bore</h2><small>IRC R502.8 · R602.6</small></div>
+    <div class="sec-head"><h2>Sawn lumber: notch &amp; bore</h2><small>2021 IRC R502.8 · R602.6</small></div>
     <div class="x"><table class="t cards">
       <thead><tr><th>Member</th><th>Notch</th><th>Bored hole</th></tr></thead>
       <tbody>
@@ -2697,7 +2698,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="x"><table class="t"><tbody id="list-holes"></tbody></table></div>
   </section>
   <section data-sec="framing" data-kw="townhome townhouse common wall fire wall rated wall firestop fireblock penetration garage separation easement top plate foam caulk ul 1479 e814 f rating">
-    <div class="sec-head"><h2>Fire walls &amp; penetrations</h2><small>Townhomes · garage wall · IRC R302</small></div>
+    <div class="sec-head"><h2>Fire walls &amp; penetrations</h2><small>Townhomes · garage wall · 2021 IRC R302</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Townhome common wall</th><td>Rated wall between units (often 1-hr with sprinklers, 2-hr without). Model IRC: no plumbing, ducts or vents <b>inside the common-wall cavity</b>; water-filled sprinkler pipe is the exception (R302.2).</td></tr>
@@ -2735,7 +2736,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
   </section>
   <section data-sec="drains" data-kw="drain trap arm trap-to-vent distance slope fall cleanout clearance cleanout spacing where cleanouts go every 100 ft trap seal standpipe san tee combo weir">
-    <div class="sec-head"><h2>Drains, traps &amp; trap arms</h2><small>IPC 704 · 909 · IRC P3005 · P3105</small></div>
+    <div class="sec-head"><h2>Drains, traps &amp; trap arms</h2><small>2021 IRC P3005 · P3105 · 2021 IPC 704 · 909</small></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Pipe / trap</th><th>Min slope</th><th>Max trap arm<br>(trap to vent)</th></tr></thead>
       <tbody>
@@ -2759,7 +2760,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note">Trap arm lengths: IPC Table 909.1 / IRC Table P3105.1, the same in 2021 and 2024. Why the limit exists: <b>Learn → How it works</b>.</p>
   </section>
   <section data-sec="drains" data-kw="fixture dfu trap size drain size tub drain shower drain lav kitchen sink toilet washer standpipe floor drain drainage fixture units table 709.1">
-    <div class="sec-head"><h2>Fixture DFU &amp; trap size</h2><small>IPC Table 709.1</small></div>
+    <div class="sec-head"><h2>Fixture DFU &amp; trap size</h2><small>2021 IPC Table 709.1</small></div>
     <div class="x"><table class="t">
       <thead><tr><th>Fixture</th><th>DFU</th><th>Min trap</th></tr></thead>
       <tbody>
@@ -2780,7 +2781,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note"><b>Bathroom group</b> = toilet + lav + tub or shower on the same floor level; a bidet and an emergency floor drain are already included. Add fixtures outside that list (a second lav) separately. The IRC also has half-bath, kitchen and laundry groups. <b>Houses: IRC Table P3201.7 wants a 2" shower trap.</b> Unlisted fixtures go by trap size: 1¼" = 1, 1½" = 2, 2" = 3, 3" = 5, 4" = 6.</p>
   </section>
   <section data-sec="drains" data-kw="branch stack size dfu capacity horizontal branch interval how many fixtures drain size table 710.1">
-    <div class="sec-head"><h2>Branches &amp; stacks</h2><small>Max DFU · IPC Table 710.1(2)</small></div>
+    <div class="sec-head"><h2>Branches &amp; stacks</h2><small>Max DFU · 2021 IPC Table 710.1(2)</small></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Pipe</th><th>Branch</th><th>Stack, ≤3 intervals</th><th>Stack, &gt;3: total / each</th></tr></thead>
       <tbody>
@@ -2793,7 +2794,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note">A branch interval is a story-height section of stack (at least 8 ft) where branches connect.</p>
   </section>
   <section data-sec="drains" data-kw="building drain sewer main line size dfu slope capacity 3 inch 4 inch table 710.1">
-    <div class="sec-head"><h2>Building drain &amp; sewer</h2><small>Max DFU · IPC Table 710.1(1)</small></div>
+    <div class="sec-head"><h2>Building drain &amp; sewer</h2><small>Max DFU · 2021 IPC Table 710.1(1)</small></div>
     <div class="x"><table class="t num">
       <thead><tr><th>Pipe</th><th>⅛"/ft</th><th>¼"/ft</th><th>½"/ft</th></tr></thead>
       <tbody>
@@ -2816,7 +2817,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
   </section>
   <section data-sec="drains" data-kw="indirect waste air gap air break receptor floor sink standpipe hub drain softener ro reverse osmosis ice machine t&p discharge two times effective opening">
-    <div class="sec-head"><h2>Indirect waste & air gaps</h2><small>IPC ch. 8 · what can't tie in directly</small></div>
+    <div class="sec-head"><h2>Indirect waste & air gaps</h2><small>2021 IPC ch. 8 · what can't tie in directly</small></div>
     <div class="x"><table class="t wrap">
       <tbody>
         <tr><th>What it is</th><td>A drain that ends <b>over</b> a trapped receptor (standpipe, floor sink, hub drain) instead of connecting straight in, so the sewer can never back up into the equipment.</td></tr>
@@ -2854,7 +2855,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note">Condensate size and slope: <a href="https://parcelsfolder.portlandmaine.gov/Files/053/053%20%20D007/IMC%20Access%20Ladder.pdf" target="_blank" rel="noopener">IMC text (Portland, ME)</a>, <a href="https://hvacrschool.com/condensate-drain-codes-best-practices/" target="_blank" rel="noopener">HVAC School</a>.</p>
   </section>
   <section data-sec="vents" data-kw="vent venting rules dry vent flood rim aav air admittance studor wet vent common vent island loop vent take off above centerline weir">
-    <div class="sec-head"><h2>Venting rules</h2><small>IRC ch. 31 · IPC ch. 9</small></div>
+    <div class="sec-head"><h2>Venting rules</h2><small>2021 IRC ch. 31 · 2021 IPC ch. 9</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Take-off</th><td>A vent leaves the drain <b>above the drain's centerline</b> (rolled up, not off the side or bottom) so waste can't run into it.</td></tr>
@@ -2867,7 +2868,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note">Section numbers are from the 2021 IRC. On layouts, your inspector's call wins.</p>
   </section>
   <section data-sec="vents" data-kw="vent sizing roof terminal frost height above roof snow through wall termination">
-    <div class="sec-head"><h2>Vent sizing &amp; terminals</h2><small>IRC P31 · IPC ch. 9 · Utah</small></div>
+    <div class="sec-head"><h2>Vent sizing &amp; terminals</h2><small>2021 IRC P31 · 2021 IPC ch. 9 · Utah</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Vent size</th><td>At least ½ the drain it serves, never under 1¼". Over 40 ft developed length: go up one size.</td></tr>
@@ -2912,7 +2913,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
   </section>
   <section data-sec="supply" data-kw="prv pressure 80 psi expansion tank hammer arrestor nail plate hose bibb backflow vacuum breaker">
-    <div class="sec-head"><h2>Water supply</h2><small>IRC P29 · IPC ch. 6</small></div>
+    <div class="sec-head"><h2>Water supply</h2><small>2021 IRC P29 · 2021 IPC ch. 6</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Over 80 psi</th><td>PRV with strainer, set ≤80 psi (604.8).</td></tr>
@@ -2927,7 +2928,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
   </section>
   <section data-sec="supply" data-kw="supply line size fixture">
-    <div class="sec-head"><h2>Fixture supply size</h2><small>Minimum · IPC Table 604.5</small></div>
+    <div class="sec-head"><h2>Fixture supply size</h2><small>Minimum · 2021 IPC Table 604.5</small></div>
     <div class="x"><table class="t">
       <thead><tr><th>Fixture</th><th>Min supply</th></tr></thead>
       <tbody>
@@ -2940,7 +2941,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note">These are the minimum lines to each fixture, not the trunk.</p>
   </section>
   <section data-sec="supply" data-kw="hanger hangers strap straps support spacing clamp mid-story guide">
-    <div class="sec-head"><h2>Pipe supports</h2><small>IPC Table 308.5</small></div>
+    <div class="sec-head"><h2>Pipe supports</h2><small>2021 IPC Table 308.5</small></div>
     <div class="x"><table class="t">
       <thead><tr><th>Material</th><th>Horiz.</th><th>Vert.</th></tr></thead>
       <tbody>
@@ -3007,7 +3008,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note">AFF = above finished floor. Builders often have their own standard sheet: get it once and keep a photo on your phone, or put the numbers in a note (⋯ → Add a note).</p>
   </section>
   <section data-sec="fixtures" data-kw="fixture clearance toilet 15 21 30 inches center side wall shower 900 square inches 30 circle 22 door access panel">
-    <div class="sec-head"><h2>Fixture clearances</h2><small>IRC P2705 · P2708 · IPC 405</small></div>
+    <div class="sec-head"><h2>Fixture clearances</h2><small>2021 IRC P2705 · P2708 · 2021 IPC 405</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Toilet</th><td><b>≥ 15"</b> center to any side wall or obstruction. <b>≥ 30"</b> center to center between toilets or bidets. <b>≥ 21"</b> clear in front to a wall, fixture or door (IRC P2705.1).</td></tr>
@@ -3030,7 +3031,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note">Prefab bases and sheet or foam systems: follow that maker's install and test steps.</p>
   </section>
   <section data-sec="gas" data-kw="gas piping shutoff sediment trap drip leg connector csst bond bonding support spacing shield plate striker sizing">
-    <div class="sec-head"><h2>Gas piping</h2><small>Houses: IRC ch. 24 · else IFGC</small></div>
+    <div class="sec-head"><h2>Gas piping</h2><small>Houses: 2021 IRC ch. 24 · else 2024 IFGC</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>Shutoff</th><td>Each appliance: same room, within 6 ft, upstream of the union and connector, accessible.</td></tr>
@@ -3044,7 +3045,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
   </section>
   <section data-sec="gas" data-kw="combustion air openings natural draft atmospheric confined space louver 50 cubic feet per 1000 btu 4000 2000 3000">
-    <div class="sec-head"><h2>Combustion air</h2><small>Natural-draft gas appliances · IRC G2407</small></div>
+    <div class="sec-head"><h2>Combustion air</h2><small>Natural-draft gas appliances · 2021 IRC G2407</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>First check</th><td>Power-vent, direct-vent (sealed) heaters and 90%+ furnaces bring air in through their own pipe: follow the maker. This is for <b>natural-draft</b> heaters and furnaces.</td></tr>
@@ -3256,7 +3257,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div>
   </section>
   <section data-sec="heaters" data-kw="water heater install t&amp;p tp relief discharge pan seismic strap expansion tank garage 18 fvir bollard closet bedroom tankless condensate cold shutoff nox ultra low nox emissions deq">
-    <div class="sec-head"><h2>Water heater install</h2><small>IRC P28 · G24 · Utah</small></div>
+    <div class="sec-head"><h2>Water heater install</h2><small>2021 IRC P28 · G24 · Utah</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>T&amp;P line</th><td>Full size of the valve outlet, one line per valve. No valves, tees or threaded end. Drains by gravity, no sags or traps. Ends through an air gap <b>in the same room</b>, in plain view, ≤ 6" above the floor or a receptor; never piped straight into a drain. <b>PEX or PE-RT: one size bigger</b> than the valve outlet, end fastened (IRC P2804.6.1). <span class="badge ut">UT</span> ≤ 180° of total bends.</td></tr>
@@ -3326,7 +3327,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="x"><table class="t out"><tbody>
       <tr class="hit" aria-live="polite" aria-atomic="true"><th>Peak-hour demand</th><td id="whs-ans" class="big">—</td><td class="sub">Pick a first hour rating at least this big.</td></tr>
     </tbody></table></div>
-    <p class="note">Gallons per use from the U.S. DOE sizing worksheet. Tankless: add the gpm of everything that runs at once (DOE says plan on at least 3.25 gpm through the heater) at a 70°F rise (DOE's 50°F in, 120°F out; a Utah winter is closer to 40°F in, an 80°F rise); <b>Service → Water heaters → Water heater output</b> checks a unit. Utah's cold winter water and altitude cut tankless output: check the derate.</p>
+    <p class="note">Gallons per use from the U.S. DOE (energy.gov) peak-hour worksheet · checked Nov 2026; the starting numbers are DOE's own example (3 showers, a shave and hand dishes: 65 gal; DOE's page prints 66, but its rows add to 65). Older copies of that sheet said 10 gal a shower; the current one says 20. Tankless: add the gpm of everything that runs at once (DOE says plan on at least 3.25 gpm through the heater) at a 70°F rise (DOE's 50°F in, 120°F out; a Utah winter is closer to 40°F in, an 80°F rise); <b>Service → Water heaters → Water heater output</b> checks a unit. Utah's cold winter water and altitude cut tankless output: check the derate.</p>
   </section>
   <section data-sec="heaters" data-kw="recovery tankless gpm gph first hour sizing water heater">
     <div class="sec-head"><h2>Water heater output</h2><small>Recovery · tankless flow</small></div>
@@ -3545,7 +3546,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Salt</th><td id="sf-salt-o" class="big">—</td><td class="sub" id="sf-salt-s"></td></tr>
       </tbody></table></div>
     <details class="math"><summary>Show the math</summary><ol id="sf-math"></ol></details>
-    <p class="note"><span class="badge why">WHY</span> The "48,000-grain" on the box is what the resin holds at the <b>maximum</b> salt dose. Set it to save salt and the same tank holds about two thirds of that. That's why a "too big" softener is usually the right one: it runs efficient and still goes a week. Iron: the common rule adds 4 gpg per 1 ppm. Hardness for your city: <b>Service → Treatment → Utah water</b>, or test it.</p>
+    <p class="note"><span class="badge why">WHY</span> The "48,000-grain" on the box is what the resin holds at the <b>maximum</b> salt dose. Set it to save salt and the same tank holds about two thirds of that. That's why a "too big" softener is usually the right one: it runs efficient and still goes a week. Iron: the common rule adds 4 gpg per 1 ppm. Resin numbers (about 20k / 25k / 30k grains per ft³ at 6 / 10 / 15 lb salt) are industry rules of thumb (Chem-Aqua, resin sellers) · checked Nov 2026; the softener's own manual wins. Hardness for your city: <b>Service → Treatment → Utah water</b>, or test it.</p>
   </section>
   <section data-sec="treat" data-kw="softener settings service water softener salt level add salt salt bridge mush potassium chloride resin life hardness setting regen time 2 am metered demand timer clock not using salt hard water resin beads">
     <div class="sec-head"><h2>Softener service</h2><small>Settings · salt · trouble</small></div>
@@ -3687,7 +3688,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <p class="note">Source: A. O. Smith Technical Bulletin 44, Water Softeners (hotwater.com). The bulletin gives no inspection interval.</p>
   </section>
   <section data-sec="treat" data-kw="water treatment code softener code ipc 608.4 608.13 611 611.1 611.2 611.3 802.3.1 802.4.3 irc p2909 p2911 air gap indirect waste discharge potable water protection nsf 44 58 42 53 utah amendment reverse osmosis drain standpipe">
-    <div class="sec-head"><h2>Treatment code</h2><small>What the IPC and IRC say · Utah</small></div>
+    <div class="sec-head"><h2>Treatment code</h2><small>What the 2021 IPC and IRC say · Utah</small></div>
     <p class="note">Our summary, not the code text. The IPC and IRC belong to the International Code Council: read the real thing in <b>Inspect → Which code → Code links</b>.</p>
     <div class="x"><table class="t">
       <thead><tr><th>Section</th><th>What it covers</th></tr></thead>
@@ -4259,7 +4260,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td>3"</td><td>3.500</td><td>3.068</td></tr>
         <tr><td>4"</td><td>4.500</td><td>4.026</td></tr>
       </tbody></table></div>
-    <p class="note">Hole saw sizes: <b>Build → Framing</b>. <span class="badge why">WHY</span> Copper and CTS PEX share an OD (nominal + ⅛"), so the same fittings fit. PEX has a thicker wall, so its ID is smaller and it carries less water at the same size.</p>
+    <p class="note">Hole saw sizes: <b>Build → Framing</b>. <span class="badge why">WHY</span> Copper and CTS PEX share an OD (nominal + ⅛"), so the same fittings fit. PEX has a thicker wall, so its ID is smaller and it carries less water at the same size. Sources: copper per ASTM B88 (Copper Development Association), PEX per Uponor AquaPEX spec sheets (SDR 9; other brands are close, not identical), PVC/ABS per ASTM D1785 · checked Nov 2026.</p>
   </section>
   <section data-sec="threads" data-kw="npt thread makeup engagement tpi threads per inch pipe nipple cut length">
     <div class="sec-head"><h2>Pipe thread makeup</h2><small>NPT · approximate</small></div>
@@ -4835,7 +4836,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </div>
     <div class="x"><table class="t"><tbody id="mn-rows"></tbody></table></div>
   </section>
-  <section data-sec="emergency" data-kw="blue stakes 811 inspections enbridge dopl utility state deq ddw drinking water cross connection backflow environmental spill incident water quality labor commission icc code council salt lake public utilities cuwcd central utah water">
+  <section data-sec="emergency" data-kw="blue stakes bluestakes 811 inspections enbridge dopl utility state deq ddw drinking water cross connection backflow environmental spill incident water quality labor commission icc code council salt lake public utilities cuwcd central utah water">
     <div class="sec-head"><h2>Utilities &amp; state lines</h2><small>Tap to call · hold to copy</small></div>
     <div class="x"><table class="t">
       <tbody>
@@ -5099,7 +5100,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <section data-sec="safety" data-kw="ladder ladders fall falls extension ladder step ladder stepladder 4 to 1 four to one angle 75 degrees 3 feet above landing top step three points of contact fiberglass aluminum power lines inspect damaged ladder roof attic">
     <div class="sec-head"><h2>Ladders</h2><small>Falls are the big one</small></div>
     <figure class="cut"><svg viewBox="0 0 400 230" role="img" aria-label="An extension ladder leaning on a wall. For every 4 feet of height up the wall, the foot is 1 foot out. The rails run 3 feet past the roof edge."><g font-size="13" fill="var(--d-text)">
-<path d="M300 20V214H20" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><path d="M300 70H380" stroke="var(--d-pipe)" stroke-width="4"/><text x="318" y="62">Roof / landing</text>
+<path d="M300 20V214H20" fill="none" stroke="var(--d-pipe)" stroke-width="4"/><path d="M300 70H380" stroke="var(--d-pipe)" stroke-width="4"/><text x="392" y="62" text-anchor="end">Roof / landing</text>
 <path d="M256 214L300 38M244 214L288 38" stroke="var(--d-fit)" stroke-width="4"/><path d="M252 198H262M258 174H268M264 150H274M270 126H280M276 102H286M282 78H292M288 54H298" stroke="var(--d-fit)" stroke-width="3"/>
 <path d="M300 38V70" stroke="var(--d-rise)" stroke-width="3"/><text x="160" y="44">3 ft past the edge</text>
 <path d="M310 70V214" stroke="var(--d-tru)" stroke-width="3" stroke-dasharray="6 4"/><text x="316" y="150">4</text>
@@ -5305,7 +5306,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Flooded appliances</th><td>A heater, pump or furnace that sat in water stays off until it's checked or replaced. Controls and wiring that got wet can fail later.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="power" data-kw="power lines overhead lines 10 feet clearance ladder aluminum fiberglass service drop roof vent underground lines blue stakes 811 dig private lines">
+  <section data-sec="power" data-kw="power lines overhead lines 10 feet clearance ladder aluminum fiberglass service drop roof vent underground lines bluestakes blue stakes 811 dig private lines">
     <div class="sec-head"><h2>Power lines</h2><small>Overhead and underground</small></div>
     <div class="x"><table class="t">
       <tbody>
@@ -5337,7 +5338,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <div class="ans" id="el-ans" role="status" aria-atomic="true"></div>
     </div>
     <details class="math"><summary>Show the math</summary><ol id="el-math"></ol></details>
-    <p class="note">For talking it over with the electrician, not for pulling wire. The label, the maker's manual and the NEC as Utah adopts it have the final word. Electric <b>tankless</b>: use the maker's breaker and wire chart (they often split into 2–4 circuits).</p>
+    <p class="note">For talking it over with the electrician, not for pulling wire. The label, the maker's manual and the <b>2023 NEC</b> (Utah's edition from 7/1/2026, Utah Code 15A-2-103 · checked Nov 2026) have the final word. Electric <b>tankless</b>: use the maker's breaker and wire chart (they often split into 2–4 circuits).</p>
     <p class="card-h">Typical circuits</p>
     <div class="x"><table class="t cards wrap">
       <thead><tr><th>Equipment</th><th>Typical circuit</th><th>Watch for</th></tr></thead>
@@ -5363,7 +5364,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td>6 AWG</td><td>55 A</td><td>65 A</td></tr>
         <tr><td>4 AWG</td><td>70 A</td><td>85 A</td></tr>
       </tbody></table></div>
-    <p class="note">NEC 310.16 and 240.4(D). NM cable is held to the 60°C column (NEC 334.80). Aluminum is bigger for the same amps.</p>
+    <p class="note">2023 NEC 310.16 and 240.4(D). NM cable is held to the 60°C column (NEC 334.80). Aluminum is bigger for the same amps.</p>
     <p class="card-h">Bonding, grounding &amp; safety</p>
     <div class="x"><table class="t">
       <tbody>
@@ -5421,6 +5422,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 20, 2026 · Full check</th><td><b>Water heater size uses DOE's current numbers:</b> 20 gal a shower (the old sheet said 10), 3 for hand dishes, 7 for a dishwasher, and the clothes washer split into top-load (25) and front-load (15). The starting example is DOE's own (3 showers, a shave, hand dishes = 65 gal), so expect bigger answers than before. <b>Answers follow your tape setting everywhere:</b> Offset, Feet-inch, Square it and the bore line now round once, to ⅛" (or what you picked), and a small real amount never shows as 0". The stud bore limit shows the exact number instead of rounding up (a 2×6 bearing wall is 2.2", not 2¼"). <b>Fixes:</b> PEX 1¼" inside size is 1.054" (Uponor), used in the supply-demand pipe check. Cards now say which code edition they come from (2021 IRC, 2021 IPC, 2024 IFGC, 2023 NEC), and the electrical card names the 2023 NEC Utah adopted 7/1/2026. Sources and checked dates added to pipe sizes, the softener sizer, the gas table and supply demand. Diagram labels no longer get cut off on small phones, the Compact / Full switch on a job's notes no longer runs off a small screen, and searching "bluestakes" finds the 811 cards.</td></tr>
         <tr><th>Nov 19, 2026 · Smarter notes &amp; checklists</th><td><b>Tick things where you see them:</b> every to-do, question and heads-up in What's next has its own box, so you can check it off without opening the note. Heads-ups can be ticked now too: once it's handled it turns gray (<code>!✓</code>) and stops showing as open. <b>Move a to-do:</b> the <b>→</b> next to a to-do in What's next sends it to the punch list or that stage's checklist. The note's box gets ticked and says where it went, and <b>Undo</b> puts both back. <b>Keep notes sorted:</b> a <b>Show</b> box above the notes lists them newest first, by stage, by tag, or day logs only, and it remembers your pick. Tap <b>📌</b> on an open note to pin it at the top (gate code, the super's number). People, builder and subdivision pages get a <b>Still open</b> box with their open to-dos, questions and heads-ups. <b>Shorter lists:</b> checklists and the punch list show what's left first; checked items fold into <b>✓ N done</b> (tap to see them). While you're editing a checklist (✎ Edit list) you still see the whole list in your order.</td></tr>
         <tr><th>Nov 19, 2026 · My jobs trim</th><td><b>Less doubled-up:</b> one way to log hours (the ⏱ box at the top of the job); each stage's Hours has a <b>⏱ Log hours on Top-out</b> button that opens that same box set to that stage, instead of a second form. The Timeline header no longer repeats the to-do and question counts (they're in the job's header and What's next). The whole-job report is just the 📄 Report button up top; Report &amp; activity log keeps the per-stage ones. The gate code shows once, up top. Behind the scenes: Job details is one form instead of two copies, and leftover code and styles from the old notes layout are gone (about 30 lines lighter).</td></tr>
         <tr><th>Nov 19, 2026 · My jobs cleanup</th><td><b>One place for notes:</b> a job's notes are now one list right under What's next, newest on top, each tagged with its stage (no more hunting under "Notes on other stages"). A <b>Stage</b> box next to Add note picks where a new note goes; it follows the stage you tap in the Timeline. Long lists show the newest 6, with <b>Show all</b>. <b>From your notes</b> (PSI, serials, gate codes) sits right under the notes. The <b>Preview</b> only shows when you've used a mark. <b>What's next</b> (was "Where you left off") folds with one tap and stays that way; folded, it still shows the first thing. Tap any line in it to jump to the note, the stage or the punch list. Tapping an open box or question on the job list opens that exact note. <b>Tidier:</b> the stage now holds just status, checklist, inspections and hours, so the other stages sit right below it; "+ Add" folds show a + and plain folds a ▸ (the ? is only on "What is this?" help); Log hours starts folded (the ⏱ Hours button up top is faster); the Done/Archived row hides until you have done or archived jobs; one Jobs settings link instead of two; "✎ Edit · not done" is now <b>✎ Edit list</b>.</td></tr>
@@ -5702,7 +5704,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 <path d="M125 214H110" stroke="var(--d-pipe)" stroke-width="5"/><circle cx="107" cy="214" r="4" fill="var(--d-bg)" stroke="var(--d-pipe)" stroke-width="2"/>
 <path d="M90 262H330" stroke="var(--d-dim)" stroke-width="2"/>
 <path d="M100 116H147M213 106H268M194 150H268M206 220H268" stroke="var(--d-dim)" stroke-width="1"/>
-<text x="144" y="12" font-size="11" text-anchor="end">cold in</text><text x="185" y="8" font-size="11" text-anchor="middle">vent</text><text x="230" y="12" font-size="11">hot out</text>
+<text x="144" y="12" font-size="11" text-anchor="end">cold in</text><text x="185" y="11" font-size="11" text-anchor="middle">vent</text><text x="230" y="12" font-size="11">hot out</text>
 <text x="96" y="120" text-anchor="end">Dip tube</text><text x="98" y="191" text-anchor="end">Gas valve</text><text x="98" y="218" text-anchor="end">Drain valve</text>
 <text x="272" y="64">T&amp;P valve</text><text x="272" y="110">Anode rod</text><text x="272" y="154">Flue + baffle</text><text x="272" y="224">Burner</text><text x="272" y="254" font-size="11">ends ≤6" off the floor</text></g></svg><figcaption>Cold goes down the dip tube; hot comes off the top. The anode corrodes so the steel tank doesn't.</figcaption></figure>
     <div class="x"><table class="t">
@@ -5938,7 +5940,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
 <path d="M40 30q10-8 20 0t20 0t20 0M150 30q10-8 20 0t20 0t20 0M260 30q10-8 20 0t20 0t20 0" fill="none" stroke="var(--d-rise)" stroke-width="3"/><text x="20" y="16">Warm, damp air</text>
 <path d="M20 76H380" stroke="var(--d-cut)" stroke-width="16"/>
 <path d="M90 90q-5 9 0 13q5-4 0-13M150 90q-5 9 0 13q5-4 0-13M210 90q-5 9 0 13q5-4 0-13M270 90q-5 9 0 13q5-4 0-13M330 90q-5 9 0 13q5-4 0-13M150 116q-5 9 0 13q5-4 0-13M270 120q-5 9 0 13q5-4 0-13" fill="var(--d-cut)"/>
-<text x="20" y="152">Pipe colder than the air's dew point: water comes out of the air.</text></g></svg><figcaption>The water was in the air. The pipe just cooled it out.</figcaption></figure>
+<text x="20" y="152">Pipe below the dew point: water comes out of the air.</text></g></svg><figcaption>The water was in the air. The pipe just cooled it out.</figcaption></figure>
     <div class="x"><table class="t">
       <tbody>
         <tr><th>The physics</th><td>Air holds water vapor, and warmer air holds more. Cool air down to its <b>dew point</b> and it can't hold it all: the extra turns to liquid on whatever is cold. A cold water line in a humid room is that cold thing.</td></tr>
@@ -6173,7 +6175,7 @@ function ftEcho(inp){   /* says how a plain number was read, so nobody wonders *
 }
 { const ftInit = () => FT_BOXES.forEach(id => { const i = $(id); if (!i) return; i.addEventListener("input", () => ftEcho(i)); ftEcho(i); });
   document.readyState === "loading" ? addEventListener("DOMContentLoaded", ftInit) : ftInit(); }
-const ftInTxt = ft => fmtFtIn(Math.round(ft * 12 * 16) / 16);
+const ftInTxt = ft => fmtFtIn(ft * 12);   /* fmtFtIn rounds once, to the Settings fraction */
 const nf = (x, d=3) => isFinite(x) ? Math.abs(x) >= 1e9 ? x.toExponential(3) : (x !== 0 && Math.abs(x) < 0.01 ? (+x.toPrecision(4)).toString() : Math.abs(x) >= 1000 ? x.toLocaleString(undefined,{maximumFractionDigits:1}) : (+x.toFixed(d)).toString()) : "—";
 /* CSS variables for drawings, cached per look: reading computed style 40 times a redraw forced style passes. The cache resets when theme, skin, vest or text size changes. */
 let cssSig = "", cssMemo = {};
@@ -6212,7 +6214,8 @@ function mathOut(id, steps){ const el = document.getElementById(id); if (el) el.
 const fracD = () => { try { return [8, 16, 32].includes(+PREFS.frac) ? +PREFS.frac : 8; } catch(e){ return 8; } };
 function toFrac16(inches){
   if (!isFinite(inches)) return "—";
-  const neg = inches < 0, D = fracD(); inches = Math.abs(inches);
+  const neg = inches < 0; let D = fracD(); inches = Math.abs(inches);
+  while (D < 32 && inches > 1e-9 && Math.round(inches * D) === 0) D *= 2;   /* a small but real amount (a 1/32" gap, a short fall) never reads as 0": it gets a finer fraction */
   let whole = Math.floor(inches), n = Math.round((inches - whole)*D);
   if (n === D){ whole++; n = 0; }
   let d = D; while (n && n%2===0){ n/=2; d/=2; }
@@ -7935,7 +7938,7 @@ function drawViews(r, l, run, cutOk, cut, to, travel, tru){
   { /* flat views: exact true lengths */
     const svg = $("ro-flat"), W = 440, H = 220, gap = 10, pw = (W - gap)/2, Bx = pw + gap;
     let o = `<rect width="${W}" height="${H}" fill="${C.bg}"/><line x1="${F(pw+gap/2)}" y1="8" x2="${F(pw+gap/2)}" y2="${H-8}" stroke="${C.grid}" stroke-width="2"/>`;
-    o += title(8, 16, "END VIEW · TRUE LENGTH");
+    o += title(8, 16, "END VIEW");
     {
       const lp = Math.max(l, 0), rp = Math.max(r, 0);
       const { k, S } = fit([[0,0],[lp,0],[lp,-rp]], {x:30, y:34, w:pw-80, h:H-74});
@@ -7950,7 +7953,7 @@ function drawViews(r, l, run, cutOk, cut, to, travel, tru){
       o += lbl(mid(O,T,.55), -8, -4, `true ${toFrac16(tru)}`, C.tru, "end", 14, 3);
       o += scaleBar(k, pw - 8, H - 10);
     }
-    o += title(Bx + 4, 16, "TRAVEL PLANE · TRUE LENGTH");
+    o += title(Bx + 4, 16, "TRAVEL PLANE");
     {
       const lead = .3 * Math.max(run, tru, 6);
       const pts = [[-lead,0],[0,0],[run,0],[run,-tru],[run+lead,-tru]];
@@ -8129,7 +8132,7 @@ for (let i=1;i<=16;i++) fg += `<div class="${i%4===0?"q":""}"><b>${i===16?'1"':t
 $("frac").innerHTML = fg;
 $("dec-ft").innerHTML = Array.from({length:6}, (_,i) => `<tr><td>${i+1}"</td><td>${((i+1)/12).toFixed(2)}</td><td>${i+7}"</td><td>${((i+7)/12).toFixed(2)}</td></tr>`).join("");
 
-/* ---------- 8 feet-inch calculator: tape-style input, answers to the nearest 1/16" ---------- */
+/* ---------- 8 feet-inch calculator: tape-style input, answers to the Settings fraction (1/8 default) ---------- */
 function parseLen(tok){ /* inches; a plain number is inches */
   const s = String(tok).trim().replace(/[″”]/g,'"').replace(/[′’]/g,"'").replace(/'\s*-\s*(?=\d)/g, "' ").replace(/(\d)-(\d+\/\d+)/g, "$1 $2"); if (!s) return NaN;
   const m = s.match(LEN_RE); if (!m || m[0].trim() === "" || !/\d/.test(s)) return NaN;
@@ -8496,7 +8499,7 @@ function poCalc(){
     o += svgLn([a[0], y], [b[0], y], txt, 1.8) + svgLn([a[0], y-5], [a[0], y+5], txt, 1.8) + svgLn([b[0], y-5], [b[0], y+5], txt, 1.8);
     o += svgTxt([b[0], y], 8, 5, `setback ${toFrac16(sb)}`, txt, "start", 14);
   }
-  o += svgCap(dim, `PLAN VIEW · ${n} PIPES · ${nf(deg,2)}° · fittings on the dashed lines`);
+  o += svgCap(dim, `PLAN · ${n} PIPES · ${nf(deg,2)}° · fittings on dashed lines`);
   svg.innerHTML = o;
 }
 ["po-s"].forEach(id => $(id).addEventListener("input", poCalc)); ["po-ang","po-n"].forEach(id => $(id).addEventListener("change", poCalc));
@@ -8630,8 +8633,8 @@ function sqCalc(){
   const T = Math.hypot(A, B), R = 180 / Math.PI;
   const rows = r => r.map(([k, b, s], i) => outRow(k, b, s, i === 0)).join("");
   if (sqMode === "lay"){
-    const even = Math.abs(T * 16 - Math.round(T * 16)) < 1e-6, miss = T / A / 16;   /* a 1/16" diagonal miss moves leg B's end about T/A × 1/16 */
-    el.innerHTML = `${fmtFtIn(T)}<small>diagonal when it's square${even ? " · comes out even" : " · rounded to ¹⁄₁₆\""}</small>`;
+    const D = fracD(), even = Math.abs(T * D - Math.round(T * D)) < 1e-6, miss = T / A / 16;   /* a 1/16" diagonal miss moves leg B's end about T/A × 1/16 */
+    el.innerHTML = `${fmtFtIn(T)}<small>diagonal when it's square${even ? " · comes out even" : ` · rounded to ¹⁄${D === 8 ? "₈" : D === 16 ? "₁₆" : "₃₂"}" (exact: ${nf(T, 3)} in)`}</small>`;
     out.innerHTML = rows([
       ["Diagonal", lenOut(T), "Corner to corner, A mark to B mark"],
       ["1", `Mark A`, `${fmtFtIn(A)} from the corner along line 1`],
@@ -9197,7 +9200,7 @@ $("ck-clear").addEventListener("click", () => { ckDone[ckPh] = []; store.set("jp
 ckDraw();
 
 /* ---------- 13 flashcards (with a "missed" pile to review) ---------- */
-/* ---------- my code: which book I work under (2021 IPC unless changed). Sets the top chip and the DFU shower trap. ---------- */
+/* ---------- my code: which book I work under (2021 IRC unless changed). Sets the top chip and the DFU shower trap. ---------- */
 const CODES = {
   ipc21: ["2021 IPC", "My code <b>2021 IPC</b> · Houses <b>2021 IRC</b>", "Set to the <b>2021 IPC</b>. <b>Calc → Sizing</b> counts a shower trap at 1½\". On a house the inspector still enforces the 2021 IRC + Utah amendments, where a shower trap is 2\"."],
   irc21: ["2021 IRC", "My code <b>2021 IRC</b> · Other <b>2024 IPC</b>", "Set to the <b>2021 IRC</b> (houses). <b>Calc → Sizing</b> counts a shower trap at 2\"."],
@@ -9991,7 +9994,7 @@ function vsCalc(){
 ["vs-stack","vs-dfu","vs-len","vs-drain","vs-len2"].forEach(id => $(id).addEventListener("input", vsCalc)); vsCalc();
 
 /* ---------- water heater size: U.S. DOE peak-hour worksheet (gal per use) ---------- */
-const WHS = [["Shower",10,2],["Shaving",2,1],["Hand dishwashing / food prep",4,1],["Automatic dishwasher",6,0],["Clothes washer",7,1]];
+const WHS = [["Shower",20,3],["Shaving",2,1],["Hand dishwashing / food prep",3,1],["Automatic dishwasher",7,0],["Clothes washer, top-load",25,0],["Clothes washer, front-load (H-axis)",15,0]];   /* energy.gov worksheet, checked Nov 2026; defaults = DOE's example: 3 showers, a shave, hand dishes = 65 gal */
 $("whs-rows").innerHTML = WHS.map(([n,g,c], i) => `<tr><td>${n}</td><td class="n">${g}</td><td><input type="number" inputmode="numeric" min="0" max="20" step="1" value="${c}" data-whs="${i}" aria-label="${n}: how many in the busiest hour"></td></tr>`).join("");
 function whsCalc(){
   let t = 0; document.querySelectorAll("[data-whs]").forEach(x => { const k = Math.max(0, parseInt(x.value, 10) || 0); t += k * WHS[+x.dataset.whs][1]; });
@@ -10615,9 +10618,9 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
     const checks = [];
     let sizeOk = true;
     if (kind === "stud"){ const lim = depth * frac; sizeOk = saw <= lim + 1e-9 && saw <= depth - 1.25 + 1e-9;
-      checks.push(sizeOk ? `<b class="ok">✓ ${toFrac16(saw)} hole fits a ${mName}</b> (limit ${toFrac16(Math.min(lim, depth - 1.25))})` : warn(`✗ A ${toFrac16(saw)} hole is too big for a ${mName} (limit ${toFrac16(Math.min(lim, depth - 1.25))}): frame it 2×6 or fur it out`)); }
+      checks.push(sizeOk ? `<b class="ok">✓ ${toFrac16(saw)} hole fits a ${mName}</b> (limit ${nf(Math.min(lim, depth - 1.25), 2)}")` : warn(`✗ A ${toFrac16(saw)} hole is too big for a ${mName} (limit ${nf(Math.min(lim, depth - 1.25), 2)}"): frame it 2×6 or fur it out`)); }
     else { const lim = depth / 3; sizeOk = saw <= lim + 1e-9;
-      checks.push(sizeOk ? `<b class="ok">✓ ${toFrac16(saw)} hole is under ⅓ of the depth</b>` : warn(`✗ ${toFrac16(saw)} is over ⅓ of a ${mName} (${toFrac16(lim)})`)); }
+      checks.push(sizeOk ? `<b class="ok">✓ ${toFrac16(saw)} hole is under ⅓ of the depth</b>` : warn(`✗ ${toFrac16(saw)} is over ⅓ of a ${mName} (${nf(lim, 2)}")`)); }
     let firstBad = -1;
     rows.innerHTML = Array.from({length: n}, (_, i) => {
       const c = h0 + sign * drop * i, dist = i * oc;
@@ -10747,7 +10750,7 @@ try { console.log("%c UTAH PLUMBERS HANDBOOK %c water flows downhill, payday flo
     ["Bathtub or tub/shower (not in a group)", 1.4], ["Shower stall (not in a group)", 1.4], ["Lavatory (not in a group)", 0.7], ["Toilet, tank (not in a group)", 2.2],
     ["Kitchen sink (not in a group)", 1.4], ["Dishwasher (not in a group)", 1.4], ["Clothes washer (not in a group)", 1.4], ["Laundry tub (not in a group)", 1.4], ["Bar sink (not in the table: counted as a lavatory)", 0.7], ["Bidet (not in the table: counted as a lavatory)", 0.7], ["Hose bibb", 2.5]];
   const DEM = [[1, 3.0], [2, 5.0], [3, 6.5], [4, 8.0], [5, 9.4], [6, 10.7], [7, 11.8], [8, 12.8], [9, 13.7], [10, 14.6], [11, 15.4], [12, 16.0], [13, 16.5], [14, 17.0], [15, 17.5], [16, 18.0], [17, 18.4], [18, 18.8], [19, 19.2], [20, 19.6], [25, 21.5], [30, 23.3], [35, 24.9], [40, 26.3], [45, 27.7], [50, 29.1], [60, 32.0], [80, 38.0], [100, 43.5]];
-  const WP = [["PEX ½\"", 0.475], ["PEX ¾\"", 0.671], ["PEX 1\"", 0.862], ["PEX 1¼\"", 1.069], ["Cu L ¾\"", 0.785], ["Cu L 1\"", 1.025], ["Cu L 1¼\"", 1.265]];
+  const WP = [["PEX ½\"", 0.475], ["PEX ¾\"", 0.671], ["PEX 1\"", 0.862], ["PEX 1¼\"", 1.054], ["Cu L ¾\"", 0.785], ["Cu L 1\"", 1.025], ["Cu L 1¼\"", 1.265]];
   const rows = $("ws-rows");
   let cnt = WS.map(() => 0);
   { const s = store.get("jpb-wsfu", null); if (Array.isArray(s) && s.length === WS.length) cnt = s.map(v => Number.isFinite(+v) ? Math.min(99, Math.max(0, Math.floor(+v))) : 0); }
@@ -11300,7 +11303,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-19d";
+var BUILD = "handbook-2026-11-20a";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
