@@ -41,7 +41,7 @@ An offline jobsite reference for **Utah residential new-construction plumbing**:
 ## Every change must
 1. **Bump `var BUILD`** in index.html (`handbook-YYYY-MM-DD` plus a letter). Without this, phones won't pick up the update.
 2. Add a row to **What's new** (newest first, in plain words, fixes included).
-3. Pass the checks: every inline `<script>` and `jobs.js` must parse (`node` `new Function(...)` check), and any calculator tests must pass.
+3. Pass the checks: run `python3 tests/run.py` (scripts parse, every page opens, calculators match hand-worked answers, jump links land, typed text never runs as code). When you add or change a calculator, add its hand-worked case to `CALCS` in that file.
 4. Make small, targeted edits. Don't reformat or rewrite unrelated parts of the giant file.
 
 ## Themes
