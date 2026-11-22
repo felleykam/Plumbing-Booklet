@@ -1700,6 +1700,9 @@ function mkShape(x, sh){
 }
 function mkDraw(){ MK.raf = 0; const c = mkCv(), x = c.getContext("2d"); if (!MK.img) return;
   x.drawImage(MK.img, 0, 0, c.width, c.height); MK.shapes.forEach(sh => mkShape(x, sh)); if (MK.cur) mkShape(x, MK.cur); }
+function mkFit(){ const c = mkCv(), w = c.parentElement; if (!MK.img || !w) return;
+  const k = Math.min(w.clientWidth / c.width, w.clientHeight / c.height); if (!(k > 0)) return;
+  c.style.width = Math.floor(c.width * k) + "px"; c.style.height = Math.floor(c.height * k) + "px"; }
 const mkSoon = () => { if (!MK.raf) MK.raf = requestAnimationFrame(mkDraw); };
 const mkPt = e => { const c = mkCv(), r = c.getBoundingClientRect(); return [(e.clientX - r.left) * c.width / r.width, (e.clientY - r.top) * c.height / r.height]; };
 async function mkOpen(){
@@ -1709,8 +1712,9 @@ async function mkOpen(){
   catch(e){ URL.revokeObjectURL(url); toast("Couldn't open that photo for markup."); return; }
   const c = mkCv(), k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
   c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
-  Object.assign(MK, {img, src: f, url, shapes: [], cur: null});
-  $("jf-dlg").close(); $("mk-dlg").showModal(); mkDraw();
+  Object.assign(MK, {img, src: f, url, shapes: [], cur: null, tool: "arrow"});   /* every time: Arrow, so a tap always does something */
+  const dlg = $("mk-dlg"); dlg.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.tool === "arrow"))); $("mk-txt-l").hidden = true; $("mk-txt").value = "";
+  $("jf-dlg").close(); dlg.showModal(); mkDraw(); mkFit(); requestAnimationFrame(mkFit);
 }
 function mkClose(ask){
   if (ask && MK.shapes.length && !jbAsk("Throw away these marks? The photo stays as it was.")) return false;
@@ -1735,24 +1739,27 @@ async function mkSave(){
 { const cv = mkCv(), dlg = $("mk-dlg"), tl = $("mk-txt-l");
   $("jf-mark").addEventListener("click", mkOpen);
   dlg.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.tool){ MK.tool = b.dataset.tool; dlg.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); tl.hidden = MK.tool !== "text"; if (MK.tool === "text") $("mk-txt").focus(); }
+    if (b.dataset.tool){ MK.tool = b.dataset.tool; dlg.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); tl.hidden = MK.tool !== "text"; mkFit(); }
     else if (b.dataset.col){ MK.col = b.dataset.col; dlg.querySelectorAll("[data-col]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); }
     else if (b.id === "mk-undo"){ MK.shapes.pop(); mkDraw(); }
     else if (b.id === "mk-save") mkSave();
     else if (b.id === "mk-cancel" || b.id === "mk-x") mkClose(true); });
   dlg.addEventListener("cancel", e => { e.preventDefault(); mkClose(true); });   /* Esc / back: same question as Cancel */
   dlg.addEventListener("close", () => { if (MK.url) URL.revokeObjectURL(MK.url); Object.assign(MK, {img: null, url: null, cur: null}); jbReseat(); });
-  cv.addEventListener("pointerdown", e => { if (!MK.img) return; e.preventDefault(); const p = mkPt(e), w = mkW();
-    if (MK.tool === "text"){ const t = $("mk-txt").value.trim(); if (!t){ toast("Type the text first, then tap where it goes."); $("mk-txt").focus(); return; }
+  cv.addEventListener("pointerdown", e => { if (!MK.img || !e.isPrimary || MK.cur) return; e.preventDefault(); const p = mkPt(e), w = mkW();
+    if (MK.tool === "text"){ const t = $("mk-txt").value.trim(); if (!t){ toast("Type your label in the box above first, then tap where it goes."); $("mk-txt").focus(); return; }
       const x = cv.getContext("2d"); x.font = `700 ${w * 6}px system-ui, -apple-system, sans-serif`; const tw = x.measureText(t).width;
       MK.shapes.push({t: "text", s: t, a: [Math.max(4, Math.min(p[0], cv.width - tw - 4)), Math.max(w * 4, Math.min(p[1], cv.height - w * 4))], col: MK.col, w});
       $("mk-txt").value = ""; $("mk-txt").blur(); mkDraw(); return; }
     try { cv.setPointerCapture(e.pointerId); } catch(err){}
     MK.cur = MK.tool === "pen" ? {t: "pen", p: [p], col: MK.col, w} : {t: MK.tool, a: p, b: p, col: MK.col, w}; mkSoon(); });
-  cv.addEventListener("pointermove", e => { if (!MK.cur) return; e.preventDefault(); const p = mkPt(e); if (MK.cur.t === "pen") MK.cur.p.push(p); else MK.cur.b = p; mkSoon(); });
+  cv.addEventListener("pointermove", e => { if (!MK.cur || !e.isPrimary) return; e.preventDefault(); const p = mkPt(e); if (MK.cur.t === "pen") MK.cur.p.push(p); else MK.cur.b = p; mkSoon(); });
   const up = () => { const s = MK.cur; if (!s) return; MK.cur = null;
     if (s.t === "pen" || Math.hypot(s.b[0] - s.a[0], s.b[1] - s.a[1]) > s.w * 3) MK.shapes.push(s); mkDraw(); };
-  cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+  cv.addEventListener("pointerup", e => { if (e.isPrimary) up(); }); cv.addEventListener("pointercancel", e => { if (e.isPrimary) up(); });
+  cv.addEventListener("contextmenu", e => e.preventDefault());   /* long press: no "Save image" menu over your drawing */
+  addEventListener("resize", () => { if (dlg.open) mkFit(); }); if (window.visualViewport) visualViewport.addEventListener("resize", () => { if (dlg.open) mkFit(); });
+  $("mk-txt").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); $("mk-txt").blur(); } });
 }
 
 /* ---- photos & files backup: a plain (stored, not compressed) zip with manifest.json; JPEGs and PDFs don't shrink anyway */
