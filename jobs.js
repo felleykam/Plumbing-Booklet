@@ -1652,7 +1652,7 @@ async function jfView(id){
   JF.cur = f; if (JF.url) URL.revokeObjectURL(JF.url); JF.url = URL.createObjectURL(f.blob);
   $("jf-title").textContent = f.proof ? "📍 Proof photo · " + jbShort(+f.proof.at) : f.kind === "photo" ? "Photo · " + jbShort(f.t) : f.name;
   $("jf-dlg-body").innerHTML = f.kind === "photo" ? `<img src="${JF.url}" alt="${f.proof ? "Proof photo" : "Job photo"}">` : `<p class="jf-fname"><b>${esc(f.name)}</b><br>${jfMB(f.blob.size)}</p>`;
-  $("jf-proofbox").innerHTML = jfProofHtml(f); $("jf-share").textContent = f.kind === "photo" ? "Save to Photos / send" : "Save / send file";
+  $("jf-proofbox").innerHTML = jfProofHtml(f); $("jf-mark").hidden = f.kind !== "photo"; $("jf-share").textContent = f.kind === "photo" ? "Save to Photos / send" : "Save / send file";
   $("jf-note").value = f.note || ""; JF.noteWas = f.note || ""; JF.noteAct = null;
   const oj = jbD.jobs.find(x => x.id === f.job), sb = $("jf-stg");
   if (sb) sb.innerHTML = !oj || f.kind !== "photo" ? "" : f.proof ? `<p class="note">Filed under <b>${esc(JB_SNAME[f.s] || "the job")}</b>. A proof photo stays on the stage it was stamped with.</p>`
@@ -1681,6 +1681,79 @@ $("jf-del").addEventListener("click", async () => { const c = JF.cur; if (!c || 
   const lnk = []; { const oj = jbD.jobs.find(x => x.id === c.job); if (oj){ JB_STG.forEach(([k]) => { const P = (oj.stages[k] || {}).ph || {}; Object.keys(P).forEach(q => { if (P[q] === c.id){ delete P[q]; lnk.push(["ck", k, q]); } }); }); oj.punch.forEach(p => { if (p.ph === c.id){ delete p.ph; lnk.push(["punch", p.id]); } }); } }   /* its items show the camera again */ jbAct(jbD.jobs.find(x => x.id === c.job), `🗑 Deleted a ${c.proof ? "proof photo" : c.kind === "photo" ? "photo" : "file"} (it's in Recently deleted)`, c.s);   /* marked, not erased: Recently deleted can bring it back */
   const bid = jbBin("file", {id: c.id, kind: c.kind, job: c.job, name: c.kind === "photo" ? (c.note || "Photo") : c.name}, lnk.length ? {links: lnk} : {}); jbSave();
   $("jf-dlg").close(); jfDraw(c.job); jbUndo(bid); });
+
+/* ---- Mark up: arrows, circles, freehand and text drawn on a COPY of a job photo. The original stays untouched, so a proof
+   photo keeps its stamp and fingerprint. Marks get a dark edge so they show on drywall, dirt or sky. */
+const MK = {img: null, src: null, url: null, shapes: [], cur: null, tool: "arrow", col: "#ff1a1a", raf: 0};
+const mkCv = () => $("mk-cv");
+const mkW = () => { const c = mkCv(); return Math.max(3, Math.round(Math.max(c.width, c.height) / 130)); };
+function mkShape(x, sh){
+  const w = sh.w; x.lineCap = "round"; x.lineJoin = "round";
+  const stroke = path => { x.strokeStyle = "rgba(0,0,0,.7)"; x.lineWidth = w + Math.max(2, w * .7); path(); x.stroke(); x.strokeStyle = sh.col; x.lineWidth = w; path(); x.stroke(); };
+  if (sh.t === "pen") stroke(() => { x.beginPath(); sh.p.forEach(([a, b], i) => i ? x.lineTo(a, b) : x.moveTo(a, b)); if (sh.p.length === 1) x.lineTo(sh.p[0][0] + .1, sh.p[0][1]); });
+  else if (sh.t === "circle"){ const rx = Math.abs(sh.b[0] - sh.a[0]) / 2, ry = Math.abs(sh.b[1] - sh.a[1]) / 2;
+    stroke(() => { x.beginPath(); x.ellipse((sh.a[0] + sh.b[0]) / 2, (sh.a[1] + sh.b[1]) / 2, Math.max(rx, 1), Math.max(ry, 1), 0, 0, Math.PI * 2); }); }
+  else if (sh.t === "arrow"){ const [x0, y0] = sh.a, [x1, y1] = sh.b, an = Math.atan2(y1 - y0, x1 - x0), h = Math.min(Math.hypot(x1 - x0, y1 - y0) * .45, w * 5);
+    stroke(() => { x.beginPath(); x.moveTo(x0, y0); x.lineTo(x1, y1); x.moveTo(x1 - h * Math.cos(an - .5), y1 - h * Math.sin(an - .5)); x.lineTo(x1, y1); x.lineTo(x1 - h * Math.cos(an + .5), y1 - h * Math.sin(an + .5)); }); }
+  else if (sh.t === "text"){ const fs = sh.w * 6; x.font = `700 ${fs}px system-ui, -apple-system, sans-serif`; x.textBaseline = "middle";
+    x.lineWidth = Math.max(3, fs / 5); x.strokeStyle = "rgba(0,0,0,.9)"; x.strokeText(sh.s, sh.a[0], sh.a[1]); x.fillStyle = sh.col; x.fillText(sh.s, sh.a[0], sh.a[1]); }
+}
+function mkDraw(){ MK.raf = 0; const c = mkCv(), x = c.getContext("2d"); if (!MK.img) return;
+  x.drawImage(MK.img, 0, 0, c.width, c.height); MK.shapes.forEach(sh => mkShape(x, sh)); if (MK.cur) mkShape(x, MK.cur); }
+const mkSoon = () => { if (!MK.raf) MK.raf = requestAnimationFrame(mkDraw); };
+const mkPt = e => { const c = mkCv(), r = c.getBoundingClientRect(); return [(e.clientX - r.left) * c.width / r.width, (e.clientY - r.top) * c.height / r.height]; };
+async function mkOpen(){
+  const f = JF.cur; if (!f || f.kind !== "photo" || !f.blob) return;
+  const url = URL.createObjectURL(f.blob); let img;
+  try { img = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => no(new Error("decode")); i.src = url; }); }
+  catch(e){ URL.revokeObjectURL(url); toast("Couldn't open that photo for markup."); return; }
+  const c = mkCv(), k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+  c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
+  Object.assign(MK, {img, src: f, url, shapes: [], cur: null});
+  $("jf-dlg").close(); $("mk-dlg").showModal(); mkDraw();
+}
+function mkClose(ask){
+  if (ask && MK.shapes.length && !jbAsk("Throw away these marks? The photo stays as it was.")) return false;
+  MK.shapes = []; MK.cur = null; $("mk-dlg").close(); return true;
+}
+async function mkSave(){
+  const src = MK.src; if (!src) return; if (!MK.shapes.length){ toast("Add a mark first: arrow, circle, draw or text."); return; }
+  mkDraw(); const c = mkCv(), btn = $("mk-save"); btn.disabled = true;
+  try {
+    const big = await new Promise((ok, no) => c.toBlob(b => b ? ok(b) : no(new Error("encode")), "image/jpeg", .85));
+    const sm = document.createElement("canvas"), k = 240 / Math.max(c.width, c.height);
+    sm.width = Math.max(1, Math.round(c.width * k)); sm.height = Math.max(1, Math.round(c.height * k)); sm.getContext("2d").drawImage(c, 0, 0, sm.width, sm.height);
+    const rec = {id: jbId(), job: src.job, kind: "photo", name: String(src.name || "photo").replace(/\.[^.]*$/, "") + "-marked.jpg", type: "image/jpeg",
+      blob: big, thumb: sm.toDataURL("image/jpeg", .7), note: src.note || "", t: Date.now(), from: src.id};
+    if (src.s) rec.s = src.s;
+    await jfPut(rec);
+    const j = jbD.jobs.find(x => x.id === src.job); if (j){ jbAct(j, "✏ Marked up a photo", rec.s); jbBump(j); jbSave(); }
+    mkClose(false); if (JB.open === src.job) jfDraw(src.job); toast("Saved as a new photo. The original is still there.", 2400); jfView(rec.id);
+  } catch(e){ toast("Couldn't save the marked-up copy: the phone may be out of space."); }
+  finally { btn.disabled = false; }
+}
+{ const cv = mkCv(), dlg = $("mk-dlg"), tl = $("mk-txt-l");
+  $("jf-mark").addEventListener("click", mkOpen);
+  dlg.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.tool){ MK.tool = b.dataset.tool; dlg.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); tl.hidden = MK.tool !== "text"; if (MK.tool === "text") $("mk-txt").focus(); }
+    else if (b.dataset.col){ MK.col = b.dataset.col; dlg.querySelectorAll("[data-col]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); }
+    else if (b.id === "mk-undo"){ MK.shapes.pop(); mkDraw(); }
+    else if (b.id === "mk-save") mkSave();
+    else if (b.id === "mk-cancel" || b.id === "mk-x") mkClose(true); });
+  dlg.addEventListener("cancel", e => { e.preventDefault(); mkClose(true); });   /* Esc / back: same question as Cancel */
+  dlg.addEventListener("close", () => { if (MK.url) URL.revokeObjectURL(MK.url); Object.assign(MK, {img: null, url: null, cur: null}); jbReseat(); });
+  cv.addEventListener("pointerdown", e => { if (!MK.img) return; e.preventDefault(); const p = mkPt(e), w = mkW();
+    if (MK.tool === "text"){ const t = $("mk-txt").value.trim(); if (!t){ toast("Type the text first, then tap where it goes."); $("mk-txt").focus(); return; }
+      const x = cv.getContext("2d"); x.font = `700 ${w * 6}px system-ui, -apple-system, sans-serif`; const tw = x.measureText(t).width;
+      MK.shapes.push({t: "text", s: t, a: [Math.max(4, Math.min(p[0], cv.width - tw - 4)), Math.max(w * 4, Math.min(p[1], cv.height - w * 4))], col: MK.col, w});
+      $("mk-txt").value = ""; $("mk-txt").blur(); mkDraw(); return; }
+    try { cv.setPointerCapture(e.pointerId); } catch(err){}
+    MK.cur = MK.tool === "pen" ? {t: "pen", p: [p], col: MK.col, w} : {t: MK.tool, a: p, b: p, col: MK.col, w}; mkSoon(); });
+  cv.addEventListener("pointermove", e => { if (!MK.cur) return; e.preventDefault(); const p = mkPt(e); if (MK.cur.t === "pen") MK.cur.p.push(p); else MK.cur.b = p; mkSoon(); });
+  const up = () => { const s = MK.cur; if (!s) return; MK.cur = null;
+    if (s.t === "pen" || Math.hypot(s.b[0] - s.a[0], s.b[1] - s.a[1]) > s.w * 3) MK.shapes.push(s); mkDraw(); };
+  cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+}
 
 /* ---- photos & files backup: a plain (stored, not compressed) zip with manifest.json; JPEGs and PDFs don't shrink anyway */
 const JF_CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++){ let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();

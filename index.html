@@ -520,6 +520,20 @@ dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .terms-k{margin:0 0 12px;font-size:16px;line-height:1.45}
 .terms-dlg .set-btns{gap:14px;align-items:center}
 .jf-btns{padding:4px 12px 14px;border-top:1px solid var(--rule);margin-top:8px}
+dialog.mk-dlg{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;margin:0;padding:0;border:0;background:var(--sheet);color:var(--ink);display:none;flex-direction:column}
+dialog.mk-dlg[open]{display:flex}
+dialog.mk-dlg::backdrop{background:#000}
+.mk-tools{padding:6px 8px;display:grid;gap:6px;border-bottom:1px solid var(--rule)}
+.mk-row{display:flex;gap:6px;flex-wrap:wrap}
+.mk-row button{appearance:none;min-height:46px;min-width:46px;padding:0 10px;font:inherit;font-weight:700;font-size:15px;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--zebra);color:var(--ink);cursor:pointer;flex:1 1 auto}
+.mk-row button[aria-pressed="true"]{background:var(--k);color:var(--hv);border-color:var(--k)}
+.mk-row button i{display:inline-block;width:22px;height:22px;border-radius:50%;border:2px solid #000;vertical-align:middle}
+.mk-row button[data-col]{flex:0 1 52px}
+.mk-txt{display:grid;gap:4px;font-weight:700;font-size:14px}
+.mk-txt input{min-height:46px;font:inherit;font-size:17px;padding:0 10px;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);color:var(--ink)}
+.mk-wrap{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;background:#111;overflow:hidden}
+.mk-wrap canvas{max-width:100%;max-height:100%;touch-action:none;display:block}
+.mk-note{margin:6px 12px 0}
 .jf-top{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 4px 4px 12px;background:var(--sheet);border-bottom:1px solid var(--rule)}
 .jf-top b{font-family:var(--display);font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .jf-desc{padding-top:8px}
@@ -1388,7 +1402,17 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <div class="calc jf-desc"><label for="jf-note" class="wide">Description <i>(saves as you type · goes on the proof card and the job report)</i><textarea id="jf-note" rows="2" placeholder="What this shows: 3/4 stub-out at 8 in left of center"></textarea></label></div>
   <div id="jf-stg"></div>
   <div id="jf-proofbox"></div>
-  <div class="set-btns jf-btns"><button type="button" class="btn" id="jf-share">Save to Photos / send</button><button type="button" class="btn ghost" id="jf-open">Open full size</button><button type="button" class="del" id="jf-del">Delete</button></div>
+  <div class="set-btns jf-btns"><button type="button" class="btn" id="jf-mark" hidden>✏ Mark up</button><button type="button" class="btn" id="jf-share">Save to Photos / send</button><button type="button" class="btn ghost" id="jf-open">Open full size</button><button type="button" class="del" id="jf-del">Delete</button></div>
+</dialog>
+<dialog id="mk-dlg" class="mk-dlg" aria-labelledby="mk-title"><div class="jf-top"><b id="mk-title">Mark up</b><button type="button" class="jb-x" id="mk-x" aria-label="Close without saving">✕</button></div>
+  <div class="mk-tools" role="toolbar" aria-label="Markup tools">
+    <div class="mk-row" role="radiogroup" aria-label="Tool"><button type="button" data-tool="arrow" aria-pressed="true">➚ Arrow</button><button type="button" data-tool="circle" aria-pressed="false">◯ Circle</button><button type="button" data-tool="pen" aria-pressed="false">✎ Draw</button><button type="button" data-tool="text" aria-pressed="false">T Text</button></div>
+    <div class="mk-row" role="radiogroup" aria-label="Color"><button type="button" data-col="#ff1a1a" aria-pressed="true" aria-label="Red"><i style="background:#ff1a1a"></i></button><button type="button" data-col="#ffe600" aria-pressed="false" aria-label="Yellow"><i style="background:#ffe600"></i></button><button type="button" data-col="#00e5ff" aria-pressed="false" aria-label="Blue"><i style="background:#00e5ff"></i></button><button type="button" data-col="#ffffff" aria-pressed="false" aria-label="White"><i style="background:#fff"></i></button><button type="button" id="mk-undo" aria-label="Undo">↶ Undo</button></div>
+    <label class="mk-txt" id="mk-txt-l" hidden><span>Text, then tap the photo to place it</span><input id="mk-txt" type="text" maxlength="40" autocomplete="off" placeholder='3/4" stub, 8" left of center'></label>
+  </div>
+  <div class="mk-wrap"><canvas id="mk-cv" aria-label="Photo to mark up"></canvas></div>
+  <p class="note mk-note">Saves as a new photo on this job. The original stays as it was.</p>
+  <div class="set-btns jf-btns"><button type="button" class="btn" id="mk-save">Save marked-up copy</button><button type="button" class="btn ghost" id="mk-cancel">Cancel</button></div>
 </dialog>
 <dialog id="terms-dlg" class="jf-dlg terms-dlg" aria-labelledby="terms-h"><div class="terms-in">
   <h2 id="terms-h">Before you use this book</h2>
@@ -5475,6 +5499,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 21, 2026 · Photo markup</th><td><b>New: ✏ Mark up</b> on any job photo. Draw arrows, circles, freehand lines and text labels (red, yellow, blue or white, with a dark edge so they show on drywall or dirt), with Undo. It saves as a <b>new photo</b> on the same job and stage, so the original, and a proof photo's stamp and fingerprint, stay exactly as they were.</td></tr>
         <tr><th>Nov 21, 2026 · Checked against the 2021 IPC</th><td>Read the free 2021 IPC on ICC's site and compared it to the cited sections and tables, plus the Utah IPC amendments. <b>Fixed:</b> combination waste and vent serves floor drains, sinks, lavatories and drinking fountains only (we had standpipes on the list and a "no disposer" rule the code doesn't have). <b>Branches &amp; stacks:</b> the "into one branch interval" limit is now its own column, since it applies to every stack, not just tall ones. <b>Trap primers:</b> a lav or hand sink can prime an emergency floor drain, trench drain or floor sink in the same room, not any floor drain. <b>Water + sewer:</b> now says when a shared trench is allowed (Sch 40 sewer yes, SDR 35 no) and adds the sleeved crossing.</td></tr>
         <tr><th>Nov 21, 2026 · Code pass</th><td><b>Offset calculator takes feet:</b> type the rise, roll, take-offs and space tape style, like 66 or 5' 6 1/2 (a plain number is still inches), and the ⅛ pad still adds fractions. The boxes now open the full keyboard, so tap 123 for numbers. <b>What's new is shorter:</b> updates before Nov 19 are folded into a few summary lines (the full list stays on GitHub). <b>Fixed:</b> tapping a link that jumps to a card (Which tool?, On this page, search results, 📖 links in your notes) could stop partway down the page instead of on the card, mostly on a computer, or right after the keyboard closed. Now it always lands on the card. <b>Time card:</b> a break as long as the whole shift now says so, instead of showing 0 hr.</td></tr>
         <tr><th>Nov 21, 2026 · More how it works</th><td><b>New card:</b> Why a new house needs a flush (water that sits goes stale; EPA and Purdue research). <b>Added rows:</b> why a fixture can't be double trapped (Why traps need vents), whether low-flow toilets leave waste in the drain (How a toilet flushes), why heat makes scale (How tankless works), and what fights natural draft (How a gas burner stays lit). 3 new flashcards. Every fact lists its source.</td></tr>
@@ -11560,7 +11585,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-21l";
+var BUILD = "handbook-2026-11-21m";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);

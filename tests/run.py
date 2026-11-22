@@ -8,6 +8,7 @@ What it does, with no network and no server (files are served straight from this
   3. calculator answers match hand-worked numbers (the "why" is next to each case)
   4. every "jump to a card" link lands on its card
   5. text typed into jobs, people and notes is shown as text, never run as code
+  6. photo markup saves a new photo and leaves the original untouched
 Exit code 0 = all passed. Not part of the app: the app never downloads this folder."""
 import json, mimetypes, pathlib, re, shutil, subprocess, sys
 from playwright.sync_api import sync_playwright
@@ -155,6 +156,39 @@ with sync_playwright() as pw:
             pg.evaluate(f"(()=>{{const e=document.querySelectorAll('{sel}')[{i}]; e&&e.click()}})()"); pg.wait_for_timeout(200)
     check(not pg.evaluate("window.PWN"), "hostile names, notes, people and builders stay text" + (f" (ran: {pg.evaluate('window.PWN')})" if pg.evaluate("window.PWN") else ""))
     check(not pg.errs, "no script errors on the jobs pages" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+
+    # ---------- 6. photo markup ----------
+    print("6. Photo markup saves a copy and leaves the original alone")
+    import tempfile, struct, zlib
+    def png(path, w=600, h=450):   # a plain test photo, no extra libraries
+        raw = b"".join(b"\x00" + bytes([200, 184, 154]) * w for _ in range(h))
+        ch = lambda t, d: struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d) & 0xffffffff)
+        open(path, "wb").write(b"\x89PNG\r\n\x1a\n" + ch(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0)) + ch(b"IDAT", zlib.compress(raw)) + ch(b"IEND", b""))
+    tp = tempfile.mktemp(suffix=".png"); png(tp)
+    st1 = {k: {"st": "todo", "d0": "", "d1": "", "lead": "", "done": [], "extra": []} for k in ["under","rough","gas","trim","final","warr"]}
+    one = {"jobs": [{"id": "j1", "made": 1, "name": "Lot 1", "a": "", "who": "", "bld": "", "sub": "", "city": "", "st": "open", "lead": "", "sup": "", "ppl": [], "log": [], "draft": "", "t": 1, "insp": [], "hrs": [], "punch": [], "stages": st1, "xs": [], "tags": []}], "goal": 8000, "before": 0, "people": [], "builders": [], "subs": []}
+    ctx, pg = fresh()
+    ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(one)))
+    open_book(pg)
+    ALL = "new Promise(ok=>{const r=indexedDB.open('jpb-files',1);r.onsuccess=()=>{const q=r.result.transaction('files').objectStore('files').getAll();q.onsuccess=()=>ok(q.result.map(f=>[f.id,f.blob.size,f.from||'']))}})"
+    pg.evaluate("location.hash='#mine/jobs'"); pg.wait_for_timeout(300)
+    pg.evaluate("document.querySelector('[data-peek]').click()"); pg.wait_for_timeout(300)
+    pg.evaluate("document.querySelector('[data-qa=open]').click()"); pg.wait_for_timeout(500)
+    pg.set_input_files("#jf-ph", tp); pg.wait_for_timeout(1000)
+    before = pg.evaluate(ALL)
+    check(len(before) == 1, "a photo was added to the test job")
+    if before:
+        pg.evaluate(f"document.querySelector('[data-v=\"{before[0][0]}\"]').click()"); pg.wait_for_timeout(500)
+        pg.click("#jf-mark"); pg.wait_for_timeout(600)
+        bx = pg.locator("#mk-cv").bounding_box()
+        pg.mouse.move(bx["x"] + 30, bx["y"] + 30); pg.mouse.down(); pg.mouse.move(bx["x"] + 120, bx["y"] + 100, steps=5); pg.mouse.up()
+        pg.click("#mk-save"); pg.wait_for_timeout(1200)
+        after = pg.evaluate(ALL)
+        orig = [x for x in after if x[0] == before[0][0]]
+        check(len(after) == 2 and any(x[2] == before[0][0] for x in after), "the marked-up copy is a new photo linked to the original")
+        check(bool(orig) and orig[0][1] == before[0][1], "the original photo is unchanged")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors in markup" + (f": {pg.errs}" if pg.errs else ""))
     br.close()
 
 print(f"\n{'ALL PASSED' if not FAILS else str(len(FAILS)) + ' FAILED'}")
