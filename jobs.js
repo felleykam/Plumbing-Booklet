@@ -166,6 +166,8 @@ function jbClean(){
     if (!JB_PAL.includes(j.color)) j.color = "";
     if (JB_EMOJI[j.icon]) j.icon = JB_EMOJI[j.icon]; if (!JB_ICONS.includes(j.icon)) j.icon = ""; j.pin = !!j.pin;
     if (!(+j.seen > 0)) delete j.seen; if (!(+j.arch > 0)) delete j.arch;
+    j.rooms = arrO(j.rooms).slice(0, 40); { const seen = new Set(); j.rooms.forEach(r => { r.id = jbSafeId(r.id); if (seen.has(r.id)) r.id = jbId(); seen.add(r.id); r.n = str(r.n).slice(0, 40);
+      r.f = arrO(r.f).slice(0, 40).map(x => ({id: jbSafeId(x.id), k: str(x.k).slice(0, 40), v: str(x.v).slice(0, 200)})); }); j.rooms = j.rooms.filter(r => r.n.trim()); }
     if (typeof j.made !== "number") j.made = Math.min(+j.t || Date.now(), ...j.log.map(e => +e.at || Infinity));   /* when the job was started here */
   });
 }
@@ -250,14 +252,27 @@ const jnSort = (a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : b.at - a.at;
    escapes the next mark (\* \# \[ shows the mark itself), then links, bold, italic, highlight, strike, web links, phones, tags. */
 /* what a [[link]] opens decides its color and icon: person, builder, subdivision, job, book card, or nothing yet */
 let JN_CARDS = null, jnForce = null;
-const JN_ICON = {person: "👤", bld: "🏗", sub: "🏘", job: "🔧", card: "📖", bin: "🗑", none: "＋"};
+const JN_ICON = {room: "🛁", person: "👤", bld: "🏗", sub: "🏘", job: "🔧", card: "📖", bin: "🗑", none: "＋"};
 function jnLinkType(x){
   const q = String(x).trim().toLowerCase(); if (jnForce && jnForce[q]) return jnForce[q];
+  if (jrOf(jbCur(), q)) return "room";   /* a room on the job you're looking at comes first */
   if (pByName(q)) return "person"; if (eByName("bld", q)) return "bld"; if (eByName("sub", q)) return "sub";
   if (jbD.jobs.some(j => [j.name, j.a].some(v => (v || "").trim().toLowerCase() === q))) return "job";
   if (!JN_CARDS) JN_CARDS = SECTIONS.map(sec => ((sec.querySelector("h2") || {}).textContent || "").trim().toLowerCase());
-  return JN_CARDS.some(t => t === q || (q.length > 3 && t.includes(q))) ? "card" : jbBinFind(q) ? "bin" : "none";
+  if (JN_CARDS.some(t => t === q || (q.length > 3 && t.includes(q)))) return "card";
+  return jbD.jobs.some(j => jrOf(j, q)) ? "room" : jbBinFind(q) ? "bin" : "none";
 }
+/* ---- Rooms (bathrooms, laundry, kitchen…): set once per job, the same through every stage. A room keeps its own
+   details (Tub: 60" alcove, Valve: Moen M-Core), and every note on the job that links it, [[Master bath]], shows on the
+   room grouped by stage; "Label: value" lines in those notes show there too. */
+const JR_NAMES = ["Master bath", "Main bath", "Hall bath", "Jack and Jill bath", "Basement bath", "Basement half bath", "Half bath", "Powder room", "Laundry", "Kitchen", "Wet bar", "Mud room"];
+const JR_KEYS = ["Tub / shower", "Shower valve", "Tub valve", "Toilet rough-in", "Toilet", "Vanity", "Lavs", "Lav faucet", "Shower drain", "Shower pan", "Body sprays", "Hand shower", "Fan", "Floor drain", "Tub drain side", "Grab bar blocking", "Heated floor", "Notes"];
+const jrLow = n => String(n || "").replace(/&quot;/g, '"').replace(/&amp;/g, "&").trim().toLowerCase();   /* a link's text arrives escaped */
+const jrOf = (j, n) => j && Array.isArray(j.rooms) ? j.rooms.find(r => jrLow(r.n) === jrLow(n)) : null;
+const jrEsc = n => jrLow(n).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const jrHas = (txt, n) => new RegExp("\\[\\[\\s*" + jrEsc(n) + "\\s*(\\||\\]\\])", "i").test(String(txt || ""));   /* [[Master bath]] or [[Master bath|the master]] */
+const jrNotes = (j, r) => j.log.filter(e => jrHas(e.b, r.n));
+const jrFacts = (j, r) => { const F = new Map(); jrNotes(j, r).sort((a, b) => jnSort(b, a)).forEach(e => jnProps(e.b).forEach(([k, v]) => F.set(k.toLowerCase(), [k, v, e.d, e.s]))); return [...F.values()]; };
 const jnHue = t => { let h = 7; for (const c of t.toLowerCase()) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };   /* a tag keeps its color everywhere */
 /* @dates: @today, @tomorrow, @fri, @Nov 20, @11/20, @2026-11-20, counted from the note's own date */
 let JN_BASE = "";
@@ -514,7 +529,7 @@ const pRow = p => { const n = pJobs(p).length;
   return `<div class="jp-row"><button type="button" class="jb-row" data-person="${p.id}"><b>${esc(p.n || "No name")}</b><span>${[p.role, p.co].filter(Boolean).map(esc).join(" · ")}${n ? ` · ${n} job${n === 1 ? "" : "s"}` : ""}</span></button>${pTel(p) ? `<a class="btn ghost jp-call" href="tel:${pTel(p)}" aria-label="Call ${esc(p.n)}">Call</a>` : ""}</div>`; };
 
 /* Find: every word has to be somewhere on the job (name, address, people, builder, notes, punch list, inspections, hours) */
-const jbHay = j => [jbName(j), j.a, j.who, eName("bld", j.bld), eName("sub", j.sub), (cityById(j.city) || {}).n, pName(j.lead), pName(j.sup), ...j.ppl.map(x => pName(x.p)),
+const jbHay = j => [...(j.rooms || []).flatMap(r => [r.n, ...r.f.map(f => f.k + " " + f.v)]), jbName(j), j.a, j.who, eName("bld", j.bld), eName("sub", j.sub), (cityById(j.city) || {}).n, pName(j.lead), pName(j.sup), ...j.ppl.map(x => pName(x.p)),
   ...j.log.map(e => e.b), ...j.punch.map(p => p.t), ...j.insp.map(i => [i.who, i.n].join(" ")), ...j.hrs.map(h => h.n), ...JB_STG.map(([k]) => j.stages[k].extra.map(x => x.t).join(" "))].filter(Boolean).join("\n").toLowerCase();
 const jbMark = (txt, W) => { W = W.filter(Boolean); if (!W.length) return esc(txt);   /* mark first, then escape each piece: "amp" can't split an &amp; */
   const re = new RegExp(`(${W.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "gi"); return String(txt).split(re).map((p, i) => i % 2 ? `<mark>${esc(p)}</mark>` : esc(p)).join(""); };
@@ -664,8 +679,11 @@ function jbStageSum(j, k){
 function jbStageHtml(j, k){
   const s = j.stages[k], C = jbCk(j, k), ins = j.insp.filter(i => i.s === k).sort(jbByDate), hrs = j.hrs.filter(h => h.s === k).sort(jbByDate);
   const hr = hrs.reduce((n, h) => n + (+h.h || 0), 0);
+  const RC = (j.rooms || []).length ? `<div class="chips jn-tagbar jr-chips" role="group" aria-label="Rooms on this stage">${j.rooms.map(r => { const n = jrNotes(j, r).filter(e => e.s === k).length;
+    return `<button type="button" data-room="${r.id}">🛁 ${esc(r.n)}${n ? ` · ${n}` : ""}</button>`; }).join("")}</div>` : "";
   return `<div class="jt-head"><span class="jt-dot" aria-hidden="true">${JB_ICON[s.st]}</span><h3>${JB_SNAME[k]}</h3>${JB_XTRA.includes(k) ? `<button type="button" class="linkish jt-rm" data-xdel="${k}">Remove stage</button>` : ""}</div>
   <div class="seg jb-seg" role="group" aria-label="${JB_SNAME[k]} status">${Object.entries(JB_SST).map(([v, t]) => `<button type="button" data-sst="${v}" aria-pressed="${s.st === v}">${t}</button>`).join("")}</div>
+  ${RC}
   <details class="explain jb-fold jt-dates"><summary>📅 ${esc([s.d0 ? "Started " + jbNice(s.d0) : "No start date", s.d1 && "done " + jbNice(s.d1), (pName(s.lead) || pName(j.lead)) && "lead " + (pName(s.lead) || pName(j.lead))].filter(Boolean).join(" · "))} · change</summary><div class="calc">
     <label for="js-d0">Started<input id="js-d0" data-sf="d0" type="date" value="${esc(s.d0)}"></label>
     <label for="js-d1">Done<input id="js-d1" data-sf="d1" type="date" value="${esc(s.d1)}"></label>
@@ -770,6 +788,35 @@ const jbDetailsHtml = j => `  <p class="card-h" data-fold="details">Job details<
   </div>
 
   ${eById("bld", j.bld) || eById("sub", j.sub) ? `<div class="jb-list">${[["bld", j.bld], ["sub", j.sub]].filter(([t, id]) => eById(t, id)).map(([t, id]) => eRow(t, eById(t, id))).join("")}</div>` : ""}`;
+/* in a room the notes are read here and edited in Notes (one editor per note): ticks still work in both places */
+const jrNote = e => `<article class="jn-e jr-e"><header><span>${jnWhen(e)}</span><span class="jn-hb"><button type="button" class="linkish" data-jnopen="${e.id}">Edit in Notes ›</button></span></header><div class="jn-b">${jnMd(e.b, e.id, e.d)}</div></article>`;
+function jrRoomHtml(j, r){
+  const N = jrNotes(j, r), F = jrFacts(j, r), byS = jbStages(j).map(([k, nm]) => [k, nm.replace(/ \(.*\)$/, ""), N.filter(e => e.s === k)]);
+  const other = N.filter(e => !jbStages(j).some(([k]) => k === e.s));
+  return `<div class="jr-open" id="jr-open">
+  <div class="jb-hrow"><b class="jr-name">🛁 ${esc(r.n)}</b><button type="button" class="btn ghost" data-ra="close">Close</button></div>
+  <div class="calc"><label for="jr-n" class="wide">Room name<input id="jr-n" data-rn="${r.id}" type="text" autocomplete="off" maxlength="40" value="${esc(r.n)}" list="jr-names"></label></div>
+  <p class="jn-prevh">Details · the same on every stage</p>
+  ${r.f.length ? `<div class="jr-f">${r.f.map(x => `<div class="jr-fr"><input aria-label="Detail" data-rk="${x.id}" type="text" autocomplete="off" maxlength="40" list="jr-keys" value="${esc(x.k)}" placeholder="Tub / shower"><input aria-label="${esc(x.k || "Value")}" data-rv="${x.id}" type="text" autocomplete="off" maxlength="200" value="${esc(x.v)}" placeholder='60" alcove, left drain'><button type="button" class="jb-x" data-rfdel="${x.id}" aria-label="Remove ${esc(x.k || "this detail")}">×</button></div>`).join("")}</div>` : `<div class="jb-in"><p class="note">No details yet. Add what doesn't change: tub size and drain side, valve brand, toilet rough-in, number of lavs.</p></div>`}
+  <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-ra="f-add">+ Add a detail</button><button type="button" class="btn" data-ra="note">📝 Note about ${esc(r.n)}</button></div></div>
+  ${F.length ? `<p class="jn-prevh">From notes that link [[${esc(r.n)}]]</p><div class="x"><table class="t wrap jb-facts"><tbody>${F.map(([k, v, d, st]) => `<tr><th>${esc(k)}</th><td>${jnInline(v)}<div class="sub">${jbNice(d)}${st && JB_SNAME[st] ? " · " + esc(JB_SNAME[st].replace(/ \(.*\)$/, "")) : ""}</div></td></tr>`).join("")}</tbody></table></div>` : ""}
+  <p class="jn-prevh">Work by stage · notes that link [[${esc(r.n)}]]</p>
+  ${byS.map(([k, nm, L]) => `<p class="jn-gh jt-k-${k}">${esc(nm)} · ${L.length || "nothing yet"}</p>${L.length ? `<div class="jn-log">${L.slice().sort(jnSort).map(jrNote).join("")}</div>` : ""}`).join("")}
+  ${other.length ? `<p class="jn-gh">Other · ${other.length}</p><div class="jn-log">${other.sort(jnSort).map(jrNote).join("")}</div>` : ""}
+  <div class="jb-in"><p class="note">Link this room from any note on this job with <b>[[${esc(r.n)}]]</b>. Lines like <b>Valve: Moen M-Core</b> in those notes show up above.</p></div>
+  <div class="set-btns jb-end"><button type="button" class="del" data-ra="del">Delete this room</button></div></div>`;
+}
+function jrHtml(j){
+  const R = j.rooms || [], cnt = r => jrNotes(j, r).length, others = jbD.jobs.filter(x => x.id !== j.id && (x.rooms || []).length).sort(jbNat);
+  const open = R.find(r => r.id === JB.room);
+  return `<p class="card-h" data-fold="rooms">Bathrooms &amp; rooms${R.length ? ` · ${R.length}` : ""}</p>
+  <datalist id="jr-names">${JR_NAMES.map(n => `<option value="${n}"></option>`).join("")}</datalist><datalist id="jr-keys">${JR_KEYS.map(n => `<option value="${n}"></option>`).join("")}</datalist>
+  ${R.length ? `<div class="jb-list jr-list">${R.map(r => r === open ? jrRoomHtml(j, r) : `<button type="button" class="jb-row" data-room="${r.id}"><b>🛁 ${esc(r.n)}</b><span>${esc([r.f.filter(x => x.k && x.v).slice(0, 2).map(x => x.k + ": " + x.v).join(" · "), cnt(r) ? cnt(r) + " note" + (cnt(r) === 1 ? "" : "s") : ""].filter(Boolean).join(" · ") || "No details yet")}</span></button>`).join("")}</div>` : ""}
+  <div class="calc"><label for="jr-add" class="wide">Add a room<input id="jr-add" type="text" autocomplete="off" maxlength="40" list="jr-names" enterkeyhint="done" placeholder="Master bath, Basement half bath"></label></div>
+  <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-ra="add">Add room</button></div>
+  ${others.length && !R.length ? `<div class="calc"><label for="jr-copy" class="wide">Or copy rooms from another job <i>(same plan)</i><select id="jr-copy"><option value="">Pick a job</option>${others.slice(0, 200).map(x => `<option value="${x.id}">${esc(jbName(x))} · ${x.rooms.length} room${x.rooms.length === 1 ? "" : "s"}</option>`).join("")}</select></label></div><div class="set-btns"><button type="button" class="btn ghost" data-ra="copy">Copy rooms and details</button></div>` : ""}
+  <p class="note">Set rooms once: they're the same on every stage. Each note that links one, like [[Master bath]], files under that room by stage.</p></div>`;
+}
 function jbJobHtml(j){
   const c = cityById(j.city), addr = (j.a || "").trim(), sel = JB.stage && jbStages(j).some(([k]) => k === JB.stage) ? JB.stage : jbStageNow(j); JB.stage = sel;
   const q = encodeURIComponent([addr.replace(/^lot\s*\w+\s*[·,\-–]\s*/i, ""), c && c.n, "UT"].filter(Boolean).join(", "));
@@ -803,6 +850,7 @@ function jbJobHtml(j){
   ${jnBlock(j, j.log, "What got done, what didn't and why.\nTap 📝 Day log to lay it out.", "", jbStages(j).length > 1 ? `<label for="jn-s" class="jn-dl">Stage<select id="jn-s">${jbStages(j).map(([k, nm]) => `<option value="${k}"${k === sel ? " selected" : ""}>${esc(nm.replace(/ \(.*\)$/, ""))}</option>`).join("")}</select></label>` : "")}
   ${(() => { const F = new Map(); j.log.slice().sort((a, b) => jnSort(b, a)).forEach(e => jnProps(e.b).forEach(([k, v]) => F.set(k.toLowerCase(), [k, v, e.d])));
     return (F.size ? `<p class="card-h" data-fold="facts">From your notes</p><div class="x"><table class="t wrap jb-facts"><tbody>${[...F.values()].map(([k, v, d]) => `<tr><th>${esc(k)}</th><td>${jnInline(v)}<div class="sub">${jbNice(d)}</div></td></tr>`).join("")}</tbody></table></div>` : ""); })()}
+  ${jrHtml(j)}
   <p class="card-h" data-fold="timeline">Timeline</p>
   <ol class="jt">${jbStages(j).map(([k, name]) => { const s = j.stages[k];
     return k === sel ? `<li class="jt-i jt-${s.st} jt-k-${k} jt-open" id="jt-open">${jbStageHtml(j, k)}</li>`
@@ -895,7 +943,7 @@ const jbTidy = away => { const n = jbD.jobs.length, now = Date.now();   /* away:
 const JB_FOLD0 = {proof: 1, look: 1};
 /* A job's sections start folded on every visit (like the timeline's stages): open one and it stays open while you're
    on that job; leave the job or My jobs (or the app for a minute) and they're all folded again next time. Not saved. */
-const JB_JFOLD = new Set(["notes", "facts", "s-check", "s-insp", "s-hrs", "punch", "media", "people", "details", "proof", "look"]);
+const JB_JFOLD = new Set(["rooms", "notes", "facts", "s-check", "s-insp", "s-hrs", "punch", "media", "people", "details", "proof", "look"]);
 const jbFv = () => { if (!JB.open) return null; if (!JB.fv || JB.fv.id !== JB.open) JB.fv = {id: JB.open, k: {}}; return JB.fv; };
 const jbOpenSec = (...ks) => { const v = jbFv(); if (v) ks.forEach(k => { v.k[k] = true; }); };   /* a jump into a section opens it */
 function jbDraw(){
@@ -960,12 +1008,19 @@ function jbBack(){
 /* a deleted person, builder, subdivision or job with exactly this name */
 const jbBinFind = x => { const q = String(x).trim().toLowerCase(); return q && jbD.bin.find(b => ["person", "bld", "sub", "job"].includes(b.kind) && (b.kind === "job" ? [b.item.name, b.item.a] : [b.item.n]).some(v => String(v || "").trim().toLowerCase() === q)); };
 /* [[link]]: a person, another job by its address, else a card in the book by its title */
+function jrGo(j, r){
+  if (JB.open !== j.id){ jbPush(); JB.person = null; JB.ent = null; JB.open = j.id; JB.edit = null; JB.stage = null; JF.n = 0; }
+  JB.room = r.id; jbOpenSec("rooms"); jbDraw(); const el = $("jr-open"); if (el) el.scrollIntoView({block: "start"});
+}
 function jnGo(x){
+  { const cj = jbCur(), r = jrOf(cj, x); if (r){ jrGo(cj, r); return; } }
   const per = pByName(x); if (per){ jbOpenPerson(per.id); return; }
   for (const t of ["bld", "sub"]){ const e = eByName(t, x); if (e){ jbOpenEnt(t, e.id); return; } }
   const q = x.trim().toLowerCase(), nm = j => [j.name, j.a].map(v => (v || "").trim().toLowerCase()).filter(Boolean);   /* by name or address */
   const job = jbD.jobs.find(j => nm(j).includes(q)) || jbD.jobs.find(j => nm(j).some(v => v.includes(q)));
   if (job){ jbPush(); JB.person = null; JB.ent = null; JB.open = job.id; JB.edit = null; JB.stage = null; JF.n = 0; jbDraw(); jbTop(); return; }
+  { const J = jbD.jobs.filter(j => jrOf(j, x)); if (J.length === 1){ jrGo(J[0], jrOf(J[0], x)); return; }
+    if (J.length > 1){ toast(`${J.length} jobs have a room called "${x}". Open the job first, then tap the link.`, 3000); return; } }
   const gone = jbBinFind(x);
   if (gone && jbAsk(`"${x}" is in Recently deleted (${JB_BIN_NAME[gone.kind].toLowerCase()}, deleted ${jbShort(gone.at)}). Restore it and open it?`)){
     if (jbBinRestore(gone.id, true)){ jbSave(); toast(`${JB_BIN_NAME[gone.kind]} restored.`, 2000); jnGo(x); } return; }
@@ -1193,6 +1248,45 @@ B.addEventListener("click", e => { const x = e.target.closest("[data-jnx]"), m =
   if (m){ jbD.jnFull = m.dataset.jnmode === "f"; JN_OPENED.clear(); jbSave(true); jbDraw(); return; }
   if (!x) return; const id = x.dataset.jnx; JN_OPENED.has(id) ? JN_OPENED.delete(id) : JN_OPENED.add(id); jbDraw();
   const f = B.querySelector(`[data-jnx="${CSS.escape(id)}"]`); if (f) f.focus({preventScroll: true}); });
+/* rooms: own listeners, so the big handlers above stay as they are */
+{ const room = () => { const j = jbCur(); return j && (j.rooms || []).find(r => r.id === JB.room); };
+  const done = (j, msg) => { if (msg) jbAct(j, msg); jbBump(j); jbSave(); jbDraw(); };
+  const toOpen = () => requestAnimationFrame(() => { const el = $("jr-open"); if (el) el.scrollIntoView({block: "start"}); });
+  const jrAdd = () => { const j = jbCur(), i = $("jr-add"); if (!j || !i) return; const n = i.value.replace(/[\[\]|]/g, "").replace(/\s+/g, " ").trim().slice(0, 40);
+    if (!n){ toast("Type a name first, like Master bath."); i.focus(); return; }
+    if (jrOf(j, n)){ toast(`This job already has ${n}.`); return; }
+    if (!Array.isArray(j.rooms)) j.rooms = []; if (j.rooms.length >= 40){ toast("40 rooms is the most a job can have."); return; }
+    const r = {id: jbId(), n, f: []}; j.rooms.push(r); JB.room = r.id; jbOpenSec("rooms"); done(j, `🛁 Added ${n}`); toOpen(); };
+  B.addEventListener("click", e => { const t = e.target.closest("[data-room],[data-ra],[data-rfdel]"); if (!t) return; const j = jbCur(); if (!j) return;
+    if (t.dataset.room){ JB.room = JB.room === t.dataset.room ? null : t.dataset.room; jbOpenSec("rooms"); jbDraw(); if (JB.room) toOpen(); return; }
+    if (t.dataset.rfdel){ const r = room(); if (!r) return; r.f = r.f.filter(x => x.id !== t.dataset.rfdel); done(j); return; }
+    const a = t.dataset.ra, r = room();
+    if (a === "add"){ jrAdd(); return; }
+    if (a === "copy"){ const src = jbD.jobs.find(x => x.id === ($("jr-copy") || {}).value); if (!src){ toast("Pick the job to copy from."); return; }
+      if (!Array.isArray(j.rooms)) j.rooms = []; let n = 0;
+      src.rooms.forEach(x => { if (jrOf(j, x.n) || j.rooms.length >= 40) return; j.rooms.push({id: jbId(), n: x.n, f: x.f.map(f => ({id: jbId(), k: f.k, v: f.v}))}); n++; });
+      done(j, `🛁 Copied ${n} room${n === 1 ? "" : "s"} from ${jbName(src)}`); toast(`Copied ${n} room${n === 1 ? "" : "s"} and their details. Notes stay with ${jbName(src)}.`, 2600); return; }
+    if (!r) return;
+    if (a === "close"){ JB.room = null; jbDraw(); return; }
+    if (a === "f-add"){ if (r.f.length >= 40) return; const f = {id: jbId(), k: "", v: ""}; r.f.push(f); jbSave(); jbDraw(); const i = B.querySelector(`[data-rk="${f.id}"]`); if (i) i.focus(); return; }
+    if (a === "note"){ const tag = `[[${r.n}]] `; j.draft = j.draft.trim() ? j.draft.replace(/\s+$/, "") + "\n" + tag : tag; jbSave(true); jbOpenSec("notes"); jbDraw();
+      const ta = $("jn-new"); if (ta){ ta.scrollIntoView({block: "center"}); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } return; }
+    if (a === "del"){ if (!jbAsk(`Delete ${r.n} from this job? Its details go. Notes keep their words, but [[${r.n}]] stops opening a room.`)) return;
+      j.rooms = j.rooms.filter(x => x !== r); JB.room = null; done(j, `🛁 Deleted ${r.n}`); }
+  });
+  B.addEventListener("change", e => { const t = e.target, j = jbCur(), r = room(); if (!j || !r) return;
+    if (t.dataset.rn){ const old = r.n, n = t.value.replace(/[\[\]|]/g, "").replace(/\s+/g, " ").trim().slice(0, 40);
+      if (!n || n === old){ t.value = old; return; }
+      if (jrOf(j, n) && jrOf(j, n) !== r){ toast(`This job already has ${n}.`); t.value = old; return; }
+      const re = new RegExp("\\[\\[\\s*" + jrEsc(old) + "\\s*(\\||\\]\\])", "gi"), fix = s => String(s).replace(re, (m, end) => "[[" + n + end);   /* the notes follow the new name */
+      let k = 0; j.log.forEach(x => { const b = fix(x.b); if (b !== x.b){ x.b = b; k++; } }); j.draft = fix(j.draft); r.n = n;
+      done(j, `🛁 Renamed ${old} to ${n}`); if (k) toast(`Renamed. ${k} note${k === 1 ? "" : "s"} now link ${n}.`, 2200); return; }
+    const f = r.f.find(x => x.id === (t.dataset.rk || t.dataset.rv)); if (!f) return;
+    if (t.dataset.rk) f.k = t.value.trim().slice(0, 40); else f.v = t.value.trim().slice(0, 200);
+    jbBump(j); jbSave();   /* no redraw: the next box keeps the keyboard */
+  });
+  B.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "jr-add"){ e.preventDefault(); jrAdd(); } });
+}
 B.addEventListener("keydown", e => { if (e.key !== "Enter") return;
   if (e.target.matches(".card-h[data-fold]")){ e.preventDefault(); e.target.click(); return; } const btn = {"jp-t": "punch-add", "jc-t": "ck-add", "jhq-h": "hq-add", "jhq-n": "hq-add"}[e.target.id];
   if (btn){ e.preventDefault(); B.querySelector(`[data-a="${btn}"]`).click(); } });
@@ -1277,7 +1371,7 @@ function jbQuick(id){ const j = jbD.jobs.find(x => x.id === id); if (!j) return;
   if (!jbArch(j) && Date.now() - (+j.seen || 0) > 36e5){ j.seen = Date.now(); jbSave(true); } }
 function jbQuickClose(){ if (JQ.hidden) return; JQ.classList.remove("on"); jqId = null; setTimeout(() => { if (!JQ.classList.contains("on")) JQ.hidden = true; }, 220);
   if (jqBack && jqBack.isConnected && jqBack.focus) jqBack.focus({preventScroll: true}); }
-const jbGoJob = (id, stage) => { JF.n = 0; JB.edit = null; JB.person = null; JB.ent = null; JB.hist = []; JB.view = "jobs"; JB.rowEdit = null; JB.open = id; JB.stage = stage || null;
+const jbGoJob = (id, stage) => { JF.n = 0; JB.room = null; JB.edit = null; JB.person = null; JB.ent = null; JB.hist = []; JB.view = "jobs"; JB.rowEdit = null; JB.open = id; JB.stage = stage || null;
   go("mine", "jobs"); jbDraw(); if (stage) jbOpenStage(); else jbTop(); };
 JQ.addEventListener("click", e => { const b = e.target.closest("[data-qa]"); if (!b) return; const id = jqId, a = b.dataset.qa;
   if (a === "close"){ jbQuickClose(); return; }

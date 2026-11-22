@@ -520,6 +520,14 @@ dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .terms-k{margin:0 0 12px;font-size:16px;line-height:1.45}
 .terms-dlg .set-btns{gap:14px;align-items:center}
 .jf-btns{padding:4px 12px 14px;border-top:1px solid var(--rule);margin-top:8px}
+.jr-open{border:var(--bw) solid var(--edge);border-radius:var(--r);padding:10px;margin:6px 0;background:var(--sheet)}
+.jr-name{font-size:18px}
+.jr-f{display:grid;gap:6px;margin:6px 0}
+.jr-fr{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"k x" "v v";gap:4px 6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--rule)}
+.jr-fr [data-rk]{grid-area:k;font-weight:700}.jr-fr [data-rv]{grid-area:v}.jr-fr .jb-x{grid-area:x}
+.jr-fr input{min-height:46px;min-width:0;font:inherit;font-size:16px;padding:0 8px;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);color:var(--ink)}
+.jr-e header .linkish{font-size:14px}
+.jr-chips{margin:6px 0}
 dialog.mk-dlg{width:100vw;max-width:100vw;height:100vh;height:100dvh;max-height:none;margin:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);border:0;background:var(--sheet);color:var(--ink);display:none;flex-direction:column;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:contain}
 dialog.mk-dlg[open]{display:flex}
 dialog.mk-dlg::backdrop{background:#000}
@@ -622,7 +630,7 @@ dialog.mk-dlg::backdrop{background:#000}
 .jt-open{border-left:6px solid var(--sc,var(--edge))}
 .jb-sbadge{border-color:var(--sc)!important;box-shadow:inset 5px 0 0 var(--sc);padding-left:9px}
 .jn-link{color:var(--lc,inherit);text-decoration-color:var(--lc,currentColor)}
-.jn-l-person{--lc:var(--l-person)}.jn-l-bld{--lc:var(--l-bld)}.jn-l-sub{--lc:var(--l-sub)}.jn-l-job{--lc:var(--l-job)}.jn-l-card{--lc:var(--l-card)}.jn-l-none{--lc:var(--l-none);text-decoration-style:dashed}
+.jn-l-room{--lc:var(--l-job)}.jn-l-person{--lc:var(--l-person)}.jn-l-bld{--lc:var(--l-bld)}.jn-l-sub{--lc:var(--l-sub)}.jn-l-job{--lc:var(--l-job)}.jn-l-card{--lc:var(--l-card)}.jn-l-none{--lc:var(--l-none);text-decoration-style:dashed}
 .jn-ico{margin-right:3px;text-decoration:none;display:inline-block}
 .jn-tag,.jn-tagbar .jn-tagchip{color:hsl(var(--h,200) 80% var(--tag-l));text-decoration:none}
 /* Night keeps everything red: color would ruin night vision */
@@ -5500,6 +5508,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 22, 2026 · Bathrooms &amp; rooms on jobs</th><td><b>New on every job: Bathrooms &amp; rooms.</b> Add them once (Master bath, Basement half bath, Laundry, any name) and they stay the same through every stage. Each room keeps its own details (tub size and drain side, valve, toilet rough-in, lavs). <b>Link a room from any note</b> with [[Master bath]]: the room shows those notes sorted by stage, so you see the work done in that bathroom at Underground, Rough and Finish. "Label: value" lines in those notes (Valve: Moen M-Core) show on the room too. <b>📝 Note about this room</b> starts a note with the link already in it. Rename a room and its notes follow. Same floor plan? <b>Copy the rooms</b> from another job. Each stage also shows room chips with that stage's note count, and job search finds room details.</td></tr>
         <tr><th>Nov 21, 2026 · Markup fixes</th><td><b>Mark up works better on iPhone:</b> the photo always fits the screen (a big photo could spill off the edges), and the buttons stay clear of the notch and home bar. A second finger no longer scribbles over the line you're drawing, and a long press no longer pops up the "Save image" menu. Every time you open it, it starts on Arrow, so a tap always draws something. Picking Text no longer throws the keyboard over your photo: tap the box when you're ready to type. Bigger photo area, with Save and Cancel side by side.</td></tr>
         <tr><th>Nov 21, 2026 · Photo markup</th><td><b>New: ✏ Mark up</b> on any job photo. Draw arrows, circles, freehand lines and text labels (red, yellow, blue or white, with a dark edge so they show on drywall or dirt), with Undo. It saves as a <b>new photo</b> on the same job and stage, so the original, and a proof photo's stamp and fingerprint, stay exactly as they were.</td></tr>
         <tr><th>Nov 21, 2026 · Checked against the 2021 IPC</th><td>Read the free 2021 IPC on ICC's site and compared it to the cited sections and tables, plus the Utah IPC amendments. <b>Fixed:</b> combination waste and vent serves floor drains, sinks, lavatories and drinking fountains only (we had standpipes on the list and a "no disposer" rule the code doesn't have). <b>Branches &amp; stacks:</b> the "into one branch interval" limit is now its own column, since it applies to every stack, not just tall ones. <b>Trap primers:</b> a lav or hand sink can prime an emergency floor drain, trench drain or floor sink in the same room, not any floor drain. <b>Water + sewer:</b> now says when a shared trench is allowed (Sch 40 sewer yes, SDR 35 no) and adds the sleeved crossing.</td></tr>
@@ -11587,7 +11596,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-21n";
+var BUILD = "handbook-2026-11-22a";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);

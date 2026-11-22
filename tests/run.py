@@ -9,6 +9,7 @@ What it does, with no network and no server (files are served straight from this
   4. every "jump to a card" link lands on its card
   5. text typed into jobs, people and notes is shown as text, never run as code
   6. photo markup saves a new photo and leaves the original untouched
+  7. job rooms: copy, add, link from notes, rename
 Exit code 0 = all passed. Not part of the app: the app never downloads this folder."""
 import json, mimetypes, pathlib, re, shutil, subprocess, sys
 from playwright.sync_api import sync_playwright
@@ -189,6 +190,33 @@ with sync_playwright() as pw:
         check(len(after) == 2 and any(x[2] == before[0][0] for x in after), "the marked-up copy is a new photo linked to the original")
         check(bool(orig) and orig[0][1] == before[0][1], "the original photo is unchanged")
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors in markup" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+
+    # ---------- 7. rooms ----------
+    print("7. Rooms: add, link from a note, rename follows")
+    two = {"jobs": [dict(one["jobs"][0], id="j1", name="Lot 1"), dict(one["jobs"][0], id="j2", name="Lot 2", rooms=[{"id": "r1", "n": "Master bath", "f": [{"id": "f1", "k": "Tub / shower", "v": "60 alcove"}]}])],
+           "goal": 8000, "before": 0, "people": [], "builders": [], "subs": []}
+    ctx, pg = fresh()
+    ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(two)))
+    open_book(pg)
+    J1 = lambda: [x for x in json.loads(pg.evaluate("localStorage.getItem('jpb-jobs')"))["jobs"] if x["id"] == "j1"][0]
+    pg.evaluate("location.hash='#mine/jobs'"); pg.wait_for_timeout(300)
+    pg.evaluate("[...document.querySelectorAll('[data-peek]')].find(b=>b.dataset.peek==='j1').click()"); pg.wait_for_timeout(300)
+    pg.evaluate("document.querySelector('[data-qa=open]').click()"); pg.wait_for_timeout(500)
+    pg.evaluate("document.querySelector('[data-fold=rooms]').click()"); pg.wait_for_timeout(200)
+    pg.select_option("#jr-copy", "j2"); pg.click("[data-ra=copy]"); pg.wait_for_timeout(300)
+    check([r["n"] for r in J1().get("rooms", [])] == ["Master bath"] and J1()["rooms"][0]["f"][0]["v"] == "60 alcove", "copy rooms and details from another job")
+    pg.fill("#jr-add", "Hall bath"); pg.press("#jr-add", "Enter"); pg.wait_for_timeout(300)
+    pg.fill("#jr-add", "hall BATH"); pg.press("#jr-add", "Enter"); pg.wait_for_timeout(200)
+    check([r["n"] for r in J1()["rooms"]] == ["Master bath", "Hall bath"], "add a room; the same name twice is refused")
+    pg.click("[data-ra=note]"); pg.wait_for_timeout(300)
+    pg.fill("#jn-new", pg.input_value("#jn-new") + "set the tub\nValve: Moen M-Core"); pg.click("[data-a=jn-add]"); pg.wait_for_timeout(300)
+    pg.evaluate("[...document.querySelectorAll('[data-wl]')].find(b=>b.dataset.wl==='Hall bath').click()"); pg.wait_for_timeout(300)
+    txt = pg.evaluate("(document.getElementById('jr-open')||{}).textContent||''")
+    check("set the tub" in txt and "Moen M-Core" in txt, "a [[room]] link opens the room, which shows the note and its Label: value line")
+    pg.fill("#jr-n", "Kids bath"); pg.press("#jr-n", "Tab"); pg.wait_for_timeout(300)
+    check(J1()["log"][0]["b"].startswith("[[Kids bath]]") and J1()["rooms"][1]["n"] == "Kids bath", "renaming a room updates the notes that link it")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors in rooms" + (f": {pg.errs}" if pg.errs else ""))
     br.close()
 
 print(f"\n{'ALL PASSED' if not FAILS else str(len(FAILS)) + ' FAILED'}")
