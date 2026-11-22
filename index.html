@@ -2767,7 +2767,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tbody>
         <tr><th>Water service depth</th><td>At least <b>12" deep and 6" below the frost line</b> (IRC P2603.5 / IPC 305.4). SLC, Provo, Springville and Lehi all design to a 30" frost line (city design criteria · checked Nov 2026), so plan on <b>36"</b>. Many water providers want more (North Salt Lake: 42"); theirs wins.</td></tr>
         <tr><th>Water service size</th><td>¾" minimum (IPC 603.1). Bigger for a long run or a big fixture load.</td></tr>
-        <tr><th>Water + sewer</th><td>5 ft of undisturbed or compacted earth apart (IPC 603.2). Closer only by an exception: the water line's bottom at least 12" above the top of the sewer within those 5 ft, or a shared trench when the sewer pipe is a material the code allows for that. Many cities also want the water on a shelf to one side. <b>The city's standard drawing wins:</b> check it before you dig.</td></tr>
+        <tr><th>Water + sewer</th><td>Same trench is OK only when the sewer is a pipe from the underground drain table (Sch 40 PVC or ABS, cast iron and others in IRC Table P3002.1(2) / IPC Table 702.2). SDR 35 sewer pipe isn't on that list. Otherwise keep <b>5 ft</b> of undisturbed or compacted earth between them, unless the water line's bottom is at least 12" above the top of the sewer within those 5 ft, or it crosses in a sleeve that runs 5 ft past the sewer on each side (IRC P2906.4.1 / IPC 603.2 · checked Nov 2026). Many cities also want the water on a shelf to one side. <b>The city's standard drawing wins:</b> check it before you dig.</td></tr>
         <tr><th>Through the foundation</th><td>Sleeve two pipe sizes bigger, or a relieving arch, so the wall can settle without crushing the pipe.</td></tr>
         <tr><th>Bedding &amp; backfill</th><td>Pipe on firm, continuous bedding: no bricks or blocks under it. No rocks or construction debris against the pipe; tamp backfill in layers.</td></tr>
         <tr><th>Under the slab</th><td>PEX water lines: one continuous run, no fittings under the slab, sleeved where they leave the concrete (<b>Build → Materials → PEX install</b>).</td></tr>
@@ -2834,15 +2834,15 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <section data-sec="drains" data-kw="branch stack size dfu capacity horizontal branch interval how many fixtures drain size table 710.1">
     <div class="sec-head"><h2>Branches &amp; stacks</h2><small>Max DFU · 2021 IPC Table 710.1(2)</small></div>
     <div class="x"><table class="t num">
-      <thead><tr><th>Pipe</th><th>Branch</th><th>Stack, ≤3 intervals</th><th>Stack, &gt;3: total / each</th></tr></thead>
+      <thead><tr><th>Pipe</th><th>Branch</th><th>Stack: into one interval</th><th>Stack total, ≤3 intervals</th><th>Stack total, &gt;3</th></tr></thead>
       <tbody>
-        <tr><td>1½"</td><td>3</td><td>4</td><td>8 / 2</td></tr>
-        <tr><td>2"</td><td>6</td><td>10</td><td>24 / 6</td></tr>
-        <tr><td>2½"</td><td>12</td><td>20</td><td>42 / 9</td></tr>
-        <tr><td>3"</td><td>20</td><td>48</td><td>72 / 20</td></tr>
-        <tr><td>4"</td><td>160</td><td>240</td><td>500 / 90</td></tr>
+        <tr><td>1½"</td><td>3</td><td>2</td><td>4</td><td>8</td></tr>
+        <tr><td>2"</td><td>6</td><td>6</td><td>10</td><td>24</td></tr>
+        <tr><td>2½"</td><td>12</td><td>9</td><td>20</td><td>42</td></tr>
+        <tr><td>3"</td><td>20</td><td>20</td><td>48</td><td>72</td></tr>
+        <tr><td>4"</td><td>160</td><td>90</td><td>240</td><td>500</td></tr>
       </tbody></table></div>
-    <p class="note">A branch interval is a story-height section of stack (at least 8 ft) where branches connect.</p>
+    <p class="note">A branch interval is a story-height section of stack (at least 8 ft) where branches connect. The "into one interval" limit applies to every stack, short or tall. Checked against the 2021 IPC on codes.iccsafe.org · Nov 2026.</p>
   </section>
   <section data-sec="drains" data-kw="building drain sewer main line size dfu slope capacity 3 inch 4 inch table 710.1">
     <div class="sec-head"><h2>Building drain &amp; sewer</h2><small>Max DFU · 2021 IPC Table 710.1(1)</small></div>
@@ -5475,6 +5475,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 21, 2026 · Checked against the 2021 IPC</th><td>Read the free 2021 IPC on ICC's site and compared it to the cited sections and tables, plus the Utah IPC amendments. <b>Fixed:</b> combination waste and vent serves floor drains, sinks, lavatories and drinking fountains only (we had standpipes on the list and a "no disposer" rule the code doesn't have). <b>Branches &amp; stacks:</b> the "into one branch interval" limit is now its own column, since it applies to every stack, not just tall ones. <b>Trap primers:</b> a lav or hand sink can prime an emergency floor drain, trench drain or floor sink in the same room, not any floor drain. <b>Water + sewer:</b> now says when a shared trench is allowed (Sch 40 sewer yes, SDR 35 no) and adds the sleeved crossing.</td></tr>
         <tr><th>Nov 21, 2026 · Code pass</th><td><b>Offset calculator takes feet:</b> type the rise, roll, take-offs and space tape style, like 66 or 5' 6 1/2 (a plain number is still inches), and the ⅛ pad still adds fractions. The boxes now open the full keyboard, so tap 123 for numbers. <b>What's new is shorter:</b> updates before Nov 19 are folded into a few summary lines (the full list stays on GitHub). <b>Fixed:</b> tapping a link that jumps to a card (Which tool?, On this page, search results, 📖 links in your notes) could stop partway down the page instead of on the card, mostly on a computer, or right after the keyboard closed. Now it always lands on the card. <b>Time card:</b> a break as long as the whole shift now says so, instead of showing 0 hr.</td></tr>
         <tr><th>Nov 21, 2026 · More how it works</th><td><b>New card:</b> Why a new house needs a flush (water that sits goes stale; EPA and Purdue research). <b>Added rows:</b> why a fixture can't be double trapped (Why traps need vents), whether low-flow toilets leave waste in the drain (How a toilet flushes), why heat makes scale (How tankless works), and what fights natural draft (How a gas burner stays lit). 3 new flashcards. Every fact lists its source.</td></tr>
         <tr><th>Nov 21, 2026 · Two fun themes</th><td><b>Avocado '74</b> (1970s harvest gold and avocado green) and <b>Locate Paint</b> (the 811 marking colors: blue water, green sewer). Settings → Theme → Just for fun. Both pass the contrast check.</td></tr>
@@ -5524,7 +5525,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Wet vent (912)</th><td>A drain upsized so its top half carries air. Horizontal: any combination of fixtures in up to <b>two bathroom groups</b>, each fixture drain tying in on its own. The dry vent is at least half the size of the biggest wet-vent pipe. Wet vent size by DFU (Table 912.3): 1½" = 1, 2" = 4, 2½" = 6, 3" = 12.</td></tr>
         <tr><th>Waste stack vent (913)</th><td>The stack itself is the vent. No offsets in the waste part, same size from bottom to top; the vent part may offset 6"+ above the highest branch connection.</td></tr>
         <tr><th>Circuit vent (914)</th><td>A horizontal branch serving 2 to 8 traps in a row on one floor. The vent ties in between the two most upstream fixture drains, and the branch slopes no more than 1:12 (8%). Size the whole branch for the total DFU.</td></tr>
-        <tr><th>Combo waste &amp; vent (915)</th><td>A big horizontal drain that vents itself, for <b>floor drains, standpipes, sinks and lavatories only</b>, never a disposer (915.1). Slope ½"/ft max; a fixture can drop in on a riser up to 8 ft; the vent rises 6" above the flood rim before turning. Size by Table 915.2.2.</td></tr>
+        <tr><th>Combo waste &amp; vent (915)</th><td>A big horizontal drain that vents itself, for <b>floor drains, sinks, lavatories and drinking fountains only</b> (915.1; houses: IRC P3111.1 says the same). Slope ½"/ft max; a fixture can drop in on a riser up to 8 ft; the vent rises 6" above the flood rim before turning. Size by Table 915.2.2.</td></tr>
         <tr><th>Island fixture (916)</th><td>For sinks and lavatories on an island, including a house kitchen sink with a dishwasher or disposer. The vent loops up above the drain outlet, then down to the drain; vent piping below the flood rim needs a cleanout.</td></tr>
         <tr><th>Single stack (917)</th><td>A stack with no separate vents, sized by height and DFU (Table 917.2). Vertical fixture drains 4 ft max, with tight limits on toilets and offsets (917.4–917.7).</td></tr>
         <tr><th>AAV (918)</th><td>A one-way valve that lets air in. At least 4" above the drain it vents, 6" above attic insulation, reachable for replacement, installed after the DWV test. Still at least one real vent outside.</td></tr>
@@ -5559,7 +5560,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>The rule</th><td>Where a trap seal can be lost to evaporation, the 2021 IPC wants it protected (1002.4.1). The usual ways are below.</td></tr>
         <tr><th>Pressure-drop primer</th><td>A small valve on a cold line (ASSE 1018). Every time someone opens a fixture and the pressure dips, it lets a little water down a tube into the trap.</td></tr>
         <tr><th>Drainage-type primer</th><td>Catches some of the waste water from a fixture that gets used and sends it to the trap (ASSE 1044). Electronic timer units are in the same standard.</td></tr>
-        <tr><th>New in 2021</th><td>A lavatory, hand sink or drinking fountain drain can prime a floor drain's trap directly. It has to connect below that fixture's flood rim and above the receiving trap's inlet, and can't run on or above the floor (1002.4.1.5).</td></tr>
+        <tr><th>New in 2021</th><td>A lavatory or hand sink drain can prime an emergency floor drain, trench drain or floor sink in the same room (a drinking fountain: same or next room). It ties into that drain below its flood rim and above its trap inlet, and can't run on or above the floor (1002.4.1.5).</td></tr>
         <tr><th>Barrier device</th><td>An insert in the drain that opens for water and closes against gas (ASSE 1072). No water line needed.</td></tr>
         <tr><th>Deep seal trap</th><td>Just a deeper trap so it takes longer to dry out. Utah defines it as a seal of 4" or more and lists it as one way to protect a water heater pan drain that ties into a drain.</td></tr>
         <tr><th><span class="badge why">WHY</span>Smell check</th><td>A sewer smell in a basement with a floor drain nobody uses? Pour a gallon of water in it before you go hunting for a bad vent.</td></tr>
@@ -6514,7 +6515,7 @@ const GLOSS = [
   ["Air break","dwv","Open connection where a waste pipe ends inside a receptor, below its flood rim but above its trap seal. Less protection than an air gap."],
   ["Deep seal trap","dwv","A trap with a seal of 4\" or more (Utah's definition). Slower to dry out."],
   ["Fixture unit","dwv","A weight for how much water a fixture uses and how often. Add the units (DFU for drains, WSFU for supply), then a table turns the total into pipe size or gpm."],
-  ["Combination waste and vent","dwv","An oversized horizontal drain that vents itself through its top half. Floor drains, standpipes, sinks and lavs only (IPC 915)."],
+  ["Combination waste and vent","dwv","An oversized horizontal drain that vents itself through its top half. Floor drains, sinks, lavatories and drinking fountains only (IPC 915.1, IRC P3111.1)."],
   ["Waste receptor","dwv","A trapped and vented hub, standpipe or floor sink that takes indirect waste."],
   ["Backwater valve","dwv","Check valve on the sewer that stops a city sewer backup from flooding low fixtures."],
   ["Bathroom group","dwv","Toilet + lav + tub or shower on one floor (a bidet and emergency floor drain are included), counted as one DFU load."],
@@ -9925,7 +9926,7 @@ const CARDS = [
   ["2021 IPC","2021 IPC: where can separate vents tie together (905.5)?","6\" or more above the flood rim of the highest fixture they serve","If a fixture backs up, the joint has to sit above the water so the vents can't fill."],
   ["2021 IPC","2021 IPC: how many bathroom groups can one horizontal wet vent serve (912.1)?","Two, and each fixture drain ties in on its own","More water than that fills the pipe and the top can't carry air."],
   ["2021 IPC","2021 IPC: common vent with drains at different heights: what's the rule (911)?","Both drains on the same floor; the upper one is limited by Table 911.3 (2\" = 4 DFU)","The upper drain's water passes the lower trap's vent, so it has to stay small."],
-  ["2021 IPC","2021 IPC: which fixtures can go on a combination waste and vent?","Floor drains, standpipes, sinks and lavatories. No disposer (915.1)","Disposer waste would settle in the oversized, flat pipe."],
+  ["2021 IPC","2021 IPC: which fixtures can go on a combination waste and vent?","Floor drains, sinks, lavatories and drinking fountains only (915.1)","The pipe has to stay half empty so its top can carry air, so only light, small-flow fixtures go on it. No toilets, no standpipes."],
   ["2021 IPC","2021 IPC: max horizontal distance from fixture outlet to trap (1002.1)?","30\", center to center (24\" max vertical)","A long run before the trap builds up gunk and can siphon the seal."],
   ["2021 IPC","2021 IPC: can a removable P-trap count as a cleanout (708.1.6)?","Yes, if it comes off without disturbing concealed piping","Pulling the trap gives the same access to rod the line. New in 2021."],
   ["2021 IPC","2021 IPC: vent under a roof cap or panel (903.1.3)?","Pipe ends at least 2\" above the roof; the opening matches the pipe's inside area; birds and rodents kept out","A covered vent still has to breathe its full size."],
@@ -11559,7 +11560,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-21k";
+var BUILD = "handbook-2026-11-21l";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
