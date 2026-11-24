@@ -497,7 +497,7 @@ section[data-sec]{content-visibility:auto;contain-intrinsic-size:auto 500px}
 .jb-punch label{flex:1;display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;overflow-wrap:anywhere}
 .jb-punch input{width:22px;height:22px;flex:none;accent-color:var(--k)}
 .jb-punch input:checked+span{text-decoration:line-through;color:var(--muted)}
-.jb-end{padding:16px 12px 12px}
+.jb-end,.jb-delin{padding:16px 12px 12px}
 .jb-in .set-btns,.jb-in>.note{padding:4px 12px 8px}
 .calc textarea{font-family:var(--body);font-weight:500;font-size:17px;text-transform:none;letter-spacing:0;padding:8px 10px;min-height:80px;border:var(--bw) solid var(--edge);background:var(--sheet);color:var(--ink);border-radius:var(--r);width:100%;resize:vertical}
 .jf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;padding:8px 12px}
@@ -520,6 +520,8 @@ dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .terms-k{margin:0 0 12px;font-size:16px;line-height:1.45}
 .terms-dlg .set-btns{gap:14px;align-items:center}
 .jf-btns{padding:4px 12px 14px;border-top:1px solid var(--rule);margin-top:8px}
+.jf-psprev{display:block;width:100%;max-width:480px;border:var(--bw) solid var(--edge);border-radius:var(--r);margin:4px 0 10px;background:#888}
+label.jf-psc{align-items:flex-start;padding:4px 0}label.jf-psc span{display:grid;gap:2px}label.jf-psc small{font-weight:500;font-size:14px;color:var(--muted,inherit);opacity:.85}
 label.jb-chk{display:flex;gap:12px;align-items:center;min-height:48px;font-weight:700;font-size:17px}
 label.jb-chk input{width:26px;height:26px;flex:none}
 .jr-open{border:var(--bw) solid var(--edge);border-radius:var(--r);padding:10px;margin:6px 0;background:var(--sheet)}
@@ -4838,14 +4840,18 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div id="wx-alerts"></div>
     <p class="card-h">Go / no-go for the work</p>
     <div id="wx-flags"><p class="flag ok-flag">Waiting for the forecast…</p></div>
+    <p class="card-h" id="wx-insp-h" hidden>Inspections this week</p>
+    <div class="x" id="wx-insp-x" hidden><table class="t out"><tbody id="wx-insp"></tbody></table></div>
     <p class="card-h">Plan the day</p>
     <div class="x"><table class="t out"><tbody id="wx-plan"><tr><td class="sub">Loading…</td></tr></tbody></table></div>
     <div class="calc wx-startrow"><label for="wx-start">My start time<select id="wx-start"><option value="6">6:00 AM</option><option value="6.5">6:30 AM</option><option value="7">7:00 AM</option><option value="7.5">7:30 AM</option><option value="8">8:00 AM</option><option value="8.5">8:30 AM</option></select></label></div>
     <p class="card-h">Best day this week</p>
     <div class="x"><table class="t out"><tbody id="wx-best"><tr><td class="sub">Waiting for the 7-day forecast…</td></tr></tbody></table></div>
     <p class="note">The app's picks from the forecast, not code: dry and above freezing for underground; the smallest afternoon-to-morning temperature drop for air and vacuum tests; the warmest dry day for glue-ups (Oatey's cure bands); the calmest dry day for roof and vent work.</p>
-    <details class="more fold"><summary>7 days</summary>
-    <div class="x"><table class="t num"><thead><tr><th>Day</th><th>Low / High</th><th>Rain</th><th>Gusts</th><th>Sky</th></tr></thead><tbody id="wx-days"></tbody></table></div>
+    <p class="card-h">Week ahead · <span id="wx-wk">—</span></p>
+    <div class="x"><table class="t out"><tbody id="wx-wkt"><tr><td class="sub">Waiting for the 7-day forecast…</td></tr></tbody></table></div>
+    <details class="more fold"><summary>7 days, day by day</summary>
+    <div class="x"><table class="t num"><thead><tr><th>Day</th><th>Low / High</th><th>Rain / snow</th><th>Gusts</th><th>Sky</th></tr></thead><tbody id="wx-days"></tbody></table></div>
     </details>
     <details class="more fold"><summary>More readings</summary>
     <div class="x"><table class="t out"><tbody id="wx-now"></tbody></table></div>
@@ -5521,6 +5527,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 23, 2026 · Proof, reports, weather, cleanup</th><td><b>Proof photo settings</b> (Jobs settings → Proof photos): pick every line printed on the photo, add your own line (permit #, company tag), put the stamp under the photo or on it, pick the size and look (dark, light, hi-vis), and see it live on a sample photo. Turn location off and the app never asks for it. Choose what the proof card shows. <b>Report settings</b> (a job's Report section, or Jobs settings): pick which parts go in the job report (or one tap: Everything, No notes or log, Proof photos only), proof photo size (Medium and Small make a file small enough to text), what's under each proof photo, a line of your own under the job name, and one proof photo per printed page. Anything left out is listed at the bottom of the report. <b>Weather:</b> <i>Inspections this week</i> shows each booked inspection with that job's town forecast for the day, with a heads-up for a freezing morning or a wet underground. <i>Week ahead</i> adds up the 7 days: rain and snow as water (to the hundredth), snow, freezing nights, warmest, windiest; each day in the 7-day list shows its total. Ground temperature now goes down to 21". <b>Fixed:</b> when the backup forecast (National Weather Service) was in use, Best day this week could come up blank. <b>Self-cleaning:</b> a photo deleted more than 31 days ago now always leaves the phone, even if its Recently deleted entry went some other way. Jobs settings → Backup shows what's on the phone, and photos that belong to no job, with a button to delete them (never on its own). <b>Jobs:</b> What's next says which note a repeated to-do came from; a long row of tags folds under <i>Tags</i>; Pin, icon, color and Delete moved to the end of Job details.</td></tr>
         <tr><th>Nov 23, 2026 · Jobs polish</th><td><b>Hours are off</b> (your company tracks them): no Hours buttons on jobs, Home or the report. Turn them back on in Jobs settings → Hours; anything logged stays saved. <b>Marking a stage Done</b> with checklist boxes still open now lists them and asks: tick them all, or leave them open. <b>City picker</b> is A to Z in each county, Unincorporated last. <b>Job list:</b> rows under a subdivision don't repeat its name, the group buttons say Builder › and Subdivision › instead of Page ›, and the how-to line goes away once you've used Quick view. Shorter stage names in dropdowns, and "From your notes" is now "Facts from notes". The Jobs header no longer mentions hours. New screens (rooms, file viewer, markup) checked for readability in all 28 themes, light and dark.</td></tr>
         <tr><th>Nov 23, 2026 · Jobs fixes</th><td><b>Fixed: files that wouldn't load.</b> "Open full screen" on a job photo or PDF used to hand the file to a new tab that iPhone couldn't load (you had to reload the app). Photos and PDFs now open inside the app, full screen, with Zoom for photos and a Close that always brings you back. Other files go straight to Open in another app. <b>Failed inspections</b> now sit at the top of What's next and Quick view until a re-inspect is booked, and marking that stage Done asks first. <b>Job report</b> now includes Bathrooms &amp; rooms.</td></tr>
         <tr><th>Nov 22, 2026 · Bathrooms &amp; rooms on jobs</th><td><b>New on every job: Bathrooms &amp; rooms.</b> Add them once (Master bath, Basement half bath, Laundry, any name) and they stay the same through every stage. Each room keeps its own details (tub size and drain side, valve, toilet rough-in, lavs). <b>Link a room from any note</b> with [[Master bath]]: the room shows those notes sorted by stage, so you see the work done in that bathroom at Underground, Rough and Finish. "Label: value" lines in those notes (Valve: Moen M-Core) show on the room too. <b>📝 Note about this room</b> starts a note with the link already in it. Rename a room and its notes follow. Same floor plan? <b>Copy the rooms</b> from another job. Each stage also shows room chips with that stage's note count, and job search finds room details.</td></tr>
@@ -7192,7 +7199,7 @@ const norm = s => " " + s.toLowerCase().replace(/¹⁄₁₆/g, " 1/16").replace
 const words = el => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let s = "", n; while ((n = w.nextNode())) if (!(n.parentElement && n.parentElement.closest("#jb-body"))) s += " " + n.nodeValue; return s; };   /* your jobs are matched on their own, above the cards */
 const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /* calculator tables (inputs and answers) never get filtered by a search: hiding a fixture row would break the count */
-const SKIP = "#c-out, .out, #dfu-rows, #ws-rows, #ws-pipes, #bl-rows, #ju-out, #ej-out, #ro-steps, #ro-fit-rows, #gl-rows, #gl-tbl, #cl-rows, #cl-plan, #po-rows, #ts-out, #sq-out, #pt-rows, #pt-sum, #es-marks, #lr-rows, #pf-rows, #pf-detail, .math, #wx-now, #wx-air, #wx-hours, #wx-days, #wx-plan, #jb-body, #job-hits";   /* live data, your jobs (they have their own matches above the cards) */
+const SKIP = "#c-out, .out, #dfu-rows, #ws-rows, #ws-pipes, #bl-rows, #ju-out, #ej-out, #ro-steps, #ro-fit-rows, #gl-rows, #gl-tbl, #cl-rows, #cl-plan, #po-rows, #ts-out, #sq-out, #pt-rows, #pt-sum, #es-marks, #lr-rows, #pf-rows, #pf-detail, .math, #wx-now, #wx-air, #wx-hours, #wx-days, #wx-wkt, #wx-insp, #wx-plan, #jb-body, #job-hits";   /* live data, your jobs (they have their own matches above the cards) */
 let IDX = null;
 const buildIdx = () => IDX = SECTIONS.map(sec => ({
   sec,
@@ -11145,8 +11152,8 @@ const WX = (() => {
       "&current=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,uv_index,is_day" +
       "&minutely_15=precipitation,snowfall,temperature_2m&forecast_minutely_15=12" +
       "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,snowfall,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,uv_index,relative_humidity_2m," +
-      "soil_temperature_0cm,soil_temperature_6cm,soil_temperature_18cm,soil_temperature_54cm,soil_moisture_9_to_27cm,soil_moisture_27_to_81cm,snow_depth,freezing_level_height,visibility&forecast_hours=48" +
-      "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,snowfall_sum,wind_gusts_10m_max,wind_direction_10m_dominant,sunrise,sunset,daylight_duration,uv_index_max&forecast_days=7";
+      "soil_temperature_6cm,soil_temperature_18cm,soil_temperature_54cm,snow_depth,visibility&forecast_hours=48" +
+      "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,snowfall_sum,wind_gusts_10m_max,sunrise,sunset&forecast_days=7";
     return get("https://api.open-meteo.com/v1/forecast?" + q, null, 8000);
   }
   /* Backup forecast: when Open-Meteo doesn't answer, the National Weather Service hourly forecast is reshaped to look like
@@ -11197,7 +11204,7 @@ const WX = (() => {
       hourly: {time: col("t"), temperature_2m: col("T"), apparent_temperature: col("feels"), precipitation_probability: col("pop"), precipitation: none, snowfall: none, weather_code: col("code"),
         wind_speed_10m: col("V"), wind_gusts_10m: none, wind_direction_10m: col("dir"), uv_index: none, relative_humidity_2m: col("RH"), soil_temperature_6cm: none, snow_depth: none},
       daily: {time: dd.map(g => g.k), weather_code: dd.map(g => mid(g).code), temperature_2m_max: dd.map(g => Math.max(...g.ps.map(p => p.T))), temperature_2m_min: dd.map(g => Math.min(...g.ps.map(p => p.T))),
-        precipitation_probability_max: dd.map(g => Math.max(...g.ps.map(p => p.pop || 0))), snowfall_sum: dd.map(() => null), wind_gusts_10m_max: dd.map(() => null)}};
+        precipitation_probability_max: dd.map(g => Math.max(...g.ps.map(p => p.pop || 0))), precipitation_sum: dd.map(() => null), snowfall_sum: dd.map(() => null), wind_gusts_10m_max: dd.map(() => null)}};
   }
   async function fPoint(){
     if (S.pt && S.pt.key === key()) return S.pt;
@@ -11303,7 +11310,7 @@ const WX = (() => {
     if (blocked()){
       const nws = `https://forecast.weather.gov/MapClick.php?lat=${place.lat}&lon=${place.lon}`;
       $("wx-hero").innerHTML = `<div><b>Live weather runs in the installed app</b> (the GitHub version on your phone). This claude.ai viewer blocks outside data on purpose.</div><a href="${nws}" target="_blank" rel="noopener">National Weather Service forecast for ${esc(place.name)} ↗</a>`;
-      ["wx-now","wx-air","wx-hours","wx-days","wx-plan","wx-best","wx-drift"].forEach(id => $(id).innerHTML = `<tr><td class="sub">Open the installed app for live data.</td></tr>`);
+      ["wx-now","wx-air","wx-hours","wx-days","wx-wkt","wx-plan","wx-best","wx-drift"].forEach(id => $(id).innerHTML = `<tr><td class="sub">Open the installed app for live data.</td></tr>`);
       $("wx-flags").innerHTML = `<p class="flag ok-flag">Open the installed app for live jobsite calls.</p>`; $("wx-chart").innerHTML = "";
       return;
     }
@@ -11350,8 +11357,8 @@ const WX = (() => {
       { const st = new Date(tom); st.setHours(Math.floor(startH()), startH() % 1 ? 30 : 0, 0, 0); const dawn = sunAt(tom, place.lat, place.lon, 96, true), rise = sunAt(tom, place.lat, place.lon, 90.833, true);
         if (dawn && rise) rows.push([`Tomorrow's start`, startLbl(), `First light ${fmtT(dawn)} · sunrise ${fmtT(rise)}: ${st < dawn ? "dark at start, bring lights" : st < rise ? "dusky at start, lights for the truck and the trench" : "daylight at start"}`]); }
       if (t7) rows.push([`Tomorrow ${startLbl()}`, `${r0(t7.temp)}°F`, `Feels ${r0(t7.feels)}° · rain ${r0(t7.pop)}% · gusts ${r0(t7.gust)} mph${t7.temp <= 32 ? " · frozen hoses and ground first thing" : ""}`]);
-      const sIdx = hsA[0] ? hsA[0].i : 0, s2 = om.hourly.soil_temperature_6cm && om.hourly.soil_temperature_6cm[sIdx], s7 = om.hourly.soil_temperature_18cm && om.hourly.soil_temperature_18cm[sIdx];
-      if (s2 != null || s7 != null) rows.push(["Ground", `${r0(s2)}° · ${r0(s7)}°F`, `At 2" and 7" deep${s7 != null && s7 <= 32 ? ": frozen down past the top, dig with a plan" : s2 != null && s2 <= 32 ? ": frozen crust on top" : ": not frozen"}`]);
+      const sIdx = hsA[0] ? hsA[0].i : 0, sAt = k => om.hourly[k] ? om.hourly[k][sIdx] : null, s2 = sAt("soil_temperature_6cm"), s7 = sAt("soil_temperature_18cm"), s21 = sAt("soil_temperature_54cm");
+      if (s2 != null || s7 != null) rows.push(["Ground", `${r0(s2)}° · ${r0(s7)}°${s21 != null ? ` · ${r0(s21)}°` : ""}F`, `At 2", 7"${s21 != null ? ` and 21"` : ""} deep (model estimate)${s21 != null && s21 <= 32 ? ": frozen 21\" down, deeper than most stub-up and trench work: dig with a plan" : s7 != null && s7 <= 32 ? ": frozen down past the top, dig with a plan" : s2 != null && s2 <= 32 ? ": frozen crust on top" : ": not frozen"}`]);
       $("wx-plan").innerHTML = rows.map(([a, b, d]) => `<tr><th>${a}</th><td class="big">${b}</td><td class="sub">${d}</td></tr>`).join("");
     });
     part("air", () => {
@@ -11371,10 +11378,12 @@ const WX = (() => {
       }
     });
 
+    /* a daily total in inches, whatever unit the reply says it's in; null when the source has none (the NWS backup) */
+    const dIn = (k, i) => d && d[k] && d[k][i] != null ? toIn(d[k][i], (om.daily_units || {})[k]) : null, in2 = (v, snow) => v == null ? "—" : v < 0.005 ? "0\"" : v.toFixed(snow ? 1 : 2) + "\"";   /* rain to the hundredth (how NWS reports it), snow to the tenth */
     part("best day", () => {
       if (!d || !d.time || d.time.length < 2){ $("wx-best").innerHTML = `<tr><td class="sub">Waiting for the 7-day forecast…</td></tr>`; return; }
       const N = d.time.length, day = i => D(typeof d.time[i] === "number" ? d.time[i] + 43200 : d.time[i] + "T12:00"), nm = i => i === 0 ? "Today" : i === 1 ? "Tomorrow" : day(i).toLocaleDateString([], {weekday: "short", month: "short", day: "numeric"});
-      const X = [...Array(N).keys()].map(i => ({i, hi: d.temperature_2m_max[i], lo: d.temperature_2m_min[i], pop: d.precipitation_probability_max ? d.precipitation_probability_max[i] : null, pr: d.precipitation_sum[i], sn: d.snowfall_sum ? d.snowfall_sum[i] : 0, g: d.wind_gusts_10m_max ? d.wind_gusts_10m_max[i] : null, c: d.weather_code[i]}));
+      const X = [...Array(N).keys()].map(i => ({i, hi: d.temperature_2m_max[i], lo: d.temperature_2m_min[i], pop: d.precipitation_probability_max ? d.precipitation_probability_max[i] : null, pr: dIn("precipitation_sum", i), sn: dIn("snowfall_sum", i) || 0, g: d.wind_gusts_10m_max ? d.wind_gusts_10m_max[i] : null, c: d.weather_code[i]}));
       const dry = x => (x.pop == null || x.pop < 30) && !(x.pr >= 0.05) && !(x.sn > 0) && ![95, 96, 99, 56, 57, 66, 67].includes(x.c);
       const pick = (L, f) => L.slice().sort(f)[0];
       const rows = [];
@@ -11396,13 +11405,30 @@ const WX = (() => {
     });
     part("test drift", () => drift());
     part("7 days", () => {
-      if (d) $("wx-days").innerHTML = d.time.map((t, i) => `<tr${d.temperature_2m_min[i] <= 32 ? ' class="frz"' : ""}><td>${i === 0 ? (om.src === "nws" && new Date().getHours() >= 14 ? "Rest of today" : "Today") : D(typeof t === "number" ? t + 43200 : t + "T12:00").toLocaleDateString([], {weekday:"short", month:"numeric", day:"numeric"})}</td><td class="wx-lh">${r0(d.temperature_2m_min[i])}–${r0(d.temperature_2m_max[i])}°</td><td>${r0(d.precipitation_probability_max[i])}%${d.snowfall_sum[i] > 0 ? ` · ${d.snowfall_sum[i].toFixed(1)}" snow` : ""}</td><td>${r0(d.wind_gusts_10m_max[i])} mph</td><td class="sub">${WMO(d.weather_code[i])}</td></tr>`).join("");
+      if (!d || !d.time) return;
+      const N = d.time.length, nm = (t, i) => i === 0 ? (om.src === "nws" && new Date().getHours() >= 14 ? "Rest of today" : "Today") : D(typeof t === "number" ? t + 43200 : t + "T12:00").toLocaleDateString([], {weekday:"short", month:"numeric", day:"numeric"});
+      $("wx-days").innerHTML = d.time.map((t, i) => { const pr = dIn("precipitation_sum", i), sn = dIn("snowfall_sum", i);
+        return `<tr${d.temperature_2m_min[i] <= 32 ? ' class="frz"' : ""}><td>${nm(t, i)}</td><td class="wx-lh">${r0(d.temperature_2m_min[i])}–${r0(d.temperature_2m_max[i])}°</td><td>${r0(d.precipitation_probability_max[i])}%${pr != null && pr >= 0.01 ? ` · ${in2(pr)}` : ""}${sn != null && sn >= 0.05 ? ` · ❄ ${in2(sn, 1)}` : ""}</td><td>${d.wind_gusts_10m_max[i] == null ? "—" : r0(d.wind_gusts_10m_max[i]) + " mph"}</td><td class="sub">${WMO(d.weather_code[i])}</td></tr>`; }).join("");
+      /* the week in totals: what falls, how many days it falls on, how many nights freeze, the coldest and warmest */
+      const I = [...Array(N).keys()], has = k => I.some(i => dIn(k, i) != null), sum = k => I.reduce((n, i) => n + (dIn(k, i) || 0), 0);
+      const wet = I.filter(i => (dIn("precipitation_sum", i) || 0) >= 0.01).length, snowD = I.filter(i => (dIn("snowfall_sum", i) || 0) >= 0.05).length, likely = I.filter(i => d.precipitation_probability_max[i] >= 50).length;
+      const frz = I.filter(i => d.temperature_2m_min[i] <= 32), lo = I.reduce((a, i) => d.temperature_2m_min[i] < d.temperature_2m_min[a] ? i : a, 0), hi = I.reduce((a, i) => d.temperature_2m_max[i] > d.temperature_2m_max[a] ? i : a, 0);
+      const gs = I.filter(i => d.wind_gusts_10m_max[i] != null), gmax = gs.length ? gs.reduce((a, i) => d.wind_gusts_10m_max[i] > d.wind_gusts_10m_max[a] ? i : a) : null, wind = gs.filter(i => d.wind_gusts_10m_max[i] >= 25).length;
+      const rows = has("precipitation_sum") ? [["Rain &amp; snow, as water", in2(sum("precipitation_sum")), `${wet} of ${N} days get some (0.01" or more)${likely ? ` · ${likely} at 50% or higher` : ""}. Snow counts here melted down to water.`]]
+        : [["Rain &amp; snow", `${likely} of ${N} days`, "50% chance or higher. The backup forecast (National Weather Service) has no totals."]];
+      if (has("snowfall_sum")) rows.push(["Snow", sum("snowfall_sum") >= 0.05 ? in2(sum("snowfall_sum"), 1) : "None", snowD ? `On ${snowD} day${snowD === 1 ? "" : "s"}: what piles up, before it settles or melts` : "No snow in the forecast"]);
+      rows.push(["Freezing nights", `${frz.length} of ${N}`, frz.length ? `Coldest ${r0(d.temperature_2m_min[lo])}°F ${nm(d.time[lo], lo)}. Don't leave a water test or water in test caps outside the heated space overnight.` : "No night at or below 32°F"]);
+      rows.push(["Warmest", `${r0(d.temperature_2m_max[hi])}°F`, nm(d.time[hi], hi)]);
+      if (gmax != null) rows.push(["Windiest", `${r0(d.wind_gusts_10m_max[gmax])} mph`, `${nm(d.time[gmax], gmax)}${wind ? ` · ${wind} day${wind === 1 ? "" : "s"} with gusts of 25 mph or more` : ""}`]);
+      $("wx-wkt").innerHTML = rows.map(([a, b, c]) => `<tr><th>${a}</th><td class="big">${b}</td><td class="sub">${c}</td></tr>`).join("");
+      $("wx-wk").textContent = `${has("precipitation_sum") ? in2(sum("precipitation_sum")) + " wet" : likely + " wet days"}${has("snowfall_sum") && sum("snowfall_sum") >= 0.05 ? ` · ${in2(sum("snowfall_sum"), 1)} snow` : ""} · ${frz.length} freezing night${frz.length === 1 ? "" : "s"}`;
     });
+    part("inspections", inspWeek);
 
 
 
 
-    if (!om && (err.om || !navigator.onLine)){ $("wx-chart").innerHTML = ""; ["wx-now","wx-hours","wx-days"].forEach(id => $(id).innerHTML = "");
+    if (!om && (err.om || !navigator.onLine)){ $("wx-chart").innerHTML = ""; ["wx-now","wx-hours","wx-days","wx-wkt"].forEach(id => $(id).innerHTML = "");
       ["wx-plan","wx-best","wx-drift"].forEach(id => $(id).innerHTML = `<tr><td class="sub">No forecast for this spot yet: it needs signal once, then it's saved.</td></tr>`);
       $("wx-flags").innerHTML = `<p class="note">No forecast yet, so no go / no-go calls.</p>`; }   /* nothing for this place: don't leave another town's numbers up */
     if (!om && (err.om || !navigator.onLine)) $("wx-hero").innerHTML = `<div class="sub" role="alert">${navigator.onLine ? "Couldn't reach the forecast service. It tries again in a minute." : "No signal, and nothing saved for this spot yet. Open this tab once with signal and it keeps the last forecast."}</div>`;
@@ -11490,20 +11516,23 @@ const WX = (() => {
   async function fJobs(){
     if (jwBusy || blocked() || !navigator.onLine || !window.jbActiveTowns) return;
     const towns = [...new Set(jbActiveTowns())].slice(0, 8); if (!towns.length) return;
-    if (Date.now() - (JW.t || 0) < 3600e3 && towns.every(n => JW.d[n])) return;
+    if (Date.now() - (JW.t || 0) < 3600e3 && towns.every(n => JW.d[n] && Array.isArray(JW.d[n].t))) return;   /* saved before the 7-day version: fetch again */
     jwBusy = true;
     try {
       const L = []; for (const n of towns){ const ll = await geo(n); if (ll) L.push([n, ll]); } if (!L.length) return;
       const q = `latitude=${L.map(x => x[1][0]).join(",")}&longitude=${L.map(x => x[1][1]).join(",")}&timezone=auto&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch` +
-        "&daily=temperature_2m_min,temperature_2m_max,precipitation_probability_max,wind_gusts_10m_max,weather_code&forecast_days=2";
+        "&daily=temperature_2m_min,temperature_2m_max,precipitation_probability_max,precipitation_sum,snowfall_sum,wind_gusts_10m_max,weather_code&forecast_days=7";
       let r = await get("https://api.open-meteo.com/v1/forecast?" + q, null, 8000); if (!Array.isArray(r)) r = [r];
-      const d = {}, two = a => (Array.isArray(a) ? a : []).slice(0, 2); L.forEach(([n], i) => { const x = r[i] && r[i].daily; if (x) d[n] = {lo: two(x.temperature_2m_min), hi: two(x.temperature_2m_max), pop: two(x.precipitation_probability_max), g: two(x.wind_gusts_10m_max), c: two(x.weather_code)}; });
+      const d = {}, A = a => (Array.isArray(a) ? a : []).slice(0, 7); L.forEach(([n], i) => { const x = r[i] && r[i].daily, u = (r[i] && r[i].daily_units) || {};
+        if (x) d[n] = {t: A(x.time), lo: A(x.temperature_2m_min), hi: A(x.temperature_2m_max), pop: A(x.precipitation_probability_max), g: A(x.wind_gusts_10m_max), c: A(x.weather_code),
+          pr: A(x.precipitation_sum).map(v => toIn(v, u.precipitation_sum)), sn: A(x.snowfall_sum).map(v => toIn(v, u.snowfall_sum))}; });
       JW = {t: Date.now(), d}; store.set("jpb-wx-jobs", JW);
-      if (window.jbWxRedraw) jbWxRedraw();
+      if (window.jbWxRedraw) jbWxRedraw(); part("inspections", inspWeek);
     } catch(e){} finally { jwBusy = false; }
   }
   const jw = n => { const d = n && JW.d[n]; return d && Date.now() - JW.t < 12 * 3600e3 ? d : null; };   /* older than 12 h: no badge rather than an old one */
-  const jwCalls = d => { const lo = Math.min(...d.lo.filter(isFinite)), pop = Math.max(...d.pop.filter(isFinite)), g = Math.max(...d.g.filter(isFinite)), out = [];
+  const jwCalls = d0 => { const d = {}; ["lo", "pop", "g", "c"].forEach(k => d[k] = (d0[k] || []).slice(0, 2));   /* badges: today and tomorrow */
+    const lo = Math.min(...d.lo.filter(isFinite)), pop = Math.max(...d.pop.filter(isFinite)), g = Math.max(...d.g.filter(isFinite)), out = [];
     if (d.c.some(c => [95, 96, 99].includes(c))) out.push(["⚡", "Thunderstorms possible"]);
     if (d.c.some(c => [56, 57, 66, 67].includes(c))) out.push(["🧊", "Freezing rain"]);
     if (lo <= 32) out.push([`❄ ${r0(lo)}°`, `Freezing: low ${r0(lo)}°F`]);
@@ -11513,8 +11542,24 @@ const WX = (() => {
   window.wxJobBadge = town => { const d = jw(town); if (!d) return ""; const {out} = jwCalls(d);
     return out.slice(0, 2).map(([b, t]) => `<span class="badge jb-wxb" title="${esc(t)} (today or tomorrow, ${esc(town)})">${esc(b)}</span>`).join(""); };
   window.wxJobLine = (town, jid) => { const d = jw(town); if (!d) return "";
-    const {lo, pop, g} = jwCalls(d), sx = [d.c.some(c => [95, 96, 99].includes(c)) ? "⚡ storms" : "", d.c.some(c => [56, 57, 66, 67].includes(c)) ? "🧊 freezing rain" : ""].filter(Boolean);
+    const {lo, pop, g} = jwCalls(d), sx = [d.c.slice(0, 2).some(c => [95, 96, 99].includes(c)) ? "⚡ storms" : "", d.c.slice(0, 2).some(c => [56, 57, 66, 67].includes(c)) ? "🧊 freezing rain" : ""].filter(Boolean);
     return `<button type="button" class="linkish jb-wxl" data-wxjob="${esc(jid)}">${esc(town)}, today–tomorrow: ${lo <= 32 ? "❄ " : ""}low ${r0(lo)}°F · ${pop >= 50 ? "🌧 " : ""}rain ${r0(pop)}% · ${g >= 25 ? "💨 " : ""}gusts ${r0(g)} mph${sx.length ? " · " + sx.join(" · ") : ""} ›</button>`; };
+  /* Inspections this week: each booked inspection with its own town's forecast for that day (same saved call as the badges) */
+  function inspWeek(){ const h = $("wx-insp-h"), x = $("wx-insp-x"); if (!h) return;
+    const L = window.jbInspWeek ? jbInspWeek() : []; h.hidden = x.hidden = !L.length; if (!L.length) return;
+    $("wx-insp").innerHTML = L.map(v => { const w = jw(v.town), i = w && Array.isArray(w.t) ? w.t.indexOf(v.d) : -1, day = new Date(v.d + "T12:00").toLocaleDateString([], {weekday: "short", month: "short", day: "numeric"});
+      let fc = "", call = [];
+      if (!v.town) fc = "Add a city to the job to see its weather.";
+      else if (i < 0) fc = navigator.onLine ? "Forecast loading…" : "No forecast saved for this day yet.";
+      else { const lo = w.lo[i], pop = w.pop[i], pr = w.pr && w.pr[i], sn = w.sn && w.sn[i], c = w.c[i], g = w.g[i];
+        fc = `${esc(v.town)}: ${r0(lo)}–${r0(w.hi[i])}°F · rain ${r0(pop)}%${pr >= 0.01 ? ` (${pr.toFixed(2)}")` : ""}${sn >= 0.05 ? ` · ❄ ${sn.toFixed(1)}"` : ""}${g != null ? ` · gusts ${r0(g)} mph` : ""}`;
+        if ([95, 96, 99].includes(c)) call.push("⚡ Thunderstorms possible: plan around the inspector's window.");
+        if ([56, 57, 66, 67].includes(c)) call.push("🧊 Freezing rain: icy steps, ladders and truck beds.");
+        if (lo <= 32) call.push(`❄ Low ${r0(lo)}°F that day: a water test set the night before can freeze outside the heated space. Ask your inspector which test they'll take in the cold.`);
+        if (pop >= 50 || pr >= 0.1) call.push(v.k === "under" ? "🌧 Wet: cap open pipe, keep the trench from filling, and check the inspection is still on." : "🌧 Wet: cover open pipe ends and anything you've glued.");
+        if (!call.length) call.push("Nothing in the forecast to plan around."); }
+      return `<tr><th>${esc(day)}<div class="sub">${esc(v.what)}</div></th><td><button type="button" class="linkish" data-wxgo="${esc(v.jid)}">${esc(v.job)} ›</button><div class="sub">${fc}</div>${call.length ? `<div class="sub">${call.map(esc).join("<br>")}</div>` : ""}</td></tr>`; }).join(""); }
+  document.addEventListener("click", e => { const b = e.target.closest("[data-wxgo]"); if (b && window.jbGoJobId) jbGoJobId(b.dataset.wxgo); });
   window.wxJobsDue = () => { fJobs(); };
   window.wxFollowJob = () => { if (shown()) toJob(false).then(ok => { if (!ok) jobBtn(); }); else jobBtn(); };   /* jobs.js loads after this card: it calls in once it's ready */
   document.addEventListener("click", e => { const b = e.target.closest("[data-wxjob]"); if (!b) return; go("site", "wxnow"); toJob(true); });
@@ -11613,7 +11658,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-23b";
+var BUILD = "handbook-2026-11-23c";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);

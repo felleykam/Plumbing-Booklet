@@ -202,6 +202,76 @@ with sync_playwright() as pw:
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors in markup" + (f": {pg.errs}" if pg.errs else ""))
     ctx.close()
 
+    # ---------- 6b. proof photo settings ----------
+    print("6b. Proof photo settings: stamp follows them, location off never asks")
+    ctx, pg = fresh(geolocation={"latitude": 40.39, "longitude": -111.85}, permissions=["geolocation"])
+    ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(dict(one, proof={"pos": "on", "gps": 0}))))
+    ctx.add_init_script("window.GEO=0;const g=navigator.geolocation.getCurrentPosition.bind(navigator.geolocation);navigator.geolocation.getCurrentPosition=(...a)=>{window.GEO++;return g(...a)}")
+    open_book(pg)
+    pg.evaluate("location.hash='#mine/jobs'"); pg.wait_for_timeout(300)
+    pg.evaluate("document.querySelector('[data-peek]').click()"); pg.wait_for_timeout(300); pg.evaluate("document.querySelector('[data-qa=open]').click()"); pg.wait_for_timeout(500)
+    pg.set_input_files("#jf-proof", tp); pg.wait_for_timeout(2500)
+    r = pg.evaluate("new Promise(ok=>{const q=indexedDB.open('jpb-files',1);q.onsuccess=()=>{const g=q.result.transaction('files').objectStore('files').getAll();g.onsuccess=async()=>{const f=g.result.find(x=>x.proof);if(!f)return ok(null);const b=await createImageBitmap(f.blob);ok([b.width,b.height,f.proof.lat==null,f.proof.gpsErr||''])}}})")
+    check(bool(r) and r[0] == 600 and r[1] == 450, "stamp 'on the photo' keeps the photo its own size" + (f" (got {r})" if r and (r[0], r[1]) != (600, 450) else ""))
+    check(bool(r) and r[2] and "off" in r[3] and pg.evaluate("window.GEO") == 0, "location off: never asks the phone, and the record says so")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors with proof settings" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+
+    # ---------- 6c. job report settings ----------
+    print("6c. Job report settings: parts left out stay out, and the report says so")
+    rj = dict(one["jobs"][0], log=[{"id": "n1", "d": "2026-11-20", "at": 1, "b": "PRIVATE-NOTE-TEXT"}])
+    ctx, pg = fresh()
+    ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(dict(one, jobs=[rj], proof={"gps": 0}))))
+    open_book(pg)
+    pg.evaluate("location.hash='#mine/jobs'"); pg.wait_for_timeout(300)
+    pg.evaluate("document.querySelector('[data-peek]').click()"); pg.wait_for_timeout(300); pg.evaluate("document.querySelector('[data-qa=open]').click()"); pg.wait_for_timeout(500)
+    pg.set_input_files("#jf-proof", tp); pg.wait_for_timeout(2500)
+    # make the report, then tap Send; with no share sheet the app downloads it, so catch the file there
+    REP = "async()=>{const B=()=>document.querySelector('.jb-hacts [data-a=job-report]');B().click();for(let i=0;i<80&&!/Send/.test(B().textContent);i++)await new Promise(r=>setTimeout(r,100));let got=null;const o=URL.createObjectURL;URL.createObjectURL=x=>{got=x;return o.call(URL,x)};navigator.share=undefined;B().click();URL.createObjectURL=o;return got?await got.text():''}"
+    WAIT = "async()=>{const B=()=>document.querySelector('.jb-hacts [data-a=job-report]');return /Send/.test(B().textContent)}"
+    full = pg.evaluate(REP)
+    check("PRIVATE-NOTE-TEXT" in full and "Left out" not in full and "<h2>Proof photos" in full, "by default the report has everything (notes, proof photos) and nothing is listed as left out")
+    pg.evaluate("document.querySelector('.jb-hacts [data-a=job-report]').click()"); pg.wait_for_timeout(2500)
+    ready = pg.evaluate(WAIT)
+    pg.evaluate("document.querySelector('[data-rsp=proof]').click()"); pg.wait_for_timeout(300)
+    check(ready and not pg.evaluate(WAIT), "changing a setting drops the report that was waiting to be sent")
+    pg.evaluate("document.querySelector('[data-rsv=\"ph|s\"]').click()"); pg.wait_for_timeout(200)
+    lean = pg.evaluate(REP)
+    check("PRIVATE-NOTE-TEXT" not in lean and "<h2>Activity log" not in lean and "<h2>Proof photos" in lean, "Proof photos only: notes and the activity log stay out, proof photos stay in")
+    check("Left out of this report" in lean and "Notes" in lean.split("Left out of this report")[1] and "Activity log" in lean.split("Left out of this report")[1], "the report lists what was left out (inside the fingerprinted part)")
+    check('class="pp s' in lean, "Small photo size is used")
+    pg.evaluate("localStorage.setItem('jpb-jobs', JSON.stringify(Object.assign(JSON.parse(localStorage.getItem('jpb-jobs')), {rep: [1,2]})))"); pg.reload(); pg.wait_for_timeout(800)
+    pg.evaluate("location.hash='#mine/jobs'"); pg.wait_for_timeout(300); pg.evaluate("(document.querySelector('[data-qa=open]') || document.querySelector('.jb-list .jb-row')).click()"); pg.wait_for_timeout(500)
+    pg.evaluate("document.querySelector('.card-h[data-fold=proof]').classList.contains('jb-folded') && document.querySelector('.card-h[data-fold=proof]').click()"); pg.wait_for_timeout(300)
+    check(pg.evaluate("""(() => { const b = document.querySelector('[data-rsv="ph|l"]'); return !!b && b.getAttribute('aria-pressed') === 'true' && [...document.querySelectorAll('[data-rs^="sec."]')].every(x => x.checked); })()"""), "broken saved report settings fall back to the defaults")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors with report settings" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+
+    # ---------- 6d. self-cleaning ----------
+    print("6d. Self-cleaning: old deletes go on their own, photos with no job only when you say so")
+    ctx, pg = fresh()
+    ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(one)))
+    open_book(pg)
+    pg.evaluate("location.hash='#mine/jobs'"); pg.wait_for_timeout(500)
+    PUT = """async () => { const day = 864e5, now = Date.now(), b = new Blob(['x'.repeat(2000)], {type: 'image/jpeg'});
+      const L = [{id: 'live', job: 'j1'}, {id: 'old', job: 'j1', del: now - 40 * day}, {id: 'new', job: 'j1', del: now - 5 * day}, {id: 'none', job: 'gone-job'}];
+      await new Promise(ok => { const r = indexedDB.open('jpb-files', 1); r.onupgradeneeded = () => r.result.createObjectStore('files', {keyPath: 'id'}).createIndex('job', 'job'); r.onsuccess = () => { const t = r.result.transaction('files', 'readwrite'); L.forEach(f => t.objectStore('files').put(Object.assign({kind: 'photo', name: f.id + '.jpg', type: 'image/jpeg', blob: b, thumb: '', note: '', t: now}, f))); t.oncomplete = () => { r.result.close(); ok(); }; }; }); }"""
+    IDS = "new Promise(ok=>{const r=indexedDB.open('jpb-files',1);r.onsuccess=()=>{const q=r.result.transaction('files').objectStore('files').getAllKeys();q.onsuccess=()=>ok(q.result.sort())}})"
+    pg.evaluate(PUT); pg.reload(); pg.wait_for_timeout(9500)
+    ids = pg.evaluate(IDS)
+    check(ids == ["live", "new", "none"], "deleted over 31 days ago: gone; deleted 5 days ago, on a job, or with no job: kept" + (f" (got {ids})" if ids != ["live", "new", "none"] else ""))
+    pg.evaluate("location.hash='#mine/jobs'"); pg.wait_for_timeout(300)
+    pg.evaluate("document.querySelector('[data-a=set-go]').click()"); pg.wait_for_timeout(300)
+    pg.wait_for_timeout(600)
+    txt = pg.evaluate("(document.getElementById('jf-use') || {}).innerText || ''")
+    check("with no job" in txt and "Recently deleted" in txt, "Backup shows photos on jobs, in Recently deleted, and with no job" + (f" (got {txt!r})" if "with no job" not in txt else ""))
+    pg.on("dialog", lambda d: d.accept())
+    pg.evaluate("document.querySelector('[data-a=jf-orph]') && document.querySelector('[data-a=jf-orph]').click()"); pg.wait_for_timeout(800)
+    ids = pg.evaluate(IDS)
+    check(ids == ["live", "new"], "Delete them… removes only the photos with no job" + (f" (got {ids})" if ids != ["live", "new"] else ""))
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors while cleaning" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+
     # ---------- 7. rooms ----------
     print("7. Rooms: add, link from a note, rename follows")
     two = {"jobs": [dict(one["jobs"][0], id="j1", name="Lot 1"), dict(one["jobs"][0], id="j2", name="Lot 2", rooms=[{"id": "r1", "n": "Master bath", "f": [{"id": "f1", "k": "Tub / shower", "v": "60 alcove"}]}])],
@@ -226,7 +296,40 @@ with sync_playwright() as pw:
     check("set the tub" in txt and "Moen M-Core" in txt, "a [[room]] link opens the room, which shows the note and its Label: value line")
     pg.fill("#jr-n", "Kids bath"); pg.press("#jr-n", "Tab"); pg.wait_for_timeout(300)
     check(J1()["log"][0]["b"].startswith("[[Kids bath]]") and J1()["rooms"][1]["n"] == "Kids bath", "renaming a room updates the notes that link it")
+    pg.fill("#jr-n", "<img src=x onerror=PWN=1>"); pg.press("#jr-n", "Tab"); pg.wait_for_timeout(400)
+    check(not pg.evaluate("window.PWN") and pg.evaluate("document.getElementById('toast').textContent.includes('<img')"), "a room named with HTML in it shows as text in the pop-up, never runs")
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors in rooms" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+
+    # ---------- 8. weather: week totals and inspections (a made-up forecast, worked by hand) ----------
+    print("8. Weather: week totals add up, inspections get their town's day")
+    import datetime, urllib.parse as up
+    today = datetime.date.today(); DAY = lambda n: (today + datetime.timedelta(days=n)).isoformat(); NOW = int(datetime.datetime.now().timestamp())
+    LO, HI, POP = [30, 28, 35, 40, 25, 33, 38], [45, 44, 50, 55, 40, 47, 52], [10, 20, 70, 5, 60, 0, 30]
+    PR, SN = [0, 0, 0.31, 0, 0.12, 0, 0.02], [0, 0, 0, 0, 3.5, 0, 0]   # rain in inches; snow sent in cm on purpose: 3.5 cm = 1.38"
+    def daily(unix):
+        t = [NOW + 86400 * i if unix else DAY(i) for i in range(7)]
+        return {"time": t, "weather_code": [3, 61, 61, 0, 73, 1, 2], "temperature_2m_max": HI, "temperature_2m_min": LO, "precipitation_sum": PR, "precipitation_probability_max": POP,
+                "snowfall_sum": SN, "wind_gusts_10m_max": [10, 30, 12, 8, 20, 5, 9], "sunrise": t, "sunset": t}
+    def om(route):
+        q = up.parse_qs(up.urlparse(route.request.url).query); units = {"precipitation_sum": "inch", "snowfall_sum": "cm"}
+        if "current" in q:
+            H = {"time": [NOW + 3600 * i for i in range(48)]}; H.update({k: [40] * 48 for k in q["hourly"][0].split(",")})
+            body = {"elevation": 1400, "current": {k: 40 for k in q["current"][0].split(",")}, "hourly": H, "hourly_units": {}, "daily": daily(True), "daily_units": units}
+        else:
+            n = len(q["latitude"][0].split(",")); body = [{"daily": daily(False), "daily_units": units} for _ in range(n)]; body = body[0] if n == 1 else body
+        route.fulfill(status=200, body=json.dumps(body), content_type="application/json")
+    wj = {"jobs": [dict(one["jobs"][0], id="w1", name="Lot 1", city="le", insp=[{"id": "i1", "d": DAY(2), "s": "under", "r": "booked", "who": "", "n": ""}])], "goal": 8000, "before": 0, "people": [], "builders": [], "subs": []}
+    ctx, pg = fresh(); ctx.route("https://api.open-meteo.com/**", om)
+    ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-jobs',%s);localStorage.setItem('jpb-wx-place',JSON.stringify({name:'Lehi',sub:'',lat:40.39,lon:-111.85,src:'town',at:Date.now()}))}" % json.dumps(json.dumps(wj)))
+    open_book(pg); pg.evaluate("location.hash='#site/wxnow'"); pg.wait_for_timeout(2500)
+    wk = pg.evaluate("document.getElementById('wx-wk').textContent")
+    check('0.45" wet' in wk and '1.4" snow' in wk and "3 freezing nights" in wk, f"week: 0.31 + 0.12 + 0.02 = 0.45\" wet; 3.5 cm = 1.4\" snow; lows of 30, 28, 25 = 3 freezing nights (got {wk!r})")
+    wkt = pg.evaluate("document.getElementById('wx-wkt').innerText")
+    check("3 of 7 days" in wkt and "Coldest 25" in wkt and "55°F" in wkt and "30 mph" in wkt, "week box: 3 wet days, coldest 25°F, warmest 55°F, windiest 30 mph")
+    ins = pg.evaluate("document.getElementById('wx-insp-h').hidden ? '' : document.getElementById('wx-insp').innerText")
+    check("Underground inspection" in ins and "35–50°F" in ins and '0.31"' in ins and "trench" in ins, "the underground inspection shows that day's Lehi forecast and the wet-trench heads-up")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors on the weather page" + (f": {pg.errs}" if pg.errs else ""))
     br.close()
 
 print(f"\n{'ALL PASSED' if not FAILS else str(len(FAILS)) + ' FAILED'}")
