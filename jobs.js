@@ -724,6 +724,10 @@ const jbActHtml = j => { const A = (j.act || []).slice().reverse(), n = JB.actAl
     : `<div class="jb-in"><p class="note">Nothing yet. Changes from now on show up here.</p></div>`}`; };
 /* one "Next up" list per job: booked inspections and @dates (soonest first), then heads-ups, open boxes and questions in the notes,
    open punch items, and the current stage's unchecked checklist. Where you left off, Quick view and Home's Coming up all use it. */
+/* a stage whose latest inspection failed or was partial, with nothing booked after it: that's the most urgent thing on the job */
+const jbReinsp = j => jbStages(j).flatMap(([k, nm]) => { const L = j.insp.filter(i => i.s === k).sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : 0), last = L[L.length - 1];
+  if (!last || (last.r !== "fail" && last.r !== "partial")) return [];
+  return [{m: "⚠", t: `${nm.replace(/ \(.*\)$/, "")} inspection ${last.r === "fail" ? "failed" : "was a partial"} ${jbNice(last.d)}: fix it and book the re-inspect`, s: k, go: "stage|" + k}]; });
 function jbNextUp(j){
   const now = jbDay(), live = k => !k || jbStages(j).some(([x]) => x === k), dated = [], rest = [], k = jbStageNow(j);
   j.insp.filter(i => i.r === "booked" && live(i.s)).forEach(i => dated.push({d: i.d, m: "📋", t: `${(JB_SNAME[i.s] || i.k || "").replace(/ \(.*\)$/, "")} inspection`.trim(), late: i.d < now, s: i.s, insp: 1, go: "stage|" + i.s}));
@@ -735,7 +739,7 @@ function jbNextUp(j){
   rest.sort((a, b) => a.o - b.o);
   dated.sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : (b.insp || 0) - (a.insp || 0));
   const ck = jbCk(j, k).items.filter(x => !x.done && !x.nd).map(x => ({m: "☐", t: x.t, s: k, ck: 1}));
-  return [...dated, ...rest.filter(x => x.t), ...j.punch.filter(p => !p.done).map(p => ({m: "☐", t: p.t, punch: 1, go: "punch|", pk: p.id})), ...ck.map(x => Object.assign(x, {go: "stage|" + k}))];
+  return [...jbReinsp(j), ...dated, ...rest.filter(x => x.t), ...j.punch.filter(p => !p.done).map(p => ({m: "☐", t: p.t, punch: 1, go: "punch|", pk: p.id})), ...ck.map(x => Object.assign(x, {go: "stage|" + k}))];
 }
 const JB_MK = {"☐": "k-task", "⚠": "k-flag", "?": "k-q", "✔": "k-q"};
 const jbNextTxt = (x, bx) => `${x.d ? `<span class="jn-date${x.d === jbDay() ? " now" : ""}">${bx && x.m !== "📋" ? "📅" : x.m} ${esc(jbNice(x.d))}</span> ` : bx && x.m === "☐" ? "" : `<span class="jb-nm ${x.ck ? "jb-nmck" : JB_MK[x.m] || ""}" aria-hidden="true">${esc(x.m)}</span>`}${esc(x.t.slice(0, 90))}${x.late ? " · <b>result?</b>" : ""}${x.punch ? ' <span class="sub">(punch)</span>' : x.ck ? ` <span class="sub">(${esc(JB_SNAME[x.s].replace(/ \(.*\)$/, ""))} checklist)</span>` : ""}`;
@@ -1090,6 +1094,7 @@ B.addEventListener("click", e => {
   if (t.dataset.show){ JB.show = t.dataset.show; jbDraw(); return; }
   if (t.dataset.v){ jfView(t.dataset.v); return; }
   if (t.dataset.stage && j){ JB.stage = t.dataset.stage; JB.edit = null; JB.ckEdit = false; JB.rowEdit = null; jbDraw(); jbOpenStage(); return; }
+  if (t.dataset.sst && st && t.dataset.sst === "done" && st.st !== "done" && jbReinsp(j).some(x => x.s === JB.stage) && !jbAsk(`The last ${JB_SNAME[JB.stage].replace(/ \(.*\)$/, "")} inspection didn't pass, and no re-inspect is booked. Mark this stage done anyway?`)) return;
   if (t.dataset.sst && st){ const val = t.dataset.sst, was = st.st; st.st = val; if (was !== val) jbAct(j, `${JB_SNAME[JB.stage]}: ${JB_SST[was] || was} → ${JB_SST[val]}`, JB.stage);
     if (val === "doing" && !st.d0) st.d0 = jbDay();
     if (val === "done" || (val === "skip" && was === "doing")){ if (val === "done"){ if (!st.d1) st.d1 = jbDay(); if (!st.d0) st.d0 = st.d1; }   /* done, or skipping the stage you were on: the next one starts */
@@ -1660,6 +1665,8 @@ async function jbReport(j0, only){
   jbStages(j).filter(([k]) => !only || k === only).forEach(([k, name]) => { const s = j.stages[k], C = jbCk(j, k);
     h += `<h3>${E(name)} · ${E(JB_SST[s.st])}</h3><p class="m">${[s.d0 && "Started " + jbNice(s.d0), s.d1 && "Done " + jbNice(s.d1), pName(s.lead) && "Lead " + pName(s.lead), `${C.done} of ${C.total} checked`].filter(Boolean).map(E).join(" · ")}</p>`
       + (C.items.length ? `<ul class="ck">${C.items.map(x => `<li>${x.done ? "☑" : x.nd ? "⊘" : "☐"} ${E(x.t)}${!x.done && x.nd ? ` <span class="m">· not done: ${E(x.nd.why)} (${E(when(x.nd.at))})</span>` : ""}${x.done && x.at ? ` <span class="m">· checked ${E(when(x.at))}</span>` : ""}${pn(x.ph)}</li>`).join("")}</ul>` : ""); });
+  if ((j.rooms || []).length) h += `<h2>Bathrooms &amp; rooms</h2>${j.rooms.map(r => { const F = r.f.filter(x => x.k || x.v), N = jrFacts(j, r);
+    return `<h3>${E(r.n)}</h3>${F.length || N.length ? `<table>${F.map(x => `<tr><th>${E(x.k)}</th><td>${E(x.v)}</td></tr>`).join("")}${N.map(([k, v, d]) => `<tr><th>${E(k)}</th><td>${E(v)} <span class="m">· from a note, ${E(jbNice(d))}</span></td></tr>`).join("")}</table>` : `<p class="m">No details.</p>`}`; }).join("")}`;
   if (j.insp.length) h += `<h2>Inspections</h2><table><tr><th>Date</th><th>Stage</th><th>Result</th><th>Inspector · notes</th></tr>${j.insp.slice().sort((a, b) => a.d < b.d ? -1 : 1).map(i => `<tr><td>${E(jbNice(i.d))}</td><td>${E(JB_SNAME[i.s] || i.k || "")}</td><td>${E(JB_RES[i.r] || "")}</td><td>${E([i.who, i.n].filter(Boolean).join(" · "))}</td></tr>`).join("")}</table>`;
   if (j.hrs.length) h += `<h2>Hours · ${E(jbHr(j.hrs.reduce((n, x) => n + (+x.h || 0), 0)))} hr</h2><table><tr><th>Date</th><th>Hours</th><th>Stage</th><th>What</th></tr>${j.hrs.slice().sort((a, b) => a.d < b.d ? -1 : 1).map(x => `<tr><td>${E(jbNice(x.d))}</td><td>${E(jbHr(x.h))}</td><td>${E(JB_SNAME[x.s] || "")}</td><td>${E(x.n || "")}</td></tr>`).join("")}</table>`;
   if (j.punch.length) h += `<h2>Punch list &amp; materials</h2><ul class="ck">${j.punch.map(p => `<li>${p.done ? "☑" : "☐"} ${E(p.t)} <span class="m">${p.add ? "· added " + E(when(p.add)) : ""}${p.done && p.at ? " · checked " + E(when(p.at)) : ""}</span>${pn(p.ph)}</li>`).join("")}</ul>`;
@@ -1765,7 +1772,26 @@ $("jf-dlg").addEventListener("change", e => { const c = JF.cur; if (!c || e.targ
   toast(`Moved to ${JB_SNAME[c.s]}.`, 1600); });
 $("jf-dlg").addEventListener("close", () => { const c = JF.cur; JF.cur = null; clearTimeout(jfNT); jbReseat(); jfNoteLog(c);   /* closed before the save timer ran */
   if (c) jfPut(c).catch(() => {}).then(() => { if (JB.open === c.job) jfDraw(c.job); }); });
-$("jf-open").addEventListener("click", () => { if (!JF.url) return; const a = document.createElement("a"); a.href = JF.url; a.target = "_blank"; a.rel = "noopener"; document.body.appendChild(a); a.click(); a.remove(); });
+/* Open full screen: inside the app, never a new tab. On iPhone a home-screen app can't hand a file kept in the app to
+   Safari (the tab just won't load) and has no back button if it opens in place, so photos and PDFs show here with a
+   Close that always brings you back. Anything else goes to "Open in another app". Only photos and PDFs are shown
+   in the app: a PDF shown inside the app is fine, a web page from a file would not be. */
+let JV = null;
+$("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.blob) return;
+  const pdf = c.type === "application/pdf" || /\.pdf$/i.test(c.name || ""), img = c.kind === "photo" || /^image\//.test(c.type || "");
+  if (JV) URL.revokeObjectURL(JV); JV = null;
+  const B = $("jv-body"), N = $("jv-note"), Z = $("jv-zoom"); B.className = "jv-wrap"; N.hidden = true; Z.hidden = true; Z.textContent = "Zoom in";
+  $("jv-title").textContent = img ? (c.proof ? "Proof photo" : "Photo") : c.name || "File";
+  if (img){ JV = URL.createObjectURL(c.blob); B.innerHTML = `<img src="${JV}" alt="${c.proof ? "Proof photo" : "Job photo"}">`; Z.hidden = false; }
+  else if (pdf){ JV = URL.createObjectURL(new Blob([c.blob], {type: "application/pdf"})); B.innerHTML = `<iframe src="${JV}" title="${esc(c.name || "PDF")}"></iframe>`;
+    N.textContent = "Only the first page showing, or it's hard to read? Tap Open in another app, then Books or Files."; N.hidden = false; }
+  else B.innerHTML = `<p class="jv-msg">This kind of file can't be shown in the app.<br>Tap <b>Open in another app</b>.</p>`;
+  $("jv-dlg").showModal(); });
+{ const d = $("jv-dlg"), shut = () => d.close();
+  $("jv-x").addEventListener("click", shut); $("jv-close").addEventListener("click", shut);
+  $("jv-zoom").addEventListener("click", () => { const B = $("jv-body"), big = B.classList.toggle("jv-big"); $("jv-zoom").textContent = big ? "Fit to screen" : "Zoom in"; });
+  $("jv-send").addEventListener("click", () => $("jf-share").click());
+  d.addEventListener("close", () => { $("jv-body").innerHTML = ""; if (JV) URL.revokeObjectURL(JV); JV = null; }); }
 $("jf-share").addEventListener("click", async () => { const c = JF.cur; if (!c) return;
   const f = new File([c.blob], c.kind === "photo" ? c.name.replace(/\.[^.]*$/, "") + ".jpg" : c.name, {type: c.type});
   try { if (navigator.canShare && navigator.canShare({files: [f]})){ await navigator.share({files: [f]}); return; } } catch(e){ if (e && e.name === "AbortError") return; }

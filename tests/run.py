@@ -189,6 +189,16 @@ with sync_playwright() as pw:
         orig = [x for x in after if x[0] == before[0][0]]
         check(len(after) == 2 and any(x[2] == before[0][0] for x in after), "the marked-up copy is a new photo linked to the original")
         check(bool(orig) and orig[0][1] == before[0][1], "the original photo is unchanged")
+    pdf = tempfile.mktemp(suffix=".pdf"); open(pdf, "wb").write(b"%PDF-1.1\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj 3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 200 200]>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF")
+    pg.evaluate("document.querySelector('#jf-dlg').open && document.getElementById('jf-close').click()"); pg.wait_for_timeout(300)
+    pg.set_input_files("#jf-fi", pdf); pg.wait_for_timeout(900)
+    pid = [x for x in pg.evaluate(ALL) if x[0] not in [y[0] for y in before] and not x[2]]
+    newtabs = []; pg.context.on("page", lambda p: newtabs.append(p.url))
+    if pid:
+        pg.evaluate("id => document.querySelector(`[data-v='${id}']`).click()", pid[-1][0]); pg.wait_for_timeout(400); pg.click("#jf-open"); pg.wait_for_timeout(600)
+        check(pg.evaluate("document.getElementById('jv-dlg').open && !!document.querySelector('#jv-body iframe')") and not newtabs, "Open full screen shows a PDF inside the app (no dead new tab)")
+        pg.click("#jv-close"); pg.wait_for_timeout(200); check(pg.evaluate("!document.getElementById('jv-dlg').open && document.getElementById('jf-dlg').open"), "Close goes back to the file")
+    else: check(False, "a PDF was added to the test job")
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors in markup" + (f": {pg.errs}" if pg.errs else ""))
     ctx.close()
 
