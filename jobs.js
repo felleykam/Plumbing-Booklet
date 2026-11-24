@@ -62,6 +62,9 @@ const jbCur = () => jbD.jobs.find(j => j.id === JB.open);
 const jbName = j => (j.name || "").trim() || (j.a || "").trim() || "New job";   /* the job's name, else its address */
 const jbNext = j => j.insp.filter(i => i.r === "booked" && (!i.s || jbStages(j).some(([k]) => k === i.s))).sort((a, b) => a.d < b.d ? -1 : 1)[0];
 const jbShort = ts => new Date(ts).toLocaleDateString(undefined, {month: "short", day: "numeric"});
+/* hours: off unless you turn them on (Jobs settings → Hours). Your company's time tracking is the real record;
+   anything already logged stays saved and comes back when they're on. */
+const jbHrsOn = () => jbD.hrsOn === true;
 const jbDays = iso => Math.max(0, Math.round((new Date(jbDay() + "T12:00:00") - new Date(iso + "T12:00:00")) / 864e5));
 const jbByDate = (a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : 0;
 const jfMB = n => n >= 1e6 ? (n / 1e6).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1e3)) + " KB";
@@ -139,7 +142,7 @@ function jbClean(){
   jbD.binOut = Array.isArray(jbD.binOut) ? jbD.binOut.filter(x => typeof x === "string").slice(0, 1000) : [];
   if (!isO(jbD.fold)) jbD.fold = {};
   jbD.tech = isO(jbD.tech) ? Object.fromEntries(["n", "lic", "co", "ph"].map(k => [k, str(jbD.tech[k]).slice(0, 80)])) : {};
-  jbD.rules = str(jbD.rules); jbD.jnFull = jbD.jnFull === true; if (!["new", "stage", "tag", "day"].includes(jbD.jnView)) delete jbD.jnView;
+  jbD.rules = str(jbD.rules); jbD.jnFull = jbD.jnFull === true; if (jbD.hrsOn !== true) delete jbD.hrsOn; if (jbD.peeked !== 1) delete jbD.peeked; if (!["new", "stage", "tag", "day"].includes(jbD.jnView)) delete jbD.jnView;
   if (jbD.tpl != null && !isO(jbD.tpl)) jbD.tpl = {}; if (jbD.tpl) Object.keys(jbD.tpl).forEach(k => { if (!JB_SNAME[k] || !Array.isArray(jbD.tpl[k])) delete jbD.tpl[k]; else jbD.tpl[k] = jbD.tpl[k].map(str).filter(Boolean); });
   jbD.subs.forEach(x => { if (!JB_ICONS.includes(x.icon)) x.icon = ""; });
   ['stageCol', 'tagCol'].forEach(k => { const o = isO(jbD[k]) ? jbD[k] : {}; jbD[k] = {}; Object.keys(o).forEach(x => { if (JB_PAL.includes(o[x])) jbD[k][x] = o[x]; }); });
@@ -382,7 +385,7 @@ const JN_ANAT = [   /* [color, the mark, an example line, what it is, where it s
   ["task", "- [ ]", "- [ ] call the super", "A checkbox. Tap it when it's done. In What's next, the <b>→</b> next to it moves it to the punch list or the stage checklist.", "The job's <b>What's next</b> · ☐ count on the job's row · <b>Open on active jobs</b> at the top of the job list"],
   ["flag", "!!", "!! gas not tested yet", "A red heads-up line, so it can't be missed. Tick it once it's handled: it turns gray (!✓) and stops showing up as open.", "In red in the note · the job's <b>What's next</b> until you tick it · <b>Still open</b> on a person's or builder's page"],
   ["q", "??", "?? vent through the roof or the wall", "A blue question. Tap it when you get the answer: it turns into ?✓.", "The job's <b>What's next</b> · ? count on the job's row · <b>Open on active jobs</b>"],
-  ["prop", "Label: value", "PSI: 80", "A fact. The words before the colon are its name.", "The <b>From your notes</b> table right under the job's notes. A newer note with the same label replaces the old value."],
+  ["prop", "Label: value", "PSI: 80", "A fact. The words before the colon are its name.", "The <b>Facts from notes</b> table right under the job's notes. A newer note with the same label replaces the old value."],
   ["date", "@", "inspection @fri", "A purple date, counted from the note's own date.", "The job's <b>What's next</b> and Quick view · Home's <b>Coming up</b> (next 7 days)"],
   ["tag", "#", "#warranty", "A colored tag. Same tag, same color, everywhere.", "The tag bar over the job list: tap a tag to see every job that has it"],
   ["link", "[[ ]]", "call [[Sam]]", "A link to a person, builder, subdivision, job or book card.", "Tap it to open that page. Their page lists the line under <b>Mentioned in job notes</b>"]];
@@ -516,10 +519,10 @@ const jnPlain = (x, base) => x.replace(/^\s*([-*+] \[[ xX]\]|[-*+•](?=\s)|\d+[
 /* a note in one line: its content lines (headings skipped, unless that's all there is), joined with dots */
 const jnGist = (e, n = 3) => { const L = String(e.b || "").split("\n"), body = L.filter(x => !/^\s*#{1,3}\s/.test(x)).map(x => jnPlain(x, e.d)).filter(Boolean);
   return (body.length ? body : L.map(x => jnPlain(x, e.d)).filter(Boolean)).slice(0, n).join(" · "); };
-const jbRow = (j, attr = "data-open", extra = "") => { const n = jbNext(j), c = cityById(j.city), tk = jbTasks(j), qs = jbQs(j), cs = jbStageNow(j), last = j.log.slice().sort(jnSort)[0];
+const jbRow = (j, attr = "data-open", extra = "", inSub = false) => { const n = jbNext(j), c = cityById(j.city), tk = jbTasks(j), qs = jbQs(j), cs = jbStageNow(j), last = j.log.slice().sort(jnSort)[0];
   const act = jbStages(j).filter(([k]) => j.stages[k].st !== "skip"), done = act.filter(([k]) => j.stages[k].st === "done").length;
   const gist = last ? jnGist(last) : "";
-  return `<button type="button" class="jb-row${j.color ? " jb-colored" : ""}"${j.color ? ` style="--jc:var(--pal-${j.color})"` : ""} ${attr}="${j.id}"${n && n.d < jbDay() && attr === "data-open" ? ` data-ostage="${esc(n.s)}"` : ""}><b>${j.pin ? '<span class="jb-pin" aria-label="Pinned">📌</span> ' : ""}${jbIco(jbIcon(j))}${esc(jbName(j))}</b><span>${[(j.name || "").trim() && j.a, eName("sub", j.sub), j.who, c && c.n, pName(j.lead) && "Lead " + pName(j.lead)].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
+  return `<button type="button" class="jb-row${j.color ? " jb-colored" : ""}"${j.color ? ` style="--jc:var(--pal-${j.color})"` : ""} ${attr}="${j.id}"${n && n.d < jbDay() && attr === "data-open" ? ` data-ostage="${esc(n.s)}"` : ""}><b>${j.pin ? '<span class="jb-pin" aria-label="Pinned">📌</span> ' : ""}${jbIco(jbIcon(j))}${esc(jbName(j))}</b><span>${[(j.name || "").trim() && j.a, !inSub && eName("sub", j.sub), j.who, c && c.n, pName(j.lead) && "Lead " + pName(j.lead)].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
     + (extra || "")   /* the note line stays in Quick view and "Where you left off": rows stay clean */
     + `<span class="jb-tags">${j.st === "open" && !jbArch(j) && c && window.wxJobBadge ? wxJobBadge(c.n) : ""}<span class="badge jb-sbadge jt-k-${cs}">${esc(JB_SNAME[cs])}</span><span class="badge">${done}/${act.length} stages</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${jbArch(j) ? `<span class="badge">🗄 Archived</span>` : ""}${tk ? `<span class="badge">☐ ${tk} to do</span>` : ""}${qs ? `<span class="badge jb-qb">? ${qs} question${qs === 1 ? "" : "s"}</span>` : ""}${(li => li && li.r === "fail" ? `<span class="badge jb-fail">✗ Failed inspection</span>` : li && li.r === "partial" ? `<span class="badge jb-fail">◐ Partial inspection</span>` : "")(j.insp.filter(i => i.r !== "booked").sort(jbByDate)[0])}${n ? n.d < jbDay() ? `<span class="badge jb-fail">📋 Inspection ${jbNice(n.d)}: result?</span>` : `<span class="jb-insp">📋 Inspection ${jbNice(n.d)}</span>` : ""}</span><span class="jb-peek" data-peek="${j.id}" title="Quick view" aria-hidden="true">⇤</span></button>`; };
 const eRow = (t, x) => { const n = eJobs(t, x).length, c = t === "sub" && cityById(x.city);
@@ -570,14 +573,14 @@ function jbMentionHtml(name){
 /* the job list as a tree: Builder › Subdivision › job. Tap a name to fold it (remembered); "Page" opens its page */
 function jbGroups(L){
   const tw = (key, label, n, page, lvl, ico) => { const f = !!jbD.fold[key];
-    return `<div class="jb-th jb-th${lvl}"><button type="button" class="jb-tf" data-tfold="${key}" aria-expanded="${!f}"><span class="jb-car" aria-hidden="true">${f ? "▸" : "▾"}</span>${ico || ""}<b>${esc(label)}</b><span class="jb-tn">${n}</span></button>${page ? `<button type="button" class="jb-tp" data-ent="${page}">Page ›</button>` : ""}</div>`; };
+    return `<div class="jb-th jb-th${lvl}"><button type="button" class="jb-tf" data-tfold="${key}" aria-expanded="${!f}"><span class="jb-car" aria-hidden="true">${f ? "▸" : "▾"}</span>${ico || ""}<b>${esc(label)}</b><span class="jb-tn">${n}</span></button>${page ? `<button type="button" class="jb-tp" data-ent="${page}" aria-label="Open the ${esc(label)} page">${lvl === 1 ? "Builder" : "Subdivision"} ›</button>` : ""}</div>`; };
   const byB = new Map(); L.forEach(j => { const k = eById("bld", j.bld) ? j.bld : ""; if (!byB.has(k)) byB.set(k, []); byB.get(k).push(j); });
   const byName = t => (x, y) => !x ? 1 : !y ? -1 : eName(t, x).localeCompare(eName(t, y));
   return [...byB.keys()].sort(byName("bld")).map(bk => { const jobs = byB.get(bk), fk = "b:" + (bk || "none");
     let h = tw(fk, bk ? eName("bld", bk) : "No builder", jobs.length, bk ? "bld|" + bk : "", 1);
     if (!jbD.fold[fk]){ const byS = new Map(); jobs.forEach(j => { const k = eById("sub", j.sub) ? j.sub : ""; if (!byS.has(k)) byS.set(k, []); byS.get(k).push(j); });
       const subs = [...byS.keys()].sort(byName("sub"));
-      h += subs.map(sk => { const js = byS.get(sk), k2 = "s:" + (bk || "none") + ":" + (sk || "none"), rows = `<div class="jb-list jb-tl">${js.map(j => jbRow(j)).join("")}</div>`;
+      h += subs.map(sk => { const js = byS.get(sk), k2 = "s:" + (bk || "none") + ":" + (sk || "none"), rows = `<div class="jb-list jb-tl">${js.map(j => jbRow(j, "data-open", "", !!sk)).join("")}</div>`;
         if (subs.length === 1 && !sk) return rows;   /* no subdivisions under this builder: no extra level */
         return tw(k2, sk ? eName("sub", sk) : "No subdivision", js.length, sk ? "sub|" + sk : "", 2, sk ? jbIco((eById("sub", sk) || {}).icon) : "") + (jbD.fold[k2] ? "" : rows); }).join(""); }
     return `<div class="jb-grp">${h}</div>`; }).join("");
@@ -604,11 +607,11 @@ function jbListHtml(){
   ${JB.show === "open" && !jbD.jobs.some(j => !jbIn("open", j)) ? "" : `<div class="seg jb-seg jb-show" role="group" aria-label="Show">${[["open", "Active"], ["done", "Done"], ["arch", "Archived"], ["all", "All"]].map(([k, t]) => { const n = jbD.jobs.filter(j => jbIn(k, j)).length; return `<button type="button" data-show="${k}" aria-pressed="${JB.show === k}" aria-label="${t}, ${n}"><span class="jb-vl">${t}</span><b class="jb-vn">${n}</b></button>`; }).join("")}</div>`}
   ${tags.length ? `<div class="chips jn-tagbar">${JB.tag ? `<button type="button" data-tagclr="1" aria-pressed="true">#${esc(JB.tag)} ✕ show all</button>` : tags.map(t => `<button type="button" class="jn-tagchip" style="${jbTagStyle(t)}" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")}</div>` : ""}
   ${jbOpenHtml()}
-  <div class="jb-sortrow"><p class="note jb-sortnote">${JB.show === "arch" ? "Not opened or changed in 30 days, or archived by hand. Change one, or tap Bring it back on its page." : `📌 Pinned first, then A to Z. Tap ⇤ on a job for a quick look without opening it.`}</p></div>
+  <div class="jb-sortrow"><p class="note jb-sortnote">${JB.show === "arch" ? "Not opened or changed in 30 days, or archived by hand. Change one, or tap Bring it back on its page." : jbD.peeked ? "" : `📌 Pinned first, then A to Z. Tap ⇤ on a job for a quick look without opening it.`}</p></div>
   ${PIN.length ? `<div class="jb-grp"><div class="jb-th jb-th1"><span class="jb-tf"><b>📌 Pinned</b><span class="jb-tn">${PIN.length}</span></span></div><div class="jb-list">${PIN.map(j => jbRow(j)).join("")}</div></div>` : ""}
   ${L.length ? (L.length > PIN.length ? jbGroups(L.filter(j => !j.pin)) : "") : `<div class="jb-list"><p class="note">${jbD.jobs.length ? `No ${({open: "active ", done: "done ", arch: "archived "})[JB.show] || ""}jobs${JB.tag ? ` tagged <b>#${esc(JB.tag)}</b>` : ""}. ${JB.tag ? "Tap the tag above to show all." : JB.show !== "all" ? "Tap <b>All</b> to see every job." : ""}` : "No jobs yet. Tap <b>+ New job</b>. Each job is a timeline, Underground to Final, with the blanks ready to fill in as you go."}</p></div>`}
   </div>
-  <ul class="jb-soon jb-foot"><li><button type="button" class="linkish" data-a="set-go" data-k="jb-hrs-h">⏱ <b>${jbHr(H.today)} hr today</b> · ${jbHr(H.wk)} this week · ${jbHr(have)} of ${goal.toLocaleString()} toward license</button></li>
+  <ul class="jb-soon jb-foot">${jbHrsOn() ? `<li><button type="button" class="linkish" data-a="set-go" data-k="jb-hrs-h">⏱ <b>${jbHr(H.today)} hr today</b> · ${jbHr(H.wk)} this week · ${jbHr(have)} of ${goal.toLocaleString()} toward license</button></li>` : ""}
   ${jbBytes() > 35e5 ? `<li><button type="button" class="linkish flag" data-a="set-go" data-k="jb-bk">⚠ <b>Nearly out of room on this phone</b> · back up and clear space</button></li>` : jbBkDue() ? `<li><button type="button" class="linkish" data-a="set-go" data-k="jb-bk">💾 <b>${+store.get("jpb-lastbk", 0) ? "Last backup " + jbAgo(+store.get("jpb-lastbk", 0)) : "No backup yet"}</b> · back up now</button></li>` : ""}
   <li><button type="button" class="linkish" data-a="set-go">⚙ <b>Jobs settings</b> · you, rules, hours goal, colors, backup, Recently deleted${jbD.bin.length ? ` (${jbD.bin.length})` : ""}</button></li></ul>`;
 }
@@ -628,7 +631,9 @@ function jbSetHtml(){
     ${tags.length ? tags.map(t => `<div class="jb-colrow"><span class="jn-tag" style="${jbTagStyle(t)}">#${esc(t)}</span></div>${jbSwatches("tag", esc(t), jbD.tagCol[t], "Auto")}`).join("") : `<p class="note jn-lead">Tags show up here once a note has one, like <code>#warranty</code>.</p>`}
   </div></details>
   <p class="card-h" id="jb-hrs-h">Hours</p>
-  <div class="x"><table class="t wrap"><tbody>
+  <div class="jb-in"><label class="jb-chk"><input type="checkbox" id="jb-hrson"${jbHrsOn() ? " checked" : ""}> Track my hours in this app</label>
+  <p class="note">Off: no Hours buttons on jobs, Home or the report. Hours already logged stay saved and come back when you turn it on.</p></div>
+  <div${jbHrsOn() ? "" : " hidden"}><div class="x"><table class="t wrap"><tbody>
     <tr><th>Today</th><td>${jbHr(H.today)} hr</td></tr>
     <tr><th>This week</th><td>${jbHr(H.wk)} hr <span class="sub">(Mon–Sun)</span></td></tr>
     <tr><th>Last week</th><td>${jbHr(H.lw)} hr</td></tr>
@@ -638,7 +643,7 @@ function jbSetHtml(){
   <details class="explain jb-fold"><summary>Set the license goal</summary><div>
     <div class="calc"><label for="jb-goal">Goal<select id="jb-goal"><option value="6000">Residential journeyman · 6,000 hr</option><option value="8000">Journeyman · 8,000 hr</option></select></label>
     <label for="jb-before">Hours before this app<input id="jb-before" type="number" inputmode="decimal" min="0" step="any" value="${+jbD.before || ""}" placeholder="0"></label></div>
-    <p class="note">Your own count, so you can see where you stand. DOPL goes by the hours your supervisor verifies, so keep those records too. DOPL: <b>Residential Journeyman</b> 6,000 hr as a licensed apprentice plus a 3-year (432 classroom hr) program; <b>Journeyman</b> 8,000 hr plus 576 classroom hr. DOPL's experience form credits at most 3,000 hr per 12 months. More in Learn → License → Path to a license. Checked Nov 2026.</p></div></details>
+    <p class="note">Your own count, so you can see where you stand. DOPL goes by the hours your supervisor verifies, so keep those records too. DOPL: <b>Residential Journeyman</b> 6,000 hr as a licensed apprentice plus a 3-year (432 classroom hr) program; <b>Journeyman</b> 8,000 hr plus 576 classroom hr. DOPL's experience form credits at most 3,000 hr per 12 months. More in Learn → License → Path to a license. Checked Nov 2026.</p></div></details></div>
   <p class="card-h" id="jb-bk">Backup</p>
   <div class="jb-in"><p class="note">${jbLastBk()}</p>
   ${jbBytes() > 15e5 ? `<p class="note${jbBytes() > 35e5 ? " flag" : ""}">Jobs use about ${(jbBytes() / 1e6).toFixed(1)} MB of the roughly 5 MB this phone gives them. Back up and delete finished jobs before it fills: past that, new entries won't save.</p>` : ""}
@@ -651,7 +656,7 @@ function jbSetHtml(){
 
 /* an extra stage that's off this job: "+ Gas", or what it still holds when it was taken off with things in it */
 function jbXChip(j, k, nPh){ const s = j.stages[k] || {}, n = j.log.filter(e => e.s === k).length, ni = j.insp.filter(x => x.s === k).length, h = j.hrs.filter(x => x.s === k).reduce((a, x) => a + (+x.h || 0), 0), c = (s.done || []).length + (s.extra || []).filter(x => x.done).length;
-  const P = [n && `${n} note${n === 1 ? "" : "s"}`, nPh && `${nPh} photo${nPh === 1 ? "" : "s"}`, ni && `${ni} inspection${ni === 1 ? "" : "s"}`, h && `${jbHr(h)} hr`, c && `${c} checked`].filter(Boolean);
+  const P = [n && `${n} note${n === 1 ? "" : "s"}`, nPh && `${nPh} photo${nPh === 1 ? "" : "s"}`, ni && `${ni} inspection${ni === 1 ? "" : "s"}`, jbHrsOn() && h && `${jbHr(h)} hr`, c && `${c} checked`].filter(Boolean);
   return P.length ? `${JB_SNAME[k]} removed · ${P.join(", ")} · Put back` : `+ ${JB_SNAME[k]}`; }
 /* tap ✎ on a row to change it right there; Save or Cancel */
 const jbIsEd = (k, id) => JB.rowEdit === k + "|" + id;
@@ -673,7 +678,7 @@ function jbStageSum(j, k){
   if (pName(s.lead)) b.push("Lead " + pName(s.lead));
   if (ins) b.push(`Inspection ${JB_RES[ins.r].toLowerCase()} ${jbNice(ins.d)}`);
   if (C.total && s.st !== "skip") b.push(`☑ ${C.done}/${C.total}`);
-  if (nN) b.push(nN + (nN === 1 ? " note" : " notes")); if (hr) b.push(jbHr(hr) + " hr");
+  if (nN) b.push(nN + (nN === 1 ? " note" : " notes")); if (hr && jbHrsOn()) b.push(jbHr(hr) + " hr");
   return esc(b.join(" · "));
 }
 function jbStageHtml(j, k){
@@ -707,9 +712,9 @@ function jbStageHtml(j, k){
     <label for="ji-n" class="wide">Notes / corrections <i>(optional)</i><input id="ji-n" type="text" autocomplete="off" placeholder="Strap the 3/4 in the garage"></label>
   </div><div class="set-btns jb-top"><button type="button" class="btn" data-a="insp-add">Add inspection</button></div></div></details>
 
-  <p class="card-h" data-fold="s-hrs">Hours · ${jbHr(hr)} hr</p>
+  ${jbHrsOn() ? `<p class="card-h" data-fold="s-hrs">Hours · ${jbHr(hr)} hr</p>
   ${hrs.length ? `<div class="x"><table class="t wrap jb-t"><tbody>${hrs.map(jbHrsRow).join("")}</tbody></table></div>` : ""}
-  <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-a="hd-hrs" data-k="${k}">⏱ Log hours on ${esc(JB_SNAME[k].replace(/ \(.*\)$/, ""))}</button></div></div>
+  <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-a="hd-hrs" data-k="${k}">⏱ Log hours on ${esc(JB_SNAME[k].replace(/ \(.*\)$/, ""))}</button></div></div>` : ""}
 
 `;
 }
@@ -836,15 +841,15 @@ function jbJobHtml(j){
   ${(eById("sub", j.sub) || {}).gate ? `<p class="jb-gate">🔑 Gate: <b>${esc(eById("sub", j.sub).gate)}</b> <button type="button" class="linkish" data-ent="sub|${j.sub}" aria-label="Change the gate code on the ${esc(eName("sub", j.sub))} page">change ›</button></p>` : ""}<p class="jb-sub">${esc([(j.name || "").trim() && addr, eName("sub", j.sub), eName("bld", j.bld), c && c.n].filter(Boolean).join(" · ")) || "Add a name and address in Job details below."}</p>
   <div class="jb-chips"><span class="badge jb-sbadge jt-k-${hs}">${esc(JB_SNAME[hs])}</span><span class="badge">${hDone} of ${hAct.length} stages</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${tk ? `<span class="badge">☐ ${tk} to do</span>` : ""}${hLead ? `<span class="badge">Lead ${esc(hLead.n)}</span>` : ""}</div>
   ${j.st === "open" && c && window.wxJobLine ? wxJobLine(c.n, j.id) : ""}
-  <div class="set-btns jb-hacts">${addr ? `<a class="btn ghost" href="https://maps.apple.com/?daddr=${q}" target="_blank" rel="noopener"><span class="jb-hi" aria-hidden="true">🧭</span>Map</a>` : ""}${hLead && pTel(hLead) ? `<a class="btn ghost" href="tel:${pTel(hLead)}"><span class="jb-hi" aria-hidden="true">📞</span>Call ${esc(hLead.n.split(" ")[0])}</a>` : ""}<button type="button" class="btn ghost" data-a="hd-hrs" aria-expanded="${JB.hrsBox === j.id}"><span class="jb-hi" aria-hidden="true">⏱</span>Hours</button><button type="button" class="btn ghost" data-a="hd-proof"><span class="jb-hi" aria-hidden="true">📷</span>Proof</button><button type="button" class="btn ghost" data-a="job-report"><span class="jb-hi" aria-hidden="true">${JF.rep && JF.rep.jid === j.id && !JF.rep.k ? "📤" : "📄"}</span>${JF.rep && JF.rep.jid === j.id && !JF.rep.k ? "Send" : "Report"}</button></div>
+  <div class="set-btns jb-hacts">${addr ? `<a class="btn ghost" href="https://maps.apple.com/?daddr=${q}" target="_blank" rel="noopener"><span class="jb-hi" aria-hidden="true">🧭</span>Map</a>` : ""}${hLead && pTel(hLead) ? `<a class="btn ghost" href="tel:${pTel(hLead)}"><span class="jb-hi" aria-hidden="true">📞</span>Call ${esc(hLead.n.split(" ")[0])}</a>` : ""}${jbHrsOn() ? `<button type="button" class="btn ghost" data-a="hd-hrs" aria-expanded="${JB.hrsBox === j.id}"><span class="jb-hi" aria-hidden="true">⏱</span>Hours</button>` : ""}<button type="button" class="btn ghost" data-a="hd-proof"><span class="jb-hi" aria-hidden="true">📷</span>Proof</button><button type="button" class="btn ghost" data-a="job-report"><span class="jb-hi" aria-hidden="true">${JF.rep && JF.rep.jid === j.id && !JF.rep.k ? "📤" : "📄"}</span>${JF.rep && JF.rep.jid === j.id && !JF.rep.k ? "Send" : "Report"}</button></div>
   </div>
   ${JB.hrsBox === j.id ? `<div class="jb-left jb-hrsq"><p class="jb-lefth">Log hours</p><div class="calc">
     <label for="jhq-d">Date<input id="jhq-d" type="date" value="${jbDay()}" max="${jbDay()}"></label>
-    <label for="jhq-s">Stage<select id="jhq-s">${jbStages(j).map(([k, nm]) => `<option value="${k}"${k === (JB.hrsStage || hs) ? " selected" : ""}>${nm}</option>`).join("")}</select></label>
+    <label for="jhq-s">Stage<select id="jhq-s">${jbStages(j).map(([k, nm]) => `<option value="${k}"${k === (JB.hrsStage || hs) ? " selected" : ""}>${nm.replace(/ \((rough-in|trim)\)/, "")}</option>`).join("")}</select></label>
     <label for="jhq-h">Hours<input id="jhq-h" type="number" inputmode="decimal" min="0" max="24" step="any" placeholder="8"></label>
     <label for="jhq-n" class="wide">What you did <i>(optional)</i><input id="jhq-n" type="text" autocomplete="off" enterkeyhint="done" placeholder="Set tubs, ran vents"></label></div>
     <div class="set-btns"><button type="button" class="btn" data-a="hq-add">Log hours</button><button type="button" class="btn ghost" data-a="hq-x">Cancel</button></div>
-    <p class="note">Starts on today. They add up on the stage, and in Jobs settings → Hours toward your license.</p></div>` : ""}
+    <p class="note">Dated today: change the date if it was another day. Hours add up on the stage and toward your license (Jobs settings → Hours).</p></div>` : ""}
   ${jbArch(j) ? `<div class="jb-in"><p class="note jb-archbar">🗄 <b>Archived.</b> ${jbArchMe(j) ? "You put it here." : `Not opened or changed since ${jbShort(jbLast(j))}.`} It's off the ${j.st === "done" ? "Done" : "Active"} list, Home and Coming up. Changing anything brings it back too.</p><div class="set-btns"><button type="button" class="btn" data-a="job-unarch">Bring it back</button></div></div>` : ""}
   ${j.st !== "done" && (A => A.length && A.every(([k]) => j.stages[k].st === "done"))(jbStages(j).filter(([k]) => j.stages[k].st !== "skip")) ? `<div class="jb-in"><p class="note jb-donebar">✓ <b>Every stage is done.</b> Finished with this job?</p><div class="set-btns"><button type="button" class="btn" data-a="job-done">Mark the job Done</button></div></div>` : ""}
   ${jbLeftOff(j)}
@@ -853,7 +858,7 @@ function jbJobHtml(j){
   ${jbRulesHtml(j)}
   ${jnBlock(j, j.log, "What got done, what didn't and why.\nTap 📝 Day log to lay it out.", "", jbStages(j).length > 1 ? `<label for="jn-s" class="jn-dl">Stage<select id="jn-s">${jbStages(j).map(([k, nm]) => `<option value="${k}"${k === sel ? " selected" : ""}>${esc(nm.replace(/ \(.*\)$/, ""))}</option>`).join("")}</select></label>` : "")}
   ${(() => { const F = new Map(); j.log.slice().sort((a, b) => jnSort(b, a)).forEach(e => jnProps(e.b).forEach(([k, v]) => F.set(k.toLowerCase(), [k, v, e.d])));
-    return (F.size ? `<p class="card-h" data-fold="facts">From your notes</p><div class="x"><table class="t wrap jb-facts"><tbody>${[...F.values()].map(([k, v, d]) => `<tr><th>${esc(k)}</th><td>${jnInline(v)}<div class="sub">${jbNice(d)}</div></td></tr>`).join("")}</tbody></table></div>` : ""); })()}
+    return (F.size ? `<p class="card-h" data-fold="facts">Facts from notes</p><div class="x"><table class="t wrap jb-facts"><tbody>${[...F.values()].map(([k, v, d]) => `<tr><th>${esc(k)}</th><td>${jnInline(v)}<div class="sub">${jbNice(d)}</div></td></tr>`).join("")}</tbody></table></div>` : ""); })()}
   ${jrHtml(j)}
   <p class="card-h" data-fold="timeline">Timeline</p>
   <ol class="jt">${jbStages(j).map(([k, name]) => { const s = j.stages[k];
@@ -1095,6 +1100,12 @@ B.addEventListener("click", e => {
   if (t.dataset.v){ jfView(t.dataset.v); return; }
   if (t.dataset.stage && j){ JB.stage = t.dataset.stage; JB.edit = null; JB.ckEdit = false; JB.rowEdit = null; jbDraw(); jbOpenStage(); return; }
   if (t.dataset.sst && st && t.dataset.sst === "done" && st.st !== "done" && jbReinsp(j).some(x => x.s === JB.stage) && !jbAsk(`The last ${JB_SNAME[JB.stage].replace(/ \(.*\)$/, "")} inspection didn't pass, and no re-inspect is booked. Mark this stage done anyway?`)) return;
+  if (t.dataset.sst && st && t.dataset.sst === "done" && st.st !== "done"){   /* done with boxes still open: offer to tick them, or leave them open */
+    const open = jbCk(j, JB.stage).items.filter(x => !x.done && !x.nd), nm = JB_SNAME[JB.stage].replace(/ \(.*\)$/, "");
+    if (open.length && jbAsk(`${open.length} ${nm} checklist item${open.length === 1 ? " isn't" : "s aren't"} ticked:\n${open.slice(0, 8).map(x => "• " + x.t).join("\n")}${open.length > 8 ? `\n…and ${open.length - 8} more` : ""}\n\nOK: tick ${open.length === 1 ? "it" : "them all"} now.\nCancel: mark the stage done and leave ${open.length === 1 ? "it" : "them"} open.`)){
+      const now = Date.now(), dn = new Set(st.done); st.doneAt = st.doneAt || {};
+      open.forEach(x => { if (x.tpl){ dn.add(x.t); st.doneAt[x.t] = now; st.extra.forEach(y => { if (y.t === x.t){ y.done = true; y.at = now; } }); } else { const y = st.extra.find(z => z.id === x.id); if (y){ y.done = true; y.at = now; } } });
+      st.done = [...dn]; jbAct(j, `☑ Checked the last ${open.length} item${open.length === 1 ? "" : "s"} on the ${nm} checklist`, JB.stage); } }
   if (t.dataset.sst && st){ const val = t.dataset.sst, was = st.st; st.st = val; if (was !== val) jbAct(j, `${JB_SNAME[JB.stage]}: ${JB_SST[was] || was} → ${JB_SST[val]}`, JB.stage);
     if (val === "doing" && !st.d0) st.d0 = jbDay();
     if (val === "done" || (val === "skip" && was === "doing")){ if (val === "done"){ if (!st.d1) st.d1 = jbDay(); if (!st.d0) st.d0 = st.d1; }   /* done, or skipping the stage you were on: the next one starts */
@@ -1342,6 +1353,7 @@ B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.pers
     jbAct(j, `${t.checked ? "☑ Checked" : "☐ Unchecked"} punch item "${x.t}"${!t.checked && x.at ? ` (was checked ${jbWhenAt(x.at)})` : ""}`);
     x.done = t.checked; x.at = t.checked ? Date.now() : undefined; x.ed = Date.now(); if (!t.checked) delete x.ph; jbTouch(j); } return; }   /* unchecked: its proof photo stays in Photos but no longer claims this item */
   if (t.id === "jb-rules"){ jbD.rules = t.value; jbSave(); return; }
+  if (t.id === "jb-hrson"){ jbD.hrsOn = t.checked; jbSave(); jbDraw(); toast(t.checked ? "Hours are on: Hours buttons are back on jobs and Home." : "Hours are off. Anything logged stays saved.", 2400); return; }
   if (t.id === "jb-goal"){ jbD.goal = +t.value; jbSave(); jbDraw(); return; }
   if (t.id === "jb-before"){ jbD.before = Math.max(0, parseFloat(t.value) || 0); jbSave(); jbDraw(); return; }
   if (t.id === "jf-proof"){ if (t.files[0]) jfProof(t.files[0]); else jbReseat(); return; }
@@ -1383,7 +1395,7 @@ JQ.addEventListener("click", e => { const b = e.target.closest("[data-qa]"); if 
   const j = jbD.jobs.find(x => x.id === id); jbQuickClose(); if (!j) return;
   if (a === "open") jbGoJob(id);
   else if (a === "proof"){ jfGeoWarm(); jbGoJob(id, jbStageNow(j)); const inp = $("jf-proof"); if (inp) inp.click(); } });   /* same tap, so the camera may open */
-document.addEventListener("click", e => { const p = e.target.closest("[data-peek]"); if (!p) return; e.preventDefault(); e.stopPropagation(); jbQuick(p.dataset.peek); }, true);
+document.addEventListener("click", e => { const p = e.target.closest("[data-peek]"); if (!p) return; e.preventDefault(); e.stopPropagation(); if (!jbD.peeked){ jbD.peeked = 1; jbSave(); } jbQuick(p.dataset.peek); }, true);
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !JQ.hidden) jbQuickClose(); });
 /* swipe a job row left to peek; swipe the panel right to close */
 document.addEventListener("touchstart", e => { if (e.touches.length !== 1){ jqT = null; return; }
@@ -1414,7 +1426,7 @@ window.jbActiveTowns = () => jbD.jobs.filter(x => x.st === "open" && !jbArch(x) 
 window.jbWxRedraw = () => { const B0 = $("jb-body"), ae = document.activeElement; if (!B0 || (ae && ae !== document.body && B0.contains(ae) && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))) return; jbDraw(); };
 /* other cards hand a job something (Time card hours, a Test log record): active jobs, pinned and latest first */
 const jbPickJobs = () => jbD.jobs.filter(j => j.st !== "done" && !jbArch(j)).sort((a, b) => (+!!b.pin - +!!a.pin) || jbLast(b) - jbLast(a));
-window.jbHrsJobs = h => { h = Math.round(+h * 100) / 100; if (!(h > 0 && h <= 24)) return ""; const J = jbPickJobs().slice(0, 4);
+window.jbHrsJobs = h => { h = Math.round(+h * 100) / 100; if (!(h > 0 && h <= 24) || !jbHrsOn()) return ""; const J = jbPickJobs().slice(0, 4);
   return J.length ? `<p class="note">Log ${jbHr(h)} hr on a job. You pick the date and stage there; it counts toward your license hours.</p><div class="jb-list">${J.map(j => `<button type="button" class="jb-row" data-hrsjob="${j.id}|${h}"><b>${jbIco(jbIcon(j))}${esc(jbName(j))} ›</b><span>${esc(JB_SNAME[jbStageNow(j)])} · ${jbHr(j.hrs.reduce((n, x) => n + (+x.h || 0), 0))} hr logged so far</span></button>`).join("")}</div>`
     : `<p class="note">Add a job in Mine → Jobs to log these hours toward your license.</p>`; };
 document.addEventListener("click", e => { const b = e.target.closest("[data-hrsjob]"); if (!b) return; const [id, h] = b.dataset.hrsjob.split("|"); if (!jbD.jobs.some(j => j.id === id)) return;
@@ -1444,10 +1456,10 @@ window.jobsToday = () => {
   const c = cityById(j.city), addr = (j.a || "").trim(), k = jbStageNow(j), N = jbNextUp(j), H = jbHours();
   return `<div class="hm-today"><p class="card-h">Today <button type="button" class="linkish" data-hj="${j.id}">Open the job ›</button></p>
     <button type="button" class="hm-tj" data-hj="${j.id}"><b>${jbIco(jbIcon(j))}${esc(jbName(j))}</b><span>${esc([(j.name || "").trim() && addr, eName("sub", j.sub), c && c.n].filter(Boolean).join(" · "))}</span>
-      <span class="jb-tags"><span class="badge jb-sbadge jt-k-${k}">${esc(JB_SNAME[k])}</span>${H.today ? `<span class="badge">⏱ ${jbHr(H.today)} hr today</span>` : ""}</span></button>
+      <span class="jb-tags"><span class="badge jb-sbadge jt-k-${k}">${esc(JB_SNAME[k])}</span>${H.today && jbHrsOn() ? `<span class="badge">⏱ ${jbHr(H.today)} hr today</span>` : ""}</span></button>
     ${c ? (window.wxJobLine ? wxJobLine(c.n, j.id) : "") : `<p class="note hm-hint">No city on this job yet: add it in the job's details and the weather and map follow it.</p>`}
     ${N.length ? jbNextHtml(N, 3, "jb-leftl hm-next") : `<p class="note">Nothing open on this job. Nice.</p>`}
-    <div class="hm-acts"><button type="button" class="btn" data-hj="hrs:${j.id}">⏱ Log hours</button><button type="button" class="btn ghost" data-hj="note:${j.id}">📝 Note</button><button type="button" class="btn ghost" data-hj="ck:${j.id}">☑ Checklist</button>${addr ? `<a class="btn ghost" href="https://maps.apple.com/?daddr=${encodeURIComponent(addr + (c ? ", " + c.n + ", UT" : ""))}" target="_blank" rel="noopener">🧭 Map</a>` : ""}</div></div>`;
+    <div class="hm-acts">${jbHrsOn() ? `<button type="button" class="btn" data-hj="hrs:${j.id}">⏱ Log hours</button>` : ""}<button type="button" class="btn ghost" data-hj="note:${j.id}">📝 Note</button><button type="button" class="btn ghost" data-hj="ck:${j.id}">☑ Checklist</button>${addr ? `<a class="btn ghost" href="https://maps.apple.com/?daddr=${encodeURIComponent(addr + (c ? ", " + c.n + ", UT" : ""))}" target="_blank" rel="noopener">🧭 Map</a>` : ""}</div></div>`;
 };
 window.jobsHome = () => {
   if (!(nav.group === "mine" && nav.sub === "jobs")) jbTidy(true);   /* away from My jobs: a blank new job doesn't sit on Home */
@@ -1455,7 +1467,7 @@ window.jobsHome = () => {
   return `<p class="card-h">${tj ? "Other jobs" : "My jobs"} <button type="button" class="linkish" data-hj="all">All</button> <button type="button" class="linkish" data-hj="new">+ New</button></p>`
     + (open.length ? `<div class="jb-list jb-mini">${open.map(j => jbRow(j, "data-hj")).join("")}</div>`
       : tj ? "" : `<p class="note"><button type="button" class="linkish" data-hj="new">Add a job</button>: a timeline from Underground to Final, with the blanks ready to fill in.</p>`)
-    + (H.wk ? `<p class="note">${jbHr(H.today)} hr today · ${jbHr(H.wk)} hr this week · ${jbHr(H.all + (+jbD.before || 0))} toward license</p>` : "")
+    + (H.wk && jbHrsOn() ? `<p class="note">${jbHr(H.today)} hr today · ${jbHr(H.wk)} hr this week · ${jbHr(H.all + (+jbD.before || 0))} toward license</p>` : "")
     + (() => { const now = jbDay(), wk = new Date(now + "T12:00:00"); wk.setDate(wk.getDate() + 7); const end = jbDay(wk);
         const seen = new Set(tj ? jbNextUp(tj).slice(0, 3).map(x => tj.id + "|" + x.d + "|" + x.t) : []);   /* already shown in Today */
         const up = jbD.jobs.filter(j => j.st !== "done" && !jbArch(j)).flatMap(j => jbNextUp(j).filter(x => x.d && (x.late || x.d <= end) && !seen.has(j.id + "|" + x.d + "|" + x.t)).map(x => [x, j])).sort((a, b) => a[0].d < b[0].d ? -1 : a[0].d > b[0].d ? 1 : 0).slice(0, 5);
@@ -1668,7 +1680,7 @@ async function jbReport(j0, only){
   if ((j.rooms || []).length) h += `<h2>Bathrooms &amp; rooms</h2>${j.rooms.map(r => { const F = r.f.filter(x => x.k || x.v), N = jrFacts(j, r);
     return `<h3>${E(r.n)}</h3>${F.length || N.length ? `<table>${F.map(x => `<tr><th>${E(x.k)}</th><td>${E(x.v)}</td></tr>`).join("")}${N.map(([k, v, d]) => `<tr><th>${E(k)}</th><td>${E(v)} <span class="m">· from a note, ${E(jbNice(d))}</span></td></tr>`).join("")}</table>` : `<p class="m">No details.</p>`}`; }).join("")}`;
   if (j.insp.length) h += `<h2>Inspections</h2><table><tr><th>Date</th><th>Stage</th><th>Result</th><th>Inspector · notes</th></tr>${j.insp.slice().sort((a, b) => a.d < b.d ? -1 : 1).map(i => `<tr><td>${E(jbNice(i.d))}</td><td>${E(JB_SNAME[i.s] || i.k || "")}</td><td>${E(JB_RES[i.r] || "")}</td><td>${E([i.who, i.n].filter(Boolean).join(" · "))}</td></tr>`).join("")}</table>`;
-  if (j.hrs.length) h += `<h2>Hours · ${E(jbHr(j.hrs.reduce((n, x) => n + (+x.h || 0), 0)))} hr</h2><table><tr><th>Date</th><th>Hours</th><th>Stage</th><th>What</th></tr>${j.hrs.slice().sort((a, b) => a.d < b.d ? -1 : 1).map(x => `<tr><td>${E(jbNice(x.d))}</td><td>${E(jbHr(x.h))}</td><td>${E(JB_SNAME[x.s] || "")}</td><td>${E(x.n || "")}</td></tr>`).join("")}</table>`;
+  if (j.hrs.length && jbHrsOn()) h += `<h2>Hours · ${E(jbHr(j.hrs.reduce((n, x) => n + (+x.h || 0), 0)))} hr</h2><table><tr><th>Date</th><th>Hours</th><th>Stage</th><th>What</th></tr>${j.hrs.slice().sort((a, b) => a.d < b.d ? -1 : 1).map(x => `<tr><td>${E(jbNice(x.d))}</td><td>${E(jbHr(x.h))}</td><td>${E(JB_SNAME[x.s] || "")}</td><td>${E(x.n || "")}</td></tr>`).join("")}</table>`;
   if (j.punch.length) h += `<h2>Punch list &amp; materials</h2><ul class="ck">${j.punch.map(p => `<li>${p.done ? "☑" : "☐"} ${E(p.t)} <span class="m">${p.add ? "· added " + E(when(p.add)) : ""}${p.done && p.at ? " · checked " + E(when(p.at)) : ""}</span>${pn(p.ph)}</li>`).join("")}</ul>`;
   const notes = j.log.slice().sort(jnSort);
   /* notes read the way they look in the app (boxes, warnings, links as plain names, bold), every character escaped first */
@@ -1757,7 +1769,7 @@ async function jfView(id){
   $("jf-note").value = f.note || ""; JF.noteWas = f.note || ""; JF.noteAct = null;
   const oj = jbD.jobs.find(x => x.id === f.job), sb = $("jf-stg");
   if (sb) sb.innerHTML = !oj || f.kind !== "photo" ? "" : f.proof ? `<p class="note">Filed under <b>${esc(JB_SNAME[f.s] || "the job")}</b>. A proof photo stays on the stage it was stamped with.</p>`
-    : `<div class="calc"><label for="jf-s">Filed under<select id="jf-s">${[...jbStages(oj), ...(f.s && !jbStages(oj).some(([k]) => k === f.s) && JB_SNAME[f.s] ? [[f.s, JB_SNAME[f.s] + " (removed)"]] : [])].map(([k, nm]) => `<option value="${k}"${k === f.s ? " selected" : ""}>${esc(nm)}</option>`).join("")}</select></label></div>`;
+    : `<div class="calc"><label for="jf-s">Filed under<select id="jf-s">${[...jbStages(oj), ...(f.s && !jbStages(oj).some(([k]) => k === f.s) && JB_SNAME[f.s] ? [[f.s, JB_SNAME[f.s] + " (removed)"]] : [])].map(([k, nm]) => `<option value="${k}"${k === f.s ? " selected" : ""}>${esc(nm.replace(/ \((rough-in|trim)\)/, ""))}</option>`).join("")}</select></label></div>`;
   $("jf-dlg").showModal();
 }
 /* a description change goes in the job's activity log as it saves: one entry per time the photo is open, holding the latest words */

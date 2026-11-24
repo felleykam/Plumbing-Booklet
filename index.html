@@ -520,6 +520,8 @@ dialog.jf-dlg::backdrop{background:rgba(0,0,0,.7)}
 .terms-k{margin:0 0 12px;font-size:16px;line-height:1.45}
 .terms-dlg .set-btns{gap:14px;align-items:center}
 .jf-btns{padding:4px 12px 14px;border-top:1px solid var(--rule);margin-top:8px}
+label.jb-chk{display:flex;gap:12px;align-items:center;min-height:48px;font-weight:700;font-size:17px}
+label.jb-chk input{width:26px;height:26px;flex:none}
 .jr-open{border:var(--bw) solid var(--edge);border-radius:var(--r);padding:10px;margin:6px 0;background:var(--sheet)}
 .jr-name{font-size:18px}
 .jr-f{display:grid;gap:6px;margin:6px 0}
@@ -5519,6 +5521,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 23, 2026 · Jobs polish</th><td><b>Hours are off</b> (your company tracks them): no Hours buttons on jobs, Home or the report. Turn them back on in Jobs settings → Hours; anything logged stays saved. <b>Marking a stage Done</b> with checklist boxes still open now lists them and asks: tick them all, or leave them open. <b>City picker</b> is A to Z in each county, Unincorporated last. <b>Job list:</b> rows under a subdivision don't repeat its name, the group buttons say Builder › and Subdivision › instead of Page ›, and the how-to line goes away once you've used Quick view. Shorter stage names in dropdowns, and "From your notes" is now "Facts from notes".</td></tr>
         <tr><th>Nov 23, 2026 · Jobs fixes</th><td><b>Fixed: files that wouldn't load.</b> "Open full screen" on a job photo or PDF used to hand the file to a new tab that iPhone couldn't load (you had to reload the app). Photos and PDFs now open inside the app, full screen, with Zoom for photos and a Close that always brings you back. Other files go straight to Open in another app. <b>Failed inspections</b> now sit at the top of What's next and Quick view until a re-inspect is booked, and marking that stage Done asks first. <b>Job report</b> now includes Bathrooms &amp; rooms.</td></tr>
         <tr><th>Nov 22, 2026 · Bathrooms &amp; rooms on jobs</th><td><b>New on every job: Bathrooms &amp; rooms.</b> Add them once (Master bath, Basement half bath, Laundry, any name) and they stay the same through every stage. Each room keeps its own details (tub size and drain side, valve, toilet rough-in, lavs). <b>Link a room from any note</b> with [[Master bath]]: the room shows those notes sorted by stage, so you see the work done in that bathroom at Underground, Rough and Finish. "Label: value" lines in those notes (Valve: Moen M-Core) show on the room too. <b>📝 Note about this room</b> starts a note with the link already in it. Rename a room and its notes follow. Same floor plan? <b>Copy the rooms</b> from another job. Each stage also shows room chips with that stage's note count, and job search finds room details.</td></tr>
         <tr><th>Nov 21, 2026 · Markup fixes</th><td><b>Mark up works better on iPhone:</b> the photo always fits the screen (a big photo could spill off the edges), and the buttons stay clear of the notch and home bar. A second finger no longer scribbles over the line you're drawing, and a long press no longer pops up the "Save image" menu. Every time you open it, it starts on Arrow, so a tap always draws something. Picking Text no longer throws the keyboard over your photo: tap the box when you're ready to type. Bigger photo area, with Save and Cancel side by side.</td></tr>
@@ -9594,7 +9597,9 @@ Object.keys(MORE_CITIES).forEach(county => {
 const cityById = id => CITIES.find(c => c.id === id);
 let myCity = "";   /* the city on Look up a city: nothing saves it */
 try { localStorage.removeItem("jpb-city"); } catch(e){}
-const CITY_OPTS = `<option value="">Pick a city…</option>` + CITIES.reduce((h, c) => h + (Array.isArray(c) ? `${h.includes("<optgroup") ? "</optgroup>" : ""}<optgroup label="${esc(c[0])}">` : `<option value="${c.id}">${esc(c.n)}</option>`), "") + "</optgroup>";
+/* the picker: each county group A to Z, "Unincorporated …" last (the list itself stays in the order it was researched) */
+const CITY_OPTS = `<option value="">Pick a city…</option>` + CITIES.reduce((G, c) => { if (Array.isArray(c)) G.push([c[0], []]); else if (G.length) G[G.length - 1][1].push(c); return G; }, [])
+  .map(([g, L]) => `<optgroup label="${esc(g)}">${L.slice().sort((a, b) => (/^Unincorporated/.test(a.n) - /^Unincorporated/.test(b.n)) || a.n.localeCompare(b.n)).map(c => `<option value="${c.id}">${esc(c.n)}</option>`).join("")}</optgroup>`).join("");
 $("mc-pick").innerHTML = CITY_OPTS;
 function drawCity(){
   $("mc-pick").value = myCity;
@@ -11608,7 +11613,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-23a";
+var BUILD = "handbook-2026-11-23b";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
