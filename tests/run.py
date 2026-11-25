@@ -198,7 +198,27 @@ with sync_playwright() as pw:
         pg.evaluate("id => document.querySelector(`[data-v='${id}']`).click()", pid[-1][0]); pg.wait_for_timeout(400); pg.click("#jf-open"); pg.wait_for_timeout(600)
         check(pg.evaluate("document.getElementById('jv-dlg').open && !!document.querySelector('#jv-body iframe')") and not newtabs, "Open full screen shows a PDF inside the app (no dead new tab)")
         pg.click("#jv-close"); pg.wait_for_timeout(200); check(pg.evaluate("!document.getElementById('jv-dlg').open && document.getElementById('jf-dlg').open"), "Close goes back to the file")
+        # iPhone: a PDF inside a page shows page 1 only, blown up; there it goes to the iPhone's own viewer through the share menu
+        pg.evaluate("(() => { Object.defineProperty(navigator, 'userAgent', {get: () => 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)'}); window.SHARED = null; navigator.canShare = () => true; navigator.share = async o => { window.SHARED = o.files[0].type + '|' + o.files[0].name; }; })()")
+        pg.click("#jf-open"); pg.wait_for_timeout(500)
+        check(pg.evaluate("!document.querySelector('#jv-body iframe') && !!document.getElementById('jv-pdfgo')"), "on iPhone a PDF shows a card with one button, not the broken page-1 view")
+        pg.click("#jv-pdfgo"); pg.wait_for_timeout(300)
+        check((pg.evaluate("window.SHARED") or "").startswith("application/pdf|"), "that button hands the iPhone a real PDF (so it offers its PDF viewers)")
+        pg.click("#jv-close"); pg.wait_for_timeout(200)
     else: check(False, "a PDF was added to the test job")
+    # photos: sized in proportion to fit, double-tap or the button zooms in, still in proportion, and back
+    if before:
+        pg.evaluate("document.getElementById('jf-dlg').open && document.getElementById('jf-close').click()"); pg.wait_for_timeout(200)
+        pg.evaluate(f"document.querySelector('[data-v=\"{before[0][0]}\"]').click()"); pg.wait_for_timeout(400); pg.click("#jf-open"); pg.wait_for_timeout(700)
+        SZ = "(() => { const i = document.querySelector('#jv-body img'), B = document.getElementById('jv-body'); return [i.clientWidth, i.clientHeight, B.clientWidth, B.clientHeight]; })()"
+        w, h, bw, bh = pg.evaluate(SZ)
+        check(abs(w / h - 600 / 450) < 0.02 and (abs(w - bw) < 2 or abs(h - bh) < 2) and w <= bw + 1 and h <= bh + 1, f"a photo fits the screen in proportion (4:3; got {w}×{h} in {bw}×{bh})")
+        bx = pg.locator("#jv-body").bounding_box(); pg.mouse.dblclick(bx["x"] + bx["width"] / 2, bx["y"] + bx["height"] / 2); pg.wait_for_timeout(300)
+        w2, h2, _, _ = pg.evaluate(SZ)
+        check(abs(w2 / w - 2.5) < 0.05 and abs(w2 / h2 - 600 / 450) < 0.02, f"double-tap zooms to 2.5× and stays in proportion (got {w2}×{h2})")
+        pg.click("#jv-zoom"); pg.wait_for_timeout(200)
+        check(abs(pg.evaluate(SZ)[0] - w) < 2, "Fit to screen brings it back")
+        pg.click("#jv-close"); pg.wait_for_timeout(200)
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors in markup" + (f": {pg.errs}" if pg.errs else ""))
     ctx.close()
 

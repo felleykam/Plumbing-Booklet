@@ -1917,27 +1917,59 @@ $("jf-dlg").addEventListener("change", e => { const c = JF.cur; if (!c || e.targ
 $("jf-dlg").addEventListener("close", () => { const c = JF.cur; JF.cur = null; clearTimeout(jfNT); jbReseat(); jfNoteLog(c);   /* closed before the save timer ran */
   if (c) jfPut(c).catch(() => {}).then(() => { if (JB.open === c.job) jfDraw(c.job); }); });
 /* Open full screen: inside the app, never a new tab. On iPhone a home-screen app can't hand a file kept in the app to
-   Safari (the tab just won't load) and has no back button if it opens in place, so photos and PDFs show here with a
-   Close that always brings you back. Anything else goes to "Open in another app". Only photos and PDFs are shown
-   in the app: a PDF shown inside the app is fine, a web page from a file would not be. */
+   Safari (the tab just won't load) and has no back button if it opens in place, so files show here with a Close that
+   always brings you back. Photos: pinch or double-tap to zoom, always in proportion. PDFs: on a computer, the browser's
+   own PDF viewer right here. On iPhone and iPad a PDF inside a page shows only page 1, blown up and blurry when zoomed
+   (an Apple bug), so there the PDF goes to the iPhone's own viewer through the share menu instead. A web page from a
+   file is never shown in the app. */
 let JV = null;
+const jvIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+const jvPDF = c => c.type === "application/pdf" || /\.pdf$/i.test(c.name || "");
+/* photo zoom: the photo is sized (not stretched) so lines stay sharp, and scrolls when it's bigger than the screen */
+const JZ = {s: 1, w: 0, h: 0};
+const jzFit = () => { const B = $("jv-body"), i = B.querySelector("img"); if (!i || !i.naturalWidth) return;
+  const k = Math.min(B.clientWidth / i.naturalWidth, B.clientHeight / i.naturalHeight); JZ.w = i.naturalWidth * k; JZ.h = i.naturalHeight * k; jzSet(JZ.s); };
+function jzSet(s, cx, cy){ const B = $("jv-body"), i = B.querySelector("img"); if (!i || !JZ.w) return;
+  const old = JZ.s, max = Math.max(4, Math.min(12, (i.naturalWidth / JZ.w) * 2)); s = Math.min(max, Math.max(1, s)); JZ.s = s;
+  cx = cx == null ? B.clientWidth / 2 : cx; cy = cy == null ? B.clientHeight / 2 : cy;
+  const fx = (B.scrollLeft + cx) / (JZ.w * old), fy = (B.scrollTop + cy) / (JZ.h * old);   /* the spot under your fingers stays put */
+  i.style.width = JZ.w * s + "px"; i.style.height = JZ.h * s + "px";
+  B.scrollLeft = fx * JZ.w * s - cx; B.scrollTop = fy * JZ.h * s - cy;
+  $("jv-zoom").textContent = s > 1.01 ? "Fit to screen" : "Zoom in"; }
 $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.blob) return;
-  const pdf = c.type === "application/pdf" || /\.pdf$/i.test(c.name || ""), img = c.kind === "photo" || /^image\//.test(c.type || "");
+  const pdf = jvPDF(c), img = c.kind === "photo" || /^image\//.test(c.type || "");
   if (JV) URL.revokeObjectURL(JV); JV = null;
   const B = $("jv-body"), N = $("jv-note"), Z = $("jv-zoom"); B.className = "jv-wrap"; N.hidden = true; Z.hidden = true; Z.textContent = "Zoom in";
   $("jv-title").textContent = img ? (c.proof ? "Proof photo" : "Photo") : c.name || "File";
-  if (img){ JV = URL.createObjectURL(c.blob); B.innerHTML = `<img src="${JV}" alt="${c.proof ? "Proof photo" : "Job photo"}">`; Z.hidden = false; }
+  if (img){ JV = URL.createObjectURL(c.blob); JZ.s = 1; JZ.w = 0; B.classList.add("jv-img"); B.innerHTML = `<img src="${JV}" alt="${c.proof ? "Proof photo" : "Job photo"}" draggable="false">`;
+    B.querySelector("img").addEventListener("load", jzFit); Z.hidden = false; N.textContent = "Pinch or double-tap to zoom."; N.hidden = false; }
+  else if (pdf && jvIOS()){ B.innerHTML = `<div class="jv-msg jv-pdf"><span aria-hidden="true">📄</span><b>${esc(c.name || "PDF")}</b><small>${esc(jfMB(c.blob.size))}</small>
+      <button type="button" class="btn" id="jv-pdfgo">Open in the iPhone's PDF viewer</button>
+      <small>Every page, pinch to zoom. In the menu that comes up, pick <b>Save to Files</b>, <b>Books</b> or <b>Markup</b>. Your copy here stays as it is.</small></div>`;
+    $("jv-pdfgo").addEventListener("click", () => $("jf-share").click()); }
   else if (pdf){ JV = URL.createObjectURL(new Blob([c.blob], {type: "application/pdf"})); B.innerHTML = `<iframe src="${JV}" title="${esc(c.name || "PDF")}"></iframe>`;
-    N.textContent = "Only the first page showing, or it's hard to read? Tap Open in another app, then Books or Files."; N.hidden = false; }
+    N.textContent = "Hard to read? Tap Open in another app."; N.hidden = false; }
   else B.innerHTML = `<p class="jv-msg">This kind of file can't be shown in the app.<br>Tap <b>Open in another app</b>.</p>`;
   $("jv-dlg").showModal(); });
 { const d = $("jv-dlg"), shut = () => d.close();
   $("jv-x").addEventListener("click", shut); $("jv-close").addEventListener("click", shut);
-  $("jv-zoom").addEventListener("click", () => { const B = $("jv-body"), big = B.classList.toggle("jv-big"); $("jv-zoom").textContent = big ? "Fit to screen" : "Zoom in"; });
+  $("jv-zoom").addEventListener("click", () => jzSet(JZ.s > 1.01 ? 1 : 2.5));
+  /* pinch (two fingers), double-tap, and ctrl + scroll or a trackpad pinch on a computer; one finger scrolls around */
+  const B = $("jv-body"); let P = null, tap = 0;
+  const mid = (t, r) => [(t[0].clientX + t[1].clientX) / 2 - r.left, (t[0].clientY + t[1].clientY) / 2 - r.top], gap = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+  B.addEventListener("touchstart", e => { if (!B.classList.contains("jv-img")) return; if (e.touches.length === 2){ P = {d: gap(e.touches), s: JZ.s}; e.preventDefault(); } }, {passive: false});
+  B.addEventListener("touchmove", e => { if (!P || e.touches.length !== 2) return; e.preventDefault(); const [x, y] = mid(e.touches, B.getBoundingClientRect()); jzSet(P.s * gap(e.touches) / P.d, x, y); }, {passive: false});
+  B.addEventListener("touchend", e => { if (P){ if (e.touches.length < 2) P = null; tap = 0; return; } if (!B.classList.contains("jv-img") || e.changedTouches.length !== 1) return;
+    const now = Date.now(), t = e.changedTouches[0], r = B.getBoundingClientRect();
+    if (now - tap < 300){ e.preventDefault(); jzSet(JZ.s > 1.01 ? 1 : 2.5, t.clientX - r.left, t.clientY - r.top); tap = 0; } else tap = now; });
+  B.addEventListener("dblclick", e => { if (!B.classList.contains("jv-img")) return; const r = B.getBoundingClientRect(); jzSet(JZ.s > 1.01 ? 1 : 2.5, e.clientX - r.left, e.clientY - r.top); });
+  B.addEventListener("wheel", e => { if (!e.ctrlKey || !B.classList.contains("jv-img")) return; e.preventDefault(); const r = B.getBoundingClientRect(); jzSet(JZ.s * Math.exp(-e.deltaY / 150), e.clientX - r.left, e.clientY - r.top); }, {passive: false});
+  ["gesturestart", "gesturechange"].forEach(k => B.addEventListener(k, e => e.preventDefault()));   /* iPhone: don't zoom the whole page instead */
+  addEventListener("resize", () => { if (d.open) jzFit(); });
   $("jv-send").addEventListener("click", () => $("jf-share").click());
   d.addEventListener("close", () => { $("jv-body").innerHTML = ""; if (JV) URL.revokeObjectURL(JV); JV = null; }); }
 $("jf-share").addEventListener("click", async () => { const c = JF.cur; if (!c) return;
-  const f = new File([c.blob], c.kind === "photo" ? c.name.replace(/\.[^.]*$/, "") + ".jpg" : c.name, {type: c.type});
+  const f = new File([c.blob], c.kind === "photo" ? c.name.replace(/\.[^.]*$/, "") + ".jpg" : c.name, {type: jvPDF(c) ? "application/pdf" : c.type || c.blob.type || ""});
   try { if (navigator.canShare && navigator.canShare({files: [f]})){ await navigator.share({files: [f]}); return; } } catch(e){ if (e && e.name === "AbortError") return; }
   const a = document.createElement("a"); a.href = JF.url; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); });
 $("jf-del").addEventListener("click", async () => { const c = JF.cur; if (!c || !jbAsk(`Delete this ${c.kind === "photo" ? "photo" : "file"}? It goes to Recently deleted for 30 days.`)) return;
