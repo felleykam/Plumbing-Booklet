@@ -3,10 +3,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- Lockdown: this page can only load from itself and talk to the weather services it uses (Open-Meteo, the National Weather Service) and Google Fonts.
+<!-- Lockdown: this page can only load from itself and talk to the weather services it uses (Open-Meteo, the National Weather Service).
      Even a bug or a bad link can't send anything you saved anywhere else. 'wasm-unsafe-eval' only lets the PDF viewer's own image
      decoders (vendor/, same site) run; it doesn't let text run as code. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https://api.open-meteo.com https://air-quality-api.open-meteo.com https://geocoding-api.open-meteo.com https://api.weather.gov; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https://api.open-meteo.com https://air-quality-api.open-meteo.com https://geocoding-api.open-meteo.com https://api.weather.gov; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#000000">
@@ -29,9 +29,25 @@
 <meta property="og:image:height" content="512">
 <meta property="og:image:alt" content="Utah outline with a water drop">
 <meta name="twitter:card" content="summary">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@700;800&family=Barlow:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap">
+<!-- fonts ship with the app (fonts/, SIL Open Font License): they're on the phone before the first screen draws, so text never jumps when a font arrives late, and they work offline from the first launch -->
+<link rel="preload" href="fonts/barlow-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/barlow-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/barlow-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/saira-stencil-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Saira Stencil One";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/saira-stencil-one-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Atkinson Hyperlegible";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Atkinson Hyperlegible";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/barlow-condensed-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:800;font-display:swap;src:url(fonts/barlow-condensed-latin-800-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/barlow-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:600;font-display:swap;src:url(fonts/barlow-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/barlow-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:800;font-display:swap;src:url(fonts/barlow-latin-800-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:600;font-display:swap;src:url(fonts/ibm-plex-mono-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/ibm-plex-mono-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+</style>
 <script>/* crash catcher: if any script breaks, the footer says what and where, so a bad edit shows up on the phone instead of silently killing a calculator */
 window.jpbErrs=[];addEventListener("error",function(e){if(e.target!==window||/^Script error\.?$/.test(e.message))return;   /* skip failed image/font loads and other sites' scripts (the browser hides their details) */
 var E=window.jpbErrs;if(E.length<3)E.push((e.message||"Script error")+" (line "+(e.lineno||"?")+")");if(window.jpbShowErr)window.jpbShowErr()});
@@ -536,6 +552,7 @@ label.jb-chk input{width:26px;height:26px;flex:none}
 .jv-wrap{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;background:#111;display:flex}
 .jv-wrap img{display:block;margin:auto;max-width:100%;max-height:100%;object-fit:contain}
 .jv-wrap.jv-img{touch-action:pan-x pan-y}.jv-wrap.jv-img img{max-width:none;max-height:none;flex:none;-webkit-user-drag:none}
+#fps-meter{position:fixed;top:calc(env(safe-area-inset-top) + 2px);left:2px;z-index:2147483000;pointer-events:none;font:700 12px/1.2 var(--mono);background:rgba(0,0,0,.8);color:#c8ff00;padding:2px 6px;border-radius:4px;font-variant-numeric:tabular-nums}
 .jv-wrap.jv-pdfv{display:block;background:#3a3f44;touch-action:pan-x pan-y}.jv-pdfv .jv-msg{margin:40px auto}
 .pv-pages{position:relative;box-sizing:border-box;padding:8px}.pv-pg{position:relative;margin:0 0 8px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.5);overflow:hidden}.pv-pg:last-child{margin-bottom:0}.pv-base{display:block;width:100%;height:100%}.pv-det{position:absolute;display:block}
 .jv-msg{margin:auto;padding:16px;color:#fff;text-align:center;font-weight:700}
@@ -1541,7 +1558,11 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <div class="row"><b>Home shortcuts</b>
         <div class="chips pick" id="set-homego" role="group" aria-label="Home shortcuts"></div>
         <p class="sample" id="set-homego-note"></p></div>
+      <div class="row"><b>Frame rate <i>(just for fun)</i></b>
+        <div class="seg" data-pref="fps" role="group" aria-label="Frame rate"><button type="button" data-v="">Auto</button><button type="button" data-v="60">60</button><button type="button" data-v="30">30</button><button type="button" data-v="15">15</button></div>
+        <p class="sample">Caps how often the book redraws its own moving parts: the 3D rough-in view, splashes, and drawing plan PDFs. It doesn't change your screen, scrolling or pinch-zoom. Lower is less work for the phone, and choppier. Auto runs as fast as your screen.</p></div>
       <div class="tog-list">
+        <button type="button" class="tog" role="switch" data-t="fpsShow"><span><b>Show the frame counter</b><small>A small fps number in the top corner: how many times a second the book is redrawing. Off saves a little work.</small></span></button>
         <button type="button" class="tog" role="switch" data-t="gloves"><span><b>Gloves on</b><small>Bigger buttons and boxes everywhere, for work gloves.</small></span></button>
         <button type="button" class="tog" role="switch" data-t="wake"><span><b>Keep the screen on</b><small>While the book is open. Handy with dirty gloves. Uses more battery.</small></span></button>
         <button type="button" class="tog" role="switch" data-t="tip"><span><b>Tip of the day</b><small>One flashcard on Home.</small></span></button>
@@ -4676,6 +4697,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tr><th>Weather, links and outside info</th><td>Weather comes from outside services and can be late or wrong; don't make safety calls on it alone. Links lead to sites this book doesn't control. Brand and product names belong to their owners, and no maker, code body, city or agency wrote, approved or sponsors this book.</td></tr>
       <tr><th>No warranty</th><td>The book is provided "as is," without any warranty. To the fullest extent the law allows, the author isn't liable for any loss, damage, injury, failed inspection, cost or lost data from using it, or from relying on anything in it.</td></tr>
       <tr><th>Copyright</th><td>© 2026 Deklan Patrick Kelley. All rights reserved. The book's writing, layout, drawings, calculators and code may not be copied, republished or reused without written permission.</td></tr>
+      <tr><th>Fonts</th><td>Barlow, Barlow Condensed, Saira Stencil One, Atkinson Hyperlegible and IBM Plex Mono, used under the SIL Open Font License 1.1; license files ship with the app in <code>fonts/</code>.</td></tr>
       <tr><th>PDF viewer</th><td>PDFs are drawn by PDF.js from Mozilla (Apache License 2.0), with its OpenJPEG, JBIG2 and qcms image decoders under their own licenses. They aren't part of the author's copyright; their license files ship with the app in <code>vendor/pdfjs-6.5.438/</code>.</td></tr>
     </tbody></table></div>
     <p class="note">These terms can change with new versions of the book. Questions: About &amp; contact. <button type="button" class="linkish" onclick="localStorage.removeItem('jpb-terms');termsCheck()">Show the pop-up again</button></p>
@@ -5530,6 +5552,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 24, 2026 · Error &amp; jitter pass, frame rate</th><td><b>Checked the whole book for errors and jumpy screens</b>: every page on a phone and a computer screen, 2,087 typed entries (including junk like letters in number boxes), every fold, all 29 themes in light and dark with each font setting, the Jobs screens, the weather page while the forecast loads, and scrolling every page frame by frame. No errors turned up. <b>Fixed:</b> on a slow connection the text could jump when the fonts arrived late. The fonts now ship with the app, so they're there before the first screen draws, work offline from the very first launch, and the book no longer contacts Google at all. <b>New, just for fun:</b> Settings → Behavior → <i>Frame rate</i> (Auto, 60, 30 or 15) caps how often the book redraws its own moving parts (the 3D rough-in view, splashes, drawing plan PDFs), and <i>Show the frame counter</i> puts a live fps number in the corner. Scrolling and pinch-zoom stay at full speed. At 15, plan PDFs take longer to sharpen.</td></tr>
         <tr><th>Nov 24, 2026 · Smoother zoom</th><td><b>Pinch-zoom on plans and photos is smooth now.</b> While your fingers are down the picture just slides and scales (no redrawing, so it keeps up with your fingers), then it sharpens a moment after you let go. Double-tap and Zoom in / Fit to screen glide instead of jumping. A quick swipe or flick can't set off a double-tap zoom by mistake anymore, and zooming out keeps the sheet centered.</td></tr>
         <tr><th>Nov 24, 2026 · The app draws PDFs</th><td><b>Plan PDFs now open right inside the app on every phone, iPad and computer</b>: every page stacked, page count at the bottom, pinch or double-tap to zoom (up to 12×), one finger to move around. Zoomed in, the part on screen is drawn again, so plan lines and small print stay sharp at any zoom. It works with no signal and reads scanned sheets too. This replaces this morning's "Open in the iPhone's PDF viewer" button. The viewer is PDF.js from Mozilla; it's saved once (about 2 MB on the phone) and kept through app updates, so updates don't download it again. Credit in Terms.</td></tr>
         <tr><th>Nov 24, 2026 · Files open right</th><td><b>Fixed: PDFs (like plan sets) opened blown up on iPhone and iPad</b>, showing only page 1 and blurry when zoomed. That's an Apple limit on showing a PDF inside an app page. Now on iPhone and iPad a PDF opens a card with one button, <i>Open in the iPhone's PDF viewer</i>: every page, pinch-zoom, sharp lines (pick Save to Files, Books or Markup). On a computer, PDFs still open right in the app. <b>Photos</b> full screen: pinch or double-tap to zoom, always in proportion and sharp; one finger moves around; <i>Fit to screen</i> puts it back. A PDF sent with <i>Save / send file</i> is now always marked as a PDF, so the phone offers its PDF apps.</td></tr>
@@ -7180,6 +7203,26 @@ const PREFS = Object.assign({start:"last", light:"phone", tip:true, chip:matchMe
 PREFS.hc = PREFS.skin === "contrast";
 if (!PREFS.tabs || typeof PREFS.tabs !== "object" || Array.isArray(PREFS.tabs)) PREFS.tabs = {};
 const savePrefs = () => store.set("jpb-prefs", PREFS);
+/* Frame rate (Settings → Behavior, just for fun): every animation the book draws itself asks the browser for its next frame
+   (requestAnimationFrame). With a cap set, those requests are held and answered at most 60, 30 or 15 times a second. CSS
+   motion, scrolling and pinch-zoom are the phone's own and aren't touched. The counter shows the frames actually drawn. */
+const FPS = (() => { const raw = window.requestAnimationFrame.bind(window), rawX = window.cancelAnimationFrame.bind(window);
+  let cap = 0, q = new Map(), n = 0, h = 0, last = 0;
+  const tick = t => { h = 0; if (!q.size) return;
+    if (t - last < 1000 / cap - 2){ h = raw(tick); return; }   /* too soon for the cap: wait for the next screen refresh (2 ms of slack for timer jitter) */
+    last = t; const run = [...q.values()]; q.clear(); run.forEach(cb => { try { cb(t); } catch(e){ setTimeout(() => { throw e; }); } }); };   /* a broken animation still reaches the crash catcher */
+  window.requestAnimationFrame = cb => { if (!cap) return raw(cb); const id = --n; q.set(id, cb); if (!h) h = raw(tick); return id; };
+  window.cancelAnimationFrame = id => { if (id < 0) q.delete(id); else rawX(id); };
+  let meter = null, mOn = false, mFrames = 0, mT = 0;
+  const mTick = t => { if (!mOn) return; mFrames++; if (!mT) mT = t;
+    if (t - mT >= 500){ meter.textContent = Math.round(mFrames * 1000 / (t - mT)) + " fps" + (cap ? " · cap " + cap : ""); mFrames = 0; mT = t; }
+    requestAnimationFrame(mTick); };
+  return {set(c, show){ c = [60, 30, 15].includes(+c) ? +c : 0;
+      if (c !== cap){ cap = c; last = 0; if (!cap && q.size){ const run = [...q.values()]; q.clear(); if (h){ rawX(h); h = 0; } run.forEach(cb => raw(cb)); } }   /* Auto again: hand anything waiting straight to the browser */
+      if (show && !mOn){ if (!meter){ meter = document.createElement("div"); meter.id = "fps-meter"; meter.setAttribute("aria-hidden", "true"); document.body.appendChild(meter); }
+        meter.hidden = false; meter.textContent = "… fps"; mOn = true; mFrames = 0; mT = 0; requestAnimationFrame(mTick); }
+      else if (!show && mOn){ mOn = false; meter.hidden = true; } },
+    get cap(){ return cap; }}; })();
 { const s = store.get("jpb-nav", null);
   if (PREFS.start !== "last" && GROUPS[PREFS.start]) nav = {group: PREFS.start, sub: GROUPS[PREFS.start][0][0]};
   else if (s && GROUPS[s.group] && GROUPS[s.group].some(([k]) => k === s.sub)) nav = s; }
@@ -7647,6 +7690,7 @@ function prefApply(){
   ROOT.dataset.stars = PREFS.stars ? "on" : "off";
   ROOT.dataset.fx = PREFS.fx ? "on" : "off";
   ROOT.dataset.gloves = PREFS.gloves ? "on" : "off";
+  FPS.set(PREFS.fps, !!PREFS.fpsShow);
   $("tip").classList.toggle("pref-off", !PREFS.tip);
   $("code-jump").hidden = !PREFS.chip;
   const k = getComputedStyle(ROOT).getPropertyValue("--k").trim(); const m = document.querySelector('meta[name="theme-color"]'); if (m && k) m.content = k;
@@ -11664,7 +11708,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-24c";
+var BUILD = "handbook-2026-11-24d";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);

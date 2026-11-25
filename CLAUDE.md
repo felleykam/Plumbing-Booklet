@@ -35,6 +35,7 @@ An offline jobsite reference for **Utah residential new-construction plumbing**:
 - `jobs.js`: the My jobs tracker (jobs, checklists, photos, hours, backups).
 - `sw.js`: the offline cache. It is keyed on `BUILD`.
 - `vendor/pdfjs-<version>/`: PDF.js (Mozilla, Apache-2.0), which draws job PDFs. It's loaded only when a PDF opens, and `sw.js` keeps it in its own version-named cache that survives app updates. To upgrade it, add a new versioned folder and update `PDFJS` in jobs.js plus `PDFJS_DIR`/`PDFJS_CACHE` in sw.js together. Keep its license files.
+- `fonts/`: the app's fonts (woff2, latin subset, SIL Open Font License, license files beside them). They're declared with `@font-face` in index.html's head, and the first-screen ones are preloaded. `sw.js` keeps them in their own `jpb-fonts-N` cache. If a font file changes, bump that N. The app no longer uses Google Fonts; keep it that way so text never jumps and nothing outside is contacted.
 - `manifest.webmanifest` and `icon-*.png`: the install info and icons.
 - Saved data uses `localStorage` and IndexedDB keys that start with `jpb-`. **Never rename or drop a saved key without a migration.** People's jobs and photos live there.
 - A crash catcher at the top of index.html shows script errors in the footer. Keep it.
