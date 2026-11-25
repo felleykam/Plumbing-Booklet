@@ -195,17 +195,33 @@ with sync_playwright() as pw:
     pid = [x for x in pg.evaluate(ALL) if x[0] not in [y[0] for y in before] and not x[2]]
     newtabs = []; pg.context.on("page", lambda p: newtabs.append(p.url))
     if pid:
-        pg.evaluate("id => document.querySelector(`[data-v='${id}']`).click()", pid[-1][0]); pg.wait_for_timeout(400); pg.click("#jf-open"); pg.wait_for_timeout(600)
-        check(pg.evaluate("document.getElementById('jv-dlg').open && !!document.querySelector('#jv-body iframe')") and not newtabs, "Open full screen shows a PDF inside the app (no dead new tab)")
+        pg.evaluate("id => document.querySelector(`[data-v='${id}']`).click()", pid[-1][0]); pg.wait_for_timeout(400); pg.click("#jf-open"); pg.wait_for_timeout(2500)
+        check(pg.evaluate("document.getElementById('jv-dlg').open && !!document.querySelector('#jv-body .pv-pg canvas')") and not newtabs, "Open full screen draws the PDF inside the app (no dead new tab, no browser PDF frame)")
         pg.click("#jv-close"); pg.wait_for_timeout(200); check(pg.evaluate("!document.getElementById('jv-dlg').open && document.getElementById('jf-dlg').open"), "Close goes back to the file")
-        # iPhone: a PDF inside a page shows page 1 only, blown up; there it goes to the iPhone's own viewer through the share menu
-        pg.evaluate("(() => { Object.defineProperty(navigator, 'userAgent', {get: () => 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)'}); window.SHARED = null; navigator.canShare = () => true; navigator.share = async o => { window.SHARED = o.files[0].type + '|' + o.files[0].name; }; })()")
-        pg.click("#jf-open"); pg.wait_for_timeout(500)
-        check(pg.evaluate("!document.querySelector('#jv-body iframe') && !!document.getElementById('jv-pdfgo')"), "on iPhone a PDF shows a card with one button, not the broken page-1 view")
-        pg.click("#jv-pdfgo"); pg.wait_for_timeout(300)
-        check((pg.evaluate("window.SHARED") or "").startswith("application/pdf|"), "that button hands the iPhone a real PDF (so it offers its PDF viewers)")
-        pg.click("#jv-close"); pg.wait_for_timeout(200)
     else: check(False, "a PDF was added to the test job")
+    # plan sets: the app draws every page itself (PDF.js), and zoomed in it draws the part on screen again, sharp
+    sys.path.insert(0, str(ROOT / "tests")); from mkpdf import pdf as mkplans
+    plans = tempfile.mktemp(suffix=".pdf"); mkplans(plans, 3)
+    pg.evaluate("document.getElementById('jf-dlg').open && document.getElementById('jf-close').click()"); pg.wait_for_timeout(200)
+    have = [x[0] for x in pg.evaluate(ALL)]; pg.set_input_files("#jf-fi", plans); pg.wait_for_timeout(900)
+    pid = [x[0] for x in pg.evaluate(ALL) if x[0] not in have]
+    if pid:
+        pg.evaluate("id => document.querySelector(`[data-v='${id}']`).click()", pid[0]); pg.wait_for_timeout(400); pg.click("#jf-open"); pg.wait_for_timeout(3000)
+        INK = "[...document.querySelectorAll('.pv-pg')].map(p => { const c = p.querySelector('.pv-base'); if (!c.width) return 0; const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let k = 0; for (let i = 0; i < d.length; i += 16) if (d[i] < 200) k++; return k; })"
+        ink = pg.evaluate(INK)
+        check(len(ink) == 3 and all(k > 1000 for k in ink), f"a 3-sheet 36×24\" plan set: all 3 pages drawn (dark pixels per page: {ink})")
+        W = "document.querySelector('.pv-pg').clientWidth"; w0 = pg.evaluate(W)
+        check("Page 1 of 3" in pg.evaluate("document.getElementById('jv-note').textContent"), "it says Page 1 of 3")
+        bx = pg.locator("#jv-body").bounding_box(); pg.mouse.dblclick(bx["x"] + 150, bx["y"] + 100); pg.wait_for_timeout(1500)
+        w1 = pg.evaluate(W); det = pg.evaluate("[...document.querySelectorAll('.pv-det')].map(c => [c.width, c.height, c.clientWidth])")
+        scr = pg.evaluate("[document.getElementById('jv-body').clientWidth, document.getElementById('jv-body').clientHeight, devicePixelRatio]")
+        check(abs(w1 / w0 - 2.5) < 0.02, f"double-tap zooms the sheet to 2.5× ({w0} → {w1} px wide)")
+        check(bool(det) and all(d[0] <= scr[0] * scr[2] + 2 and d[1] <= scr[1] * scr[2] + 2 for d in det), f"zoomed in, the part on screen is drawn again sharp, no bigger than the screen ({det})")
+        pg.click("#jv-zoom"); pg.wait_for_timeout(500)
+        check(abs(pg.evaluate(W) - w0) < 1 and not pg.evaluate("document.querySelectorAll('.pv-det').length"), "Fit to screen puts the sheet back")
+        pg.click("#jv-close"); pg.wait_for_timeout(300)
+        check(pg.evaluate("document.getElementById('jv-body').innerHTML === ''"), "closing the viewer lets the PDF go (memory back)")
+    else: check(False, "the plan set was added to the test job")
     # photos: sized in proportion to fit, double-tap or the button zooms in, still in proportion, and back
     if before:
         pg.evaluate("document.getElementById('jf-dlg').open && document.getElementById('jf-close').click()"); pg.wait_for_timeout(200)

@@ -1918,12 +1918,9 @@ $("jf-dlg").addEventListener("close", () => { const c = JF.cur; JF.cur = null; c
   if (c) jfPut(c).catch(() => {}).then(() => { if (JB.open === c.job) jfDraw(c.job); }); });
 /* Open full screen: inside the app, never a new tab. On iPhone a home-screen app can't hand a file kept in the app to
    Safari (the tab just won't load) and has no back button if it opens in place, so files show here with a Close that
-   always brings you back. Photos: pinch or double-tap to zoom, always in proportion. PDFs: on a computer, the browser's
-   own PDF viewer right here. On iPhone and iPad a PDF inside a page shows only page 1, blown up and blurry when zoomed
-   (an Apple bug), so there the PDF goes to the iPhone's own viewer through the share menu instead. A web page from a
-   file is never shown in the app. */
+   always brings you back. Photos and PDFs: pinch or double-tap to zoom, always in proportion. A web page from a file is
+   never shown in the app. */
 let JV = null;
-const jvIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
 const jvPDF = c => c.type === "application/pdf" || /\.pdf$/i.test(c.name || "");
 /* photo zoom: the photo is sized (not stretched) so lines stay sharp, and scrolls when it's bigger than the screen */
 const JZ = {s: 1, w: 0, h: 0};
@@ -1936,38 +1933,100 @@ function jzSet(s, cx, cy){ const B = $("jv-body"), i = B.querySelector("img"); i
   i.style.width = JZ.w * s + "px"; i.style.height = JZ.h * s + "px";
   B.scrollLeft = fx * JZ.w * s - cx; B.scrollTop = fy * JZ.h * s - cy;
   $("jv-zoom").textContent = s > 1.01 ? "Fit to screen" : "Zoom in"; }
+
+/* ---- PDFs (plan sets): the app draws them itself with PDF.js, Mozilla's PDF engine (Apache-2.0 license, kept in
+   vendor/ and saved with the app, so it works with no signal). Every page, stacked. Each page is drawn once to fit the
+   screen; zoomed in, the part on screen is drawn again at that zoom, so plan lines stay sharp at any zoom without filling
+   the phone's memory. Only pages near the screen are kept drawn. */
+const PDFJS = "vendor/pdfjs-6.5.438/", pvURL = f => new URL(PDFJS + f, location.href).href;
+let pvLibP = null;
+const pvLib = () => pvLibP || (pvLibP = import(pvURL("pdf.min.mjs")).then(L => { L.GlobalWorkerOptions.workerSrc = pvURL("pdf.worker.min.mjs"); return L; }, e => { pvLibP = null; throw e; }));
+const PV = {doc: null, task: null, pg: [], z: 1, fw: 0, tok: 0, t: 0, q: [], busy: 0};
+const PV_GAP = 8, PV_BASE_PX = 4e6, pvDPR = () => Math.min(3, window.devicePixelRatio || 1);
+function pvStop(){ PV.tok++; clearTimeout(PV.t); PV.q = []; PV.busy = 0;
+  PV.pg.forEach(p => [p.bt, p.dt].forEach(t => { if (t) try { t.cancel(); } catch(e){} })); PV.pg = [];
+  if (PV.task) PV.task.destroy().catch(() => {}); PV.task = null; PV.doc = null; }
+async function pvOpen(c){ pvStop(); const tok = PV.tok, B = $("jv-body"), N = $("jv-note");
+  B.classList.add("jv-pdfv"); B.innerHTML = `<p class="jv-msg">Opening the PDF…</p>`;
+  try { const L = await pvLib(), data = new Uint8Array(await c.blob.arrayBuffer()); if (tok !== PV.tok) return;
+    PV.task = L.getDocument({data, isEvalSupported: false, enableXfa: false, useSystemFonts: true, wasmUrl: pvURL("wasm/")});
+    const doc = await PV.task.promise; if (tok !== PV.tok) return; PV.doc = doc;
+    for (let n = 1; n <= doc.numPages; n++){ const p = await doc.getPage(n); if (tok !== PV.tok) return; const v = p.getViewport({scale: 1}); PV.pg.push({n, p, w: v.width, h: v.height}); }
+    B.innerHTML = `<div class="pv-pages">${PV.pg.map(p => `<div class="pv-pg" role="img" aria-label="Page ${p.n} of ${PV.pg.length}"><canvas class="pv-base"></canvas></div>`).join("")}</div>`;
+    B.querySelectorAll(".pv-pg").forEach((el, i) => { PV.pg[i].el = el; PV.pg[i].base = el.firstChild; });
+    PV.z = 1; pvLay(); B.scrollTop = B.scrollLeft = 0; $("jv-zoom").hidden = false; N.hidden = false; pvNum(); pvSoon(0); }
+  catch(e){ if (tok !== PV.tok) return;
+    B.innerHTML = `<p class="jv-msg">${e && e.name === "PasswordException" ? "This PDF has a password, so the app can't open it." : !pvLibP ? "The PDF viewer hasn't been saved to this phone yet. Open the app once with signal, then try again." : "The app couldn't draw this PDF."}<br>Tap <b>Open in another app</b>.</p>`; } }
+/* every page the screen's width times the zoom, in proportion */
+function pvLay(){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (!W) return;
+  PV.fw = Math.max(100, B.clientWidth - PV_GAP * 2); const cw = PV.fw * PV.z; W.style.width = cw + PV_GAP * 2 + "px";
+  PV.pg.forEach(p => { p.cw = cw; p.ch = cw * p.h / p.w; p.el.style.width = cw + "px"; p.el.style.height = p.ch + "px";
+    p.dk = ""; p.el.querySelectorAll(".pv-det").forEach(x => x.remove()); }); }   /* sharp close-ups belong to one zoom: drawn again after */
+function pvZoom(s, cx, cy){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (!W) return;
+  s = Math.min(12, Math.max(1, s)); cx = cx == null ? B.clientWidth / 2 : cx; cy = cy == null ? B.clientHeight / 2 : cy;
+  const fx = (B.scrollLeft + cx) / W.offsetWidth, fy = (B.scrollTop + cy) / W.offsetHeight;   /* the spot under your fingers stays put */
+  PV.z = s; pvLay(); B.scrollLeft = fx * W.offsetWidth - cx; B.scrollTop = fy * W.offsetHeight - cy;
+  $("jv-zoom").textContent = s > 1.01 ? "Fit to screen" : "Zoom in"; pvSoon(); }
+const pvSoon = (ms = 140) => { clearTimeout(PV.t); PV.t = setTimeout(pvDraw, ms); };
+function pvNum(){ const B = $("jv-body"), mid = B.scrollTop + B.clientHeight * .3, n = PV.pg.length; if (!n) return;   /* the page in the top third: what you're reading */
+  const p = B.scrollTop + B.clientHeight >= B.scrollHeight - 2 && B.scrollTop > 0 ? PV.pg[n - 1] : PV.pg.find(p => p.el.offsetTop + p.ch >= mid) || PV.pg[n - 1];
+  $("jv-note").textContent = `${n > 1 ? `Page ${p.n} of ${n} · ` : ""}pinch or double-tap to zoom`; }
+function pvDraw(){ const B = $("jv-body"); if (!PV.doc || !B.querySelector(".pv-pages")) return;
+  const H = B.clientHeight, top = B.scrollTop, bot = top + H, left = B.scrollLeft, right = left + B.clientWidth;
+  PV.pg.forEach(p => { const y0 = p.el.offsetTop, y1 = y0 + p.ch;
+    if (y1 > top - 1.5 * H && y0 < bot + 1.5 * H){ if (!p.ok && !p.inQ){ p.inQ = 1; PV.q.push(p); } }
+    else if (p.ok && (y1 < top - 4 * H || y0 > bot + 4 * H)){ p.base.width = p.base.height = 0; p.ok = false; }   /* far away: let the memory go */
+    const vis = y1 > top && y0 < bot;
+    if (!vis || PV.z <= 1.05){ if (p.dt) try { p.dt.cancel(); } catch(e){} p.dk = ""; p.el.querySelectorAll(".pv-det").forEach(x => x.remove()); }
+    else pvDet(p, Math.max(0, left - p.el.offsetLeft), Math.max(0, top - y0), Math.min(p.cw, right - p.el.offsetLeft), Math.min(p.ch, bot - y0)); });
+  pvRun(); }
+/* a page to fit the screen, one at a time so a big plan set doesn't choke the phone */
+async function pvRun(){ if (PV.busy) return; const tok = PV.tok, p = PV.q.shift(); if (!p) return; PV.busy = 1;
+  try { const k = Math.min(PV.fw * pvDPR() / p.w, Math.sqrt(PV_BASE_PX / (p.w * p.h))), v = p.p.getViewport({scale: k}), cv = document.createElement("canvas");
+    cv.width = Math.floor(v.width); cv.height = Math.floor(v.height); p.bt = p.p.render({canvas: cv, viewport: v, background: "#fff"}); await p.bt.promise;
+    if (tok === PV.tok){ cv.className = "pv-base"; p.base.replaceWith(cv); p.base = cv; p.ok = true; } }
+  catch(e){}
+  p.inQ = 0; p.bt = null; if (tok === PV.tok){ PV.busy = 0; pvRun(); } }
+/* zoomed in: the part of this page on screen, drawn again sharp at this zoom */
+async function pvDet(p, x0, y0, x1, y1){ const w = x1 - x0, h = y1 - y0; if (w < 4 || h < 4) return;
+  const key = [PV.z, x0, y0, w, h].map(v => Math.round(v)).join(); if (p.dk === key) return; p.dk = key; if (p.dt) try { p.dt.cancel(); } catch(e){}
+  const dpr = pvDPR(), v = p.p.getViewport({scale: p.cw / p.w * dpr}), cv = document.createElement("canvas"); cv.width = Math.ceil(w * dpr); cv.height = Math.ceil(h * dpr);
+  const t = p.p.render({canvas: cv, viewport: v, transform: [1, 0, 0, 1, -x0 * dpr, -y0 * dpr], background: "#fff"}); p.dt = t;
+  try { await t.promise; } catch(e){ return; }
+  if (p.dk !== key || !p.el.isConnected) return; p.dt = null;
+  cv.className = "pv-det"; cv.style.cssText = `left:${x0}px;top:${y0}px;width:${w}px;height:${h}px`;
+  p.el.querySelectorAll(".pv-det").forEach(x => x.remove()); p.el.appendChild(cv); }
+
 $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.blob) return;
   const pdf = jvPDF(c), img = c.kind === "photo" || /^image\//.test(c.type || "");
-  if (JV) URL.revokeObjectURL(JV); JV = null;
+  pvStop(); if (JV) URL.revokeObjectURL(JV); JV = null;
   const B = $("jv-body"), N = $("jv-note"), Z = $("jv-zoom"); B.className = "jv-wrap"; N.hidden = true; Z.hidden = true; Z.textContent = "Zoom in";
   $("jv-title").textContent = img ? (c.proof ? "Proof photo" : "Photo") : c.name || "File";
   if (img){ JV = URL.createObjectURL(c.blob); JZ.s = 1; JZ.w = 0; B.classList.add("jv-img"); B.innerHTML = `<img src="${JV}" alt="${c.proof ? "Proof photo" : "Job photo"}" draggable="false">`;
     B.querySelector("img").addEventListener("load", jzFit); Z.hidden = false; N.textContent = "Pinch or double-tap to zoom."; N.hidden = false; }
-  else if (pdf && jvIOS()){ B.innerHTML = `<div class="jv-msg jv-pdf"><span aria-hidden="true">📄</span><b>${esc(c.name || "PDF")}</b><small>${esc(jfMB(c.blob.size))}</small>
-      <button type="button" class="btn" id="jv-pdfgo">Open in the iPhone's PDF viewer</button>
-      <small>Every page, pinch to zoom. In the menu that comes up, pick <b>Save to Files</b>, <b>Books</b> or <b>Markup</b>. Your copy here stays as it is.</small></div>`;
-    $("jv-pdfgo").addEventListener("click", () => $("jf-share").click()); }
-  else if (pdf){ JV = URL.createObjectURL(new Blob([c.blob], {type: "application/pdf"})); B.innerHTML = `<iframe src="${JV}" title="${esc(c.name || "PDF")}"></iframe>`;
-    N.textContent = "Hard to read? Tap Open in another app."; N.hidden = false; }
+  else if (pdf) pvOpen(c);
   else B.innerHTML = `<p class="jv-msg">This kind of file can't be shown in the app.<br>Tap <b>Open in another app</b>.</p>`;
   $("jv-dlg").showModal(); });
-{ const d = $("jv-dlg"), shut = () => d.close();
+{ const d = $("jv-dlg"), shut = () => d.close(), B = $("jv-body");
+  const mode = () => B.classList.contains("jv-img") ? "img" : B.classList.contains("jv-pdfv") && PV.doc ? "pdf" : "";
+  const zoom = (s, x, y) => mode() === "img" ? jzSet(s, x, y) : pvZoom(s, x, y), now = () => mode() === "img" ? JZ.s : PV.z;
   $("jv-x").addEventListener("click", shut); $("jv-close").addEventListener("click", shut);
-  $("jv-zoom").addEventListener("click", () => jzSet(JZ.s > 1.01 ? 1 : 2.5));
+  $("jv-zoom").addEventListener("click", () => zoom(now() > 1.01 ? 1 : 2.5));
   /* pinch (two fingers), double-tap, and ctrl + scroll or a trackpad pinch on a computer; one finger scrolls around */
-  const B = $("jv-body"); let P = null, tap = 0;
+  let P = null, tap = 0;
   const mid = (t, r) => [(t[0].clientX + t[1].clientX) / 2 - r.left, (t[0].clientY + t[1].clientY) / 2 - r.top], gap = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
-  B.addEventListener("touchstart", e => { if (!B.classList.contains("jv-img")) return; if (e.touches.length === 2){ P = {d: gap(e.touches), s: JZ.s}; e.preventDefault(); } }, {passive: false});
-  B.addEventListener("touchmove", e => { if (!P || e.touches.length !== 2) return; e.preventDefault(); const [x, y] = mid(e.touches, B.getBoundingClientRect()); jzSet(P.s * gap(e.touches) / P.d, x, y); }, {passive: false});
-  B.addEventListener("touchend", e => { if (P){ if (e.touches.length < 2) P = null; tap = 0; return; } if (!B.classList.contains("jv-img") || e.changedTouches.length !== 1) return;
-    const now = Date.now(), t = e.changedTouches[0], r = B.getBoundingClientRect();
-    if (now - tap < 300){ e.preventDefault(); jzSet(JZ.s > 1.01 ? 1 : 2.5, t.clientX - r.left, t.clientY - r.top); tap = 0; } else tap = now; });
-  B.addEventListener("dblclick", e => { if (!B.classList.contains("jv-img")) return; const r = B.getBoundingClientRect(); jzSet(JZ.s > 1.01 ? 1 : 2.5, e.clientX - r.left, e.clientY - r.top); });
-  B.addEventListener("wheel", e => { if (!e.ctrlKey || !B.classList.contains("jv-img")) return; e.preventDefault(); const r = B.getBoundingClientRect(); jzSet(JZ.s * Math.exp(-e.deltaY / 150), e.clientX - r.left, e.clientY - r.top); }, {passive: false});
+  B.addEventListener("touchstart", e => { if (!mode()) return; if (e.touches.length === 2){ P = {d: gap(e.touches), s: now()}; e.preventDefault(); } }, {passive: false});
+  B.addEventListener("touchmove", e => { if (!P || e.touches.length !== 2) return; e.preventDefault(); const [x, y] = mid(e.touches, B.getBoundingClientRect()); zoom(P.s * gap(e.touches) / P.d, x, y); }, {passive: false});
+  B.addEventListener("touchend", e => { if (P){ if (e.touches.length < 2) P = null; tap = 0; return; } if (!mode() || e.changedTouches.length !== 1) return;
+    const t = Date.now(), c = e.changedTouches[0], r = B.getBoundingClientRect();
+    if (t - tap < 300){ e.preventDefault(); zoom(now() > 1.01 ? 1 : 2.5, c.clientX - r.left, c.clientY - r.top); tap = 0; } else tap = t; });
+  B.addEventListener("dblclick", e => { if (!mode()) return; const r = B.getBoundingClientRect(); zoom(now() > 1.01 ? 1 : 2.5, e.clientX - r.left, e.clientY - r.top); });
+  B.addEventListener("wheel", e => { if (!e.ctrlKey || !mode()) return; e.preventDefault(); const r = B.getBoundingClientRect(); zoom(now() * Math.exp(-e.deltaY / 150), e.clientX - r.left, e.clientY - r.top); }, {passive: false});
+  B.addEventListener("scroll", () => { if (mode() === "pdf"){ pvNum(); pvSoon(); } }, {passive: true});
   ["gesturestart", "gesturechange"].forEach(k => B.addEventListener(k, e => e.preventDefault()));   /* iPhone: don't zoom the whole page instead */
-  addEventListener("resize", () => { if (d.open) jzFit(); });
+  addEventListener("resize", () => { if (!d.open) return; if (mode() === "img") jzFit(); else if (mode() === "pdf"){ pvZoom(PV.z); } });
   $("jv-send").addEventListener("click", () => $("jf-share").click());
-  d.addEventListener("close", () => { $("jv-body").innerHTML = ""; if (JV) URL.revokeObjectURL(JV); JV = null; }); }
+  d.addEventListener("close", () => { pvStop(); B.innerHTML = ""; if (JV) URL.revokeObjectURL(JV); JV = null; }); }
 $("jf-share").addEventListener("click", async () => { const c = JF.cur; if (!c) return;
   const f = new File([c.blob], c.kind === "photo" ? c.name.replace(/\.[^.]*$/, "") + ".jpg" : c.name, {type: jvPDF(c) ? "application/pdf" : c.type || c.blob.type || ""});
   try { if (navigator.canShare && navigator.canShare({files: [f]})){ await navigator.share({files: [f]}); return; } } catch(e){ if (e && e.name === "AbortError") return; }
