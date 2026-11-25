@@ -366,6 +366,27 @@ with sync_playwright() as pw:
     ins = pg.evaluate("document.getElementById('wx-insp-h').hidden ? '' : document.getElementById('wx-insp').innerText")
     check("Underground inspection" in ins and "35–50°F" in ins and '0.31"' in ins and "trench" in ins, "the underground inspection shows that day's Lehi forecast and the wet-trench heads-up")
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors on the weather page" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+
+    # ---------- 9. fonts ship with the app; the frame-rate setting holds its cap ----------
+    print("9. Fonts load from the app; frame rate caps hold")
+    ctx, pg = fresh(); outside = []; WXOK = ("https://api.open-meteo.com/", "https://air-quality-api.open-meteo.com/", "https://geocoding-api.open-meteo.com/", "https://api.weather.gov/")   # the weather services the lockdown allows
+    pg.on("request", lambda r: outside.append(r.url) if not r.url.startswith((BASE, "data:", "blob:") + WXOK) else None)
+    open_book(pg); pg.wait_for_timeout(500)
+    fams = pg.evaluate("Promise.all([...document.fonts].map(f => f.load().then(() => f.family + ' ' + f.weight + ':' + f.status, () => f.family + ' ' + f.weight + ':error')))")
+    check(len(fams) == 12 and all(f.endswith(":loaded") for f in fams), f"all 12 font files load from the app's fonts/ folder ({sum(f.endswith(':loaded') for f in fams)}/12)")
+    check(not outside, "at start-up the book asks no outside site but the weather services (no Google Fonts)" + (f": {outside[:3]}" if outside else ""))
+    RATE = "new Promise(ok => { let n = 0, t0 = 0; const f = t => { if (!t0) t0 = t; n++; if (t - t0 < 1200) requestAnimationFrame(f); else ok(Math.round((n - 1) * 1000 / (t - t0))); }; requestAnimationFrame(f); })"
+    rates = {}
+    for v in ["", "30", "15"]:
+        pg.evaluate("v => { PREFS.fps = v; savePrefs(); prefApply(); }", v); pg.wait_for_timeout(80); rates[v or "Auto"] = pg.evaluate(RATE)
+    check(abs(rates["30"] - 30) <= 2 and abs(rates["15"] - 15) <= 2 and rates["Auto"] >= 50, f"frame rate: Auto runs free, 30 and 15 hold their caps (measured {rates})")
+    pg.evaluate("() => { PREFS.fps = '15'; PREFS.fpsShow = true; savePrefs(); prefApply(); }"); pg.wait_for_timeout(1300)
+    check(pg.evaluate("/^1[3-7] fps · cap 15$/.test(document.getElementById('fps-meter').textContent)"), "the frame counter shows the capped rate")
+    check(pg.evaluate("new Promise(ok => { let ran = false; const id = requestAnimationFrame(() => ran = true); cancelAnimationFrame(id); setTimeout(() => ok(!ran), 300); })"), "a held frame can still be cancelled")
+    pg.evaluate("() => { PREFS.fps = ''; PREFS.fpsShow = false; savePrefs(); prefApply(); }")
+    check(pg.evaluate(RATE) >= 50 and pg.evaluate("document.getElementById('fps-meter').hidden"), "back to Auto: full rate, counter hidden")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors with fonts and frame rate" + (f": {pg.errs}" if pg.errs else ""))
     br.close()
 
 print(f"\n{'ALL PASSED' if not FAILS else str(len(FAILS)) + ' FAILED'}")

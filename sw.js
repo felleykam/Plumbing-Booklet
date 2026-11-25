@@ -9,6 +9,10 @@ const EXTRA = ["./icon-180.png?v=3", "./icon-192.png?v=3", "./icon-512.png?v=3"]
    never downloads it again. A new PDF.js version gets a new folder and a new cache. */
 const PDFJS_DIR = "./vendor/pdfjs-6.5.438/", PDFJS_CACHE = "jpb-pdfjs-6.5.438";
 const PDFJS_FILES = ["pdf.min.mjs", "pdf.worker.min.mjs", "wasm/jbig2.wasm", "wasm/openjpeg.wasm", "wasm/qcms_bg.wasm"].map(f => PDFJS_DIR + f);
+/* the fonts ship with the app and keep their own cache too (rename FONTS_CACHE if a font file ever changes) */
+const FONTS_CACHE = "jpb-fonts-1";
+const FONT_FILES = ["saira-stencil-one-latin-400", "atkinson-hyperlegible-latin-400", "atkinson-hyperlegible-latin-700", "barlow-condensed-latin-700", "barlow-condensed-latin-800",
+  "barlow-latin-500", "barlow-latin-600", "barlow-latin-700", "barlow-latin-800", "ibm-plex-mono-latin-500", "ibm-plex-mono-latin-600", "ibm-plex-mono-latin-700"].map(f => "./fonts/" + f + "-normal.woff2");
 
 /* install: download fresh copies (skip the browser's HTTP cache) and take over right away */
 self.addEventListener("install", e => {
@@ -17,10 +21,11 @@ self.addEventListener("install", e => {
     .then(() => self.skipWaiting()));
   /* PDF viewer: fill in whatever is missing, after the app itself is saved; never blocks an update */
   e.waitUntil(caches.open(PDFJS_CACHE).then(c => Promise.all(PDFJS_FILES.map(u => c.match(u).then(hit => hit || c.add(u).catch(() => {}))))).catch(() => {}));
+  e.waitUntil(caches.open(FONTS_CACHE).then(c => Promise.all(FONT_FILES.map(u => c.match(u).then(hit => hit || c.add(u).catch(() => {}))))).catch(() => {}));
 });
 /* activate: delete caches from older versions */
 self.addEventListener("activate", e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== PDFJS_CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== PDFJS_CACHE && k !== FONTS_CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 
 self.addEventListener("fetch", e => {
@@ -46,7 +51,7 @@ self.addEventListener("fetch", e => {
       caches.match("./index.html").then(hit => hit || net.catch(x => x instanceof Response ? x : Response.error()))));
     return;
   }
-  if (url.origin === location.origin || /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) {
+  if (url.origin === location.origin) {
     /* icons, manifest, fonts: saved copy first; only good responses get saved */
     e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(r => {
       if (r.ok || r.type === "opaque") { const c = r.clone(); caches.open(CACHE).then(x => x.put(req, c)); }
