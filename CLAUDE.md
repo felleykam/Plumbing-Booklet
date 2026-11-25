@@ -34,6 +34,7 @@ An offline jobsite reference for **Utah residential new-construction plumbing**:
 - `index.html`: almost the whole app (about 11k lines). Cards are `<section data-sec="...">` and belong to pages listed in `const GROUPS` (tabs: home, calc, rough=Build, mech=Service, trim, inspect, contacts, site=Jobsite, learn, mine). Search keywords live in `data-kw`.
 - `jobs.js`: the My jobs tracker (jobs, checklists, photos, hours, backups).
 - `sw.js`: the offline cache. It is keyed on `BUILD`.
+- `vendor/pdfjs-<version>/`: PDF.js (Mozilla, Apache-2.0), which draws job PDFs. It's loaded only when a PDF opens, and `sw.js` keeps it in its own version-named cache that survives app updates. To upgrade it, add a new versioned folder and update `PDFJS` in jobs.js plus `PDFJS_DIR`/`PDFJS_CACHE` in sw.js together. Keep its license files.
 - `manifest.webmanifest` and `icon-*.png`: the install info and icons.
 - Saved data uses `localStorage` and IndexedDB keys that start with `jpb-`. **Never rename or drop a saved key without a migration.** People's jobs and photos live there.
 - A crash catcher at the top of index.html shows script errors in the footer. Keep it.

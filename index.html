@@ -4,8 +4,9 @@
 <head>
 <meta charset="utf-8">
 <!-- Lockdown: this page can only load from itself and talk to the weather services it uses (Open-Meteo, the National Weather Service) and Google Fonts.
-     Even a bug or a bad link can't send anything you saved anywhere else. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob:; frame-src blob:; connect-src 'self' https://api.open-meteo.com https://air-quality-api.open-meteo.com https://geocoding-api.open-meteo.com https://api.weather.gov; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+     Even a bug or a bad link can't send anything you saved anywhere else. 'wasm-unsafe-eval' only lets the PDF viewer's own image
+     decoders (vendor/, same site) run; it doesn't let text run as code. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https://api.open-meteo.com https://air-quality-api.open-meteo.com https://geocoding-api.open-meteo.com https://api.weather.gov; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#000000">
@@ -535,8 +536,8 @@ label.jb-chk input{width:26px;height:26px;flex:none}
 .jv-wrap{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;background:#111;display:flex}
 .jv-wrap img{display:block;margin:auto;max-width:100%;max-height:100%;object-fit:contain}
 .jv-wrap.jv-img{touch-action:pan-x pan-y}.jv-wrap.jv-img img{max-width:none;max-height:none;flex:none;-webkit-user-drag:none}
-.jv-pdf{display:flex;flex-direction:column;align-items:center;gap:10px;max-width:420px}.jv-pdf span{font-size:56px}.jv-pdf small{font-weight:400;opacity:.85}.jv-pdf .btn{margin:6px 0}
-.jv-wrap iframe{flex:1 1 auto;width:100%;border:0;background:#fff}
+.jv-wrap.jv-pdfv{display:block;background:#3a3f44;touch-action:pan-x pan-y}.jv-pdfv .jv-msg{margin:40px auto}
+.pv-pages{position:relative;box-sizing:border-box;padding:8px}.pv-pg{position:relative;margin:0 0 8px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.5);overflow:hidden}.pv-pg:last-child{margin-bottom:0}.pv-base{display:block;width:100%;height:100%}.pv-det{position:absolute;display:block}
 .jv-msg{margin:auto;padding:16px;color:#fff;text-align:center;font-weight:700}
 .jv-note{margin:6px 12px 0}
 dialog.mk-dlg{width:100vw;max-width:100vw;height:100vh;height:100dvh;max-height:none;margin:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);border:0;background:var(--sheet);color:var(--ink);display:none;flex-direction:column;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:contain}
@@ -4675,6 +4676,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       <tr><th>Weather, links and outside info</th><td>Weather comes from outside services and can be late or wrong; don't make safety calls on it alone. Links lead to sites this book doesn't control. Brand and product names belong to their owners, and no maker, code body, city or agency wrote, approved or sponsors this book.</td></tr>
       <tr><th>No warranty</th><td>The book is provided "as is," without any warranty. To the fullest extent the law allows, the author isn't liable for any loss, damage, injury, failed inspection, cost or lost data from using it, or from relying on anything in it.</td></tr>
       <tr><th>Copyright</th><td>© 2026 Deklan Patrick Kelley. All rights reserved. The book's writing, layout, drawings, calculators and code may not be copied, republished or reused without written permission.</td></tr>
+      <tr><th>PDF viewer</th><td>PDFs are drawn by PDF.js from Mozilla (Apache License 2.0), with its OpenJPEG, JBIG2 and qcms image decoders under their own licenses. They aren't part of the author's copyright; their license files ship with the app in <code>vendor/pdfjs-6.5.438/</code>.</td></tr>
     </tbody></table></div>
     <p class="note">These terms can change with new versions of the book. Questions: About &amp; contact. <button type="button" class="linkish" onclick="localStorage.removeItem('jpb-terms');termsCheck()">Show the pop-up again</button></p>
   </section>
@@ -5528,6 +5530,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 24, 2026 · The app draws PDFs</th><td><b>Plan PDFs now open right inside the app on every phone, iPad and computer</b>: every page stacked, page count at the bottom, pinch or double-tap to zoom (up to 12×), one finger to move around. Zoomed in, the part on screen is drawn again, so plan lines and small print stay sharp at any zoom. It works with no signal and reads scanned sheets too. This replaces this morning's "Open in the iPhone's PDF viewer" button. The viewer is PDF.js from Mozilla; it's saved once (about 2 MB on the phone) and kept through app updates, so updates don't download it again. Credit in Terms.</td></tr>
         <tr><th>Nov 24, 2026 · Files open right</th><td><b>Fixed: PDFs (like plan sets) opened blown up on iPhone and iPad</b>, showing only page 1 and blurry when zoomed. That's an Apple limit on showing a PDF inside an app page. Now on iPhone and iPad a PDF opens a card with one button, <i>Open in the iPhone's PDF viewer</i>: every page, pinch-zoom, sharp lines (pick Save to Files, Books or Markup). On a computer, PDFs still open right in the app. <b>Photos</b> full screen: pinch or double-tap to zoom, always in proportion and sharp; one finger moves around; <i>Fit to screen</i> puts it back. A PDF sent with <i>Save / send file</i> is now always marked as a PDF, so the phone offers its PDF apps.</td></tr>
         <tr><th>Nov 23, 2026 · Proof, reports, weather, cleanup</th><td><b>Proof photo settings</b> (Jobs settings → Proof photos): pick every line printed on the photo, add your own line (permit #, company tag), put the stamp under the photo or on it, pick the size and look (dark, light, hi-vis), and see it live on a sample photo. Turn location off and the app never asks for it. Choose what the proof card shows. <b>Report settings</b> (a job's Report section, or Jobs settings): pick which parts go in the job report (or one tap: Everything, No notes or log, Proof photos only), proof photo size (Medium and Small make a file small enough to text), what's under each proof photo, a line of your own under the job name, and one proof photo per printed page. Anything left out is listed at the bottom of the report. <b>Weather:</b> <i>Inspections this week</i> shows each booked inspection with that job's town forecast for the day, with a heads-up for a freezing morning or a wet underground. <i>Week ahead</i> adds up the 7 days: rain and snow as water (to the hundredth), snow, freezing nights, warmest, windiest; each day in the 7-day list shows its total. Ground temperature now goes down to 21". <b>Fixed:</b> when the backup forecast (National Weather Service) was in use, Best day this week could come up blank. <b>Self-cleaning:</b> a photo deleted more than 31 days ago now always leaves the phone, even if its Recently deleted entry went some other way. Jobs settings → Backup shows what's on the phone, and photos that belong to no job, with a button to delete them (never on its own). <b>Jobs:</b> What's next says which note a repeated to-do came from; a long row of tags folds under <i>Tags</i>; Pin, icon, color and Delete moved to the end of Job details.</td></tr>
         <tr><th>Nov 23, 2026 · Jobs polish</th><td><b>Hours are off</b> (your company tracks them): no Hours buttons on jobs, Home or the report. Turn them back on in Jobs settings → Hours; anything logged stays saved. <b>Marking a stage Done</b> with checklist boxes still open now lists them and asks: tick them all, or leave them open. <b>City picker</b> is A to Z in each county, Unincorporated last. <b>Job list:</b> rows under a subdivision don't repeat its name, the group buttons say Builder › and Subdivision › instead of Page ›, and the how-to line goes away once you've used Quick view. Shorter stage names in dropdowns, and "From your notes" is now "Facts from notes". The Jobs header no longer mentions hours. New screens (rooms, file viewer, markup) checked for readability in all 28 themes, light and dark.</td></tr>
@@ -11660,7 +11663,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-24a";
+var BUILD = "handbook-2026-11-24b";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);

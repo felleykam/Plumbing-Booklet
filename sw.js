@@ -5,16 +5,22 @@
 const CACHE = "jpb-" + (new URL(location).searchParams.get("v") || "dev");
 const CORE = ["./index.html", "./manifest.webmanifest", "./jobs.js?v=" + encodeURIComponent(new URL(location).searchParams.get("v") || "dev")];   /* jobs.js under the same build name index.html asks for */                      /* must succeed */
 const EXTRA = ["./icon-180.png?v=3", "./icon-192.png?v=3", "./icon-512.png?v=3"];   /* the same addresses the page and manifest ask for */         /* nice to have: a missing icon never blocks the offline copy */
+/* the PDF viewer (PDF.js) keeps its own cache, named for its version: saved once, kept through app updates, so an update
+   never downloads it again. A new PDF.js version gets a new folder and a new cache. */
+const PDFJS_DIR = "./vendor/pdfjs-6.5.438/", PDFJS_CACHE = "jpb-pdfjs-6.5.438";
+const PDFJS_FILES = ["pdf.min.mjs", "pdf.worker.min.mjs", "wasm/jbig2.wasm", "wasm/openjpeg.wasm", "wasm/qcms_bg.wasm"].map(f => PDFJS_DIR + f);
 
 /* install: download fresh copies (skip the browser's HTTP cache) and take over right away */
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE.map(u => new Request(u, {cache: "reload"})))
     .then(() => Promise.all(EXTRA.map(u => c.add(new Request(u, {cache: "reload"})).catch(() => {})))))
     .then(() => self.skipWaiting()));
+  /* PDF viewer: fill in whatever is missing, after the app itself is saved; never blocks an update */
+  e.waitUntil(caches.open(PDFJS_CACHE).then(c => Promise.all(PDFJS_FILES.map(u => c.match(u).then(hit => hit || c.add(u).catch(() => {}))))).catch(() => {}));
 });
 /* activate: delete caches from older versions */
 self.addEventListener("activate", e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== PDFJS_CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 
 self.addEventListener("fetch", e => {
