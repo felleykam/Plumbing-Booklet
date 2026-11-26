@@ -551,6 +551,7 @@ label.jb-chk input{width:26px;height:26px;flex:none}
 .jr-fr input{min-height:46px;min-width:0;font:inherit;font-size:16px;padding:0 8px;border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--sheet);color:var(--ink)}
 .jr-e header .linkish{font-size:14px}
 .jr-chips{margin:6px 0}
+.jr-pre,.jr-addf{margin:6px 0 10px}.jr-pre button,.jr-addf button{min-height:44px}
 .jv-wrap{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;background:#111;display:flex}
 .jv-wrap img{display:block;margin:auto;max-width:100%;max-height:100%;object-fit:contain}
 .jv-wrap.jv-img{touch-action:pan-x pan-y}@media (pointer:fine){.jv-wrap.jv-img,.jv-wrap.jv-pdfv{cursor:grab}}.jv-wrap.jv-drag{cursor:grabbing!important;user-select:none}.jv-wrap.jv-img img{max-width:none;max-height:none;flex:none;-webkit-user-drag:none}
@@ -1577,7 +1578,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="set-grp" id="set-act"><h3>Behavior</h3>
       <div class="row"><b>Open the book to</b>
         <label class="sel"><select id="set-start" aria-label="Open the book to">
-          <option value="last">Where I left off</option><option value="home">Home</option><option value="calc">Calc</option><option value="rough">Build</option><option value="mech">Service</option><option value="trim">Trim</option><option value="inspect">Inspect</option><option value="contacts">Contacts</option><option value="site">Jobsite</option><option value="learn">Learn</option><option value="mine">★ Pinned</option></select></label></div>
+          <option value="home">Home</option><option value="calc">Calc</option><option value="rough">Build</option><option value="mech">Service</option><option value="trim">Trim</option><option value="inspect">Inspect</option><option value="contacts">Contacts</option><option value="site">Jobsite</option><option value="learn">Learn</option><option value="mine">★ Pinned</option></select></label></div>
       <div class="row"><b>Home shortcuts</b>
         <div class="chips pick" id="set-homego" role="group" aria-label="Home shortcuts"></div>
         <p class="sample" id="set-homego-note"></p></div>
@@ -4693,6 +4694,40 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>School vs. job</th><td>MTECH teaches the IPC. On a house the inspector enforces the IRC + Utah. Most numbers match; where they don't, this book says so, and the IRC wins on a house.</td></tr>
       </tbody></table></div>
   </section>
+  <section data-sec="code" data-kw="irc ipc which book house townhouse duplex apartment condo multifamily commercial scope r101.2 101.2 three stories residential code plumbing code how they fit together model code amendments appendix section numbers instructions inspector">
+    <div class="sec-head"><h2>IRC and IPC in Utah</h2><small>One book per building · which one</small></div>
+    <div class="x"><table class="t wrap">
+      <tbody>
+        <tr><th>The rule</th><td>Each building goes by <b>one</b> plumbing book. The building decides which, not the job or your school.</td></tr>
+        <tr><th>IRC</th><td>Detached one- and two-family houses (a detached duplex too) and townhouses up to <b>3 stories</b> above grade with their own way out, plus their garages and sheds. Townhouses count whether or not each unit has its own lot.<div class="sub">2021 IRC R101.2 · ICC commentary on IPC 101.2</div></td></tr>
+        <tr><th>IPC</th><td>Everything else: apartments and condos that aren't townhouses, townhouses 4 stories or taller, offices, stores, schools. Gas goes by the IFGC and mechanical by the IMC, with the IBC for the building.<div class="sub">The IPC's own scope sends IRC buildings back to the IRC (IPC 101.2 exception)</div></td></tr>
+        <tr><th>On a house</th><td>The IRC is the whole rulebook: plumbing (chapters 25–33), gas (chapter 24) and mechanical (chapters 12–23), plus Utah's IRC amendments. An IPC section isn't the rule on a house just because it's in the IPC. If the IRC doesn't settle something, ask the building official before you guess.</td></tr>
+        <tr><th>Edge cases</th><td>A few small uses may be built under the IRC: certain live/work units, owner-occupied lodging houses with five or fewer guestrooms, and small care facilities. The building official decides those, so ask before rough.<div class="sub">2021 IRC R101.2 exceptions (ICC)</div></td></tr>
+        <tr><th><span class="badge ut">UT</span>Utah's changes</th><td>Utah amends each book separately in state law: Utah Code 15A-3 Part 2 for the IRC, Part 3 for the IPC. An IPC amendment doesn't change the IRC, even when both cover the same thing. Where Utah and the book disagree, Utah wins. Both lists: <b>Learn → Study</b>.</td></tr>
+        <tr><th>Which edition</th><td>Set by state law and your permit date: <b>Which code applies</b>, just above.</td></tr>
+        <tr><th>Appendices</th><td>Only count if the state or the city adopts them by name.</td></tr>
+        <tr><th>Numbers move</th><td>Section numbers change between editions (shower valves were 424.3 in the 2018 IPC, 412.3 in 2021). If a number doesn't match your book, search the topic.</td></tr>
+        <tr><th>Instructions</th><td>Listed products go in per the maker's instructions. Where those and the code differ, the stricter one generally wins (the IPC says so outright for AAVs).</td></tr>
+        <tr><th>The inspector</th><td>The local building official enforces it and decides gray areas. A quick call before rough beats a red tag after.</td></tr>
+      </tbody></table></div>
+    <p class="note">From the 2021 IRC R101.2 and IPC 101.2 (ICC) and Utah Code 15A-2-103 and 15A-3 · checked Nov 2026. Our summary, not the code text, and not legal advice.</p>
+  </section>
+  <section data-sec="code" data-kw="city code municipal ordinance county local amendment stricter more restrictive state construction code city rules can a city change the code third party inspection three business days permit fees appeals septic fire code public works utility meter lateral">
+    <div class="sec-head"><h2>State code vs. city rules</h2><small>What a city can and can't change</small></div>
+    <div class="x"><table class="t wrap">
+      <tbody>
+        <tr><th>One code statewide</th><td>The Legislature adopts the <b>State Construction Code</b>, and the state and every city and county follow it. Lehi and Logan run the same plumbing code.<div class="sub">Utah Code 15A-1-204(1)</div></td></tr>
+        <tr><th>No stricter city rules</th><td>Since Dec 1, 2016, a city or county can't adopt or enforce its own rule that's stricter than the state code on something the code already covers.<div class="sub">Utah Code 15A-1-204(8)</div></td></tr>
+        <tr><th>Narrow exceptions</th><td>Federal law; rules for buildings the city or county itself owns or uses; a rule made before July 1, 2015 that the city can show is needed to prevent imminent injury or death; and health and environmental (DEQ) rules from before 2015.<div class="sub">Utah Code 15A-1-204(9)–(10)</div></td></tr>
+        <tr><th>City-only amendments</th><td>A few exist, but only because the Legislature wrote them into state law (Utah Code 15A chapter 4). A city can't add its own.<div class="sub">Utah Code 15A-2-101 · 15A-1-204(8)</div></td></tr>
+        <tr><th>What the city runs</th><td>Permits, plan review, fees (set by city ordinance), how and when you book inspections, and appeals. That's why booking is different in every town: <b>Inspect → Cities</b>.<div class="sub">Utah Code 15A-2-105(1) · 10-20-909</div></td></tr>
+        <tr><th>Inspection in 3 days</th><td>A city that charges inspection fees has to inspect promptly. If it can't inspect within <b>3 business days</b> of the request, the permit holder may hire a third-party inspection firm from the city's list (tell the city first). Ask for a later date and they inspect that day. Counties work the same way.<div class="sub">Utah Code 10-20-909(2) · 17-79-810 · 15A-1-105</div></td></tr>
+        <tr><th>Not in the plumbing code</th><td><b>Septic</b> (private sewage disposal): Health and Human Services and DEQ. The <b>fire code</b>: the state Fire Prevention Board.<div class="sub">Utah Code 15A-2-105(2)</div></td></tr>
+        <tr><th>City water &amp; sewer</th><td>The city or district also owns its mains, meters and connections, and the law lets it set rules for what it owns. City utility rules, like the meter-setter and lateral rules on the Cities page, usually come from there. Where the city's part ends and the house's begins (often the meter or property line), ask the city.<div class="sub">Utah Code 15A-1-204(9)(b)</div></td></tr>
+        <tr><th>Your permit</th><td>The permit and the approved plans say what you're building to. If an inspector writes something you think the state code doesn't say, ask which section and take it to your journeyman or super. Each city sets up its own way to appeal.</td></tr>
+      </tbody></table></div>
+    <p class="note">Utah Code 15A-1-204 (in effect 11/6/2025), 15A-2-101 and 15A-2-105, 10-20-909, 17-79-810 and 15A-1-105 at le.utah.gov · checked Nov 2026 (HB 470, a 2026 bill to change inspection timing, failed in committee). How the law is set up, not legal advice.</p>
+  </section>
   <section data-sec="code" data-kw="disclaimer not the code not ours copyright icc international code council who owns the code whose code ipc irc ifgc imc nec nfpa trademark endorsed official legal liability warranty at your own risk">
     <div class="sec-head"><h2>Not the code, and not ours</h2><small>Whose rules these are</small></div>
     <p class="flag warn-flag">This book is a study and field aid. It is not the code, and the codes it talks about are not ours.</p>
@@ -5533,6 +5568,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 26, 2026 · Which book, city rules, rooms, fresh pages</th><td><b>Two new cards in Inspect → Which code:</b> <b>IRC and IPC in Utah</b> (one plumbing book per building: houses, duplexes and townhouses up to 3 stories go by the IRC; everything else by the IPC; what that means on a house) and <b>State code vs. city rules</b> (one code statewide, cities can't make it stricter, what a city does run, the 3-business-day inspection rule, septic and fire code). Both cite the Utah Code and the ICC. The old "How the code books fit together" card in Learn moved into the first one, so it isn't said twice (pins follow it). <b>Rooms on a job:</b> tap a room to add it (Master bath, Half bath, Laundry, Kitchen…) and its fields come ready to fill, with an example in each box. A second Hall bath is numbered. ＋ chips add more fields, and Remove empty fields tidies up. Change the rooms and their fields in Jobs settings → <b>Room presets</b>. <b>Pages open fresh:</b> no more page memory. A tab opens on its first page at the top, folds you opened shut again when you leave, My jobs goes back to its list, and the app opens on your start page (Home unless you pick another). Everything you typed or saved stays. The ★ Pinned start choice now opens Pinned.</td></tr>
         <tr><th>Nov 26, 2026 · One copy of everything, stage checklists</th><td><b>Stage checklists:</b> My jobs → <b>Stage checklists</b> (on the jobs list, or Jobs settings) has one list for each stage: Underground, Top-out (rough-in), Gas, Finish and Final. Every new job starts with the same lists. Change one there before you make the job, one line per item. Jobs you already have keep their lists and checks, and one odd job can still be changed with Edit on its checklist. <b>No more double copies:</b> Inspect → Cities → City inspections is now built from the same city list as Look up a city, so the two can't disagree (the old copy had Cedar Hills' old line; it books through Sunrise Engineering, 800-560-6151). It's folded under "Every city side by side" and now covers every checked town. Contacts → Call: Utilities &amp; state lines no longer repeats the numbers in Problem? First call. <b>My numbers</b> shows the people in My jobs who have a number, so you don't type a super twice. Calc → Plans → Scale a plan now points PDFs to the Measure tool. Build → Vents: the terminals card points to Vent size instead of repeating it. <b>Sturdier:</b> odd saved data (a number where a name goes, a broken checklist) is cleaned up on open.</td></tr>
         <tr><th>Nov 26, 2026 · Faster to open, fewer taps</th><td><b>More:</b> each section now lists its pages, so one tap lands you right on Cities, Weather, Jobs, Glossary and the rest (the page you're on is filled in). Tap the section's name to go back to the page you were last on there. <b>Jobs:</b> a <b>Recent</b> row at the top of the list has the 4 jobs you opened or changed last, one tap each. <b>Opening the book</b> does less work before you can tap: the glossary sorts about 3× faster, drawing colours are read once instead of one at a time, and a few spots that made the phone measure the whole page at start-up now wait until it's on screen. In testing on a slowed-down phone, the app was ready to tap about a quarter sooner.</td></tr>
         <tr><th>Nov 25, 2026 · Measure &amp; Find on plans</th><td><b>New in the plan viewer: 📏 Measure.</b> Set a sheet's scale once (tap both ends of a dimension printed on the sheet and type its length, or pick the printed scale like 1/4" = 1'-0"), then tap any two points for the length. Every measurement shows its ± for the zoom you're at (zoom in for closer); a tap on a phone screen is only so exact. Setting the scale from a dimension is the most reliable, and it works on shrunk copies; a printed scale is only right on a full-size sheet, and the app tells you the sheet's size so you can check. The scale is saved with the PDF (and in the photos &amp; files backup). <b>🔎 Find</b> searches the words in a plan set (WH, P-3, cleanout, hose bib), highlights every match, including sideways text, and steps through them sheet by sheet. Scanned plans have no words to search, and the app says so. Both checked against hand-worked answers: a 40' 0" line sets the scale, then a line 3" long on paper measures 12' 0".</td></tr>
@@ -6192,21 +6228,6 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><th>Gas</th><td>Thinner air, less oxygen: appliances derate about 4% per 1,000 ft above 2,000 ft (<b>Calc → Sizing → Altitude derate</b>). Tankless altitude settings: <b>Service → Water heaters → Altitude settings</b>.</td></tr>
       </tbody></table></div>
   </section>
-  <section data-sec="how" data-topic="Code &amp; math" data-kw="how code works code books irc ipc model code adoption amendments edition 2021 2024 utah 15a appendix ahj inspector manufacturer instructions which code wins section numbers change">
-    <div class="sec-head"><h2>How the code books fit together</h2><small>Model code, Utah's changes, your inspector</small></div>
-    <div class="x"><table class="t">
-      <tbody>
-        <tr><th>Model codes</th><td>The ICC writes the IRC, IPC, IMC and IFGC and puts out a new edition every 3 years. They're just books until a state adopts them.</td></tr>
-        <tr><th>Utah adopts</th><td>Utah's law picks the editions (Utah Code 15A-2-103). Since 7/1/2026: houses on the 2021 IRC; everything else on the 2024 IPC, IMC and IFGC. Older permits stay on the code they were issued under.</td></tr>
-        <tr><th>Utah amends</th><td>Utah Code 15A-3 rewrites parts of each book (Part 2 for the IRC, Part 3 for the IPC). Where Utah and the book disagree, Utah wins. See Learn → Study for both lists.</td></tr>
-        <tr><th>Appendices</th><td>Only count if the state or city adopts them by name.</td></tr>
-        <tr><th>Numbers move</th><td>Section numbers can change between editions: shower valves were 424.3 in the 2018 IPC and 412.3 in 2021. On a test or a job, search the topic if a number doesn't match.</td></tr>
-        <tr><th>Instructions</th><td>Listed products go in per the maker's instructions. Where those and the code differ, the stricter one generally wins (the IPC says so outright for AAVs).</td></tr>
-        <tr><th>The inspector</th><td>The local building official enforces it and decides gray areas. A quick call before rough beats a red tag after.</td></tr>
-        <tr><th><span class="badge why">WHY</span>Your setting</th><td>Settings → "Code I work under" sets the code the DFU counter and the code banner use. Details: Inspect → Which code.</td></tr>
-      </tbody></table></div>
-    <p class="note">Editions from Utah Code 15A-2-103 (effective 7/1/2026); amendments in Utah Code 15A-3 · checked Nov 2026. This card is how the system works, not legal advice.</p>
-  </section>
   <section data-sec="how" data-topic="Code &amp; math" data-kw="why math works 1.414 square diagonal sin tan travel run rolling offset two triangles take-off sweep radius bending gain area diameter squared friction mixing 0.4085 velocity">
     <div class="sec-head"><h2>Why the pipe math works</h2><small>The aha behind the multipliers</small></div>
     <div class="x"><table class="t">
@@ -6438,9 +6459,13 @@ function stepTable(tbody, items, prefix, get, set){
   tbody.addEventListener("input", e => { const i = idx(e.target); if (i >= 0){ const v = Math.floor(+e.target.value); set(i, isFinite(v) && v > 0 ? v : 0); } });
   tbody.addEventListener("change", e => { const i = idx(e.target); if (i >= 0) e.target.value = get(i); });
 }
+/* page memory is off: these only held where you were (page, sub-page, scroll spot, open folds, glossary topic), never
+   anything you typed or saved. They're ignored, never written again, and old copies are cleared. */
+const PAGE_MEM = new Set(["jpb-nav", "jpb-last-sub", "jpb-pos", "jpb-which", "jpb-math", "jpb-otp", "jpb-gloss-cat"]);
+try { PAGE_MEM.forEach(k => localStorage.removeItem(k)); } catch(e){}
 const store = {
-  get(k, d){ try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch(e){ return d; } },
-  set(k, v){ if (window.RESTORING) return; try { localStorage.setItem(k, JSON.stringify(v)); return true; }
+  get(k, d){ if (PAGE_MEM.has(k)) return d; try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch(e){ return d; } },
+  set(k, v){ if (window.RESTORING || PAGE_MEM.has(k)) return; try { localStorage.setItem(k, JSON.stringify(v)); return true; }
     catch(e){ storeFull(); return false; } }
 };
 /* a save that fails (the phone's space for the app is full) says so, once a minute at most, instead of looking saved */
@@ -7185,7 +7210,7 @@ SECTIONS.forEach(sec => {
   sec.dataset.where = GROUPS[g].length > 1 ? `${GNAME[g]} › ${sub}` : GNAME[g];
 });
 let nav = {group:"home", sub:"home"};
-const PREFS = Object.assign({start:"last", light:"phone", tip:true, chip:matchMedia("(min-width:760px)").matches, stars:true, fx:true, wake:false, wxIcon:true, fcNew:15, pipe:"abs", recentQ:true, tabs:{}, frac:"8"}, store.get("jpb-prefs", {}) || {});
+const PREFS = Object.assign({start:"home", light:"phone", tip:true, chip:matchMedia("(min-width:760px)").matches, stars:true, fx:true, wake:false, wxIcon:true, fcNew:15, pipe:"abs", recentQ:true, tabs:{}, frac:"8"}, store.get("jpb-prefs", {}) || {});
 PREFS.hc = PREFS.skin === "contrast";
 if (!PREFS.tabs || typeof PREFS.tabs !== "object" || Array.isArray(PREFS.tabs)) PREFS.tabs = {};
 const savePrefs = () => store.set("jpb-prefs", PREFS);
@@ -7210,12 +7235,12 @@ const FPS = (() => { const raw = window.requestAnimationFrame.bind(window), rawX
       else if (!show && mOn){ mOn = false; meter.hidden = true; } },
     get cap(){ return cap; }, raw}; })();   /* raw: the uncapped frame, for drawing that follows your finger (markup) */
 { const s = store.get("jpb-nav", null);
-  if (PREFS.start !== "last" && GROUPS[PREFS.start]) nav = {group: PREFS.start, sub: GROUPS[PREFS.start][0][0]};
+  if (PREFS.start === "last" || !GROUPS[PREFS.start]) PREFS.start = "home";   /* "Where I left off" is gone: page memory is off */
+  if (GROUPS[PREFS.start]) nav = {group: PREFS.start, sub: PREFS.start === "mine" ? "pins" : GROUPS[PREFS.start][0][0]};   /* the "★ Pinned" choice opens Pinned, not Jobs */
   else if (s && GROUPS[s.group] && GROUPS[s.group].some(([k]) => k === s.sub)) nav = s; }
-/* each tab remembers the page you left it on: Service → Error codes, off to Calc, back to Service lands on Error codes */
-const LASTSUB = (o => o && typeof o === "object" && !Array.isArray(o) ? o : {})(store.get("jpb-last-sub", {}));
-const lastSub = g => GROUPS[g].some(([k]) => k === LASTSUB[g]) ? LASTSUB[g] : GROUPS[g][0][0];
-const saveNav = () => { store.set("jpb-nav", nav); if (LASTSUB[nav.group] !== nav.sub){ LASTSUB[nav.group] = nav.sub; store.set("jpb-last-sub", LASTSUB); } };
+/* no page memory: a tab always opens on its first page, at the top (Back still steps back through where you went) */
+const lastSub = g => GROUPS[g][0][0];
+const saveNav = () => {};
 const subRow = document.querySelector(".subtabs"), tools = document.querySelector(".tools");
 function drawSubs(){
   const list = GROUPS[nav.group];
@@ -7264,8 +7289,15 @@ const stem = t => {
   return t;
 };
 let roWasShown = false, roReady = false;
+/* no page memory: the page you leave goes back to how it opens (folds shut that start shut, My jobs back to its list).
+   What you typed and saved stays. Each fold's starting state is noted once the book has finished setting up. */
+let pageKey = "";
+function pageLeave(k){ const [g, sub] = k.split("/");
+  SECTIONS.forEach(s => { if (s.dataset.sec !== sub || s.dataset.g !== g) return; s.querySelectorAll("details[data-o0]").forEach(d => { const o = d.dataset.o0 === "1"; if (d.open !== o) d.open = o; }); });
+  if (sub === "jobs" && window.jbReset) try { jbReset(); } catch(e){} }
 function apply(){
   const raw = $("q").value.trim().replace(/\b([a-z])-(\d)/gi, "$1$2"), term = sFix && sFix.from === raw ? sFix.to : raw;   /* E-003 → E003 */
+  if (!term){ const pk = nav.group + "/" + nav.sub; if (pageKey && pageKey !== pk) pageLeave(pageKey); pageKey = pk; }
   press("nav.tabs", b => !term && (b.dataset.group === nav.group || (b.id === "more-btn" && MORE_G.includes(nav.group))));
   document.body.classList.toggle("mixed", nav.group === "mine");
   press(subRow, b => b.dataset.sub === nav.sub);
@@ -7517,8 +7549,8 @@ $("q").addEventListener("input", () => {
    link inside the book still opens them. */
 const TAB_DEF = {calc:"bar", rough:"bar", mech:"bar", trim:"bar", inspect:"more", contacts:"more", site:"more", learn:"more", mine:"more"};
 const tabMode = g => TAB_DEF[g] ? (["bar","more","off"].includes(PREFS.tabs[g]) ? PREFS.tabs[g] : TAB_DEF[g]) : "bar";
-/* More: each section gets its pages as chips, built from GROUPS so they never drift. Tap the name for the page you were
-   last on there, or a chip to land straight on that page (one tap fewer than opening the section and then its sub-tab). */
+/* More: each section gets its pages as chips, built from GROUPS so they never drift. Tap the name for its first page,
+   or a chip to land straight on that page (one tap fewer than opening the section and then its sub-tab). */
 document.querySelectorAll("#more-list > button[data-group]").forEach(b => {
   const g = b.dataset.group, w = document.createElement("div");
   w.className = "more-item"; w.dataset.group = w.dataset.g = g; b.classList.add("more-main"); b.removeAttribute("data-g");
@@ -7545,7 +7577,7 @@ apply();  /* early, so tabs work even if a calculator below hits an error */
 /* pins: a star on each card's header puts it in Mine → Pinned. Keyed by the card's heading. */
 const slug = s => s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 /* cards that moved page or merged: old id → new id, so pins, notes and shop edits keep working (and old card links still open) */
-const PID_MOVED = {"facts:drains-vents-and-cleanouts": "study:drains-vents-and-cleanouts", "facts:tests-and-inspections": "study:tests-and-inspections", "facts:utah-s-irc-amendments": "study:utah-s-irc-amendments", "facts:backflow-and-cross-connection": "study:backflow-and-cross-connection", "facts:gas-piping-and-venting": "study:gas-piping-and-venting", "facts:water-heaters": "study:water-heaters", "facts:mech-room": "study:mech-room", "facts:fixture-and-trim-installs": "study:fixture-and-trim-installs", "facts:pipe-fittings-and-joints": "study:pipe-fittings-and-joints", "facts:safety-facts": "study:safety-facts", "facts:utah-water-rules-and-more": "study:utah-water-rules-and-more", "exam:practice-test": "study:practice-test", "emergency:my-city": "utah:look-up-a-city", "heaters:electrical-for-plumbers": "power:circuits-wire-and-bonding", "power:electrical-for-plumbers": "power:circuits-wire-and-bonding",
+const PID_MOVED = {"how:how-the-code-books-fit-together": "code:irc-and-ipc-in-utah", "facts:drains-vents-and-cleanouts": "study:drains-vents-and-cleanouts", "facts:tests-and-inspections": "study:tests-and-inspections", "facts:utah-s-irc-amendments": "study:utah-s-irc-amendments", "facts:backflow-and-cross-connection": "study:backflow-and-cross-connection", "facts:gas-piping-and-venting": "study:gas-piping-and-venting", "facts:water-heaters": "study:water-heaters", "facts:mech-room": "study:mech-room", "facts:fixture-and-trim-installs": "study:fixture-and-trim-installs", "facts:pipe-fittings-and-joints": "study:pipe-fittings-and-joints", "facts:safety-facts": "study:safety-facts", "facts:utah-water-rules-and-more": "study:utah-water-rules-and-more", "exam:practice-test": "study:practice-test", "emergency:my-city": "utah:look-up-a-city", "heaters:electrical-for-plumbers": "power:circuits-wire-and-bonding", "power:electrical-for-plumbers": "power:circuits-wire-and-bonding",
   "hotwater:expansion-tank": "hotwater:expansion-tank-size", "units:typical-fitting-take-offs": "layout:typical-fitting-take-offs", "units:my-take-offs": "layout:my-take-offs",
   "mechfix:water-heater-age": "heaters:water-heater-age", "finders:install-guides-and-part-finders": "idhow:install-guides-and-finders", "finders:id-help-and-parts-sources": "idhow:id-help-and-parts-sources",
   "vents:radon-pipe-isn-t-a-plumbing-vent": "vents:radon-pipe-is-not-a-vent", "codes:bradford-white-icon-status-light": "codes:bradford-white-icon-light", "mechfix:shutdowns-leaks-freezes-and-hammer": "mechfix:shutdowns-leaks-and-freezes", "trim:trim-out-a-shower-tub-valve": "trim:trim-a-shower-tub-valve", "trim:trim-out-finish-rest-of-the-house": "trim:trim-out-rest-of-the-house", "idhow:install-guides-and-part-finders": "idhow:install-guides-and-finders", "techlines:pipe-fittings-valves-framing": "techlines:pipe-valves-and-framing", "techlines:pumps-vents-flush-and-gas-tubing": "techlines:pumps-vents-and-gas-tubing", "safety:heat-asbestos-spillage-power": "safety:heat-asbestos-spillage", "how:six-ways-a-trap-loses-its-seal": "how:how-a-trap-loses-its-seal", "how:why-bigger-drains-get-less-slope": "how:why-big-drains-slope-less", "how:how-a-frost-free-hose-bibb-works": "how:how-a-frost-free-bibb-works", "how:altitude-what-changes-up-here": "how:altitude-what-changes"};
@@ -10914,12 +10946,13 @@ $("setup-done").addEventListener("click", () => {
 $("setup-skip").addEventListener("click", () => { store.set("jpb-setup", 1); sheet("setup", false); });
 $("setup-open").addEventListener("click", () => sheet("setup", true));
 
+/* how each fold starts: pageLeave() puts a page back this way when you go elsewhere */
+SECTIONS.forEach(sec => sec.querySelectorAll("details").forEach(d => { d.dataset.o0 = d.open ? "1" : ""; }));
 /* ---------- open at a card link (#tab/page/card), set the first history step, Back from there ---------- */
 /* reopening the book lands where you were on the page, not at its top (an iPhone unloads a home-screen app in the background).
    The spot is saved whenever the book is hidden, and used once at startup if it's the same page and less than 30 minutes old. */
 const posSave = () => { if (!$("q").value.trim()) store.set("jpb-pos", {k: nav.group + "/" + nav.sub, y: Math.round(scrY()), t: Date.now()}); };
-addEventListener("pagehide", posSave);
-document.addEventListener("visibilitychange", () => { if (document.hidden) posSave(); });
+/* page memory is off: the spot isn't saved (posSave writes a key the store ignores) */
 /* a #tab/page/card address → where it points now. A card that moved resolves to its new page, even if its old page is gone. */
 function hashTarget(){
   const m = location.hash.match(/^#([a-z]+)\/([a-z0-9]+)(?:\/([a-z0-9-]+))?$/); if (!m) return null;
@@ -11725,7 +11758,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-26b";
+var BUILD = "handbook-2026-11-26c";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
