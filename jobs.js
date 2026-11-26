@@ -581,9 +581,8 @@ const jnPlain = (x, base) => x.replace(/^\s*([-*+] \[[ xX]\]|[-*+•](?=\s)|\d+[
 /* a note in one line: its content lines (headings skipped, unless that's all there is), joined with dots */
 const jnGist = (e, n = 3) => { const L = String(e.b || "").split("\n"), body = L.filter(x => !/^\s*#{1,3}\s/.test(x)).map(x => jnPlain(x, e.d)).filter(Boolean);
   return (body.length ? body : L.map(x => jnPlain(x, e.d)).filter(Boolean)).slice(0, n).join(" · "); };
-const jbRow = (j, attr = "data-open", extra = "", inSub = false) => { const n = jbNext(j), c = cityById(j.city), tk = jbTasks(j), qs = jbQs(j), cs = jbStageNow(j), last = j.log.slice().sort(jnSort)[0];
+const jbRow = (j, attr = "data-open", extra = "", inSub = false) => { const n = jbNext(j), c = cityById(j.city), tk = jbTasks(j), qs = jbQs(j), cs = jbStageNow(j);
   const act = jbStages(j).filter(([k]) => j.stages[k].st !== "skip"), done = act.filter(([k]) => j.stages[k].st === "done").length;
-  const gist = last ? jnGist(last) : "";
   return `<button type="button" class="jb-row${j.color ? " jb-colored" : ""}"${j.color ? ` style="--jc:var(--pal-${j.color})"` : ""} ${attr}="${j.id}"${n && n.d < jbDay() && attr === "data-open" ? ` data-ostage="${esc(n.s)}"` : ""}><b>${j.pin ? '<span class="jb-pin" aria-label="Pinned">📌</span> ' : ""}${jbIco(jbIcon(j))}${esc(jbName(j))}</b><span>${[(j.name || "").trim() && j.a, !inSub && eName("sub", j.sub), j.who, c && c.n, pName(j.lead) && "Lead " + pName(j.lead)].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</span>`
     + (extra || "")   /* the note line stays in Quick view and "Where you left off": rows stay clean */
     + `<span class="jb-tags">${j.st === "open" && !jbArch(j) && c && window.wxJobBadge ? wxJobBadge(c.n) : ""}<span class="badge jb-sbadge jt-k-${cs}">${esc(JB_SNAME[cs])}</span><span class="badge">${done}/${act.length} stages</span>${j.st !== "open" ? `<span class="badge">${JB_ST[j.st]}</span>` : ""}${jbArch(j) ? `<span class="badge">🗄 Archived</span>` : ""}${tk ? `<span class="badge">☐ ${tk} to do</span>` : ""}${qs ? `<span class="badge jb-qb">? ${qs} question${qs === 1 ? "" : "s"}</span>` : ""}${(li => li && li.r === "fail" ? `<span class="badge jb-fail">✗ Failed inspection</span>` : li && li.r === "partial" ? `<span class="badge jb-fail">◐ Partial inspection</span>` : "")(j.insp.filter(i => i.r !== "booked").sort(jbByDate)[0])}${n ? n.d < jbDay() ? `<span class="badge jb-fail">📋 Inspection ${jbNice(n.d)}: result?</span>` : `<span class="jb-insp">📋 Inspection ${jbNice(n.d)}</span>` : ""}</span><span class="jb-peek" data-peek="${j.id}" title="Quick view" aria-hidden="true">⇤</span></button>`; };
@@ -1766,7 +1765,7 @@ function jfStampDraw(ctx, w, h0, b){
   b.rows.forEach(r => { y += r.gap; ctx.font = r.font; ctx.fillStyle = r.color; ctx.fillText(r.s, b.pad * 2, y); y += Math.round(r.size * 1.3); });
 }
 /* a proof photo taken for one checklist or punch item */
-{ const i = document.createElement("input"); i.type = "file"; i.accept = "image/*"; i.setAttribute("capture", "environment"); i.id = "jf-proof-ln"; i.hidden = true; document.body.appendChild(i);
+{ const i = document.createElement("input"); i.type = "file"; i.accept = "image/*"; i.setAttribute("capture", "environment"); i.id = "jf-proof-ln"; i.hidden = true; i.setAttribute("aria-label", "Take a proof photo"); document.body.appendChild(i);
   i.addEventListener("change", () => { const f = i.files[0], ln = JF.link; JF.link = null; i.value = ""; if (f && ln) jfProof(f, ln); else jbReseat(); }); }
 const jfLinkText = (j, ln) => ln.k === "punch" ? ((j.punch.find(p => p.id === ln.id) || {}).t || "") : ((jbCk(j, ln.s).items.find(y => y.key === ln.key) || {}).t || "");
 function jfLinkDone(j, ln, pid, at){   /* checks the item off (keeping an earlier check's date) and ties the photo to it */
@@ -1847,7 +1846,6 @@ async function jbReport(j0, only){
   const E = esc, when = ts => ts ? jbWhenAt(ts) : "", made = Date.now();
   /* a report is a record: every date carries its year */
   const jbNice = s => { const x = new Date(s + "T12:00:00"); return !s || isNaN(x) ? esc(s || "") : x.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric", year: "numeric"}); };
-  const jbShort = ts => new Date(ts).toLocaleDateString(undefined, {month: "short", day: "numeric", year: "numeric"});
   let files = []; try { files = (await jfAll(j.id)).filter(f => !f.del && (!only || (f.kind === "photo" && f.s === only))).sort((a, b) => a.t - b.t); } catch(e){}
   const dataUrl = b => new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = () => ok(""); r.readAsDataURL(b); });
   /* Medium and Small photos are shrunk, so the file is small enough to text; Large keeps the photo as taken */
@@ -2041,7 +2039,7 @@ function pvLay(){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (
 function pvHold(on){ PV.hold = on ? 1 : 0; if (on){ clearTimeout(PV.t); PV.pg.forEach(p => { pvCancel(p.dt); p.dt = null; p.dp = null; }); } else pvSoon(60); }
 function pvZoom(s, cx, cy){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (!W) return;
   s = Math.min(12, Math.max(1, s)); cx = cx == null ? B.clientWidth / 2 : cx; cy = cy == null ? B.clientHeight / 2 : cy;
-  const fx = (B.scrollLeft + cx) / W.offsetWidth, fy = (B.scrollTop + cy) / W.offsetHeight, f = s / PV.z;   /* the spot under your fingers stays put */
+  const fx = (B.scrollLeft + cx) / W.offsetWidth, fy = (B.scrollTop + cy) / W.offsetHeight;   /* the spot under your fingers stays put */
   PV.z = s; pvLay(); B.scrollLeft = fx * W.offsetWidth - cx; B.scrollTop = fy * W.offsetHeight - cy;
   $("jv-zoom").textContent = s > 1.01 ? "Fit to screen" : "Zoom in"; pvSoon(); }
 const pvSoon = (ms = 140) => { clearTimeout(PV.t); PV.t = setTimeout(pvDraw, ms); };
