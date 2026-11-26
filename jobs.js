@@ -1955,14 +1955,15 @@ function pvStop(){ PV.tok++; clearTimeout(PV.t); PV.q = []; PV.busy = 0;
 async function pvOpen(c){ pvStop(); const tok = PV.tok, B = $("jv-body"), N = $("jv-note");
   B.classList.add("jv-pdfv"); B.innerHTML = `<p class="jv-msg">Opening the PDF…</p>`;
   try { const L = await pvLib(), data = new Uint8Array(await c.blob.arrayBuffer()); if (tok !== PV.tok) return;
-    PV.task = L.getDocument({data, isEvalSupported: false, enableXfa: false, useSystemFonts: true, wasmUrl: pvURL("wasm/")});
+    PV.L = L; PV.task = L.getDocument({data, isEvalSupported: false, enableXfa: false, useSystemFonts: true, wasmUrl: pvURL("wasm/")});
     const doc = await PV.task.promise; if (tok !== PV.tok) return; PV.doc = doc;
     const msg = B.querySelector(".jv-msg");
     for (let n = 1; n <= doc.numPages; n++){ const p = await doc.getPage(n); if (tok !== PV.tok) return; const v = p.getViewport({scale: 1}); PV.pg.push({n, p, w: v.width, h: v.height});
       if (msg && n % 10 === 0) msg.textContent = `Opening the PDF… page ${n} of ${doc.numPages}`; }   /* a big plan set: show it's moving */
     B.innerHTML = `<div class="pv-pages">${PV.pg.map(p => `<div class="pv-pg" role="img" aria-label="Page ${p.n} of ${PV.pg.length}"><canvas class="pv-base" width="0" height="0"></canvas></div>`).join("")}</div>`;
     B.querySelectorAll(".pv-pg").forEach((el, i) => { PV.pg[i].el = el; PV.pg[i].base = el.firstChild; });
-    PV.z = 1; pvLay(); B.scrollTop = B.scrollLeft = 0; $("jv-zoom").hidden = false; N.hidden = false; pvNum(); pvSoon(0); }
+    PV.z = 1; pvLay(); B.scrollTop = B.scrollLeft = 0; $("jv-zoom").hidden = false; N.hidden = false; pvNum(); pvSoon(0);
+    PT.file = c; PT.sc = ptScaleRead(c); $("pv-bar").hidden = false; }
   catch(e){ if (tok !== PV.tok) return;
     B.innerHTML = `<p class="jv-msg">${e && e.name === "PasswordException" ? "This PDF has a password, so the app can't open it." : !pvLibP ? "The PDF viewer hasn't been saved to this phone yet. Open the app once with signal, then try again." : "The app couldn't draw this PDF."}<br>Tap <b>Open in another app</b>.</p>`; } }
 /* every page the screen's width times the zoom, in proportion */
@@ -1972,7 +1973,8 @@ function pvLay(){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (
     p.cw = cw; p.ch = cw * p.h / p.w; p.el.style.width = cw + "px"; p.el.style.height = p.ch + "px"; pvCancel(p.dt); p.dt = null; p.dp = null;
     if (Math.abs(k - 1) < 1e-6) return;
     /* a sharp close-up belongs to one size: stretch the old one to fit until the new one is drawn, so nothing flashes blurry */
-    p.el.querySelectorAll(".pv-det").forEach(x => { const st = x.style; ["left", "top", "width", "height"].forEach(n => st[n] = parseFloat(st[n]) * k + "px"); }); p.dr = null; }); }
+    p.el.querySelectorAll(".pv-det").forEach(x => { const st = x.style; ["left", "top", "width", "height"].forEach(n => st[n] = parseFloat(st[n]) * k + "px"); }); p.dr = null; });
+  if (PT.m) ptMDraw(); }
 /* fingers on the screen: no drawing at all (it would eat the frames the pinch needs); let go: draw again */
 function pvHold(on){ PV.hold = on ? 1 : 0; if (on){ clearTimeout(PV.t); PV.pg.forEach(p => { pvCancel(p.dt); p.dt = null; p.dp = null; }); } else pvSoon(60); }
 function pvZoom(s, cx, cy){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (!W) return;
@@ -1983,7 +1985,7 @@ function pvZoom(s, cx, cy){ const B = $("jv-body"), W = B.querySelector(".pv-pag
 const pvSoon = (ms = 140) => { clearTimeout(PV.t); PV.t = setTimeout(pvDraw, ms); };
 function pvNum(){ const B = $("jv-body"), mid = B.scrollTop + B.clientHeight * .3, n = PV.pg.length; if (!n) return;   /* the page in the top third: what you're reading */
   const p = B.scrollTop + B.clientHeight >= B.scrollHeight - 2 && B.scrollTop > 0 ? PV.pg[n - 1] : PV.pg.find(p => p.el.offsetTop + p.ch >= mid) || PV.pg[n - 1];
-  $("jv-note").textContent = `${n > 1 ? `Page ${p.n} of ${n} · ` : ""}pinch or double-tap to zoom`; }
+  $("jv-note").textContent = `${n > 1 ? `Page ${p.n} of ${n} · ` : ""}${PT.tool === "measure" ? "tap two points to measure · pinch to zoom" : "pinch or double-tap to zoom"}`; }
 function pvDraw(){ const B = $("jv-body"); if (!PV.doc || PV.hold || !B.querySelector(".pv-pages")) return;
   const H = B.clientHeight, top = B.scrollTop, bot = top + H, left = B.scrollLeft, right = left + B.clientWidth, mid = top + H / 2;
   const away = p => Math.max(0, p.el.offsetTop - mid, mid - p.el.offsetTop - p.ch);   /* how far a page is from the middle of the screen */
@@ -2020,9 +2022,97 @@ async function pvDet(p, x0, y0, x1, y1){ if (x1 - x0 < 4 || y1 - y0 < 4) return;
   cv.className = "pv-det"; cv.style.cssText = `left:${r.x0}px;top:${r.y0}px;width:${rw}px;height:${rh}px`;
   p.el.querySelectorAll(".pv-det").forEach(x => { pvFree(x); x.remove(); }); p.el.appendChild(cv); }
 
+/* ---- Plan tools: Find words, and Measure. Both draw on a see-through layer over each sheet that uses the sheet's own PDF
+   units (1/72"), so highlights and lines stay put through any zoom. */
+const PT = {tool: "", file: null, sc: null, hits: [], hi: -1, q: "", run: 0, m: null, cal: false, drag: false};
+const SVGNS = "http://www.w3.org/2000/svg";
+const ptEl = (t, a) => { const e = document.createElementNS(SVGNS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+const ptOv = p => { let o = p.el.querySelector(".pv-ov"); if (!o){ o = ptEl("svg", {class: "pv-ov", viewBox: `0 0 ${p.w} ${p.h}`, preserveAspectRatio: "none", "aria-hidden": "true"}); p.el.appendChild(o); } return o; };
+const ptClear = cls => PV.pg.forEach(p => p.el && p.el.querySelectorAll("." + cls).forEach(x => x.remove()));
+const ptPage = () => { const B = $("jv-body"), mid = B.scrollTop + B.clientHeight * .3; return PV.pg.find(p => p.el.offsetTop + p.ch >= mid) || PV.pg[PV.pg.length - 1]; };   /* the sheet you're reading */
+/* bring a spot on a sheet (PDF units) to the middle of the screen */
+function ptShow(p, x, y){ const B = $("jv-body"); B.scrollLeft = p.el.offsetLeft + x / p.w * p.cw - B.clientWidth / 2; B.scrollTop = p.el.offsetTop + y / p.h * p.ch - B.clientHeight / 2; pvNum(); pvSoon(); }
+
+/* Find: every text item on every sheet (PDF.js reads the words the plans were drawn with; a scanned set has none) */
+async function ptFind(q){ const st = $("pv-fst"); q = String(q || "").trim(); ptClear("pv-hit"); PT.hits = []; PT.hi = -1; PT.q = q;
+  if (!q){ st.textContent = ""; return; } if (!PV.doc || !PV.L) return;
+  const tok = PV.tok, me = ++PT.run, ql = q.toLowerCase(), U = PV.L.Util; let words = 0;
+  for (const p of PV.pg){
+    if (!p.tc){ try { p.tc = (await p.p.getTextContent()).items.filter(i => i.str && i.str.trim()); } catch(e){ p.tc = []; } if (tok !== PV.tok || me !== PT.run) return; }
+    words += p.tc.length; if (p.n % 10 === 0) st.textContent = `Looking… sheet ${p.n} of ${PV.pg.length}`;
+    const vt = p.vt || (p.vt = p.p.getViewport({scale: 1}).transform);
+    p.tc.forEach(i => { if (!i.str.toLowerCase().includes(ql)) return;
+      const m = U.transform(vt, i.transform), h = Math.hypot(m[2], m[3]) || 6, an = Math.atan2(m[1], m[0]) * 180 / Math.PI, w = Math.max(i.width || 0, h * .6);
+      const r = ptEl("rect", {class: "pv-hit", x: m[4] - h * .15, y: m[5] - h * 1.05, width: w + h * .3, height: h * 1.3, transform: `rotate(${an.toFixed(2)} ${m[4]} ${m[5]})`});
+      const ca = Math.cos(an * Math.PI / 180), sa = Math.sin(an * Math.PI / 180);   /* middle of the word: half along the text, half up from its baseline (up turns with the text) */
+      ptOv(p).appendChild(r); PT.hits.push({p, r, s: i.str, x: m[4] + ca * w / 2 + sa * h / 2, y: m[5] + sa * w / 2 - ca * h / 2, h}); }); }
+  if (!PT.hits.length){ st.textContent = words ? `No “${q}” in these plans.` : "These plans have no words to search (it's a scan, or the text was drawn as lines), so Find can't look in them."; return; }
+  ptGo(0); }
+function ptGo(k){ const n = PT.hits.length; if (!n) return; PT.hi = (k + n) % n; PT.hits.forEach((h, i) => h.r.classList.toggle("on", i === PT.hi));
+  const h = PT.hits[PT.hi], sheets = new Set(PT.hits.map(x => x.p.n)).size, px = h.h / h.p.w * h.p.cw;
+  if (px < 11) pvZoom(Math.min(12, PV.z * 14 / Math.max(px, .5)));   /* tiny text: zoom in until it's readable */
+  ptShow(h.p, h.x, h.y);
+  $("pv-fst").textContent = `${PT.hi + 1} of ${n} · sheet ${h.p.n}${sheets > 1 ? ` (on ${sheets} sheets)` : ""}: “${h.s.trim().slice(0, 60)}”`; }
+
+/* Measure. The scale is saved with the PDF, per sheet (k = real inches per PDF unit). Set it from a dimension printed on
+   the sheet (best: works on shrunk copies too) or from the printed scale (only right on a full-size sheet). A measurement
+   is only as close as your taps, so it shows ± two screen dots at the zoom you measured at. */
+function ptScaleRead(c){ const o = c && c.pscale, ok = e => e && typeof e === "object" && typeof e.k === "number" && isFinite(e.k) && e.k > 0 ? {k: e.k, how: String(e.how || "").slice(0, 80)} : null;
+  const pages = {}; if (o && typeof o.pages === "object" && o.pages) Object.keys(o.pages).forEach(n => { const e = ok(o.pages[n]); if (e && /^\d{1,4}$/.test(n)) pages[n] = e; });
+  return {pages, all: ok(o && o.all)}; }
+const ptScale = p => PT.sc && (PT.sc.pages[p.n] || PT.sc.all) || null;
+function ptSaveScale(p, k, how){ const e = {k, how}; PT.sc.pages[p.n] = e; if ($("pv-all").checked) PT.sc.all = e;
+  const f = PT.file; if (!f) return; f.pscale = {pages: PT.sc.pages, all: PT.sc.all}; jfPut(f).catch(() => toast("Couldn't save the scale with the PDF (the phone may be out of space). It works until you close the plans.", 4000)); }
+const ptIn = x => typeof fmtFtIn === "function" ? fmtFtIn(x) : x.toFixed(2) + '"';
+function ptMSay(){ const st = $("pv-mst"), p = PT.m ? PT.m.p : ptPage(); if (!p) return; const sc = ptScale(p), sheet = `Sheet ${p.n}`;
+  /* the scale controls fold away once this sheet has a scale; they open by themselves when it needs one */
+  $("pv-scs").textContent = sc ? `Scale: ${sc.how}` : `Sheet ${p.n}: set the scale`; $("pv-scd").open = PT.cal || !sc;
+  if (PT.tool === "measure") pvNum();
+  if (PT.cal){ st.innerHTML = PT.m && PT.m.b ? `How long is that blue line, really? Type it below.` : `${sheet}: tap both ends of a dimension you can read on the sheet. The longer it is, the closer your measurements will be.<small>Or pick the printed scale.</small>`; return; }
+  if (!sc){ st.innerHTML = `${sheet} has no scale yet.<small>Set it from a dimension on the sheet (best), or pick the printed scale.</small>`; return; }
+  if (!PT.m || !PT.m.b){ st.innerHTML = `${sheet}: tap two points to measure.`; return; }
+  const m = PT.m, d = Math.hypot(m.b[0] - m.a[0], m.b[1] - m.a[1]), real = d * sc.k, u = 2 * m.p.w / m.p.cw * sc.k;   /* two screen dots, in real inches */
+  const val = u >= 1 ? ptIn(Math.round(real)) : ptIn(real), pm = u >= 1 ? `${Math.round(u)}"` : ptIn(u);
+  st.innerHTML = `<span class="pv-big">${esc(val)}</span> <small>± ${esc(pm)} at this zoom${u >= 1 ? " (zoom in for closer)" : ""}. Tap again to start a new one.</small>`; }
+function ptMDraw(){ ptClear("pv-m"); const m = PT.m; if (!m) return; const o = ptOv(m.p), r = 5 * m.p.w / m.p.cw, cls = PT.cal ? " cal" : "";
+  if (m.b) o.appendChild(ptEl("line", {class: "pv-m pv-ml" + cls, x1: m.a[0], y1: m.a[1], x2: m.b[0], y2: m.b[1]}));
+  [m.a, m.b].filter(Boolean).forEach(q => o.appendChild(ptEl("circle", {class: "pv-m pv-mp" + cls, cx: q[0], cy: q[1], r}))); }
+function ptTap(cx, cy){ const p = PV.pg.find(p => { const r = p.el.getBoundingClientRect(); return cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom; }); if (!p) return;
+  const r = p.el.getBoundingClientRect(), q = [(cx - r.left) / r.width * p.w, (cy - r.top) / r.height * p.h];
+  if (!PT.cal && !ptScale(p)){ PT.m = null; ptMDraw(); ptCal(true, p); }   /* no scale on this sheet yet: this tap starts setting it */
+  if (!PT.m || PT.m.b || PT.m.p !== p) PT.m = {p, a: q, b: null}; else PT.m.b = q;
+  ptMDraw(); ptMSay();
+  if (PT.cal && PT.m.b){ $("pv-calrow").hidden = false; const i = $("pv-calv"); i.value = ""; i.focus(); } }
+function ptCal(on, p){ PT.cal = on; $("pv-calrow").hidden = true; if (!on && PT.m && !PT.m.b) PT.m = null; ptMDraw(); ptMSay(); }
+function ptCalSet(){ const m = PT.m, v = typeof tapeIn === "function" ? tapeIn($("pv-calv").value) : parseFloat($("pv-calv").value);
+  if (!m || !m.b) return; const d = Math.hypot(m.b[0] - m.a[0], m.b[1] - m.a[1]);
+  if (!(v > 0) || !(d > 0)){ toast("Type the real length, tape style: 12' 6 or 150 (inches).", 2600); $("pv-calv").focus(); return; }
+  ptSaveScale(m.p, v / d, `from a ${ptIn(v)} dimension on sheet ${m.p.n}`); $("pv-calv").blur(); PT.m = null; ptCal(false);
+  toast(`Scale set: that line is ${esc(ptIn(v))}. Tap two points to measure.`, 2600); }   /* says back what it read, so 25 (inches) typed for 25 feet shows right away */
+function ptTool(t){ PT.tool = PT.tool === t ? "" : t; const B = $("jv-body");
+  document.querySelectorAll("[data-pvt]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.pvt === PT.tool)));
+  $("pv-find").hidden = PT.tool !== "find"; $("pv-meas").hidden = PT.tool !== "measure"; B.classList.toggle("jv-meas", PT.tool === "measure");
+  if (PT.tool !== "find"){ ptClear("pv-hit"); PT.hits = []; PT.run++; $("pv-fst").textContent = ""; } else { const q = $("pv-q"); q.focus(); if (q.value.trim()) ptFind(q.value); }
+  if (PT.tool !== "measure"){ PT.m = null; PT.cal = false; $("pv-calrow").hidden = true; ptMDraw(); if (PV.doc) pvNum(); }
+  else { $("pv-ps").value = ""; $("pv-all").checked = false; const p = ptPage(); if (p && !ptScale(p)) ptCal(true, p); else ptMSay(); } }
+function ptReset(){ PT.run++; Object.assign(PT, {tool: "", file: null, sc: null, hits: [], hi: -1, q: "", m: null, cal: false, drag: false});
+  $("pv-bar").hidden = true; $("pv-find").hidden = $("pv-meas").hidden = $("pv-calrow").hidden = true; $("pv-fst").textContent = $("pv-mst").textContent = "";
+  document.querySelectorAll("[data-pvt]").forEach(b => b.setAttribute("aria-pressed", "false")); $("jv-body").classList.remove("jv-meas"); }
+{ $("pv-bar").addEventListener("click", e => { const b = e.target.closest("[data-pvt]"); if (b) ptTool(b.dataset.pvt); });
+  $("pv-q").addEventListener("keydown", e => { if (e.key !== "Enter") return; e.preventDefault(); const q = e.target.value.trim(); if (q && q === PT.q && PT.hits.length) ptGo(PT.hi + (e.shiftKey ? -1 : 1)); else ptFind(q); });
+  $("pv-q").addEventListener("search", e => { if (!e.target.value.trim()) ptFind(""); });
+  $("pv-next").addEventListener("click", () => { const q = $("pv-q").value.trim(); if (q !== PT.q) ptFind(q); else ptGo(PT.hi + 1); });
+  $("pv-prev").addEventListener("click", () => { const q = $("pv-q").value.trim(); if (q !== PT.q) ptFind(q); else ptGo(PT.hi - 1); });
+  $("pv-cal").addEventListener("click", () => { PT.m = null; ptCal(true); });
+  $("pv-calok").addEventListener("click", ptCalSet); $("pv-calv").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); ptCalSet(); } });
+  $("pv-ps").addEventListener("change", e => { const R = +e.target.value, p = ptPage(); if (!(R > 0) || !p) return;
+    ptSaveScale(p, R / 72, `printed ${e.target.selectedOptions[0].textContent} (only right on a full-size sheet)`);   /* R real inches per inch of paper; 72 PDF units to the inch */
+    PT.m = null; ptCal(false);
+    toast(`Sheet ${p.n} is ${(p.w / 72).toFixed(1)} × ${(p.h / 72).toFixed(1)} in. A printed scale is only right if that's the real sheet size; on a shrunk copy (like 11 × 17) set the scale from a dimension.`, 6500); }); }
+
 $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.blob) return;
   const pdf = jvPDF(c), img = c.kind === "photo" || /^image\//.test(c.type || "");
-  pvStop(); if (JV) URL.revokeObjectURL(JV); JV = null;
+  pvStop(); ptReset(); if (JV) URL.revokeObjectURL(JV); JV = null;
   const B = $("jv-body"), N = $("jv-note"), Z = $("jv-zoom"); B.className = "jv-wrap"; N.hidden = true; Z.hidden = true; Z.textContent = "Zoom in";
   $("jv-title").textContent = img ? (c.proof ? "Proof photo" : "Photo") : c.name || "File";
   if (img){ JV = URL.createObjectURL(c.blob); JZ.s = 1; JZ.w = 0; B.classList.add("jv-img"); B.innerHTML = `<img src="${JV}" alt="${c.proof ? "Proof photo" : "Job photo"}" draggable="false">`;
@@ -2070,12 +2160,14 @@ $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.bl
     if (P && t.length === 2){ e.preventDefault(); const [x, y] = two(t); gMove(P.g, P.g.s0 * gap(t) / P.d, x, y); return; }
     if (T && t.length === 1 && Math.hypot(t[0].clientX - T.x, t[0].clientY - T.y) > 10) T = null; }, {passive: false});   /* moved: a scroll, not a tap */
   const lift = e => { if (P){ if (e.touches.length < 2){ gEnd(P.g); P = null; last = null; } return; }
+    if (PT.tool === "measure"){ T = null; last = null; return; }   /* Measure: each tap is a point (the click below), never a zoom */
     if (!T || e.changedTouches.length !== 1 || Date.now() - T.at > 250){ T = null; return; }
     const c = e.changedTouches[0], tap = {x: c.clientX, y: c.clientY, at: Date.now()}; T = null;
     if (last && tap.at - last.at < 320 && Math.hypot(tap.x - last.x, tap.y - last.y) < 40){ e.preventDefault(); last = null; glide(now() > 1.01 ? 1 : 2.5, tap.x, tap.y); }
     else last = tap; };
   B.addEventListener("touchend", lift, {passive: false}); B.addEventListener("touchcancel", e => { if (P){ gEnd(P.g); P = null; } T = null; });
-  B.addEventListener("dblclick", e => { if (mode()) glide(now() > 1.01 ? 1 : 2.5, e.clientX, e.clientY); });
+  B.addEventListener("click", e => { if (PT.tool !== "measure" || mode() !== "pdf") return; if (PT.drag){ PT.drag = false; return; } ptTap(e.clientX, e.clientY); });
+  B.addEventListener("dblclick", e => { if (PT.tool === "measure") return; if (mode()) glide(now() > 1.01 ? 1 : 2.5, e.clientX, e.clientY); });
   let W = null, wt = 0;
   B.addEventListener("wheel", e => { if (!e.ctrlKey || !mode()) return; e.preventDefault(); if (ANIM) return;
     if (!W) W = gBegin(e.clientX, e.clientY); if (!W) return; gMove(W, W.s * Math.exp(-e.deltaY / 150), W.mx, W.my);
@@ -2086,7 +2178,7 @@ $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.bl
   addEventListener("pointermove", e => { if (!M) return; const dx = e.clientX - M.x, dy = e.clientY - M.y;
     if (!M.on){ if (Math.hypot(dx, dy) < 4) return; M.on = true; B.classList.add("jv-drag"); }   /* a click stays a click */
     B.scrollLeft = M.l - dx; B.scrollTop = M.t - dy; });
-  addEventListener("pointerup", () => { if (M){ M = null; B.classList.remove("jv-drag"); } });
+  addEventListener("pointerup", () => { if (M){ PT.drag = M.on; M = null; B.classList.remove("jv-drag"); } });   /* a drag doesn't drop a measuring point */
   d.addEventListener("keydown", e => { if (!mode() || e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
     const z = {"+": 1.6, "=": 1.6, "-": 1 / 1.6, "_": 1 / 1.6, "0": 0}[e.key]; if (z === undefined) return; e.preventDefault();
     glide(z ? now() * z : 1, ...mid0()); });
@@ -2095,7 +2187,7 @@ $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.bl
   addEventListener("resize", () => { if (!d.open) return; if (mode() === "img") jzFit(); else if (mode() === "pdf"){ pvZoom(PV.z); } });
   $("jv-send").addEventListener("click", () => $("jf-share").click());
   /* the "closed" notice arrives a moment after Close: if the viewer was opened again in between, it belongs to the old file */
-  d.addEventListener("close", () => { if (d.open) return; pvStop(); B.querySelectorAll("canvas").forEach(pvFree); B.innerHTML = ""; if (JV) URL.revokeObjectURL(JV); JV = null; }); }
+  d.addEventListener("close", () => { if (d.open) return; pvStop(); ptReset(); B.querySelectorAll("canvas").forEach(pvFree); B.innerHTML = ""; if (JV) URL.revokeObjectURL(JV); JV = null; }); }
 $("jf-share").addEventListener("click", async () => { const c = JF.cur; if (!c) return;
   const f = new File([c.blob], c.kind === "photo" ? c.name.replace(/\.[^.]*$/, "") + ".jpg" : c.name, {type: jvPDF(c) ? "application/pdf" : c.type || c.blob.type || ""});
   try { if (navigator.canShare && navigator.canShare({files: [f]})){ await navigator.share({files: [f]}); return; } } catch(e){ if (e && e.name === "AbortError") return; }
@@ -2243,7 +2335,7 @@ const jbLastBk = () => { const lb = +store.get("jpb-lastbk", 0);
   return (lb ? `Last backup: <b>${jbAgo(lb)}</b>. ` : "<b>No backup yet.</b> ") + "One file with your jobs, people, notes, settings, photos and files. Save it to iCloud Drive or Files so it's off this phone: deleting the app from the Home Screen deletes everything in it."; };
 async function jfPack(){
   let L = []; try { L = await jfAll(); } catch(e){}
-  const man = L.map(f => ({id: f.id, job: f.job, s: f.s, jobName: (j0 => j0 ? jbName(j0) : "")(jbD.jobs.find(x => x.id === f.job)), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb, del: f.del || 0, proof: f.proof || null, ed: f.ed || 0,
+  const man = L.map(f => ({id: f.id, job: f.job, s: f.s, jobName: (j0 => j0 ? jbName(j0) : "")(jbD.jobs.find(x => x.id === f.job)), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb, del: f.del || 0, proof: f.proof || null, ed: f.ed || 0, pscale: f.pscale || null,
     path: `files/${f.id}-${String(f.name).replace(/[^\w.\- ]+/g, "_").slice(-60)}`}));
   const zip = await jfZip([{name: "handbook-backup.json", blob: new Blob([bkDump()], {type: "application/json"})},
     {name: "manifest.json", blob: new Blob([JSON.stringify({app: "utah-plumbers-handbook-files", v: 1, made: new Date().toISOString(), files: man})])},
@@ -2285,7 +2377,7 @@ async function jfRestoreZ(z, merge){
   for (const f of m.files){ const x = z[f.path]; if (!x || !/^[\w-]+$/.test(String(f.id))) continue;
     if (merge){ const cur = await jfTx("readonly", s => s.get(f.id)).catch(() => null); if (cur && (cur.del || (+cur.ed || +cur.t || 0) >= (+f.ed || +f.t || 0))) continue; }
     if (f.thumb && !jfThumbOk(f.thumb)) f.thumb = "";
-    await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, +f.ed ? {ed: +f.ed} : {}, f.s ? {s: f.s} : {}, f.del ? {del: f.del} : {}, f.proof && typeof f.proof === "object" ? {proof: f.proof} : {})); n++; }
+    await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, +f.ed ? {ed: +f.ed} : {}, f.s ? {s: f.s} : {}, f.del ? {del: f.del} : {}, f.proof && typeof f.proof === "object" ? {proof: f.proof} : {}, f.pscale && typeof f.pscale === "object" ? {pscale: ptScaleRead(f)} : {})); n++; }   /* a plan's saved scale comes back too, checked */
   return n;
 }
 /* takes the new all-in-one .zip, an older photos-only .zip, or a Settings .json backup */
