@@ -11,7 +11,7 @@ What it does, with no network and no server (files are served straight from this
   6. photo markup saves a new photo and leaves the original untouched
   7. job rooms: copy, add, link from notes, rename
 Exit code 0 = all passed. Not part of the app: the app never downloads this folder."""
-import json, mimetypes, pathlib, re, shutil, subprocess, sys
+import json, mimetypes, pathlib, re, shutil, subprocess, sys, time
 from playwright.sync_api import sync_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -496,6 +496,38 @@ with sync_playwright() as pw:
     pg.click("[data-pvt=measure]"); pg.wait_for_timeout(200)
     check("printed 1/4" in pg.evaluate("document.getElementById('pv-scs').textContent"), "the sheet's scale is saved with the PDF and back when it's reopened")
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors with Find and Measure" + (f": {pg.errs}" if pg.errs else ""))
+
+    # ---------- 12. getting around: More lands on the page, recent jobs one tap ----------
+    print("12. Getting around: More lands on the page, recent jobs one tap, first open")
+    many = dict(one, peeked=1, seenV=1, jobs=[dict(one["jobs"][0], id=f"r{i}", name=f"Lot {i}", t=int(time.time() * 1000) - (11 - i) * 60000) for i in range(1, 11)])
+    ctx, pg = fresh(); ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-setup','1');localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(many)))
+    open_book(pg)
+    want = pg.evaluate("MORE_G.map(g => g + ':' + GROUPS[g].map(x => x[0]).join(','))")
+    got = pg.evaluate("[...document.querySelectorAll('#more-list .more-item')].filter(w => !w.hidden).map(w => w.dataset.group + ':' + [...w.querySelectorAll('.more-subs button')].map(b => b.dataset.sub).join(','))")
+    check(want == got, f"More lists every page of each section, in order ({len(got)} sections)")
+    pg.click("nav.tabs [data-group=calc]"); pg.wait_for_timeout(300); pg.click("#more-btn"); pg.wait_for_timeout(300)
+    pg.click("#more-list button[data-sub=utah]"); pg.wait_for_timeout(500)
+    check(pg.evaluate("nav.group + '/' + nav.sub") == "inspect/utah" and not pg.evaluate("sheetOn('more')"), "More → Cities lands on Cities in one tap and closes More")
+    pg.go_back(); pg.wait_for_timeout(600)
+    check(pg.evaluate("nav.group") == "calc", "Back from there goes to the page before More, not back into More")
+    pg.click("#more-btn"); pg.wait_for_timeout(300); pg.click("#more-list .more-main[data-group=inspect]"); pg.wait_for_timeout(400)
+    check(pg.evaluate("nav.group + '/' + nav.sub") == "inspect/utah", "the section name opens the page you were last on there")
+    pg.click("#more-btn"); pg.wait_for_timeout(300)
+    check(pg.evaluate("document.querySelector('#more-list button[data-sub=utah]').getAttribute('aria-current')") == "page", "More marks the page you're on")
+    pg.keyboard.press("Escape"); pg.wait_for_timeout(200)
+    pg.evaluate("() => { PREFS.tabs.mine = 'bar'; savePrefs(); tabsApply(); }")
+    check(pg.evaluate("document.querySelector('#more-list .more-item[data-group=mine]').hidden"), "a section moved to the bar leaves More")
+    pg.evaluate("() => { delete PREFS.tabs.mine; savePrefs(); tabsApply(); }")
+    pg.evaluate("location.hash = '#mine/jobs'"); pg.wait_for_timeout(800)
+    rc = pg.evaluate("[...document.querySelectorAll('.jb-recent button')].map(b => b.textContent)")
+    check(rc == ["Lot 10", "Lot 9", "Lot 8", "Lot 7"], f"Recent shows the 4 jobs worked on last, newest first ({rc})")
+    pg.click(".jb-recent button[data-open=r8]"); pg.wait_for_timeout(600)
+    check(pg.evaluate("(() => { const b = document.querySelector('.jb-back'); return !!b && b.closest('section').innerText.includes('Lot 8'); })()"), "tapping a recent job opens it")
+    same = pg.evaluate("(() => { const a = GLOSS.map(x => x[0]), b = a.slice().sort((x, y) => x.localeCompare(y, undefined, {sensitivity: 'base', numeric: true})); return a.every((t, i) => t === b[i] || x0(t, b[i])); function x0(p, q){ return p.localeCompare(q, undefined, {sensitivity: 'base', numeric: true}) === 0; } })()")
+    check(same, "the glossary is still in the same A to Z order (faster sort)")
+    check(pg.evaluate("document.querySelector('meta[name=theme-color]').content") == pg.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--k').trim()"), "the status-bar colour still follows the look")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors getting around" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
     br.close()
 
 print(f"\n{'ALL PASSED' if not FAILS else str(len(FAILS)) + ' FAILED'}")

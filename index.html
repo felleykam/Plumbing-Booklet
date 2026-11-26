@@ -1389,9 +1389,15 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
 .res-bar button{appearance:none;font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;min-height:44px;padding:2px 12px;border:var(--bw) solid var(--acc,var(--ctl));border-radius:var(--r);background:var(--sheet);color:var(--ink);cursor:pointer}
 .res-bar button[aria-pressed="true"]{background:var(--acc);color:var(--sheet)}
 .more-list{display:grid;gap:10px;padding:12px 0}
-.more-list button{appearance:none;text-align:left;display:flex;flex-direction:column;gap:2px;padding:10px 14px;min-height:64px;border:var(--bw) solid var(--edge);border-left:10px solid var(--acc,var(--ink));border-radius:var(--r);background:var(--sheet);color:var(--ink);font:inherit;cursor:pointer}
+.more-list > button,.more-main{appearance:none;text-align:left;display:flex;flex-direction:column;gap:2px;padding:10px 14px;min-height:64px;border:var(--bw) solid var(--edge);border-left:10px solid var(--acc,var(--ink));border-radius:var(--r);background:var(--sheet);color:var(--ink);font:inherit;cursor:pointer}
 .more-list b{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.04em;text-transform:uppercase}
 .more-list span{font-size:16px;color:var(--muted)}
+/* a section with its pages as chips: one tap from More lands on the page */
+.more-item{display:flex;flex-direction:column;border:var(--bw) solid var(--edge);border-left:10px solid var(--acc,var(--ink));border-radius:var(--r);background:var(--sheet)}
+.more-item > .more-main{border:0;border-radius:var(--r) var(--r) 0 0;min-height:52px;padding-bottom:4px;background:none}
+.more-subs{display:flex;flex-wrap:wrap;gap:8px;padding:2px 12px 12px}
+.more-subs button{appearance:none;min-height:44px;padding:6px 12px;border:2px solid var(--edge);border-radius:999px;background:var(--paper,var(--sheet));color:var(--ink);font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.more-subs button[aria-current="page"]{background:var(--ink);color:var(--sheet)}
 .qr-box{background:#fff;padding:12px;border-radius:var(--r);width:max-content;max-width:100%;margin:0 auto;min-height:60px;display:grid;place-items:center}
 .qr-box svg{display:block;width:220px;height:220px}
 .qr-url{text-align:center;font-family:var(--mono);overflow-wrap:anywhere}
@@ -5567,6 +5573,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 26, 2026 · Faster to open, fewer taps</th><td><b>More:</b> each section now lists its pages, so one tap lands you right on Cities, Weather, Jobs, Glossary and the rest (the page you're on is filled in). Tap the section's name to go back to the page you were last on there. <b>Jobs:</b> a <b>Recent</b> row at the top of the list has the 4 jobs you opened or changed last, one tap each. <b>Opening the book</b> does less work before you can tap: the glossary sorts about 3× faster, drawing colours are read once instead of one at a time, and a few spots that made the phone measure the whole page at start-up now wait until it's on screen. In testing on a slowed-down phone, the app was ready to tap about a quarter sooner.</td></tr>
         <tr><th>Nov 25, 2026 · Measure &amp; Find on plans</th><td><b>New in the plan viewer: 📏 Measure.</b> Set a sheet's scale once (tap both ends of a dimension printed on the sheet and type its length, or pick the printed scale like 1/4" = 1'-0"), then tap any two points for the length. Every measurement shows its ± for the zoom you're at (zoom in for closer); a tap on a phone screen is only so exact. Setting the scale from a dimension is the most reliable, and it works on shrunk copies; a printed scale is only right on a full-size sheet, and the app tells you the sheet's size so you can check. The scale is saved with the PDF (and in the photos &amp; files backup). <b>🔎 Find</b> searches the words in a plan set (WH, P-3, cleanout, hose bib), highlights every match, including sideways text, and steps through them sheet by sheet. Scanned plans have no words to search, and the app says so. Both checked against hand-worked answers: a 40' 0" line sets the scale, then a line 3" long on paper measures 12' 0".</td></tr>
         <tr><th>Nov 25, 2026 · Smoother photos &amp; plans, polish</th><td><b>Plans:</b> the viewer now gives back the phone's drawing memory as it goes and when you close it. On iPhone, plans could otherwise go blank after opening several (Safari stops drawing past its limit). Pages near where you're looking draw first; when you scroll fast, ones you've passed no longer hold you up. Zoomed in, the sharp close-up covers a bit more than the screen, so small pans stay sharp without redrawing. Turning the phone while zoomed keeps everything lined up. <b>Fixed:</b> opening a file right after closing one could leave the viewer blank. <b>Markup:</b> drawing stays quick however many marks are on the photo; freehand lines are smooth curves and catch every movement of your finger or Apple Pencil; the frame-rate setting no longer slows drawing. <b>Photos</b> the phone can't read now say so instead of showing nothing. <b>On a computer:</b> drag with the mouse to move around a zoomed photo or sheet, and press + / − / 0 to zoom in, out, or back to fit. A big plan set counts its pages while it opens. <b>Fixed:</b> two rare cases where a missing location or switch time could read as 0 in the follow-daylight theme. Every calculator was checked with blank boxes: each says what to type instead of showing a made-up answer. <b>Fixed (weather):</b> when the forecast service left a day's value blank, the app could count it as 0°F, showing a false freezing badge on a job, an extra freezing night in Week ahead, or a false freeze warning on an inspection.</td></tr>
         <tr><th>Nov 24, 2026 · Error &amp; jitter pass, frame rate</th><td><b>Checked the whole book for errors and jumpy screens</b>: every page on a phone and a computer screen, 2,087 typed entries (including junk like letters in number boxes), every fold, all 29 themes in light and dark with each font setting, the Jobs screens, the weather page while the forecast loads, and scrolling every page frame by frame. No errors turned up. <b>Fixed:</b> on a slow connection the text could jump when the fonts arrived late. The fonts now ship with the app, so they're there before the first screen draws, work offline from the very first launch, and the book no longer contacts Google at all. <b>New, just for fun:</b> Settings → Behavior → <i>Frame rate</i> (Auto, 60, 30 or 15) caps how often the book redraws its own moving parts (the 3D rough-in view, splashes, drawing plan PDFs), and <i>Show the frame counter</i> puts a live fps number in the corner. Scrolling and pinch-zoom stay at full speed. At 15, plan PDFs take longer to sharpen.</td></tr>
@@ -6450,8 +6457,9 @@ const ftInTxt = ft => fmtFtIn(ft * 12);   /* fmtFtIn rounds once, to the Setting
 const nf = (x, d=3) => isFinite(x) ? Math.abs(x) >= 1e9 ? x.toExponential(3) : (x !== 0 && Math.abs(x) < 0.01 ? (+x.toPrecision(4)).toString() : Math.abs(x) >= 1000 ? x.toLocaleString(undefined,{maximumFractionDigits:1}) : (+x.toFixed(d)).toString()) : "—";
 /* CSS variables for drawings, cached per look: reading computed style 40 times a redraw forced style passes. The cache resets when theme, skin, vest or text size changes. */
 let cssSig = "", cssMemo = {};
+const CSSV_ALL = ["--d-bg","--d-cut","--d-cut-lbl","--d-dim","--d-fit","--d-grid","--d-pipe","--d-rise","--d-roll","--d-run","--d-text","--d-tru","--danger","--g-calc","--g-parts","--hi","--hv","--ink","--muted","--ok","--rule","--sheet"];
 const cssv = n => { const d = document.documentElement, s = (d.dataset.theme || "") + (d.dataset.skin || "") + (d.dataset.vest || "") + d.style.cssText;
-  if (s !== cssSig){ cssSig = s; cssMemo = {}; }
+  if (s !== cssSig){ cssSig = s; cssMemo = {}; const cs = getComputedStyle(d); CSSV_ALL.forEach(k => cssMemo[k] = cs.getPropertyValue(k).trim()); }   /* one style pass for every colour the drawings use */
   return cssMemo[n] ??= getComputedStyle(d).getPropertyValue(n).trim(); };
 /* light up the pressed button in a button group: press("#ro-mode", b => b.dataset.mode === m). Takes a selector (every match) or an element. */
 const press = (box, on) => (typeof box === "string" ? document.querySelectorAll(box + " button") : box.querySelectorAll("button")).forEach(b => b.setAttribute("aria-pressed", String(on(b))));
@@ -6941,7 +6949,7 @@ const GLOSS = [
   ["Backfeed","elec","Power pushed from a generator back into a panel and out onto the utility lines. Kills lineworkers. Use a transfer switch."],
   ["Transfer switch","elec","Switch an electrician installs so a generator can power a panel without connecting to the utility at the same time."]
 ];
-GLOSS.sort((a,b) => a[0].localeCompare(b[0], undefined, {sensitivity:"base", numeric:true}));
+{ const C = new Intl.Collator(undefined, {sensitivity:"base", numeric:true}); GLOSS.sort((a,b) => C.compare(a[0], b[0])); }   /* one collator: same order as localeCompare, far faster on first open */
 const GCAT = Object.fromEntries(GLOSS_CATS);
 $("gloss").innerHTML = GLOSS.map(([t,c,d]) => `<tr data-cat="${c}" data-search="${esc((t+" "+d+" "+GCAT[c]).toLowerCase())}"><th>${esc(t)}<div class="sub">${esc(GCAT[c])}</div></th><td>${esc(d)}</td></tr>`).join("");
 /* fact file: [card, topic, fact, source key]. Sources checked Oct 2026; study-guide sources say so in their label. */
@@ -7477,7 +7485,7 @@ $("q").addEventListener("input", () => {
    "tears away": the rubber-band bounce (stopped in CSS with overscroll-behavior), the keyboard (bar hidden while typing,
    re-seated after), and pinch-zoom (bar moved and scaled onto the visible area). visualViewport says where the screen really is. */
 { const navEl = document.querySelector("nav.tabs"), vv = window.visualViewport, mq = matchMedia("(max-width:759px)");
-  let raf = 0, normH = 0, lastPoke = 0, lastSnap = "", tries = 0, lastW = innerWidth, vpT = 0;
+  let raf = 0, normH = 0, lastPoke = 0, lastSnap = "", tries = 0, lastW = 0, vpT = 0;   /* lastW is read on the first glue, not at load (reading it at load forces a layout) */
   const VP0 = (document.querySelector('meta[name="viewport"]') || {getAttribute: () => ""}).getAttribute("content");   /* the viewport line as shipped */
   const settle = () => {   /* the app's page can't scroll, so iOS never re-measures on its own: give it one tiny scroll */
     const H = document.documentElement, b = document.body;
@@ -7507,7 +7515,7 @@ $("q").addEventListener("input", () => {
       /* Seen on an iPhone (Nov 2026): after the keyboard, iOS shrinks the app by the status bar's height (852 → 793) and
          draws nothing below that, so moving the bar down only cuts it off. Leave the bar where iOS draws, and ask iOS to
          re-measure: let the page scroll 1 px and back, the way it settles itself after a scroll. */
-      if (innerWidth !== lastW){ lastW = innerWidth; normH = 0; }   /* turned sideways and back: forget the old height */
+      if (lastW && innerWidth !== lastW) normH = 0; lastW = innerWidth;   /* turned sideways and back: forget the old height */
       const short = SHELL && !typing() ? normH - innerHeight : 0, gap = typing() || SHELL ? 0 : dy;   /* home-screen app: never slide the bar (it gets cut off) */
       if (gap > 0.5 && gap < 320) navEl.style.transform = `translate3d(0,${gap.toFixed(1)}px,0)`; else navEl.style.transform = "translateZ(0)";
       if (SCR) SCR.style.bottom = "";
@@ -7548,11 +7556,20 @@ $("q").addEventListener("input", () => {
    link inside the book still opens them. */
 const TAB_DEF = {calc:"bar", rough:"bar", mech:"bar", trim:"bar", inspect:"more", contacts:"more", site:"more", learn:"more", mine:"more"};
 const tabMode = g => TAB_DEF[g] ? (["bar","more","off"].includes(PREFS.tabs[g]) ? PREFS.tabs[g] : TAB_DEF[g]) : "bar";
+/* More: each section gets its pages as chips, built from GROUPS so they never drift. Tap the name for the page you were
+   last on there, or a chip to land straight on that page (one tap fewer than opening the section and then its sub-tab). */
+document.querySelectorAll("#more-list > button[data-group]").forEach(b => {
+  const g = b.dataset.group, w = document.createElement("div");
+  w.className = "more-item"; w.dataset.group = w.dataset.g = g; b.classList.add("more-main"); b.removeAttribute("data-g");
+  const sp = b.querySelector("span"); if (sp) sp.remove();
+  b.replaceWith(w); w.append(b);
+  if (GROUPS[g].length > 1) w.insertAdjacentHTML("beforeend", `<div class="more-subs" role="group" aria-label="${GNAME[g]} pages">${GROUPS[g].map(([s, t]) => `<button type="button" data-group="${g}" data-sub="${s}">${esc(t)}</button>`).join("")}</div>`);
+});
 function tabsApply(){
   const order = Object.keys(TAB_DEF);
   MORE_G = order.filter(g => tabMode(g) === "more");
   document.querySelectorAll("nav.tabs button[data-group]").forEach(b => { const g = b.dataset.group; if (!TAB_DEF[g]) return; const m = tabMode(g); b.classList.toggle("wide-tab", m !== "bar"); b.hidden = m === "off"; });
-  document.querySelectorAll("#more-list button[data-group]").forEach(b => { b.hidden = tabMode(b.dataset.group) !== "more"; });
+  document.querySelectorAll("#more-list .more-item").forEach(b => { b.hidden = tabMode(b.dataset.group) !== "more"; });
   document.querySelectorAll("[data-go]").forEach(b => { const off = tabMode(b.dataset.go.split("|")[0]) === "off"; if (off){ b.hidden = true; b.dataset.tabOff = "1"; } else if (b.dataset.tabOff){ b.hidden = false; delete b.dataset.tabOff; } });
   document.documentElement.style.setProperty("--bar-n", 2 + order.filter(g => tabMode(g) === "bar").length);
   if (tabMode(nav.group) === "off") nav = {group: "home", sub: "home"};
@@ -7659,7 +7676,8 @@ const SEE = [["Water heater install","Circuits, wire & bonding"],["Water heater 
   ["Altitude derate","Altitude settings"],["Drains, vents & cleanouts","Venting rules"],["Tests & inspections","Test log"],["Utah's IRC amendments","2021 IPC quick reference"],["Gas piping & venting","Gas piping"],
   ["Water heaters","Water heater install"],["Mech room","Mech room map"],["Fixture & trim installs","Trim-out: rest of the house"],["Pipe, fittings & joints","Joint tricks"],["Safety facts","Jobsite safety"],
   ["Utah water rules & more","Utah water"],["Compression & flare","Thread types"],["Expansion tank size","Mech room trouble"]];
-{ const byT = t => SECTIONS.find(s => s.querySelector("h2").textContent.trim() === t), links = new Map();
+{ const T = new Map(); SECTIONS.forEach(s => { const t = s.querySelector("h2").textContent.trim(); if (!T.has(t)) T.set(t, s); });
+  const byT = t => T.get(t), links = new Map();
   SEE.forEach(([a, b]) => { const A = byT(a), B = byT(b); if (!A || !B) return; [[A, B], [B, A]].forEach(([x, y]) => { if (!links.has(x)) links.set(x, []); if (!links.get(x).includes(y)) links.get(x).push(y); }); });
   links.forEach((ys, x) => x.insertAdjacentHTML("beforeend", `<p class="note see-also"><b class="see-k">See also</b> ${ys.map(y => `<button type="button" class="linkish" data-see="${y.dataset.pid}">${esc(y.querySelector("h2").textContent)} <span aria-hidden="true">›</span></button>`).join(" ")}</p>`));
   document.addEventListener("click", e => { const b = e.target.closest("[data-see]"); if (!b) return; const s = SECTIONS.find(x => x.dataset.pid === b.dataset.see); if (s) jumpToSec(s); });
@@ -7710,7 +7728,8 @@ function prefApply(){
   FPS.set(PREFS.fps, !!PREFS.fpsShow);
   $("tip").classList.toggle("pref-off", !PREFS.tip);
   $("code-jump").hidden = !PREFS.chip;
-  const k = getComputedStyle(ROOT).getPropertyValue("--k").trim(); const m = document.querySelector('meta[name="theme-color"]'); if (m && k) m.content = k;
+  /* status-bar colour: read after the next paint, so opening the app doesn't wait on a style pass */
+  if (!prefApply.t) prefApply.t = requestAnimationFrame(() => { prefApply.t = 0; const k = getComputedStyle(ROOT).getPropertyValue("--k").trim(); const m = document.querySelector('meta[name="theme-color"]'); if (m && k) m.content = k; });
 }
 let wakeLock = null;
 async function wakeSet(){
@@ -7970,16 +7989,17 @@ $("copy-link").addEventListener("click", () => copyText(BOOK_URL, "Link copied."
 
 $("look").addEventListener("click", e => { if (e.target === $("look")) lookOpen(false); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") ["look","more","setup"].forEach(n => { if (sheetOn(n)) sheet(n, false); }); });
-$("more-btn").addEventListener("click", () => sheet("more", !sheetOn("more")));
+$("more-btn").addEventListener("click", () => { document.querySelectorAll("#more-list .more-subs button").forEach(c => { if (c.dataset.group === nav.group && c.dataset.sub === nav.sub) c.setAttribute("aria-current", "page"); else c.removeAttribute("aria-current"); }); sheet("more", !sheetOn("more")); });
 $("more-close").addEventListener("click", () => sheet("more", false));
 $("more-list").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   SHEETS.more(false);   /* swap the More step for the tab, so Back from the tab skips the sheet */
   if (b.dataset.act === "settings" || b.dataset.act === "share"){ try { history.replaceState(Object.assign({}, history.state || {}, {sheet: ""}), ""); } catch(err){} sheet("look", true);
     if (b.dataset.act === "share") setTimeout(() => $("set-share").scrollIntoView({block: "start"}), 60); return; }
-  if (histOk && history.state && history.state.sheet === "more"){ restoring = true; nav = {group: b.dataset.group, sub: GROUPS[b.dataset.group][0][0]}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrTo({top:0}); placeRemember(); restoring = false;
+  const g = b.dataset.group, sub = b.dataset.sub || lastSub(g);
+  if (histOk && history.state && history.state.sheet === "more"){ restoring = true; nav = {group: g, sub}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrTo({top:0}); placeRemember(); restoring = false;
     try { history.replaceState({g: nav.group, s: nav.sub, q: ""}, "", navHash()); } catch(err){} }
-  else go(b.dataset.group);
+  else go(g, sub);
 });
 prefApply(); wakeSet(); lookDraw();
 
@@ -7991,12 +8011,12 @@ document.querySelectorAll("table.cards").forEach(t => {
 
 /* ---------- 5 toolbar: tucks away scrolling down on phones, back on any scroll up ---------- */
 (() => {
-  let lastY = scrY(), ticking = false, tucked = false;
+  let lastY = null, ticking = false, tucked = false;   /* read on the first scroll, not at load */
   const setTuck = on => { if (on === tucked) return; tucked = on; tools.style.top = on ? -(tools.offsetHeight + 4) + "px" : ""; };
   SCR_EV.addEventListener("scroll", () => {
     if (ticking) return; ticking = true;
     requestAnimationFrame(() => {
-      const y = scrY(), down = y > lastY + 4, up = y < lastY - 4;
+      const y = scrY(); if (lastY === null) lastY = y; const down = y > lastY + 4, up = y < lastY - 4;
       tools.classList.toggle("stuck", y > 40);
       const busy = tools.contains(document.activeElement) || document.querySelector(".ro-stage.big");
       if (innerWidth < 760 && down && y > 300 && !busy) setTuck(true);
@@ -11729,7 +11749,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-25c";
+var BUILD = "handbook-2026-11-26a";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
