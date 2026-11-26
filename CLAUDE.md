@@ -18,6 +18,8 @@ An offline jobsite reference for **Utah residential new-construction plumbing**:
   - **Houses (one- and two-family, townhouses): 2021 IRC** plumbing, gas and mechanical chapters, plus Utah's amendments in Utah Code Title 15A ch. 3 (15A-3-2xx). This is the main code for the owner's residential new-construction work.
   - **Everything else (commercial, multifamily beyond IRC scope): 2024 IPC, 2024 IMC, 2024 IFGC.**
   - **2021 IPC**: older permits, plus the owner's MTECH schooling. Keep the "Code I work under" setting (2021 IPC / 2021 IRC / 2024 IPC) and label every code card with its edition. Never mix editions silently.
+  - **The app leads with the 2021 IPC** (the owner's choice, Nov 26 2026): it's the default setting, and IPC answers come first. Where the IRC differs on a house, still flag it, because state law puts houses under the IRC.
+  - Utah's IPC amendments also apply to the matching IRC section on a house (Utah Code 15A-3-201(2), checked Nov 2026).
   - The Jan 1, 2027 change (HB 41, 2026) only swaps the wildfire code (2006 Utah WUI → 2024 IWUIC). Houses stay on the 2021 IRC. Recheck 15A-2-103 at le.utah.gov before any code work in case later bills change it.
 - **Every fact needs a source and a checked date.** That covers code sections, sizing tables, phone numbers, addresses, city and utility info, product specs, and license rules. Show it on the card (for example "IPC 2021 §P3005.4.2 · checked Nov 2026") and use primary sources: ICC, Utah Legislature, DOPL, city or utility sites, and manufacturer pages.
 - **If you can't verify something from a primary source, leave it out and tell the owner** in your report, so he can ask a journeyman or an inspector. Never guess to fill a gap, and never write something because it "fits."
