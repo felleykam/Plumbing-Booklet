@@ -223,6 +223,8 @@ body.searching .where-go,body.mixed .where-go{display:block;grid-column:1 / -1;j
 .t .k{font-family:var(--mono);font-size:14px;font-weight:600;white-space:nowrap;width:1%}
 .t .n,.t.num td:not(:first-child){font-family:var(--mono);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .t.wrap .n{white-space:normal}
+#mn-rows .mn-from{font-size:14px;color:var(--muted);text-transform:none;letter-spacing:0;padding-top:14px}
+#ci-d table{table-layout:fixed;width:100%}#ci-d th,#ci-d td{overflow-wrap:anywhere;white-space:normal}#ci-d thead th:first-child{width:34%}
 .sub{color:var(--muted);font-size:15px}
 .t .yes{color:var(--ok);font-weight:800;font-size:18px} .t .no{color:var(--danger);font-weight:800;font-size:18px}
 .t.num td.sub{font-family:var(--body);white-space:normal}
@@ -2412,7 +2414,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td>24×36</td><td>12×18</td><td>50%</td><td>True half size: a ¼" plan reads at ⅛".</td></tr>
         <tr><td>22×34</td><td>11×17</td><td>50%</td><td>Also true half size.</td></tr>
         <tr class="hit"><td>24×36</td><td>11×17 "fit"</td><td>≈ 46%</td><td>Matches <b>no</b> scale on your ruler. Calibrate.</td></tr>
-        <tr><td>Any PDF</td><td>Phone, tablet</td><td>?</td><td>Zoom changes the size. Calibrate in the PDF app.</td></tr>
+        <tr><td>Any PDF</td><td>Phone, tablet</td><td>?</td><td>Zoom changes the size, so a ruler on the glass is useless. Add the PDF to a job in <b>My jobs</b>, open it, tap <b>Measure</b> and set the scale from a written dimension (or the printed scale); it reads any length you tap, at any zoom.</td></tr>
       </tbody></table></div>
     <p class="note">Answers are estimates: a ¹⁄₃₂" slip on paper is 1½" real at ¼" scale. The written dimension always wins over anything you scale.</p>
       <details class="more fold"><summary>How to read a plan scale</summary>
@@ -3014,7 +3016,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>Vent sizing &amp; terminals</h2><small>2021 IRC P31 · 2021 IPC ch. 9 · Utah</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Vent size</th><td>At least ½ the drain it serves, never under 1¼". Over 40 ft developed length: go up one size.</td></tr>
+        <tr><th>Vent size</th><td>Use the <b>Vent size</b> card just below: it sizes stack vents and every other vent, with the rule it comes from.</td></tr>
         <tr><th>Through roof</th><td><b>Houses (IRC P3103.1.1):</b> at least 6" above the roof or 6" above expected snow, whichever is greater. <span class="badge ut">UT</span> Other buildings (Utah IPC 903.1.1): <b>12"</b>. Run at least 12", and 6" above the expected snow where that's higher. Deep-snow areas like Park City: confirm locally.</td></tr>
         <tr><th><span class="badge ut">UT</span>Through wall</th><td>Ends at least 12" out from the wall with the elbow pointing down (Utah IRC P3101.4 / IPC 903.7).</td></tr>
         <tr><th>Near openings</th><td>Not directly under a door, openable window or air intake. Within 10 ft of one, end at least 2 ft above its top (IRC P3103.5; IPC 903.5 says 3 ft).</td></tr>
@@ -4794,48 +4796,12 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="utah" data-kw="city inspection schedule provo spanish fork springville herriman lehi saratoga springs eagle mountain west jordan south jordan park city salt lake county msd utah county orem american fork vineyard highland lindon alpine santaquin cedar fort salem cedar hills payson mapleton bluffdale riverton draper">
     <div class="sec-head"><h2>City inspections</h2><small>How each city books them</small></div>
-    <div class="x"><table class="t">
+    <p class="note">Your city: <b>Look up a city</b> above. To compare the cities you work in, open the list. It's built from the same city list, so the two never disagree.</p>
+    <details class="more" id="ci-d"><summary>Every city side by side</summary>
+    <div class="x"><table class="t wrap">
       <thead><tr><th>City</th><th>How to book · what's different</th></tr></thead>
-      <tbody>
-        <tr><th colspan="2">Utah County</th></tr>
-        <tr><td><b>Eagle Mountain</b></td><td>Email <a href="mailto:buildinginspections@eaglemountain.gov">buildinginspections@eaglemountain.gov</a><div class="sub">Include the permit number. No confirmation email back = you're not on the schedule. First come, first served. Order: underground plumbing → 4-way → a separate <b>frost-protection insulation</b> inspection → final. Final needs the meter set: lid at grade, setter 20" ±2" below the lid, nothing within 5 ft; $50 re-final if it isn't.</div></td></tr>
-        <tr><td><b>Lehi</b></td><td><span class="pn">385-201-1035</span><div class="sub">Phone only: no voicemail, email or online booking. 24 hr notice. Lists a 30" minimum frost line. Not-ready re-inspections get a fee. Sewer lateral: 2% minimum slope to the property line, inspected before backfill. One culinary and one PI connection per lot.</div></td></tr>
-        <tr><td><b>Provo</b></td><td><a href="https://www.provo.gov/1019/Schedule-Building-Inspection" target="_blank" rel="noopener">Schedule an inspection ↗</a><div class="sub">Booking is through the city's self-service portal. Design frost depth 30" (Provo design criteria).</div></td></tr>
-        <tr><td><b>Saratoga Springs</b></td><td>Email <a href="mailto:buildinginspectionrequest@saratogasprings-ut.gov">buildinginspectionrequest@saratogasprings-ut.gov</a> or <span class="pn">801-766-6507</span> x120<div class="sub">One business day ahead: by 5 pm Mon–Thu, 4 pm Fri. No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test set).</div></td></tr>
-        <tr><td><b>Spanish Fork</b></td><td><a href="https://www.spanishfork.gov/living-in-our-community/building/building-permits-inspections/" target="_blank" rel="noopener">CitizenServe portal ↗</a> · help <span class="pn">801-804-4540</span><div class="sub">24 hr ahead. Ready by 8 am the day of, or a $93 re-inspection fee. Underground plumbing and water/sewer laterals inspected before cover; gas pressure test in that stage; rough plumbing on the 4-way; shower pan inspection with framing.</div></td></tr>
-        <tr><td><b>Springville</b></td><td><a href="https://www.springvilleutah.gov/community-development/wp-content/uploads/sites/5/2025/06/My-City-Inspector-Directions.pdf" target="_blank" rel="noopener">City Inspect ↗</a> · building <span class="pn">801-489-2704</span><div class="sub">Booked online in AM/PM blocks once the permit is issued; some inspections wait on earlier ones. Frost depth 30". Secondary-water switch-over inspection, $50.</div></td></tr>
-        <tr><td><b>Orem</b></td><td>Inspection line <span class="pn">801-229-7060</span><div class="sub">Have the address, permit number, inspection type and building type ready. Underground (plumbing tested), rough (roof, doors and windows in, shear already approved), final. "Before covering anything, call." Building Safety, 56 N State St, Ste 105.</div></td></tr>
-        <tr><td><b>American Fork</b></td><td><a href="https://americanfork.cityinspect.com/login" target="_blank" rel="noopener">City Inspect portal ↗</a> · city <span class="pn">801-763-3000</span><div class="sub">The city runs permits through City Inspect; we couldn't confirm the inspection booking steps online. Ask your super.</div></td></tr>
-        <tr><td><b>Vineyard</b></td><td><a href="https://vineyard.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-226-1929</span><div class="sub">Voicemail requests are NOT honored, and no same-day inspections. Inspections M–F 8–5 (the office closes Friday at noon: confirm Friday PMs).</div></td></tr>
-        <tr><td><b>Highland</b></td><td><a href="https://highland.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-772-4516</span><div class="sub">Scheduled Mon–Thu 8–5; office closed Fridays (inspections by appointment). Underground plumbing and the sewer connection are separate inspections.</div></td></tr>
-        <tr><td><b>Lindon</b></td><td><span class="pn">801-785-7687</span> · <a href="mailto:building@lindon.gov">building@lindon.gov</a><div class="sub">Booking method isn't posted online; call the building office.</div></td></tr>
-        <tr><td><b>Alpine</b></td><td>Inspection line <span class="pn">801-756-0208</span><div class="sub">Office 801-756-6347, M–F 8–3. Every structure needs a permit, whatever its size.</div></td></tr>
-        <tr><td><b>Santaquin</b></td><td><span class="pn">801-754-1011</span> (phone only)<div class="sub">At least 24 hr ahead during office hours (M–Th 9–5, Fri 9–1). Monday inspections: call by 1 pm Friday. Ready by 8 am or a $65 re-inspection fee (check or cash).</div></td></tr>
-        <tr><td><b>Cedar Fort</b></td><td>Online request form on the town site<div class="sub">At least 2 full business days ahead. Not scheduled until the town confirms; no confirmation in 24 hr, call <span class="pn">801-768-2147</span> x5. Sub-rough plumbing, water connection, septic and rough are separate inspections.</div></td></tr>
-        <tr><td><b>Unincorporated Utah County</b></td><td><span class="pn">801-851-8342</span> · <a href="mailto:shaunal@utahcounty.gov">shaunal@utahcounty.gov</a><div class="sub">At least 3 days' notice, before the work is covered. County building is on the 2024 IPC; frost depth 30". 51 S University Ave, Ste 117, Provo.</div></td></tr>
-        <tr><td><b>Salem · Cedar Hills · Payson · Mapleton</b></td><td><span class="sub">Booking details aren't posted where we could read them. Salem city office <span class="pn">801-423-2770</span>; Cedar Hills <span class="pn">801-785-9668</span>. Payson and Mapleton: call the city building office.</span></td></tr>
-        <tr><th colspan="2">Salt Lake &amp; Summit</th></tr>
-        <tr><td><b>Bluffdale</b></td><td><span class="pn">801-849-9425</span> · 801-849-9414 · 801-849-9424<div class="sub">Call by 3:30 pm the business day before. Voicemail is fine: give name, phone, inspection type, date, permit number and address. They don't call back to confirm. A 4-way with power needs the Rocky Mountain Power work order number.</div></td></tr>
-        <tr><td><b>Riverton</b></td><td><span class="pn">801-208-3138</span> before 1 pm<div class="sub"><a href="mailto:building@rivertonutah.gov">building@rivertonutah.gov</a> · City Hall Room 105, 12830 S Redwood Rd · M–F 8–5.</div></td></tr>
-        <tr><td><b>Draper</b></td><td><a href="https://draper.onlama.com" target="_blank" rel="noopener">Online portal ↗</a> only<div class="sub">Inspections card → View Inspections → "I'm Ready." No same-day inspections, and the time isn't guaranteed. Don't call the inspector before 8:30 am that day. Building office 801-576-6399.</div></td></tr>
-        <tr><td><b>Herriman</b></td><td><span class="pn">801-446-5327</span><div class="sub">Call one working day ahead, before 4 pm. Subrough: 10 ft water or 5 psi, 15 min. Gas 5 psi, 15 min. Shower pan water test. Separate secondary-water connection inspection. Meter is on the Public Works final.</div></td></tr>
-        <tr><td><b>West Jordan</b></td><td><span class="pn">801-569-5050</span><div class="sub">Building dept: inspection requirements and status. Permit Center M–F 8–5.</div></td></tr>
-        <tr><td><b>South Jordan</b></td><td><a href="https://cityview.southjordanutah.gov/cityviewportal" target="_blank" rel="noopener">CityView portal ↗</a><div class="sub">Permits and inspections online.</div></td></tr>
-        <tr><td><b>Park City</b></td><td><span class="pn">435-615-5101</span><div class="sub">Book in the City Inspect app by 3 pm for next day. AM 8–12, PM 12–4. Plans + permit on paper on site. Deep snow: confirm vent height.</div></td></tr>
-        <tr><td><b>Unincorporated SL County</b></td><td><a href="https://msd.utah.gov/205/Building-Permits-Inspections" target="_blank" rel="noopener">MSD permits &amp; inspections ↗</a><div><span class="pn">385-910-5830</span> <a href="mailto:inspections@msd.utah.gov">inspections@msd.utah.gov</a></div><div class="sub">Greater Salt Lake Municipal Services District (Kearns, Magna, Copperton, etc.). Inspection hotline or email before 3 pm for next business day.</div></td></tr>
-        <tr><th colspan="2">Davis, Weber, Cache &amp; Washington</th></tr>
-        <tr><td><b>Layton</b></td><td><span class="pn">801-336-3760</span> or the online permit portal<div class="sub">M–F 8–5.</div></td></tr>
-        <tr><td><b>Farmington</b></td><td><span class="pn">801-882-8954</span><div class="sub">24 hr notice; fills 1–2 days out. Storm water and grading booked separately (801-939-9286).</div></td></tr>
-        <tr><td><b>Unincorporated Weber County</b></td><td><span class="pn">801-399-8770</span><div class="sub">Done within 3 business days; AM 8:30–12 or PM 12–4.</div></td></tr>
-        <tr><td><b>Ogden</b></td><td><a href="https://www.ogdencity.gov/183/Building-Permits-Inspections" target="_blank" rel="noopener">City building page ↗</a><div class="sub">Booking steps not confirmed.</div></td></tr>
-        <tr><td><b>Logan</b></td><td><span class="pn">435-716-9030</span><div class="sub">24 hr notice; slots 9–11 and 1:30–3:30.</div></td></tr>
-        <tr><td><b>Unincorporated Cache County</b></td><td><span class="pn">435-755-1650</span>, press 1<div class="sub">By 4 pm the business day before; ready by 8 am.</div></td></tr>
-        <tr><td><b>St. George</b></td><td><a href="https://stg.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a> · building <span class="pn">435-627-4100</span><div class="sub">Booking steps not spelled out online: call.</div></td></tr>
-        <tr><td><b>Washington City</b></td><td><a href="https://washington.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a> · <span class="pn">435-656-6326</span><div class="sub">By 5 pm for the next business day.</div></td></tr>
-        <tr><th colspan="2">Salt Lake City</th></tr>
-        <tr><td><b>Salt Lake City</b></td><td><span class="sub">See <b>Contacts → Call → Utilities &amp; state lines</b>.</span></td></tr>
-      </tbody></table></div>
-    <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct 2026; your super's schedule and the city site win. Look any town up in <b>Inspect → Cities → Look up a city</b>.</p>
+      <tbody id="ci-rows"></tbody></table></div></details>
+    <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct–Nov 2026; your super's schedule and the city site win. Towns nobody has checked yet are left out: look them up above.</p>
   </section>
   <section data-sec="utah" data-kw="secondary water pressurized irrigation pi purple non-potable cross connection culinary sprinkler green box meter rp backflow dual source rpz reduced pressure swing joint">
     <div class="sec-head"><h2>Secondary water (PI)</h2><small>Very Utah</small></div>
@@ -4951,17 +4917,17 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div></div>
 
   </section>
-  <section data-sec="emergency" data-kw="stuck help who do i call problem what now frozen meter no water sewer backup spill backflow code question part id i-joist injury unsafe paid wages license hours">
+  <section data-sec="emergency" data-kw="stuck help who do i call problem what now frozen meter no water sewer backup spill backflow code question part id i-joist injury unsafe paid wages license hours deq incidents ddw drinking water division cross connection tester national response center icc code council">
     <div class="sec-head"><h2>Problem? First call</h2><small>Problem → first call</small></div>
     <div class="x"><table class="t wrap">
       <thead><tr><th>When…</th><th>Call first</th></tr></thead>
       <tbody>
         <tr><td><b>You smell gas</b> or hit a gas line</td><td>Get out. From outside: <span class="pn">911</span> or Enbridge <span class="pn">1-800-767-1689</span><div class="sub">Then: your super. Don't go back in.</div></td></tr>
-        <tr><td><b>No water at the setter</b>, frozen or leaking meter, main break</td><td>The city's water department: <b>Inspect → Cities → Look up a city</b><div class="sub">Then: your super. SLC: <span class="pn">801-483-6700</span> (24 hr)</div></td></tr>
+        <tr><td><b>No water at the setter</b>, frozen or leaking meter, main break</td><td>The city's water department: <b>Inspect → Cities → Look up a city</b><div class="sub">Then: your super.</div></td></tr>
         <tr><td><b>Sewer backing up</b> from the main or the lateral at the main</td><td>The city or sewer district: <b>Inspect → Cities → Look up a city</b><div class="sub">Then: your super, before you dig</div></td></tr>
         <tr><td><b>Drinking water may be contaminated</b> (backflow event)</td><td>The city's water department<div class="sub">Then: Division of Drinking Water <span class="pn">801-536-4200</span> (business hours)</div></td></tr>
         <tr><td><b>Spill</b> (fuel, glycol, sewage) into a storm drain, ditch or creek</td><td>DEQ 24-hr incidents <span class="pn">801-536-4123</span><div class="sub">Then: Big or dangerous: <span class="pn">911</span>. Some need the National Response Center <span class="pn">1-800-424-8802</span></div></td></tr>
-        <tr><td><b>Backflow tester</b> or cross-connection question</td><td>DDW cross-connection program <span class="pn">385-600-3378</span><div class="sub">Then: The water system's own backflow program</div></td></tr>
+        <tr><td><b>Backflow tester</b> or cross-connection question</td><td>DDW cross-connection program <span class="pn">385-600-3378</span><div class="sub">Certified testers: <a href="https://deq.utah.gov/drinking-water/cross-connection-control-backflow-prevention" target="_blank" rel="noopener">DDW tester lookup ↗</a>. Then: the water system's own backflow program.</div></td></tr>
         <tr><td><b>Code question</b></td><td>Your journeyman or super, then the city inspector or plans examiner (<b>Inspect → Cities → Look up a city</b>)<div class="sub">Then: Only the local building official can rule. ICC <span class="pn">1-888-422-7233</span> sells the books.</div></td></tr>
         <tr><td><b>Part ID</b>, error code, warranty</td><td>The maker's tech line: <b>Contacts → Tech lines</b><div class="sub">Then: Photo the rating plate first (model + serial)</div></td></tr>
         <tr><td><b>Hole through an I-joist</b>, LVL or truss</td><td>Joist maker: Weyerhaeuser <span class="pn">1-888-453-8358</span> · BCI <span class="pn">1-800-232-0788</span><div class="sub">Then: Trusses: never cut. The super gets the truss engineer.</div></td></tr>
@@ -4970,13 +4936,13 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td><b>Chemical</b> in eyes, on skin, or fumes</td><td>Poison Control <span class="pn">1-800-222-1222</span><div class="sub">Then: Read the can's first-aid label to them</div></td></tr>
         <tr><td><b>Site feels unsafe</b> (trench, fall, electrical)</td><td>Your super<div class="sub">Then: UOSH <span class="pn">1-800-530-5090</span></div></td></tr>
         <tr><td><b>Pay</b> is short or late</td><td>Your employer's office<div class="sub">Then: Labor Commission wage claims <span class="pn">801-530-6801</span></div></td></tr>
-        <tr><td><b>Hours or license</b> question</td><td>MTECH or your sponsor<div class="sub">Then: DOPL <span class="pn">801-530-6628</span></div></td></tr>
+        <tr><td><b>Hours or license</b> question</td><td>MTECH or your sponsor<div class="sub">Then: DOPL, in <b>Utilities &amp; state lines</b> below</div></td></tr>
       </tbody></table></div>
     <p class="note">The first call is almost always your journeyman or super: they know the job, the city and the inspector. Save their numbers in <b>My numbers</b>.</p>
   </section>
   <section data-sec="emergency" data-kw="my numbers save add super journeyman inspector cell phone contact">
     <div class="sec-head"><h2>My numbers</h2><small>Saved on this phone</small></div>
-    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you want the numbers you call most in one place: your super, your journeyman, the inspector's cell, a city's after-hours water line.</p><p><b>How:</b> type who it is and the number, then Add. Numbers are tappable, stay on this phone and go in your backup.</p></div></details>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you want the numbers you call most in one place: your super, your journeyman, the inspector's cell, a city's after-hours water line.</p><p><b>How:</b> type who it is and the number, then Add. Numbers are tappable, stay on this phone and go in your backup. People in <b>My jobs</b> who have a number (your lead, super, inspector) show up here on their own, so you don't type them twice.</p></div></details>
     <div class="calc">
       <label for="mn-name"><span>Who</span><input id="mn-name" type="text" maxlength="40" autocomplete="off" placeholder="Super, inspector…"></label>
       <label for="mn-num"><span>Number</span><input id="mn-num" type="tel" inputmode="tel" maxlength="24" autocomplete="off" placeholder="801-555-0100"></label>
@@ -4984,26 +4950,20 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </div>
     <div class="x"><table class="t"><tbody id="mn-rows"></tbody></table></div>
   </section>
-  <section data-sec="emergency" data-kw="blue stakes bluestakes 811 inspections enbridge dopl utility state deq ddw drinking water cross connection backflow environmental spill incident water quality labor commission icc code council salt lake public utilities cuwcd central utah water">
+  <section data-sec="emergency" data-kw="blue stakes bluestakes 811 enbridge gas service meter dopl utility state deq main water quality labor commission workers comp cuwcd central utah water">
     <div class="sec-head"><h2>Utilities &amp; state lines</h2><small>Tap to call · hold to copy</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th><a href="https://www.bluestakes.org/" target="_blank" rel="noopener">Blue Stakes ↗</a></th><td><span class="pn">811</span> <span class="pn">801-208-2100</span><div class="sub">48 business hours before digging (clock starts 8 am the next business day, so plan on 3 business days), max 14 days ahead. Ticket good 21 days. Marks only to the meter, so private lines may not be marked.</div></td></tr>
-        <tr><th><a href="https://www.slc.gov/buildingservices/building-inspections/" target="_blank" rel="noopener">SLC inspections ↗</a></th><td><span class="pn">801-535-7224</span><div class="sub">Mon–Fri 7 am–3:30 pm. To schedule: SLC Building Inspections app, the online portal or <span class="pn">801-535-6000</span> (automated); next-day requests by 3 pm. Other cities have their own line.</div></td></tr>
         <tr><th><a href="https://www.enbridgegas.com/utwyid/start-stop-service/construction-services/construction-services-contacts" target="_blank" rel="noopener">Enbridge Gas ↗</a></th><td>Service <span class="pn">1-800-323-5517</span><div class="sub">Formerly Dominion / Questar. New service and meters: Construction Services. Gas leak: see Emergency above.</div></td></tr>
         <tr><th><a href="https://commerce.utah.gov/dopl/plumbing/" target="_blank" rel="noopener">DOPL ↗</a></th><td><span class="pn">801-530-6628</span><div class="sub">Licenses, renewals, exam approval.</div></td></tr>
       
-        <tr><th>DEQ incidents</th><td><span class="pn">801-536-4123</span><div class="sub">24 hr. Spills and environmental incidents. Life or property at risk: 911.</div></td></tr>
-        <tr><th>Drinking Water (DDW)</th><td><span class="pn">801-536-4200</span><div class="sub">Drinking water events, business hours.</div></td></tr>
-        <tr><th>Cross-connection</th><td><span class="pn">385-600-3378</span><div class="sub">DDW backflow program: certified testers and program administrators. Tester lookup on the <a href="https://deq.utah.gov/drinking-water/cross-connection-control-backflow-prevention" target="_blank" rel="noopener">DDW page ↗</a>.</div></td></tr>
         <tr><th>Water Quality</th><td><span class="pn">801-536-4300</span><div class="sub">Releases that could reach streams, canals or groundwater.</div></td></tr>
         <tr><th>DEQ main</th><td><span class="pn">801-536-4000</span><div class="sub">M–F 8a–5p.</div></td></tr>
-        <tr><th>National Response Center</th><td><span class="pn">1-800-424-8802</span><div class="sub">Federal spill reporting, for the incidents that require it.</div></td></tr>
-        <tr><th>Labor Commission</th><td><span class="pn">801-530-6800</span><div class="sub">Main line: workers' comp, wage claims, UOSH. Imminent danger: <span class="pn">801-530-6901</span>.</div></td></tr>
-        <tr><th>ICC</th><td><span class="pn">1-888-422-7233</span><div class="sub">1-888-ICC-SAFE, press 0. Code books, certification exams. customersuccess@iccsafe.org</div></td></tr>
-        <tr><th>SLC Public Utilities</th><td><span class="pn">801-483-6700</span><div class="sub">24-hr dispatch: water main, sewer, storm drain trouble in Salt Lake City. Customer service <span class="pn">801-483-6900</span>, M–F 8a–5p.</div></td></tr>
+        <tr><th>Labor Commission</th><td><span class="pn">801-530-6800</span><div class="sub">Main line: workers' comp, wage claims, UOSH. Imminent danger or a serious injury: the UOSH lines in <b>Emergency</b> above.</div></td></tr>
         <tr><th>Central Utah Water</th><td><span class="pn">801-226-7100</span><div class="sub">Orem HQ. Wholesale water to many Utah County cities; for a house, call the city first.</div></td></tr>
       </tbody></table></div>
+    <p class="note">Spills, drinking water, backflow testers and the ICC are in <b>Problem? First call</b> above, next to when to call them. A city's inspection and water lines: <b>Inspect → Cities → Look up a city</b>.</p>
   </section>
   <section data-sec="houses" data-kw="supply house store counter parts ferguson mountainland peterson great western winsupply winnelson bj plumbing ewing irrigation showroom union ua local 140 uphca orem lehi american fork sandy salt lake murray spanish fork west jordan heber utah county saratoga springs">
     <div class="sec-head"><h2>Supply houses &amp; contacts</h2><small>Within ~50 mi of Saratoga Springs · tap to call</small></div>
@@ -5573,6 +5533,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 26, 2026 · One copy of everything, stage checklists</th><td><b>Stage checklists:</b> My jobs → <b>Stage checklists</b> (on the jobs list, or Jobs settings) has one list for each stage: Underground, Top-out (rough-in), Gas, Finish and Final. Every new job starts with the same lists. Change one there before you make the job, one line per item. Jobs you already have keep their lists and checks, and one odd job can still be changed with Edit on its checklist. <b>No more double copies:</b> Inspect → Cities → City inspections is now built from the same city list as Look up a city, so the two can't disagree (the old copy had Cedar Hills' old line; it books through Sunrise Engineering, 800-560-6151). It's folded under "Every city side by side" and now covers every checked town. Contacts → Call: Utilities &amp; state lines no longer repeats the numbers in Problem? First call. <b>My numbers</b> shows the people in My jobs who have a number, so you don't type a super twice. Calc → Plans → Scale a plan now points PDFs to the Measure tool. Build → Vents: the terminals card points to Vent size instead of repeating it. <b>Sturdier:</b> odd saved data (a number where a name goes, a broken checklist) is cleaned up on open.</td></tr>
         <tr><th>Nov 26, 2026 · Faster to open, fewer taps</th><td><b>More:</b> each section now lists its pages, so one tap lands you right on Cities, Weather, Jobs, Glossary and the rest (the page you're on is filled in). Tap the section's name to go back to the page you were last on there. <b>Jobs:</b> a <b>Recent</b> row at the top of the list has the 4 jobs you opened or changed last, one tap each. <b>Opening the book</b> does less work before you can tap: the glossary sorts about 3× faster, drawing colours are read once instead of one at a time, and a few spots that made the phone measure the whole page at start-up now wait until it's on screen. In testing on a slowed-down phone, the app was ready to tap about a quarter sooner.</td></tr>
         <tr><th>Nov 25, 2026 · Measure &amp; Find on plans</th><td><b>New in the plan viewer: 📏 Measure.</b> Set a sheet's scale once (tap both ends of a dimension printed on the sheet and type its length, or pick the printed scale like 1/4" = 1'-0"), then tap any two points for the length. Every measurement shows its ± for the zoom you're at (zoom in for closer); a tap on a phone screen is only so exact. Setting the scale from a dimension is the most reliable, and it works on shrunk copies; a printed scale is only right on a full-size sheet, and the app tells you the sheet's size so you can check. The scale is saved with the PDF (and in the photos &amp; files backup). <b>🔎 Find</b> searches the words in a plan set (WH, P-3, cleanout, hose bib), highlights every match, including sideways text, and steps through them sheet by sheet. Scanned plans have no words to search, and the app says so. Both checked against hand-worked answers: a 40' 0" line sets the scale, then a line 3" long on paper measures 12' 0".</td></tr>
         <tr><th>Nov 25, 2026 · Smoother photos &amp; plans, polish</th><td><b>Plans:</b> the viewer now gives back the phone's drawing memory as it goes and when you close it. On iPhone, plans could otherwise go blank after opening several (Safari stops drawing past its limit). Pages near where you're looking draw first; when you scroll fast, ones you've passed no longer hold you up. Zoomed in, the sharp close-up covers a bit more than the screen, so small pans stay sharp without redrawing. Turning the phone while zoomed keeps everything lined up. <b>Fixed:</b> opening a file right after closing one could leave the viewer blank. <b>Markup:</b> drawing stays quick however many marks are on the photo; freehand lines are smooth curves and catch every movement of your finger or Apple Pencil; the frame-rate setting no longer slows drawing. <b>Photos</b> the phone can't read now say so instead of showing nothing. <b>On a computer:</b> drag with the mouse to move around a zoomed photo or sheet, and press + / − / 0 to zoom in, out, or back to fit. A big plan set counts its pages while it opens. <b>Fixed:</b> two rare cases where a missing location or switch time could read as 0 in the follow-daylight theme. Every calculator was checked with blank boxes: each says what to type instead of showing a made-up answer. <b>Fixed (weather):</b> when the forecast service left a day's value blank, the app could count it as 0°F, showing a false freezing badge on a job, an extra freezing night in Week ahead, or a false freeze warning on an inspection.</td></tr>
@@ -9609,25 +9570,25 @@ const CITIES = [
   {id:"cf", n:"Cedar Fort", book:'Online request form on the town site, 2 full business days ahead. Not booked until the town confirms; nothing in 24 hr, call <span class="pn">801-768-2147</span> x5.', pi:"Ask the town.", h:GAP("Not confirmed: test it."), f:FROST_UC, notes:"Septic and water connection are their own inspections."},
   {id:"em", n:"Eagle Mountain", book:"Email buildinginspections@eaglemountain.gov with the permit number. No confirmation email back = not on the schedule. First come, first served.", pi:"Yes. Separate trench from the water service (no sharing).", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Eagle Mountain Building Design Criteria, rev. 7/2026 · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"",
     notes:"Order: underground → 4-way → frost-protection insulation → final. Final needs the meter set: lid at grade, setter 20\" ±2\" below the lid, nothing within 5 ft; $50 re-final if not."},
-  {id:"hi", n:"Highland", book:'<a href="https://highland.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-772-4516</span>. Scheduled Mon–Thu 8–5; office closed Fridays.', pi:"Ask the city.", h:"11.4 gpg", f:FROST_UC, notes:"Underground plumbing and the sewer connection are separate inspections."},
+  {id:"hi", n:"Highland", book:'<a href="https://highland.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-772-4516</span>. Scheduled Mon–Thu 8–5; office closed Fridays (inspections by appointment).', pi:"Ask the city.", h:"11.4 gpg", f:FROST_UC, notes:"Underground plumbing and the sewer connection are separate inspections."},
   {id:"le", n:"Lehi", book:'<span class="pn">385-201-1035</span> Phone only: no voicemail, email or online booking. 24 hr notice.', pi:"Yes. One culinary and one PI connection per lot; connections off by Oct 15.", h:"≈9 gpg", f:"Frost line 30\" min (Lehi Building & Inspections page · checked Nov 2026), so service ≈36\".",
     notes:"Sewer lateral 2% minimum to the property line, inspected before backfill. Not ready = re-inspection fee."},
   {id:"li", n:"Lindon", book:'Building &amp; Inspection <span class="pn">801-785-7687</span>, building@lindon.gov. ' + GAP("Booking method not posted: call."), pi:"Ask the city.", h:"6.9 gpg", f:FROST_UC},
-  {id:"or", n:"Orem", book:'Inspection line <span class="pn">801-229-7060</span>. Have the address, permit number, inspection type and building type ready.', pi:"No citywide PI.", h:"8.2 gpg", f:"Frost line 30\" (Orem Current Adopted Codes page, frost line depth 30\" · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"", notes:"Underground plumbing is tested at the underground inspection. Rough needs the roof, doors and windows in and shear approved."},
+  {id:"or", n:"Orem", book:'Inspection line <span class="pn">801-229-7060</span>. Have the address, permit number, inspection type and building type ready. Call before covering anything.', pi:"No citywide PI.", h:"8.2 gpg", f:"Frost line 30\" (Orem Current Adopted Codes page, frost line depth 30\" · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"", notes:"Underground plumbing is tested at the underground inspection. Rough needs the roof, doors and windows in and shear approved."},
   {id:"sq", n:"Santaquin", book:'<span class="pn">801-754-1011</span>, phone only, 24 hr ahead in office hours (M–Th 9–5, Fri 9–1). Monday inspections: call by 1 pm Friday.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_UC, notes:"Ready by 8 am or a $65 re-inspection fee."},
-  {id:"uc", n:"Unincorporated Utah County", book:'<span class="pn">801-851-8342</span> or shaunal@utahcounty.gov, 3 days\' notice.', pi:"Ask the water provider.", h:GAP("Depends on the water source."), f:"30\" (county), so service ≈36\".", notes:"County building is on the 2024 IPC."},
-  {id:"vi", n:"Vineyard", book:'<a href="https://vineyard.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-226-1929</span>. Voicemail requests not honored; no same-day.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Vineyard design criteria sheet · checked Nov 2026), so service ≈36\"."},
+  {id:"uc", n:"Unincorporated Utah County", book:'<span class="pn">801-851-8342</span> or shaunal@utahcounty.gov, 3 days\' notice, before the work is covered.', pi:"Ask the water provider.", h:GAP("Depends on the water source."), f:"30\" (county), so service ≈36\".", notes:"County building is on the 2024 IPC."},
+  {id:"vi", n:"Vineyard", book:'<a href="https://vineyard.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-226-1929</span>. Voicemail requests not honored; no same-day. Inspections M–F 8–5; the office closes Friday at noon, so confirm Friday PMs.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Vineyard design criteria sheet · checked Nov 2026), so service ≈36\"."},
   {id:"pr", n:"Provo", book:'<a href="https://www.provo.gov/1019/Schedule-Building-Inspection" target="_blank" rel="noopener">Schedule online ↗</a> through the city\'s self-service portal.', pi:"Ask the city.", h:"10–15 gpg", f:"30\" design (Provo design criteria), so service ≈36\".",
     notes:"Design temps 13°F winter, 95°F summer; elevation 4,491 ft."},
   {id:"ss", n:"Saratoga Springs", book:'Email buildinginspectionrequest@saratogasprings-ut.gov or <span class="pn">801-766-6507</span> x120. One business day ahead: by 5 pm Mon–Thu, 4 pm Fri.', pi:"Yes. Green box near the property line, usually a 1\" ball valve. Drained the week of Oct 15.", h:"5.6 gpg", f:"Frost line 30\" (Saratoga Springs Design Criteria page · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"",
     notes:"No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test)."},
   {id:"sf", n:"Spanish Fork", book:'<a href="https://www.spanishfork.gov/living-in-our-community/building/building-permits-inspections/" target="_blank" rel="noopener">CitizenServe portal ↗</a>, 24 hr ahead. Help: <span class="pn">801-804-4540</span>', pi:"Yes.", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Spanish Fork design criteria, frost depth 30\" · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"",
     notes:"Ready by 8 am the day of, or a $93 re-inspection fee. Underground plumbing and laterals inspected before cover, with the gas test. Rough plumbing on the 4-way; shower pan with framing."},
-  {id:"sv", n:"Springville", book:'<a href="https://www.springvilleutah.gov/community-development/wp-content/uploads/sites/5/2025/06/My-City-Inspector-Directions.pdf" target="_blank" rel="noopener">City Inspect ↗</a>, AM/PM blocks after the permit is issued. Building: <span class="pn">801-489-2704</span>', pi:"Yes. Purple PE, purple tape ≈12\" above, tracer wire, 30\" cover, green IRRIGATION box. 40–125 psi by lot elevation. $50 switch-over inspection.", h:GAP("Not confirmed: test it."), f:"Frost depth 30\" (Springville design criteria handouts, 2026 · checked Nov 2026), so service ≈36\"."},
+  {id:"sv", n:"Springville", book:'<a href="https://www.springvilleutah.gov/community-development/wp-content/uploads/sites/5/2025/06/My-City-Inspector-Directions.pdf" target="_blank" rel="noopener">City Inspect ↗</a>, AM/PM blocks after the permit is issued; some inspections wait on earlier ones. Building: <span class="pn">801-489-2704</span>', pi:"Yes. Purple PE, purple tape ≈12\" above, tracer wire, 30\" cover, green IRRIGATION box. 40–125 psi by lot elevation. $50 switch-over inspection.", h:GAP("Not confirmed: test it."), f:"Frost depth 30\" (Springville design criteria handouts, 2026 · checked Nov 2026), so service ≈36\"."},
   ["Salt Lake & Summit"],
-  {id:"bl", n:"Bluffdale", book:'<span class="pn">801-849-9425</span> (or -9414, -9424) by 3:30 pm the business day before. Voicemail OK; they don\'t call back to confirm.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL, notes:"A 4-way with power needs the Rocky Mountain Power work order number."},
-  {id:"dr", n:"Draper", book:'<a href="https://draper.onlama.com" target="_blank" rel="noopener">Online portal ↗</a> only: Inspections → "I\'m Ready." No same-day. Don\'t call the inspector before 8:30 am.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
-  {id:"ri", n:"Riverton", book:'<span class="pn">801-208-3138</span> before 1 pm. building@rivertonutah.gov.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
+  {id:"bl", n:"Bluffdale", book:'<span class="pn">801-849-9425</span> (or -9414, -9424) by 3:30 pm the business day before. Voicemail OK: give your name, phone, inspection type, date, permit number and address. They don\'t call back to confirm.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL, notes:"A 4-way with power needs the Rocky Mountain Power work order number."},
+  {id:"dr", n:"Draper", book:'<a href="https://draper.onlama.com" target="_blank" rel="noopener">Online portal ↗</a> only: Inspections → "I\'m Ready." No same-day, and the time isn\'t guaranteed. Don\'t call the inspector before 8:30 am. Building office <span class="pn">801-576-6399</span>.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
+  {id:"ri", n:"Riverton", book:'<span class="pn">801-208-3138</span> before 1 pm. building@rivertonutah.gov. Office M–F 8–5.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
   {id:"he", n:"Herriman", book:'<span class="pn">801-446-5327</span> One working day ahead, before 4 pm.', pi:"Yes. Separate secondary-water connection inspection.", h:GAP("Not confirmed: test it."), f:FROST_SL,
     notes:"Subrough: 10 ft water or 5 psi, 15 min. Gas 5 psi, 15 min. Shower pan water test. Meter is on the Public Works final."},
   {id:"sj", n:"South Jordan", book:'<a href="https://cityview.southjordanutah.gov/cityviewportal" target="_blank" rel="noopener">CityView portal ↗</a>: permits and inspections online.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
@@ -9643,7 +9604,7 @@ const CITIES = [
   {id:"wc", n:"Unincorporated Weber County", book:'<span class="pn">801-399-8770</span>. Done within 3 business days, AM 8:30–12 or PM 12–4.', pi:"Ask the water provider.", h:GAP("Depends on the water provider."), f:GAP("Not confirmed: get it from the city.")},
   {id:"lo", n:"Logan", book:'<span class="pn">435-716-9030</span>, 24 hr notice. Slots 9–11 and 1:30–3:30.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:GAP("Not confirmed: get it from the city.")},
   {id:"cc", n:"Unincorporated Cache County", book:'<span class="pn">435-755-1650</span>, press 1, by 4 pm the business day before. Ready by 8 am.', pi:"Ask the water provider.", h:GAP("Depends on the water provider."), f:GAP("Not confirmed: get it from the city.")},
-  {id:"sg", n:"St. George", book:'<a href="https://stg.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a>. Building <span class="pn">435-627-4100</span>.', pi:"Ask the city.", h:"Set softeners 13–24 gpg (city).", f:GAP("Not confirmed: get it from the city."), notes:"Hot, hard water: scale builds fast in heaters and tankless units."},
+  {id:"sg", n:"St. George", book:'<a href="https://stg.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a>. Building <span class="pn">435-627-4100</span>. Booking steps aren\'t spelled out online: call.', pi:"Ask the city.", h:"Set softeners 13–24 gpg (city).", f:GAP("Not confirmed: get it from the city."), notes:"Hot, hard water: scale builds fast in heaters and tankless units."},
   {id:"wa", n:"Washington City", book:'<a href="https://washington.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a> by 5 pm for the next business day. <span class="pn">435-656-6326</span>.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:GAP("Not confirmed: get it from the city.")}
 ];
 /* Every other Utah city and town, so the picker is complete: [name, elevation in feet] by county, from the table in
@@ -9695,6 +9656,14 @@ try { localStorage.removeItem("jpb-city"); } catch(e){}
 const CITY_OPTS = `<option value="">Pick a city…</option>` + CITIES.reduce((G, c) => { if (Array.isArray(c)) G.push([c[0], []]); else if (G.length) G[G.length - 1][1].push(c); return G; }, [])
   .map(([g, L]) => `<optgroup label="${esc(g)}">${L.slice().sort((a, b) => (/^Unincorporated/.test(a.n) - /^Unincorporated/.test(b.n)) || a.n.localeCompare(b.n)).map(c => `<option value="${c.id}">${esc(c.n)}</option>`).join("")}</optgroup>`).join("");
 $("mc-pick").innerHTML = CITY_OPTS;
+/* City inspections: the side-by-side table comes from CITIES too (it used to be a hand-kept copy that drifted). Towns still on the
+   "not checked" default are left out; a county header shows only if a town under it has something. */
+{ const unchecked = c => /^<span class="mc-gap">Not checked yet/.test(c.book || ""), generic = /^Same statewide code as every Utah city/;
+  let rows = "", head = "";
+  CITIES.forEach(c => { if (Array.isArray(c)){ head = `<tr><th colspan="2">${esc(c[0])}</th></tr>`; return; }
+    if (!c.book || unchecked(c)) return;
+    rows += head + `<tr><td><b>${esc(c.n)}</b></td><td>${c.book}${c.notes && !generic.test(c.notes) ? `<div class="sub">${esc(c.notes)}</div>` : ""}</td></tr>`; head = ""; });
+  $("ci-rows").innerHTML = rows; bindPn($("ci-rows")); }
 function drawCity(){
   $("mc-pick").value = myCity;
   const c = cityById(myCity);
@@ -9718,11 +9687,18 @@ drawCity();
 
 /* ---------- my numbers: the super, the journeyman, the inspector's cell. Saved on this phone only. ---------- */
 let myNums = (a => Array.isArray(a) ? a.filter(x => x && typeof x.name === "string" && typeof x.num === "string").slice(0, 60) : [])(store.get("jpb-mynums", []));
+/* People from My jobs who have a number show here too (read-only), so a super or inspector never has to be typed twice.
+   Skipped when the same number is already saved above. Redrawn by jobs.js after a save, only when that list changed. */
 function drawNums(){
-  $("mn-rows").innerHTML = myNums.length ? myNums.map((x,i) => `<tr><th>${esc(x.name)}</th><td><span class="pn">${esc(x.num)}</span></td><td class="mn-x"><button type="button" class="linkish" data-del="${i}" aria-label="Remove ${esc(x.name)}">Remove</button></td></tr>`).join("")
-    : `<tr><td class="sub">Nothing saved yet. Start with your super, your journeyman, the inspector's cell and the city's after-hours water line.</td></tr>`;
+  const dig = v => String(v || "").replace(/\D/g, ""), mine = new Set(myNums.map(x => dig(x.num)));
+  const ppl = (window.jbPeople ? jbPeople() : []).filter(p => p && dig(p.ph).length >= 7 && !mine.has(dig(p.ph))).sort((a, b) => String(a.n).localeCompare(String(b.n)));
+  const sig = JSON.stringify([myNums, ppl.map(p => [p.n, p.role, p.co, p.ph])]); if (sig === drawNums.sig) return; drawNums.sig = sig;
+  const saved = myNums.length || !ppl.length ? myNums.length ? myNums.map((x,i) => `<tr><th>${esc(x.name)}</th><td><span class="pn">${esc(x.num)}</span></td><td class="mn-x"><button type="button" class="linkish" data-del="${i}" aria-label="Remove ${esc(x.name)}">Remove</button></td></tr>`).join("")
+    : `<tr><td class="sub">Nothing saved yet. Start with your super, your journeyman, the inspector's cell and the city's after-hours water line.</td></tr>` : "";
+  $("mn-rows").innerHTML = saved + (ppl.length ? `<tr><th colspan="3" class="mn-from">From My jobs · edit them there</th></tr>` + ppl.map(p => `<tr><th>${esc(p.n || "(no name)")}${p.role || p.co ? `<div class="sub">${esc([p.role, p.co].filter(Boolean).join(" · "))}</div>` : ""}</th><td><span class="pn">${esc(p.ph)}</span></td><td></td></tr>`).join("") : "");
   bindPn($("mn-rows")); IDX = null;
 }
+
 $("mn-add").addEventListener("click", () => {
   const name = $("mn-name").value.trim(), num = $("mn-num").value.trim();
   if (!name || num.replace(/\D/g, "").length < 3){ say("Add a name and a number first"); (name ? $("mn-num") : $("mn-name")).focus(); return; }
@@ -11749,7 +11725,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-26a";
+var BUILD = "handbook-2026-11-26b";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
