@@ -634,6 +634,17 @@ with sync_playwright() as pw:
     check(pg.evaluate("document.querySelectorAll('section h2')") is not None and pg.evaluate("(() => { const s = [...document.querySelectorAll('section')].find(x => x.querySelector('h2') && x.querySelector('h2').textContent.trim() === \"What's new\"); return [s.querySelector('table tbody').rows.length, !document.getElementById('news-older').open]; })()") == [5, True], "What's new shows the latest 5; older changes fold away")
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors" + (f": {pg.errs}" if pg.errs else ""))
     ctx.close()
+
+    print("16. IPC first")
+    ctx, pg = fresh(); ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-setup','1')}")
+    open_book(pg)
+    check(pg.evaluate("myCode") == "ipc21" and pg.evaluate("document.querySelector('#code-pick [data-code=ipc21]').getAttribute('aria-pressed')") == "true", f"a fresh install starts on the 2021 IPC ({pg.evaluate('myCode')})")
+    check("2021 IPC" in pg.evaluate("document.getElementById('code-chip-txt').textContent"), "the code chip says 2021 IPC")
+    check("15A-3-201(2)" in pg.content() and "don't change the IRC" not in pg.content(), "Utah's IPC changes reach the matching IRC section, with the law cited")
+    pg.evaluate("setCode('irc21')"); pg.wait_for_timeout(100)
+    check(pg.evaluate("localStorage.getItem('jpb-code')") == '"irc21"' or pg.evaluate("localStorage.getItem('jpb-code')") == 'irc21', "picking the IRC still saves")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
     br.close()
 
 print(f"\n{'ALL PASSED' if not FAILS else str(len(FAILS)) + ' FAILED'}")
