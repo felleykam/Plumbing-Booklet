@@ -143,6 +143,8 @@ function jbClean(){
   jbD.binOut = Array.isArray(jbD.binOut) ? jbD.binOut.filter(x => typeof x === "string").slice(0, 1000) : [];
   if (!isO(jbD.fold)) jbD.fold = {};
   jbD.tech = isO(jbD.tech) ? Object.fromEntries(["n", "lic", "co", "ph"].map(k => [k, str(jbD.tech[k]).slice(0, 80)])) : {};
+  if (jbD.rpre != null){ const seen = new Set(); jbD.rpre = arrO(jbD.rpre).map(p => ({n: str(p.n).replace(/[\[\]|]/g, "").trim().slice(0, 40), f: [...new Set((Array.isArray(p.f) ? p.f : []).filter(x => typeof x === "string" || typeof x === "number").map(x => String(x).trim().slice(0, 40)).filter(Boolean))].slice(0, 30)}))
+    .filter(p => p.n && !seen.has(p.n.toLowerCase()) && seen.add(p.n.toLowerCase())).slice(0, 30); if (!jbD.rpre.length) delete jbD.rpre; }   /* your room presets, if any */
   jbD.rules = str(jbD.rules); jbD.jnFull = jbD.jnFull === true; if (jbD.hrsOn !== true) delete jbD.hrsOn; if (jbD.proof != null && (typeof jbD.proof !== "object" || Array.isArray(jbD.proof))) delete jbD.proof; if (jbD.rep != null && !isO(jbD.rep)) delete jbD.rep;   /* read through jfPS(), which keeps only known values */ if (jbD.peeked !== 1) delete jbD.peeked; if (!["new", "stage", "tag", "day"].includes(jbD.jnView)) delete jbD.jnView;
   if (jbD.tpl != null && !isO(jbD.tpl)) jbD.tpl = {}; if (jbD.tpl) Object.keys(jbD.tpl).forEach(k => { if (!JB_SNAME[k] || !Array.isArray(jbD.tpl[k])) delete jbD.tpl[k]; else jbD.tpl[k] = [...new Set(jbD.tpl[k].filter(x => typeof x === "string" || typeof x === "number").map(str).filter(Boolean))]; });   /* words only, each once */
   jbD.subs.forEach(x => { if (!JB_ICONS.includes(x.icon)) x.icon = ""; });
@@ -272,6 +274,18 @@ function jnLinkType(x){
    room grouped by stage; "Label: value" lines in those notes show there too. */
 const JR_NAMES = ["Master bath", "Main bath", "Hall bath", "Jack and Jill bath", "Basement bath", "Basement half bath", "Half bath", "Powder room", "Laundry", "Kitchen", "Wet bar", "Mud room"];
 const JR_KEYS = ["Tub / shower", "Shower valve", "Tub valve", "Toilet rough-in", "Toilet", "Vanity", "Lavs", "Lav faucet", "Shower drain", "Shower pan", "Body sprays", "Hand shower", "Fan", "Floor drain", "Tub drain side", "Grab bar blocking", "Heated floor", "Notes"];
+/* room presets: tap one to add the room with its fields ready to fill. Yours (Jobs settings → Room presets) replace these;
+   saved as jbD.rpre = [{n, f: [field…]}]. The fields are just labels: what goes in them is up to you. */
+const JR_FULL = ["Tub / shower", "Shower valve", "Trim", "Shower drain", "Toilet", "Toilet rough-in", "Vanity / lavs", "Lav faucet"];
+const JR_HALF = ["Toilet", "Toilet rough-in", "Vanity / lav", "Lav faucet"];
+const JR_PRE0 = () => [["Master bath", JR_FULL], ["Main bath", JR_FULL], ["Hall bath", JR_FULL], ["Jack and Jill bath", JR_FULL], ["Basement bath", JR_FULL], ["Half bath", JR_HALF], ["Powder room", JR_HALF],
+  ["Laundry", ["Washer box", "Laundry sink", "Floor drain / pan"]], ["Kitchen", ["Sink", "Faucet", "Disposer", "Dishwasher", "Fridge line", "Gas range"]], ["Wet bar", ["Bar sink", "Faucet", "Fridge line"]], ["Mud room", ["Utility sink", "Faucet"]]].map(([n, f]) => ({n, f: f.slice()}));
+const jrPre = () => Array.isArray(jbD.rpre) && jbD.rpre.length ? jbD.rpre : JR_PRE0();
+/* the preset for a room name: same name (Hall bath 2 counts as Hall bath), else any bath gets the bath fields */
+const jrPreFor = n => { const L = jrPre(), b = jrLow(n).replace(/\s+\d+$/, ""); return L.find(p => jrLow(p.n) === b) || (/half|powder/.test(b) ? L.find(p => /half|powder/i.test(p.n)) : /bath/.test(b) ? L.find(p => /bath/i.test(p.n) && !/half|powder/i.test(p.n)) : null) || null; };
+const JR_HINT = {"Tub / shower": '60" alcove, left drain', "Shower valve": "Moen M-Core 3-in-1", "Trim": "Brushed nickel, Delta Trinsic", "Shower drain": 'Center, 2"', "Toilet": "Kohler Highline, elongated", "Toilet rough-in": '12"',
+  "Vanity / lavs": '60" double, 2 lavs', "Vanity / lav": '24" single', "Lav faucet": '8" widespread', "Washer box": "Oatey, left drain", "Laundry sink": "Utility tub", "Floor drain / pan": "Pan to floor drain",
+  "Sink": '33" double bowl', "Faucet": "Pull-down", "Disposer": "1/2 hp", "Dishwasher": "Left of sink", "Fridge line": "Box behind fridge", "Gas range": '½" stub, 30" range', "Bar sink": "Undermount", "Utility sink": "Laundry tub"};
 const jrLow = n => String(n || "").replace(/&quot;/g, '"').replace(/&amp;/g, "&").trim().toLowerCase();   /* a link's text arrives escaped */
 const jrOf = (j, n) => j && Array.isArray(j.rooms) ? j.rooms.find(r => jrLow(r.n) === jrLow(n)) : null;
 const jrEsc = n => jrLow(n).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -690,6 +704,11 @@ function jbSetHtml(){
   <div class="calc"><label for="jb-rules" class="wide">Shows at the top of every job's notes<textarea id="jb-rules" class="jn-ta" rows="4" placeholder="Test every top-out at 100 psi for 15 min. !! No push fittings inside walls. Photo every stub-up before drywall.">${esc(jbD.rules || "")}</textarea></label></div>
   <p class="note">Same marks as notes (<code>!!</code> warning, <code>#</code> heading). Put to-dos in a job's own notes: boxes here can't be ticked.</p></div></details>
   ${jbTplHtml()}
+  <details class="explain jb-fold jb-rulesd" id="jb-rpre-h"${JB.rpreOpen ? " open" : ""}><summary>Room presets · ${jrPre().length} rooms to tap</summary><div>
+    <p class="note jn-lead">The rooms you can add with one tap on a job, and the fields each one starts with. One room per line: the name, a colon, then its fields with commas. Add, rename or take out lines however you like. Rooms already on a job keep what they have.</p>
+    <div class="calc"><label for="jb-rpre" class="wide">Rooms and their fields<textarea id="jb-rpre" class="jn-ta" rows="${Math.min(16, jrPre().length + 2)}" spellcheck="false">${esc(jrPre().map(p => p.n + ": " + p.f.join(", ")).join("\n"))}</textarea></label></div>
+    <div class="set-btns"><button type="button" class="btn" data-a="rpre-save">Save room presets</button>${Array.isArray(jbD.rpre) ? `<button type="button" class="btn ghost" data-a="rpre-book">Back to the book's rooms</button>` : ""}</div>
+  </div></details>
   <details class="explain jb-fold jb-rulesd"${JB.colOpen ? " open" : ""}><summary>Colors: stages &amp; tags</summary><div>
     <p class="note jn-lead">Pick a color for each stage and tag, or leave it on Auto. Each job's own color is on the job's page.</p>
     ${JB_STG.map(([k, nm]) => `<div class="jb-colrow jt-k-${k}"><span class="jb-dot"></span>${nm}</div>${jbSwatches("stage", k, jbD.stageCol[k], "Auto")}`).join("")}
@@ -873,8 +892,9 @@ function jrRoomHtml(j, r){
   <div class="jb-hrow"><b class="jr-name">🛁 ${esc(r.n)}</b><button type="button" class="btn ghost" data-ra="close">Close</button></div>
   <div class="calc"><label for="jr-n" class="wide">Room name<input id="jr-n" data-rn="${r.id}" type="text" autocomplete="off" maxlength="40" value="${esc(r.n)}" list="jr-names"></label></div>
   <p class="jn-prevh">Details · the same on every stage</p>
-  ${r.f.length ? `<div class="jr-f">${r.f.map(x => `<div class="jr-fr"><input aria-label="Detail" data-rk="${x.id}" type="text" autocomplete="off" maxlength="40" list="jr-keys" value="${esc(x.k)}" placeholder="Tub / shower"><input aria-label="${esc(x.k || "Value")}" data-rv="${x.id}" type="text" autocomplete="off" maxlength="200" value="${esc(x.v)}" placeholder='60" alcove, left drain'><button type="button" class="jb-x" data-rfdel="${x.id}" aria-label="Remove ${esc(x.k || "this detail")}">×</button></div>`).join("")}</div>` : `<div class="jb-in"><p class="note">No details yet. Add what doesn't change: tub size and drain side, valve brand, toilet rough-in, number of lavs.</p></div>`}
-  <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-ra="f-add">+ Add a detail</button><button type="button" class="btn" data-ra="note">📝 Note about ${esc(r.n)}</button></div></div>
+  ${r.f.length ? `<div class="jr-f">${r.f.map(x => `<div class="jr-fr"><input aria-label="Detail" data-rk="${x.id}" type="text" autocomplete="off" maxlength="40" list="jr-keys" value="${esc(x.k)}" placeholder="Tub / shower"><input aria-label="${esc(x.k || "Value")}" data-rv="${x.id}" type="text" autocomplete="off" maxlength="200" value="${esc(x.v)}" placeholder="${esc(JR_HINT[x.k] || "What's going in")}"><button type="button" class="jb-x" data-rfdel="${x.id}" aria-label="Remove ${esc(x.k || "this detail")}">×</button></div>`).join("")}</div>` : `<div class="jb-in"><p class="note">No details yet. Add what doesn't change: tub size and drain side, valve brand, toilet rough-in, number of lavs.</p></div>`}
+  ${(M => M.length ? `<div class="chips jr-addf" role="group" aria-label="Add a field">${M.map(k => `<button type="button" data-rfk="${esc(k)}">＋ ${esc(k)}</button>`).join("")}</div>` : "")([...new Set([...((jrPreFor(r.n) || {}).f || []), ...JR_KEYS])].filter(k => !r.f.some(x => { const a = jrLow(x.k), b = jrLow(k); return a === b || a.split(/[^a-z0-9]+/).includes(b); })).slice(0, 10))}
+  <div class="jb-in"><div class="set-btns"><button type="button" class="btn ghost" data-ra="f-add">+ My own field</button>${r.f.some(x => !x.v.trim()) ? `<button type="button" class="btn ghost" data-ra="f-clean">Remove empty fields</button>` : ""}<button type="button" class="btn" data-ra="note">📝 Note about ${esc(r.n)}</button></div></div>
   ${F.length ? `<p class="jn-prevh">From notes that link [[${esc(r.n)}]]</p><div class="x"><table class="t wrap jb-facts"><tbody>${F.map(([k, v, d, st]) => `<tr><th>${esc(k)}</th><td>${jnInline(v)}<div class="sub">${jbNice(d)}${st && JB_SNAME[st] ? " · " + esc(JB_SNAME[st].replace(/ \(.*\)$/, "")) : ""}</div></td></tr>`).join("")}</tbody></table></div>` : ""}
   <p class="jn-prevh">Work by stage · notes that link [[${esc(r.n)}]]</p>
   ${byS.map(([k, nm, L]) => `<p class="jn-gh jt-k-${k}">${esc(nm)} · ${L.length || "nothing yet"}</p>${L.length ? `<div class="jn-log">${L.slice().sort(jnSort).map(jrNote).join("")}</div>` : ""}`).join("")}
@@ -886,12 +906,14 @@ function jrHtml(j){
   const R = j.rooms || [], cnt = r => jrNotes(j, r).length, others = jbD.jobs.filter(x => x.id !== j.id && (x.rooms || []).length).sort(jbNat);
   const open = R.find(r => r.id === JB.room);
   return `<p class="card-h" data-fold="rooms">Bathrooms &amp; rooms${R.length ? ` · ${R.length}` : ""}</p>
-  <datalist id="jr-names">${JR_NAMES.map(n => `<option value="${n}"></option>`).join("")}</datalist><datalist id="jr-keys">${JR_KEYS.map(n => `<option value="${n}"></option>`).join("")}</datalist>
+  <datalist id="jr-names">${[...new Set([...jrPre().map(p => p.n), ...JR_NAMES])].map(n => `<option value="${esc(n)}"></option>`).join("")}</datalist><datalist id="jr-keys">${JR_KEYS.map(n => `<option value="${n}"></option>`).join("")}</datalist>
   ${R.length ? `<div class="jb-list jr-list">${R.map(r => r === open ? jrRoomHtml(j, r) : `<button type="button" class="jb-row" data-room="${r.id}"><b>🛁 ${esc(r.n)}</b><span>${esc([r.f.filter(x => x.k && x.v).slice(0, 2).map(x => x.k + ": " + x.v).join(" · "), cnt(r) ? cnt(r) + " note" + (cnt(r) === 1 ? "" : "s") : ""].filter(Boolean).join(" · ") || "No details yet")}</span></button>`).join("")}</div>` : ""}
-  <div class="calc"><label for="jr-add" class="wide">Add a room<input id="jr-add" type="text" autocomplete="off" maxlength="40" list="jr-names" enterkeyhint="done" placeholder="Master bath, Basement half bath"></label></div>
+  <p class="jn-prevh">Tap to add · fields come ready to fill</p>
+  <div class="chips jr-pre" role="group" aria-label="Add a room">${jrPre().map(p => `<button type="button" data-rpre="${esc(p.n)}">＋ ${esc(p.n)}</button>`).join("")}</div>
+  <div class="calc"><label for="jr-add" class="wide">Or type a room name<input id="jr-add" type="text" autocomplete="off" maxlength="40" list="jr-names" enterkeyhint="done" placeholder="Master bath, Basement half bath"></label></div>
   <div class="jb-in"><div class="set-btns"><button type="button" class="btn" data-ra="add">Add room</button></div>
   ${others.length && !R.length ? `<div class="calc"><label for="jr-copy" class="wide">Or copy rooms from another job <i>(same plan)</i><select id="jr-copy"><option value="">Pick a job</option>${others.slice(0, 200).map(x => `<option value="${x.id}">${esc(jbName(x))} · ${x.rooms.length} room${x.rooms.length === 1 ? "" : "s"}</option>`).join("")}</select></label></div><div class="set-btns"><button type="button" class="btn ghost" data-ra="copy">Copy rooms and details</button></div>` : ""}
-  <p class="note">Set rooms once: they're the same on every stage. Each note that links one, like [[Master bath]], files under that room by stage.</p></div>`;
+  <p class="note">Set rooms once: they're the same on every stage. Each note that links one, like [[Master bath]], files under that room by stage. Change the room list and their fields in <button type="button" class="linkish" data-a="set-go" data-k="jb-rpre-h">Jobs settings → Room presets</button>.</p></div>`;
 }
 function jbJobHtml(j){
   const c = cityById(j.city), addr = (j.a || "").trim(), sel = JB.stage && jbStages(j).some(([k]) => k === JB.stage) ? JB.stage : jbStageNow(j); JB.stage = sel;
@@ -1053,6 +1075,10 @@ function jbDraw(){
 /* the phone's back gesture (Android, a Safari tab) steps back out of a job, person or settings page, the same as ‹ Back,
    instead of leaving the book: each level in gets its own history step, and ‹ Back takes it off again */
 let JB_HD = 0, JB_HIGN = 0;
+/* page memory is off: leaving My jobs puts it back on the job list next time (nothing saved changes). JB_HD is zeroed
+   first so the redraw doesn't step the browser back while you're already on another page. */
+window.jbReset = () => { if (!JB.open && !JB.person && !JB.ent && JB.view === "jobs" && !JB.hist.length && !JB.q) return;
+  JB.open = JB.person = JB.ent = JB.stage = JB.edit = JB.room = JB.rowEdit = null; JB.hist = []; JB.view = "jobs"; JB.q = ""; JB.ckEdit = false; JB_HD = 0; JB_HIGN = 0; jbDraw(); };
 const jbDepth = () => (JB.view === "set" || JB.open || JB.person || JB.ent ? 1 : 0) + JB.hist.length;
 function jbHistSync(){ try {
   const d = jbDepth();
@@ -1067,7 +1093,7 @@ addEventListener("popstate", e => {
 const jbTouch = o => { jbBump(o); jbSave(); jbDraw(); };
 const jbTop = () => { const c = $("jobs-card"); if (c) c.scrollIntoView({block: "start"}); };
 /* Jobs settings, opened at a section (a details opens; a heading scrolls into view) */
-const jbSetGo = k => { if (k === "jb-tpl-h") JB.tplOpen = true; JB.hist = []; JB.open = null; JB.stage = null; JB.person = null; JB.ent = null; JB.view = "set"; JB.q = ""; jbDraw();
+const jbSetGo = k => { if (k === "jb-tpl-h") JB.tplOpen = true; if (k === "jb-rpre-h") JB.rpreOpen = true; JB.hist = []; JB.open = null; JB.stage = null; JB.person = null; JB.ent = null; JB.view = "set"; JB.q = ""; jbDraw();
   const h = k && $(k); if (h){ if (h.tagName === "DETAILS") h.open = true; h.scrollIntoView({block: "start"}); } else jbTop(); };
 const jbOpenStage = () => { const o = $("jt-open"); if (o) o.scrollIntoView({block: "start"}); };
 const jbState = () => ({open: JB.open, stage: JB.stage, person: JB.person, ent: JB.ent});
@@ -1204,6 +1230,14 @@ B.addEventListener("click", e => {
   if (a === "rules-go"){ jbSetGo("jb-rules-h"); const ta = $("jb-rules"); if (ta) ta.focus({preventScroll: true}); return; }
   if (a === "set-go"){ jbSetGo(t.dataset.k); return; }
   if (a === "set-back"){ JB.view = "jobs"; JB.colOpen = false; JB.tplOpen = false; jbDraw(); jbTop(); return; }
+  if (a === "rpre-save" || a === "rpre-book"){ JB.rpreOpen = true;
+    if (a === "rpre-book"){ if (!jbAsk("Go back to the book's room presets? Rooms already on jobs stay as they are.")) return; delete jbD.rpre; jbSave(); jbDraw(); toast("Back to the book's room presets.", 2000); return; }
+    const ta = $("jb-rpre"); if (!ta) return; const seen = new Set(), L = [];
+    ta.value.split("\n").forEach(line => { const c = line.indexOf(":"), n = (c < 0 ? line : line.slice(0, c)).replace(/[\[\]|]/g, "").replace(/^[-•*]\s*/, "").replace(/\s+/g, " ").trim().slice(0, 40);
+      if (!n || seen.has(n.toLowerCase()) || L.length >= 30) return; seen.add(n.toLowerCase());
+      L.push({n, f: [...new Set((c < 0 ? "" : line.slice(c + 1)).split(",").map(x => x.replace(/\s+/g, " ").trim().slice(0, 40)).filter(Boolean))].slice(0, 30)}); });
+    if (!L.length){ toast("Add at least one room, like Master bath: Toilet, Vanity."); return; }
+    jbD.rpre = L; jbSave(); jbDraw(); toast(`Saved ${L.length} room preset${L.length === 1 ? "" : "s"}.`, 2000); return; }
   if (a === "tpl-save" || a === "tpl-book"){ const k = t.dataset.k, nm = JB_SNAME[k], ta = $("jb-tpl-" + k); if (!nm || !ta) return;
     if (a === "tpl-book"){ if (!jbAsk(`Go back to the book's list for ${nm} on new jobs? Jobs you already have keep what they show now.`)) return;
       jbTplSet(k, null); jbSave(); JB.tplOpen = true; jbDraw(); toast(`Back to the book's list for ${nm} on new jobs.`, 2200); return; }
@@ -1371,18 +1405,23 @@ B.addEventListener("click", e => { const x = e.target.closest("[data-jnx]"), m =
         if (!jbAsk(`Delete ${o.length} photo${o.length === 1 ? "" : "s"} and files that belong to no job on this phone (about ${jfMB(jfSize(o))})?\n\nIf your jobs ever went missing, restore a safety copy first (Settings → Backup & reset): these come back with their jobs. This can't be undone.`)) return;
         return Promise.all(o.map(f => jfDel(f.id))).then(() => { toast(`Deleted ${o.length}.`, 2000); jfUse(); }); }).catch(() => toast("Couldn't delete them. Try again.")); return; }
     if (e.target.closest('[data-a="rs-reset"]') && jbAsk("Put report settings back to the defaults?")){ delete jbD.rep; jbSave(); JF.rep = null; JB.rsOpen = true; jbDraw(); toast("Back to the defaults.", 1600); } });
-  B.addEventListener("toggle", e => { if (e.target.id === "jb-rs") JB.rsOpen = e.target.open; if (e.target.id === "jb-tpl-h") JB.tplOpen = e.target.open; }, true);
+  B.addEventListener("toggle", e => { if (e.target.id === "jb-rs") JB.rsOpen = e.target.open; if (e.target.id === "jb-tpl-h") JB.tplOpen = e.target.open; if (e.target.id === "jb-rpre-h") JB.rpreOpen = e.target.open; }, true);
 }
 /* rooms: own listeners, so the big handlers above stay as they are */
 { const room = () => { const j = jbCur(); return j && (j.rooms || []).find(r => r.id === JB.room); };
   const done = (j, msg) => { if (msg) jbAct(j, msg); jbBump(j); jbSave(); jbDraw(); };
   const toOpen = () => requestAnimationFrame(() => { const el = $("jr-open"); if (el) el.scrollIntoView({block: "start"}); });
-  const jrAdd = () => { const j = jbCur(), i = $("jr-add"); if (!j || !i) return; const n = i.value.replace(/[\[\]|]/g, "").replace(/\s+/g, " ").trim().slice(0, 40);
-    if (!n){ toast("Type a name first, like Master bath."); i.focus(); return; }
-    if (jrOf(j, n)){ toast(`This job already has ${esc(n)}.`); return; }
+  const jrAdd = pre => { const j = jbCur(), i = $("jr-add"); if (!j || (!pre && !i)) return; let n = String(pre || i.value).replace(/[\[\]|]/g, "").replace(/\s+/g, " ").trim().slice(0, 40);
+    if (!n){ toast("Tap a room above, or type a name like Master bath."); if (i) i.focus(); return; }
+    if (jrOf(j, n)){ if (!pre){ toast(`This job already has ${esc(n)}.`); return; }   /* a second Hall bath from the chips: Hall bath 2 */
+      let k = 2; while (jrOf(j, `${n.slice(0, 36)} ${k}`)) k++; n = `${n.slice(0, 36)} ${k}`; }
     if (!Array.isArray(j.rooms)) j.rooms = []; if (j.rooms.length >= 40){ toast("40 rooms is the most a job can have."); return; }
-    const r = {id: jbId(), n, f: []}; j.rooms.push(r); JB.room = r.id; jbOpenSec("rooms"); done(j, `🛁 Added ${n}`); toOpen(); };
-  B.addEventListener("click", e => { const t = e.target.closest("[data-room],[data-ra],[data-rfdel]"); if (!t) return; const j = jbCur(); if (!j) return;
+    const P = jrPreFor(n), r = {id: jbId(), n, f: (P ? P.f : []).map(k => ({id: jbId(), k, v: ""}))}; j.rooms.push(r); if (i && !pre) i.value = "";
+    JB.room = r.id; jbOpenSec("rooms"); done(j, `🛁 Added ${n}`); toOpen(); };
+  B.addEventListener("click", e => { const t = e.target.closest("[data-room],[data-ra],[data-rfdel],[data-rpre],[data-rfk]"); if (!t) return; const j = jbCur(); if (!j) return;
+    if (t.dataset.rpre){ jrAdd(t.dataset.rpre); return; }
+    if (t.dataset.rfk){ const r = room(); if (!r || r.f.length >= 40) return; const f = {id: jbId(), k: t.dataset.rfk.slice(0, 40), v: ""}; r.f.push(f); jbSave(); jbDraw();
+      const i = B.querySelector(`[data-rv="${f.id}"]`); if (i) i.focus(); return; }
     if (t.dataset.room){ JB.room = JB.room === t.dataset.room ? null : t.dataset.room; jbOpenSec("rooms"); jbDraw(); if (JB.room) toOpen(); return; }
     if (t.dataset.rfdel){ const r = room(); if (!r) return; r.f = r.f.filter(x => x.id !== t.dataset.rfdel); done(j); return; }
     const a = t.dataset.ra, r = room();
@@ -1393,6 +1432,7 @@ B.addEventListener("click", e => { const x = e.target.closest("[data-jnx]"), m =
       done(j, `🛁 Copied ${n} room${n === 1 ? "" : "s"} from ${jbName(src)}`); toast(`Copied ${n} room${n === 1 ? "" : "s"} and their details. Notes stay with ${esc(jbName(src))}.`, 2600); return; }
     if (!r) return;
     if (a === "close"){ JB.room = null; jbDraw(); return; }
+    if (a === "f-clean"){ const n = r.f.filter(x => !x.v.trim()).length; r.f = r.f.filter(x => x.v.trim()); done(j); toast(`Removed ${n} empty field${n === 1 ? "" : "s"}.`, 1800); return; }
     if (a === "f-add"){ if (r.f.length >= 40) return; const f = {id: jbId(), k: "", v: ""}; r.f.push(f); jbSave(); jbDraw(); const i = B.querySelector(`[data-rk="${f.id}"]`); if (i) i.focus(); return; }
     if (a === "note"){ const tag = `[[${r.n}]] `; j.draft = j.draft.trim() ? j.draft.replace(/\s+$/, "") + "\n" + tag : tag; jbSave(true); jbOpenSec("notes"); jbDraw();
       const ta = $("jn-new"); if (ta){ ta.scrollIntoView({block: "center"}); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } return; }
