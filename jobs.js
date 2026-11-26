@@ -37,6 +37,7 @@ let jbT, jfNT, jbDirty = false;
 let jbFull = false, jbFullT = 0;
 const jbSave = noCount => { clearTimeout(jbT); if (window.RESTORING) return; JB_IX = null; JB_AC = new WeakMap(); let ok = true; noCount = noCount === true && !jbDirty; jbDirty = false;   /* true: not a change (just opened a job), so it doesn't push toward the backup reminder */
   try { localStorage.setItem("jpb-jobs", JSON.stringify(jbD)); } catch(e){ ok = false; }
+  try { if (typeof drawNums === "function") drawNums(); } catch(e){}   /* Contacts → My numbers lists job people too */
   if (!ok && (!jbFull || Date.now() - jbFullT > 6e4)){ jbFullT = Date.now();   /* after this tap's own "Added" message, so that one can't cover it; again each minute it stays full */
     setTimeout(() => toast("<b>Jobs didn't save:</b> this phone's space for them is full. Back up (Settings → Backup &amp; reset → Back up everything), then delete finished jobs.", 9000), 0); }
   jbFull = !ok; if (ok && !noCount) try { localStorage.setItem("jpb-chg", String((+localStorage.getItem("jpb-chg") || 0) + 1)); } catch(e){}
@@ -143,7 +144,7 @@ function jbClean(){
   if (!isO(jbD.fold)) jbD.fold = {};
   jbD.tech = isO(jbD.tech) ? Object.fromEntries(["n", "lic", "co", "ph"].map(k => [k, str(jbD.tech[k]).slice(0, 80)])) : {};
   jbD.rules = str(jbD.rules); jbD.jnFull = jbD.jnFull === true; if (jbD.hrsOn !== true) delete jbD.hrsOn; if (jbD.proof != null && (typeof jbD.proof !== "object" || Array.isArray(jbD.proof))) delete jbD.proof; if (jbD.rep != null && !isO(jbD.rep)) delete jbD.rep;   /* read through jfPS(), which keeps only known values */ if (jbD.peeked !== 1) delete jbD.peeked; if (!["new", "stage", "tag", "day"].includes(jbD.jnView)) delete jbD.jnView;
-  if (jbD.tpl != null && !isO(jbD.tpl)) jbD.tpl = {}; if (jbD.tpl) Object.keys(jbD.tpl).forEach(k => { if (!JB_SNAME[k] || !Array.isArray(jbD.tpl[k])) delete jbD.tpl[k]; else jbD.tpl[k] = jbD.tpl[k].map(str).filter(Boolean); });
+  if (jbD.tpl != null && !isO(jbD.tpl)) jbD.tpl = {}; if (jbD.tpl) Object.keys(jbD.tpl).forEach(k => { if (!JB_SNAME[k] || !Array.isArray(jbD.tpl[k])) delete jbD.tpl[k]; else jbD.tpl[k] = [...new Set(jbD.tpl[k].filter(x => typeof x === "string" || typeof x === "number").map(str).filter(Boolean))]; });   /* words only, each once */
   jbD.subs.forEach(x => { if (!JB_ICONS.includes(x.icon)) x.icon = ""; });
   ['stageCol', 'tagCol'].forEach(k => { const o = isO(jbD[k]) ? jbD[k] : {}; jbD[k] = {}; Object.keys(o).forEach(x => { if (JB_PAL.includes(o[x])) jbD[k][x] = o[x]; }); });
   ["people", "builders", "subs"].forEach(k => { jbD[k] = arrO(jbD[k]); const seen = new Set(); jbD[k].forEach(x => { x.id = jbSafeId(x.id); if (seen.has(x.id)) x.id = jbId(); seen.add(x.id); x.n = str(x.n); }); });
@@ -202,7 +203,7 @@ jbD.subs.forEach(S => { if (S.bld) return; const B = [...new Set(jbD.jobs.filter
   if (fresh || !jbD.seenV){ const now = Date.now(); jbD.jobs.forEach(j => { j.seen = Math.max(+j.seen || 0, now); }); jbD.seenV = 1; jbSave(true); } }
 jbD.jobs.forEach(j => { if (!Array.isArray(j.xs)) j.xs = JB_XTRA.filter(k => { const s = j.stages[k];   /* older jobs keep an extra that has anything in it */
   return s.st === "done" || s.st === "doing" || s.d0 || s.d1 || s.lead || s.done.length || s.extra.length || j.insp.some(i => i.s === k) || j.hrs.some(h => h.s === k) || j.log.some(e => e.s === k); }); });
-[...jbD.people, ...jbD.builders, ...jbD.subs].forEach(p => { if (!Array.isArray(p.log)) p.log = []; if (typeof p.draft !== "string") p.draft = ""; p.log.forEach(e => { if (e && e.pin !== true) delete e.pin; }); });
+[...jbD.people, ...jbD.builders, ...jbD.subs].forEach(p => { ["n", "role", "co", "ph", "em"].forEach(f => { if (f in p && typeof p[f] !== "string") p[f] = typeof p[f] === "number" ? String(p[f]) : ""; });   /* odd backup: text fields stay text */ if (!Array.isArray(p.log)) p.log = []; if (typeof p.draft !== "string") p.draft = ""; p.log.forEach(e => { if (e && e.pin !== true) delete e.pin; }); });
 const jbStageNow = j => { const S = jbStages(j); return (S.find(([k]) => j.stages[k].st === "doing") || S.find(([k]) => j.stages[k].st === "todo") || S[S.length - 1])[0]; };
 const jbTpl = k => Array.isArray((jbD.tpl || {})[k]) ? jbD.tpl[k] : JB_TPL[k]();   /* your saved list for a stage, else the book's */
 function jbCk(j, k){ const s = j.stages[k], dn = new Set(s.done), hide = new Set(s.hide || []), T = jbTpl(k), TS = new Set(T);
@@ -227,6 +228,7 @@ function jbTplSet(k, list){ if (!JB_SNAME[k]) return; const L = Array.isArray(li
   if (Array.isArray(list)) jbD.tpl = Object.assign({}, jbD.tpl, {[k]: L}); else if (jbD.tpl) delete jbD.tpl[k]; }
 /* Inspect → Before you call it in reads and edits these same lists */
 window.jbTplGet = k => jbTpl(k).slice();
+window.jbPeople = () => jbD.people.slice();   /* Contacts → My numbers lists these (this file runs inside try, so jbD isn't global) */
 window.jbTplMine = k => Array.isArray((jbD.tpl || {})[k]);
 window.jbTplPut = (k, list) => { jbTplSet(k, list); jbSave(); if (!JB.open && !JB.person && !JB.ent && JB.view === "set") jbDraw(); };
 { const old = store.get("jpb-ck-my", null);   /* the Inspect page's own lists from before: they become the starting lists, unless a job's saved list is already there */
@@ -655,14 +657,27 @@ function jbListHtml(){
     : (C => tags.length > 3 ? `<details class="more fold jn-tagfold"><summary>Tags · ${tags.length}</summary>${C}</details>` : C)(`<div class="chips jn-tagbar">${tags.map(t => `<button type="button" class="jn-tagchip" style="${jbTagStyle(t)}" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")}</div>`)}
   ${jbOpenHtml()}
   ${(t => t ? `<div class="jb-sortrow"><p class="note jb-sortnote">${t}</p></div>` : "")(JB.show === "arch" ? "Not opened or changed in 30 days, or archived by hand. Change one, or tap Bring it back on its page." : jbD.peeked ? "" : `📌 Pinned first, then A to Z. Tap ⇤ on a job for a quick look without opening it.`)}
+  ${(R => R.length ? `<div class="jb-recent"><p class="card-h">Recent</p><div class="chips">${R.map(j => `<button type="button" data-open="${j.id}">${esc(jbName(j))}</button>`).join("")}</div></div>` : "")(JB.show === "open" && L.length - PIN.length > 6 ? L.filter(j => !j.pin).sort((x, y) => jbLast(y) - jbLast(x) || (+y.t || 0) - (+x.t || 0)).slice(0, 4) : [])}
   ${PIN.length ? `<div class="jb-grp"><div class="jb-th jb-th1"><span class="jb-tf"><b>📌 Pinned</b><span class="jb-tn">${PIN.length}</span></span></div><div class="jb-list">${PIN.map(j => jbRow(j)).join("")}</div></div>` : ""}
   ${L.length ? (L.length > PIN.length ? jbGroups(L.filter(j => !j.pin)) : "") : `<div class="jb-list"><p class="note">${jbD.jobs.length ? `No ${({open: "active ", done: "done ", arch: "archived "})[JB.show] || ""}jobs${JB.tag ? ` tagged <b>#${esc(JB.tag)}</b>` : ""}. ${JB.tag ? "Tap the tag above to show all." : JB.show !== "all" ? "Tap <b>All</b> to see every job." : ""}` : "No jobs yet. Tap <b>+ New job</b>. Each job is a timeline, Underground to Final, with the blanks ready to fill in as you go."}</p></div>`}
   </div>
   <ul class="jb-soon jb-foot">${jbHrsOn() ? `<li><button type="button" class="linkish" data-a="set-go" data-k="jb-hrs-h">⏱ <b>${jbHr(H.today)} hr today</b> · ${jbHr(H.wk)} this week · ${jbHr(have)} of ${goal.toLocaleString()} toward license</button></li>` : ""}
   ${jbBytes() > 35e5 ? `<li><button type="button" class="linkish flag" data-a="set-go" data-k="jb-bk">⚠ <b>Nearly out of room on this phone</b> · back up and clear space</button></li>` : jbBkDue() ? `<li><button type="button" class="linkish" data-a="set-go" data-k="jb-bk">💾 <b>${+store.get("jpb-lastbk", 0) ? "Last backup " + jbAgo(+store.get("jpb-lastbk", 0)) : "No backup yet"}</b> · back up now</button></li>` : ""}
-  <li><button type="button" class="linkish" data-a="set-go">⚙ <b>Jobs settings</b> · you, rules, hours goal, colors, backup, Recently deleted${jbD.bin.length ? ` (${jbD.bin.length})` : ""}</button></li></ul>`;
+  <li><button type="button" class="linkish" data-a="set-go" data-k="jb-tpl-h">☑ <b>Stage checklists</b> · what every new job starts with</button></li>
+  <li><button type="button" class="linkish" data-a="set-go">⚙ <b>Jobs settings</b> · you, rules, checklists, hours goal, colors, backup, Recently deleted${jbD.bin.length ? ` (${jbD.bin.length})` : ""}</button></li></ul>`;
 }
 /* Jobs settings: everything that isn't a job, off the list */
+/* Jobs settings → Stage checklists: the one list each stage starts with, the same on every new job. Edit it here before you
+   make the job (one line per item). Jobs you already have keep what they show (jbTplSet freezes them), so no checks are lost. */
+const JB_TPL_STG = JB_STG.filter(([k]) => k !== "warr");
+function jbTplHtml(){
+  return `<details class="explain jb-fold jb-rulesd" id="jb-tpl-h"${JB.tplOpen ? " open" : ""}><summary>Stage checklists · what every new job starts with</summary><div>
+  <p class="note jn-lead">One list per stage, the same on every new job. Change a list here <b>before</b> you make the job: one line per item, in the order you want. Jobs you already have keep the list they show, checks and all. One odd job? Change just that job's list with <b>Edit</b> on its checklist.</p>
+  ${JB_TPL_STG.map(([k, nm]) => { const L = jbTpl(k), mine = Array.isArray((jbD.tpl || {})[k]);
+    return `<div class="jb-tpl"><label for="jb-tpl-${k}" class="wide"><b>${nm}</b> <small>· ${L.length} item${L.length === 1 ? "" : "s"} · ${mine ? "your list" : "the book's list"}</small>
+      <textarea id="jb-tpl-${k}" class="jn-ta" rows="${Math.min(12, Math.max(3, L.length + 1))}" spellcheck="true" placeholder="One item per line">${esc(L.join("\n"))}</textarea></label>
+      <div class="set-btns"><button type="button" class="btn" data-a="tpl-save" data-k="${k}">Save ${nm}</button>${mine ? `<button type="button" class="btn ghost" data-a="tpl-book" data-k="${k}">Back to the book's list</button>` : ""}</div></div>`; }).join("")}
+  </div></details>`; }
 function jbSetHtml(){
   const H = jbHours(), tags = [...new Set(jbD.jobs.flatMap(jbTags))].sort(), rl = String(jbD.rules || "").trim().split("\n").filter(x => x.trim()).length;
   const goal = +jbD.goal === 6000 ? 6000 : 8000, have = H.all + (+jbD.before || 0), pct = Math.min(100, have / goal * 100);
@@ -674,6 +689,7 @@ function jbSetHtml(){
   <details class="explain jb-fold jb-rulesd" id="jb-rules-h"><summary>Rules for every job${rl ? ` · ${rl} line${rl === 1 ? "" : "s"}` : ""}</summary><div>
   <div class="calc"><label for="jb-rules" class="wide">Shows at the top of every job's notes<textarea id="jb-rules" class="jn-ta" rows="4" placeholder="Test every top-out at 100 psi for 15 min. !! No push fittings inside walls. Photo every stub-up before drywall.">${esc(jbD.rules || "")}</textarea></label></div>
   <p class="note">Same marks as notes (<code>!!</code> warning, <code>#</code> heading). Put to-dos in a job's own notes: boxes here can't be ticked.</p></div></details>
+  ${jbTplHtml()}
   <details class="explain jb-fold jb-rulesd"${JB.colOpen ? " open" : ""}><summary>Colors: stages &amp; tags</summary><div>
     <p class="note jn-lead">Pick a color for each stage and tag, or leave it on Auto. Each job's own color is on the job's page.</p>
     ${JB_STG.map(([k, nm]) => `<div class="jb-colrow jt-k-${k}"><span class="jb-dot"></span>${nm}</div>${jbSwatches("stage", k, jbD.stageCol[k], "Auto")}`).join("")}
@@ -1051,7 +1067,7 @@ addEventListener("popstate", e => {
 const jbTouch = o => { jbBump(o); jbSave(); jbDraw(); };
 const jbTop = () => { const c = $("jobs-card"); if (c) c.scrollIntoView({block: "start"}); };
 /* Jobs settings, opened at a section (a details opens; a heading scrolls into view) */
-const jbSetGo = k => { JB.hist = []; JB.open = null; JB.stage = null; JB.person = null; JB.ent = null; JB.view = "set"; JB.q = ""; jbDraw();
+const jbSetGo = k => { if (k === "jb-tpl-h") JB.tplOpen = true; JB.hist = []; JB.open = null; JB.stage = null; JB.person = null; JB.ent = null; JB.view = "set"; JB.q = ""; jbDraw();
   const h = k && $(k); if (h){ if (h.tagName === "DETAILS") h.open = true; h.scrollIntoView({block: "start"}); } else jbTop(); };
 const jbOpenStage = () => { const o = $("jt-open"); if (o) o.scrollIntoView({block: "start"}); };
 const jbState = () => ({open: JB.open, stage: JB.stage, person: JB.person, ent: JB.ent});
@@ -1187,7 +1203,13 @@ B.addEventListener("click", e => {
     JB.rowEdit = "ck|" + id; jbTouch(j); return; }
   if (a === "rules-go"){ jbSetGo("jb-rules-h"); const ta = $("jb-rules"); if (ta) ta.focus({preventScroll: true}); return; }
   if (a === "set-go"){ jbSetGo(t.dataset.k); return; }
-  if (a === "set-back"){ JB.view = "jobs"; JB.colOpen = false; jbDraw(); jbTop(); return; }
+  if (a === "set-back"){ JB.view = "jobs"; JB.colOpen = false; JB.tplOpen = false; jbDraw(); jbTop(); return; }
+  if (a === "tpl-save" || a === "tpl-book"){ const k = t.dataset.k, nm = JB_SNAME[k], ta = $("jb-tpl-" + k); if (!nm || !ta) return;
+    if (a === "tpl-book"){ if (!jbAsk(`Go back to the book's list for ${nm} on new jobs? Jobs you already have keep what they show now.`)) return;
+      jbTplSet(k, null); jbSave(); JB.tplOpen = true; jbDraw(); toast(`Back to the book's list for ${nm} on new jobs.`, 2200); return; }
+    const L = [...new Set(ta.value.split("\n").map(x => x.trim().replace(/^[-•*☐☑]\s*/, "").slice(0, 200)).filter(Boolean))];   /* same line twice counts once */
+    if (!L.length && !jbAsk(`Leave ${nm} with no checklist on new jobs?`)) return;
+    jbTplSet(k, L); jbSave(); JB.tplOpen = true; jbDraw(); toast(`Saved. New jobs start ${nm} with these ${L.length} item${L.length === 1 ? "" : "s"}. Jobs you have keep theirs.`, 2600); return; }
   if (a === "bk-settings"){ $("look-btn").click(); setTimeout(() => { const d = $("set-data"); if (d) d.scrollIntoView({block: "start"}); }, 250); return; }
   if ((t.dataset.ckph || t.dataset.pkph) && j){   /* the camera opens on this same tap; the photo checks the item off */
     JF.link = t.dataset.ckph ? {k: "ck", key: t.dataset.ckph, s: JB.stage, jid: j.id} : {k: "punch", id: t.dataset.pkph, s: JB.stage, jid: j.id};
@@ -1349,7 +1371,7 @@ B.addEventListener("click", e => { const x = e.target.closest("[data-jnx]"), m =
         if (!jbAsk(`Delete ${o.length} photo${o.length === 1 ? "" : "s"} and files that belong to no job on this phone (about ${jfMB(jfSize(o))})?\n\nIf your jobs ever went missing, restore a safety copy first (Settings → Backup & reset): these come back with their jobs. This can't be undone.`)) return;
         return Promise.all(o.map(f => jfDel(f.id))).then(() => { toast(`Deleted ${o.length}.`, 2000); jfUse(); }); }).catch(() => toast("Couldn't delete them. Try again.")); return; }
     if (e.target.closest('[data-a="rs-reset"]') && jbAsk("Put report settings back to the defaults?")){ delete jbD.rep; jbSave(); JF.rep = null; JB.rsOpen = true; jbDraw(); toast("Back to the defaults.", 1600); } });
-  B.addEventListener("toggle", e => { if (e.target.id === "jb-rs") JB.rsOpen = e.target.open; }, true);
+  B.addEventListener("toggle", e => { if (e.target.id === "jb-rs") JB.rsOpen = e.target.open; if (e.target.id === "jb-tpl-h") JB.tplOpen = e.target.open; }, true);
 }
 /* rooms: own listeners, so the big handlers above stay as they are */
 { const room = () => { const j = jbCur(); return j && (j.rooms || []).find(r => r.id === JB.room); };
@@ -1942,72 +1964,183 @@ const PDFJS = "vendor/pdfjs-6.5.438/", pvURL = f => new URL(PDFJS + f, location.
 let pvLibP = null;
 const pvLib = () => pvLibP || (pvLibP = import(pvURL("pdf.min.mjs")).then(L => { L.GlobalWorkerOptions.workerSrc = pvURL("pdf.worker.min.mjs"); return L; }, e => { pvLibP = null; throw e; }));
 const PV = {doc: null, task: null, pg: [], z: 1, fw: 0, tok: 0, t: 0, q: [], busy: 0, hold: 0};
-const PV_GAP = 8, PV_BASE_PX = 4e6, pvDPR = () => Math.min(3, window.devicePixelRatio || 1);
+/* memory: iPhone Safari stops drawing ANY canvas once all of them together pass its limit (a few hundred MB), and a canvas
+   that's merely thrown away still counts until the phone gets round to cleaning up. So every canvas this viewer drops is
+   shrunk to nothing on the spot (pvFree), drawn pages are kept to a budget (nearest first), and a close-up never passes
+   PV_DET_PX. */
+const PV_GAP = 8, PV_BASE_PX = 4e6, PV_BUDGET_PX = 24e6, PV_DET_PX = 6e6, pvDPR = () => Math.min(3, window.devicePixelRatio || 1);
+const pvFree = cv => { if (cv){ cv.width = cv.height = 0; } };
+const pvCancel = t => { if (t) try { t.cancel(); } catch(e){} };
 function pvStop(){ PV.tok++; clearTimeout(PV.t); PV.q = []; PV.busy = 0;
-  PV.pg.forEach(p => [p.bt, p.dt].forEach(t => { if (t) try { t.cancel(); } catch(e){} })); PV.pg = [];
+  PV.pg.forEach(p => { pvCancel(p.bt); pvCancel(p.dt); pvFree(p.base); p.el && p.el.querySelectorAll("canvas").forEach(pvFree); }); PV.pg = [];
   if (PV.task) PV.task.destroy().catch(() => {}); PV.task = null; PV.doc = null; }
 async function pvOpen(c){ pvStop(); const tok = PV.tok, B = $("jv-body"), N = $("jv-note");
   B.classList.add("jv-pdfv"); B.innerHTML = `<p class="jv-msg">Opening the PDF…</p>`;
   try { const L = await pvLib(), data = new Uint8Array(await c.blob.arrayBuffer()); if (tok !== PV.tok) return;
-    PV.task = L.getDocument({data, isEvalSupported: false, enableXfa: false, useSystemFonts: true, wasmUrl: pvURL("wasm/")});
+    PV.L = L; PV.task = L.getDocument({data, isEvalSupported: false, enableXfa: false, useSystemFonts: true, wasmUrl: pvURL("wasm/")});
     const doc = await PV.task.promise; if (tok !== PV.tok) return; PV.doc = doc;
-    for (let n = 1; n <= doc.numPages; n++){ const p = await doc.getPage(n); if (tok !== PV.tok) return; const v = p.getViewport({scale: 1}); PV.pg.push({n, p, w: v.width, h: v.height}); }
-    B.innerHTML = `<div class="pv-pages">${PV.pg.map(p => `<div class="pv-pg" role="img" aria-label="Page ${p.n} of ${PV.pg.length}"><canvas class="pv-base"></canvas></div>`).join("")}</div>`;
+    const msg = B.querySelector(".jv-msg");
+    for (let n = 1; n <= doc.numPages; n++){ const p = await doc.getPage(n); if (tok !== PV.tok) return; const v = p.getViewport({scale: 1}); PV.pg.push({n, p, w: v.width, h: v.height});
+      if (msg && n % 10 === 0) msg.textContent = `Opening the PDF… page ${n} of ${doc.numPages}`; }   /* a big plan set: show it's moving */
+    B.innerHTML = `<div class="pv-pages">${PV.pg.map(p => `<div class="pv-pg" role="img" aria-label="Page ${p.n} of ${PV.pg.length}"><canvas class="pv-base" width="0" height="0"></canvas></div>`).join("")}</div>`;
     B.querySelectorAll(".pv-pg").forEach((el, i) => { PV.pg[i].el = el; PV.pg[i].base = el.firstChild; });
-    PV.z = 1; pvLay(); B.scrollTop = B.scrollLeft = 0; $("jv-zoom").hidden = false; N.hidden = false; pvNum(); pvSoon(0); }
+    PV.z = 1; pvLay(); B.scrollTop = B.scrollLeft = 0; $("jv-zoom").hidden = false; N.hidden = false; pvNum(); pvSoon(0);
+    PT.file = c; PT.sc = ptScaleRead(c); $("pv-bar").hidden = false; }
   catch(e){ if (tok !== PV.tok) return;
     B.innerHTML = `<p class="jv-msg">${e && e.name === "PasswordException" ? "This PDF has a password, so the app can't open it." : !pvLibP ? "The PDF viewer hasn't been saved to this phone yet. Open the app once with signal, then try again." : "The app couldn't draw this PDF."}<br>Tap <b>Open in another app</b>.</p>`; } }
 /* every page the screen's width times the zoom, in proportion */
-function pvLay(f = 1){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (!W) return;
+function pvLay(){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (!W) return;
   PV.fw = Math.max(100, B.clientWidth - PV_GAP * 2); const cw = PV.fw * PV.z; W.style.width = cw + PV_GAP * 2 + "px";
-  PV.pg.forEach(p => { p.cw = cw; p.ch = cw * p.h / p.w; p.el.style.width = cw + "px"; p.el.style.height = p.ch + "px"; p.dk = "";
-    if (p.dt) try { p.dt.cancel(); } catch(e){}
-    /* a sharp close-up belongs to one zoom: stretch the old one to fit until the new one is drawn, so nothing flashes blurry */
-    p.el.querySelectorAll(".pv-det").forEach(x => { const st = x.style; ["left", "top", "width", "height"].forEach(k => st[k] = parseFloat(st[k]) * f + "px"); }); }); }
+  PV.pg.forEach(p => { const k = p.cw ? cw / p.cw : 1;   /* how much this page grew or shrank: a zoom, or the phone turned */
+    p.cw = cw; p.ch = cw * p.h / p.w; p.el.style.width = cw + "px"; p.el.style.height = p.ch + "px"; pvCancel(p.dt); p.dt = null; p.dp = null;
+    if (Math.abs(k - 1) < 1e-6) return;
+    /* a sharp close-up belongs to one size: stretch the old one to fit until the new one is drawn, so nothing flashes blurry */
+    p.el.querySelectorAll(".pv-det").forEach(x => { const st = x.style; ["left", "top", "width", "height"].forEach(n => st[n] = parseFloat(st[n]) * k + "px"); }); p.dr = null; });
+  if (PT.m) ptMDraw(); }
 /* fingers on the screen: no drawing at all (it would eat the frames the pinch needs); let go: draw again */
-function pvHold(on){ PV.hold = on ? 1 : 0; if (on){ clearTimeout(PV.t); PV.pg.forEach(p => { if (p.dt) try { p.dt.cancel(); } catch(e){} p.dk = ""; }); } else pvSoon(60); }
+function pvHold(on){ PV.hold = on ? 1 : 0; if (on){ clearTimeout(PV.t); PV.pg.forEach(p => { pvCancel(p.dt); p.dt = null; p.dp = null; }); } else pvSoon(60); }
 function pvZoom(s, cx, cy){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (!W) return;
   s = Math.min(12, Math.max(1, s)); cx = cx == null ? B.clientWidth / 2 : cx; cy = cy == null ? B.clientHeight / 2 : cy;
   const fx = (B.scrollLeft + cx) / W.offsetWidth, fy = (B.scrollTop + cy) / W.offsetHeight, f = s / PV.z;   /* the spot under your fingers stays put */
-  PV.z = s; pvLay(f); B.scrollLeft = fx * W.offsetWidth - cx; B.scrollTop = fy * W.offsetHeight - cy;
+  PV.z = s; pvLay(); B.scrollLeft = fx * W.offsetWidth - cx; B.scrollTop = fy * W.offsetHeight - cy;
   $("jv-zoom").textContent = s > 1.01 ? "Fit to screen" : "Zoom in"; pvSoon(); }
 const pvSoon = (ms = 140) => { clearTimeout(PV.t); PV.t = setTimeout(pvDraw, ms); };
 function pvNum(){ const B = $("jv-body"), mid = B.scrollTop + B.clientHeight * .3, n = PV.pg.length; if (!n) return;   /* the page in the top third: what you're reading */
   const p = B.scrollTop + B.clientHeight >= B.scrollHeight - 2 && B.scrollTop > 0 ? PV.pg[n - 1] : PV.pg.find(p => p.el.offsetTop + p.ch >= mid) || PV.pg[n - 1];
-  $("jv-note").textContent = `${n > 1 ? `Page ${p.n} of ${n} · ` : ""}pinch or double-tap to zoom`; }
+  $("jv-note").textContent = `${n > 1 ? `Page ${p.n} of ${n} · ` : ""}${PT.tool === "measure" ? "tap two points to measure · pinch to zoom" : "pinch or double-tap to zoom"}`; }
 function pvDraw(){ const B = $("jv-body"); if (!PV.doc || PV.hold || !B.querySelector(".pv-pages")) return;
-  const H = B.clientHeight, top = B.scrollTop, bot = top + H, left = B.scrollLeft, right = left + B.clientWidth;
-  PV.pg.forEach(p => { const y0 = p.el.offsetTop, y1 = y0 + p.ch;
-    if (y1 > top - 1.5 * H && y0 < bot + 1.5 * H){ if (!p.ok && !p.inQ){ p.inQ = 1; PV.q.push(p); } }
-    else if (p.ok && (y1 < top - 4 * H || y0 > bot + 4 * H)){ p.base.width = p.base.height = 0; p.ok = false; }   /* far away: let the memory go */
-    const vis = y1 > top && y0 < bot;
-    if (!vis || PV.z <= 1.05){ if (p.dt) try { p.dt.cancel(); } catch(e){} p.dk = ""; p.el.querySelectorAll(".pv-det").forEach(x => x.remove()); }
+  const H = B.clientHeight, top = B.scrollTop, bot = top + H, left = B.scrollLeft, right = left + B.clientWidth, mid = top + H / 2;
+  const away = p => Math.max(0, p.el.offsetTop - mid, mid - p.el.offsetTop - p.ch);   /* how far a page is from the middle of the screen */
+  /* pages to draw: on screen or within a screen and a half, nearest first; pages left behind drop out of the line */
+  PV.q = PV.pg.filter(p => !p.ok && p.el.offsetTop + p.ch > top - 1.5 * H && p.el.offsetTop < bot + 1.5 * H).sort((a, b) => away(a) - away(b));
+  /* drawn pages: farther than three screens let go; then the farthest go until the rest fit the budget */
+  let used = 0; PV.pg.filter(p => p.ok).sort((a, b) => away(a) - away(b)).forEach(p => {
+    const px = p.base.width * p.base.height;
+    if (away(p) > 3 * H || used + px > PV_BUDGET_PX){ pvFree(p.base); p.ok = false; } else used += px; });
+  PV.pg.forEach(p => { const y0 = p.el.offsetTop, vis = y0 + p.ch > top && y0 < bot;
+    if (!vis || PV.z <= 1.05){ pvCancel(p.dt); p.dt = null; p.dp = null; p.dr = null; p.el.querySelectorAll(".pv-det").forEach(x => { pvFree(x); x.remove(); }); }
     else pvDet(p, Math.max(0, left - p.el.offsetLeft), Math.max(0, top - y0), Math.min(p.cw, right - p.el.offsetLeft), Math.min(p.ch, bot - y0)); });
   pvRun(); }
-/* a page to fit the screen, one at a time so a big plan set doesn't choke the phone */
-async function pvRun(){ if (PV.busy || PV.hold) return; const tok = PV.tok, p = PV.q.shift(); if (!p) return; PV.busy = 1;
-  try { const k = Math.min(PV.fw * pvDPR() / p.w, Math.sqrt(PV_BASE_PX / (p.w * p.h))), v = p.p.getViewport({scale: k}), cv = document.createElement("canvas");
+/* a page to fit the screen, one at a time, so a big plan set doesn't choke the phone */
+async function pvRun(){ if (PV.busy || PV.hold) return; const tok = PV.tok, p = PV.q.shift(); if (!p) return; if (p.ok) return pvRun(); PV.busy = 1;
+  let cv = null;
+  try { const k = Math.min(PV.fw * pvDPR() / p.w, Math.sqrt(PV_BASE_PX / (p.w * p.h))), v = p.p.getViewport({scale: k}); cv = document.createElement("canvas");
     cv.width = Math.floor(v.width); cv.height = Math.floor(v.height); p.bt = p.p.render({canvas: cv, viewport: v, background: "#fff"}); await p.bt.promise;
-    if (tok === PV.tok){ cv.className = "pv-base"; p.base.replaceWith(cv); p.base = cv; p.ok = true; } }
+    if (tok === PV.tok && p.el.isConnected){ cv.className = "pv-base"; const old = p.base; old.replaceWith(cv); pvFree(old); p.base = cv; p.ok = true; cv = null; } }
   catch(e){}
-  p.inQ = 0; p.bt = null; if (tok === PV.tok){ PV.busy = 0; setTimeout(pvRun, 0); } }   /* a breath between pages for your fingers */
-/* zoomed in: the part of this page on screen, drawn again sharp at this zoom */
-async function pvDet(p, x0, y0, x1, y1){ const w = x1 - x0, h = y1 - y0; if (w < 4 || h < 4) return;
-  const key = [PV.z, x0, y0, w, h].map(v => Math.round(v)).join(); if (p.dk === key) return; p.dk = key; if (p.dt) try { p.dt.cancel(); } catch(e){}
-  const dpr = pvDPR(), v = p.p.getViewport({scale: p.cw / p.w * dpr}), cv = document.createElement("canvas"); cv.width = Math.ceil(w * dpr); cv.height = Math.ceil(h * dpr);
-  const t = p.p.render({canvas: cv, viewport: v, transform: [1, 0, 0, 1, -x0 * dpr, -y0 * dpr], background: "#fff"}); p.dt = t;
-  try { await t.promise; } catch(e){ return; }
-  if (p.dk !== key || !p.el.isConnected) return; p.dt = null;
-  cv.className = "pv-det"; cv.style.cssText = `left:${x0}px;top:${y0}px;width:${w}px;height:${h}px`;
-  p.el.querySelectorAll(".pv-det").forEach(x => x.remove()); p.el.appendChild(cv); }
+  pvFree(cv); p.bt = null; if (tok === PV.tok){ PV.busy = 0; setTimeout(pvRun, 0); } }   /* a breath between pages for your fingers */
+/* zoomed in: the part of the page on screen, plus a margin so small pans stay sharp, drawn again at this zoom. While what's
+   on screen is still inside the last close-up, nothing is redrawn. */
+async function pvDet(p, x0, y0, x1, y1){ if (x1 - x0 < 4 || y1 - y0 < 4) return;
+  const z = PV.z, inside = r => r && r.z === z && r.x0 <= x0 + 1 && r.y0 <= y0 + 1 && r.x1 >= x1 - 1 && r.y1 >= y1 - 1;
+  if (inside(p.dr) || inside(p.dp)) return;
+  const dpr = pvDPR(), w = x1 - x0, h = y1 - y0, k = Math.max(1, Math.min(1.6, Math.sqrt(PV_DET_PX / (w * h * dpr * dpr)))), mx = w * (k - 1) / 2, my = h * (k - 1) / 2;
+  const r = {z, x0: Math.max(0, x0 - mx), y0: Math.max(0, y0 - my), x1: Math.min(p.cw, x1 + mx), y1: Math.min(p.ch, y1 + my)}, rw = r.x1 - r.x0, rh = r.y1 - r.y0;
+  pvCancel(p.dt); p.dp = r;
+  const v = p.p.getViewport({scale: p.cw / p.w * dpr}), cv = document.createElement("canvas"); cv.width = Math.ceil(rw * dpr); cv.height = Math.ceil(rh * dpr);
+  const t = p.p.render({canvas: cv, viewport: v, transform: [1, 0, 0, 1, -r.x0 * dpr, -r.y0 * dpr], background: "#fff"}); p.dt = t;
+  try { await t.promise; } catch(e){ pvFree(cv); return; }
+  if (p.dp !== r || !p.el.isConnected){ pvFree(cv); return; } p.dt = null; p.dp = null; p.dr = r;
+  cv.className = "pv-det"; cv.style.cssText = `left:${r.x0}px;top:${r.y0}px;width:${rw}px;height:${rh}px`;
+  p.el.querySelectorAll(".pv-det").forEach(x => { pvFree(x); x.remove(); }); p.el.appendChild(cv); }
+
+/* ---- Plan tools: Find words, and Measure. Both draw on a see-through layer over each sheet that uses the sheet's own PDF
+   units (1/72"), so highlights and lines stay put through any zoom. */
+const PT = {tool: "", file: null, sc: null, hits: [], hi: -1, q: "", run: 0, m: null, cal: false, drag: false};
+const SVGNS = "http://www.w3.org/2000/svg";
+const ptEl = (t, a) => { const e = document.createElementNS(SVGNS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+const ptOv = p => { let o = p.el.querySelector(".pv-ov"); if (!o){ o = ptEl("svg", {class: "pv-ov", viewBox: `0 0 ${p.w} ${p.h}`, preserveAspectRatio: "none", "aria-hidden": "true"}); p.el.appendChild(o); } return o; };
+const ptClear = cls => PV.pg.forEach(p => p.el && p.el.querySelectorAll("." + cls).forEach(x => x.remove()));
+const ptPage = () => { const B = $("jv-body"), mid = B.scrollTop + B.clientHeight * .3; return PV.pg.find(p => p.el.offsetTop + p.ch >= mid) || PV.pg[PV.pg.length - 1]; };   /* the sheet you're reading */
+/* bring a spot on a sheet (PDF units) to the middle of the screen */
+function ptShow(p, x, y){ const B = $("jv-body"); B.scrollLeft = p.el.offsetLeft + x / p.w * p.cw - B.clientWidth / 2; B.scrollTop = p.el.offsetTop + y / p.h * p.ch - B.clientHeight / 2; pvNum(); pvSoon(); }
+
+/* Find: every text item on every sheet (PDF.js reads the words the plans were drawn with; a scanned set has none) */
+async function ptFind(q){ const st = $("pv-fst"); q = String(q || "").trim(); ptClear("pv-hit"); PT.hits = []; PT.hi = -1; PT.q = q;
+  if (!q){ st.textContent = ""; return; } if (!PV.doc || !PV.L) return;
+  const tok = PV.tok, me = ++PT.run, ql = q.toLowerCase(), U = PV.L.Util; let words = 0;
+  for (const p of PV.pg){
+    if (!p.tc){ try { p.tc = (await p.p.getTextContent()).items.filter(i => i.str && i.str.trim()); } catch(e){ p.tc = []; } if (tok !== PV.tok || me !== PT.run) return; }
+    words += p.tc.length; if (p.n % 10 === 0) st.textContent = `Looking… sheet ${p.n} of ${PV.pg.length}`;
+    const vt = p.vt || (p.vt = p.p.getViewport({scale: 1}).transform);
+    p.tc.forEach(i => { if (!i.str.toLowerCase().includes(ql)) return;
+      const m = U.transform(vt, i.transform), h = Math.hypot(m[2], m[3]) || 6, an = Math.atan2(m[1], m[0]) * 180 / Math.PI, w = Math.max(i.width || 0, h * .6);
+      const r = ptEl("rect", {class: "pv-hit", x: m[4] - h * .15, y: m[5] - h * 1.05, width: w + h * .3, height: h * 1.3, transform: `rotate(${an.toFixed(2)} ${m[4]} ${m[5]})`});
+      const ca = Math.cos(an * Math.PI / 180), sa = Math.sin(an * Math.PI / 180);   /* middle of the word: half along the text, half up from its baseline (up turns with the text) */
+      ptOv(p).appendChild(r); PT.hits.push({p, r, s: i.str, x: m[4] + ca * w / 2 + sa * h / 2, y: m[5] + sa * w / 2 - ca * h / 2, h}); }); }
+  if (!PT.hits.length){ st.textContent = words ? `No “${q}” in these plans.` : "These plans have no words to search (it's a scan, or the text was drawn as lines), so Find can't look in them."; return; }
+  ptGo(0); }
+function ptGo(k){ const n = PT.hits.length; if (!n) return; PT.hi = (k + n) % n; PT.hits.forEach((h, i) => h.r.classList.toggle("on", i === PT.hi));
+  const h = PT.hits[PT.hi], sheets = new Set(PT.hits.map(x => x.p.n)).size, px = h.h / h.p.w * h.p.cw;
+  if (px < 11) pvZoom(Math.min(12, PV.z * 14 / Math.max(px, .5)));   /* tiny text: zoom in until it's readable */
+  ptShow(h.p, h.x, h.y);
+  $("pv-fst").textContent = `${PT.hi + 1} of ${n} · sheet ${h.p.n}${sheets > 1 ? ` (on ${sheets} sheets)` : ""}: “${h.s.trim().slice(0, 60)}”`; }
+
+/* Measure. The scale is saved with the PDF, per sheet (k = real inches per PDF unit). Set it from a dimension printed on
+   the sheet (best: works on shrunk copies too) or from the printed scale (only right on a full-size sheet). A measurement
+   is only as close as your taps, so it shows ± two screen dots at the zoom you measured at. */
+function ptScaleRead(c){ const o = c && c.pscale, ok = e => e && typeof e === "object" && typeof e.k === "number" && isFinite(e.k) && e.k > 0 ? {k: e.k, how: String(e.how || "").slice(0, 80)} : null;
+  const pages = {}; if (o && typeof o.pages === "object" && o.pages) Object.keys(o.pages).forEach(n => { const e = ok(o.pages[n]); if (e && /^\d{1,4}$/.test(n)) pages[n] = e; });
+  return {pages, all: ok(o && o.all)}; }
+const ptScale = p => PT.sc && (PT.sc.pages[p.n] || PT.sc.all) || null;
+function ptSaveScale(p, k, how){ const e = {k, how}; PT.sc.pages[p.n] = e; if ($("pv-all").checked) PT.sc.all = e;
+  const f = PT.file; if (!f) return; f.pscale = {pages: PT.sc.pages, all: PT.sc.all}; jfPut(f).catch(() => toast("Couldn't save the scale with the PDF (the phone may be out of space). It works until you close the plans.", 4000)); }
+const ptIn = x => typeof fmtFtIn === "function" ? fmtFtIn(x) : x.toFixed(2) + '"';
+function ptMSay(){ const st = $("pv-mst"), p = PT.m ? PT.m.p : ptPage(); if (!p) return; const sc = ptScale(p), sheet = `Sheet ${p.n}`;
+  /* the scale controls fold away once this sheet has a scale; they open by themselves when it needs one */
+  $("pv-scs").textContent = sc ? `Scale: ${sc.how}` : `Sheet ${p.n}: set the scale`; $("pv-scd").open = PT.cal || !sc;
+  if (PT.tool === "measure") pvNum();
+  if (PT.cal){ st.innerHTML = PT.m && PT.m.b ? `How long is that blue line, really? Type it below.` : `${sheet}: tap both ends of a dimension you can read on the sheet. The longer it is, the closer your measurements will be.<small>Or pick the printed scale.</small>`; return; }
+  if (!sc){ st.innerHTML = `${sheet} has no scale yet.<small>Set it from a dimension on the sheet (best), or pick the printed scale.</small>`; return; }
+  if (!PT.m || !PT.m.b){ st.innerHTML = `${sheet}: tap two points to measure.`; return; }
+  const m = PT.m, d = Math.hypot(m.b[0] - m.a[0], m.b[1] - m.a[1]), real = d * sc.k, u = 2 * m.p.w / m.p.cw * sc.k;   /* two screen dots, in real inches */
+  const val = u >= 1 ? ptIn(Math.round(real)) : ptIn(real), pm = u >= 1 ? `${Math.round(u)}"` : ptIn(u);
+  st.innerHTML = `<span class="pv-big">${esc(val)}</span> <small>± ${esc(pm)} at this zoom${u >= 1 ? " (zoom in for closer)" : ""}. Tap again to start a new one.</small>`; }
+function ptMDraw(){ ptClear("pv-m"); const m = PT.m; if (!m) return; const o = ptOv(m.p), r = 5 * m.p.w / m.p.cw, cls = PT.cal ? " cal" : "";
+  if (m.b) o.appendChild(ptEl("line", {class: "pv-m pv-ml" + cls, x1: m.a[0], y1: m.a[1], x2: m.b[0], y2: m.b[1]}));
+  [m.a, m.b].filter(Boolean).forEach(q => o.appendChild(ptEl("circle", {class: "pv-m pv-mp" + cls, cx: q[0], cy: q[1], r}))); }
+function ptTap(cx, cy){ const p = PV.pg.find(p => { const r = p.el.getBoundingClientRect(); return cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom; }); if (!p) return;
+  const r = p.el.getBoundingClientRect(), q = [(cx - r.left) / r.width * p.w, (cy - r.top) / r.height * p.h];
+  if (!PT.cal && !ptScale(p)){ PT.m = null; ptMDraw(); ptCal(true, p); }   /* no scale on this sheet yet: this tap starts setting it */
+  if (!PT.m || PT.m.b || PT.m.p !== p) PT.m = {p, a: q, b: null}; else PT.m.b = q;
+  ptMDraw(); ptMSay();
+  if (PT.cal && PT.m.b){ $("pv-calrow").hidden = false; const i = $("pv-calv"); i.value = ""; i.focus(); } }
+function ptCal(on, p){ PT.cal = on; $("pv-calrow").hidden = true; if (!on && PT.m && !PT.m.b) PT.m = null; ptMDraw(); ptMSay(); }
+function ptCalSet(){ const m = PT.m, v = typeof tapeIn === "function" ? tapeIn($("pv-calv").value) : parseFloat($("pv-calv").value);
+  if (!m || !m.b) return; const d = Math.hypot(m.b[0] - m.a[0], m.b[1] - m.a[1]);
+  if (!(v > 0) || !(d > 0)){ toast("Type the real length, tape style: 12' 6 or 150 (inches).", 2600); $("pv-calv").focus(); return; }
+  ptSaveScale(m.p, v / d, `from a ${ptIn(v)} dimension on sheet ${m.p.n}`); $("pv-calv").blur(); PT.m = null; ptCal(false);
+  toast(`Scale set: that line is ${esc(ptIn(v))}. Tap two points to measure.`, 2600); }   /* says back what it read, so 25 (inches) typed for 25 feet shows right away */
+function ptTool(t){ PT.tool = PT.tool === t ? "" : t; const B = $("jv-body");
+  document.querySelectorAll("[data-pvt]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.pvt === PT.tool)));
+  $("pv-find").hidden = PT.tool !== "find"; $("pv-meas").hidden = PT.tool !== "measure"; B.classList.toggle("jv-meas", PT.tool === "measure");
+  if (PT.tool !== "find"){ ptClear("pv-hit"); PT.hits = []; PT.run++; $("pv-fst").textContent = ""; } else { const q = $("pv-q"); q.focus(); if (q.value.trim()) ptFind(q.value); }
+  if (PT.tool !== "measure"){ PT.m = null; PT.cal = false; $("pv-calrow").hidden = true; ptMDraw(); if (PV.doc) pvNum(); }
+  else { $("pv-ps").value = ""; $("pv-all").checked = false; const p = ptPage(); if (p && !ptScale(p)) ptCal(true, p); else ptMSay(); } }
+function ptReset(){ PT.run++; Object.assign(PT, {tool: "", file: null, sc: null, hits: [], hi: -1, q: "", m: null, cal: false, drag: false});
+  $("pv-bar").hidden = true; $("pv-find").hidden = $("pv-meas").hidden = $("pv-calrow").hidden = true; $("pv-fst").textContent = $("pv-mst").textContent = "";
+  document.querySelectorAll("[data-pvt]").forEach(b => b.setAttribute("aria-pressed", "false")); $("jv-body").classList.remove("jv-meas"); }
+{ $("pv-bar").addEventListener("click", e => { const b = e.target.closest("[data-pvt]"); if (b) ptTool(b.dataset.pvt); });
+  $("pv-q").addEventListener("keydown", e => { if (e.key !== "Enter") return; e.preventDefault(); const q = e.target.value.trim(); if (q && q === PT.q && PT.hits.length) ptGo(PT.hi + (e.shiftKey ? -1 : 1)); else ptFind(q); });
+  $("pv-q").addEventListener("search", e => { if (!e.target.value.trim()) ptFind(""); });
+  $("pv-next").addEventListener("click", () => { const q = $("pv-q").value.trim(); if (q !== PT.q) ptFind(q); else ptGo(PT.hi + 1); });
+  $("pv-prev").addEventListener("click", () => { const q = $("pv-q").value.trim(); if (q !== PT.q) ptFind(q); else ptGo(PT.hi - 1); });
+  $("pv-cal").addEventListener("click", () => { PT.m = null; ptCal(true); });
+  $("pv-calok").addEventListener("click", ptCalSet); $("pv-calv").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); ptCalSet(); } });
+  $("pv-ps").addEventListener("change", e => { const R = +e.target.value, p = ptPage(); if (!(R > 0) || !p) return;
+    ptSaveScale(p, R / 72, `printed ${e.target.selectedOptions[0].textContent} (only right on a full-size sheet)`);   /* R real inches per inch of paper; 72 PDF units to the inch */
+    PT.m = null; ptCal(false);
+    toast(`Sheet ${p.n} is ${(p.w / 72).toFixed(1)} × ${(p.h / 72).toFixed(1)} in. A printed scale is only right if that's the real sheet size; on a shrunk copy (like 11 × 17) set the scale from a dimension.`, 6500); }); }
 
 $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.blob) return;
   const pdf = jvPDF(c), img = c.kind === "photo" || /^image\//.test(c.type || "");
-  pvStop(); if (JV) URL.revokeObjectURL(JV); JV = null;
+  pvStop(); ptReset(); if (JV) URL.revokeObjectURL(JV); JV = null;
   const B = $("jv-body"), N = $("jv-note"), Z = $("jv-zoom"); B.className = "jv-wrap"; N.hidden = true; Z.hidden = true; Z.textContent = "Zoom in";
   $("jv-title").textContent = img ? (c.proof ? "Proof photo" : "Photo") : c.name || "File";
   if (img){ JV = URL.createObjectURL(c.blob); JZ.s = 1; JZ.w = 0; B.classList.add("jv-img"); B.innerHTML = `<img src="${JV}" alt="${c.proof ? "Proof photo" : "Job photo"}" draggable="false">`;
-    B.querySelector("img").addEventListener("load", jzFit); Z.hidden = false; N.textContent = "Pinch or double-tap to zoom."; N.hidden = false; }
+    const im = B.querySelector("img"); im.addEventListener("load", jzFit);
+    im.addEventListener("error", () => { B.classList.remove("jv-img"); Z.hidden = true; N.hidden = true; B.innerHTML = `<p class="jv-msg">This photo can't be shown in the app (it may be a kind this phone or browser can't read).<br>Tap <b>Open in another app</b>.</p>`; });
+    Z.hidden = false; N.textContent = "Pinch or double-tap to zoom."; N.hidden = false; }
   else if (pdf) pvOpen(c);
   else B.innerHTML = `<p class="jv-msg">This kind of file can't be shown in the app.<br>Tap <b>Open in another app</b>.</p>`;
   $("jv-dlg").showModal(); });
@@ -2029,7 +2162,7 @@ $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.bl
     g.mx = mx; g.my = my; g.el.style.transform = `translate(${mx - g.r.left - g.ux * w}px,${my - g.r.top - g.uy * h}px) scale(${f})`; };
   const gEnd = g => { const el = g.el; el.style.transition = el.style.transform = el.style.willChange = "";
     if (mode() === "img"){ const i = el; JZ.s = g.s; i.style.width = JZ.w * g.s + "px"; i.style.height = JZ.h * g.s + "px"; }
-    else { const f = g.s / PV.z; PV.z = g.s; pvLay(f); }
+    else { PV.z = g.s; pvLay(); }
     const r = el.getBoundingClientRect(); B.scrollLeft += r.left + g.ux * r.width - g.mx; B.scrollTop += r.top + g.uy * r.height - g.my;
     $("jv-zoom").textContent = g.s > 1.01 ? "Fit to screen" : "Zoom in"; if (mode() === "pdf"){ pvHold(false); pvNum(); } };
   let ANIM = null;
@@ -2049,21 +2182,34 @@ $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.bl
     if (P && t.length === 2){ e.preventDefault(); const [x, y] = two(t); gMove(P.g, P.g.s0 * gap(t) / P.d, x, y); return; }
     if (T && t.length === 1 && Math.hypot(t[0].clientX - T.x, t[0].clientY - T.y) > 10) T = null; }, {passive: false});   /* moved: a scroll, not a tap */
   const lift = e => { if (P){ if (e.touches.length < 2){ gEnd(P.g); P = null; last = null; } return; }
+    if (PT.tool === "measure"){ T = null; last = null; return; }   /* Measure: each tap is a point (the click below), never a zoom */
     if (!T || e.changedTouches.length !== 1 || Date.now() - T.at > 250){ T = null; return; }
     const c = e.changedTouches[0], tap = {x: c.clientX, y: c.clientY, at: Date.now()}; T = null;
     if (last && tap.at - last.at < 320 && Math.hypot(tap.x - last.x, tap.y - last.y) < 40){ e.preventDefault(); last = null; glide(now() > 1.01 ? 1 : 2.5, tap.x, tap.y); }
     else last = tap; };
   B.addEventListener("touchend", lift, {passive: false}); B.addEventListener("touchcancel", e => { if (P){ gEnd(P.g); P = null; } T = null; });
-  B.addEventListener("dblclick", e => { if (mode()) glide(now() > 1.01 ? 1 : 2.5, e.clientX, e.clientY); });
+  B.addEventListener("click", e => { if (PT.tool !== "measure" || mode() !== "pdf") return; if (PT.drag){ PT.drag = false; return; } ptTap(e.clientX, e.clientY); });
+  B.addEventListener("dblclick", e => { if (PT.tool === "measure") return; if (mode()) glide(now() > 1.01 ? 1 : 2.5, e.clientX, e.clientY); });
   let W = null, wt = 0;
   B.addEventListener("wheel", e => { if (!e.ctrlKey || !mode()) return; e.preventDefault(); if (ANIM) return;
     if (!W) W = gBegin(e.clientX, e.clientY); if (!W) return; gMove(W, W.s * Math.exp(-e.deltaY / 150), W.mx, W.my);
     clearTimeout(wt); wt = setTimeout(() => { if (W){ gEnd(W); W = null; } }, 160); }, {passive: false});
+  /* computer: drag with the mouse to move around a zoomed photo or sheet, and + / − / 0 on the keyboard to zoom */
+  let M = null;
+  B.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse" || e.button !== 0 || !mode() || ANIM) return; M = {x: e.clientX, y: e.clientY, l: B.scrollLeft, t: B.scrollTop, on: false}; });
+  addEventListener("pointermove", e => { if (!M) return; const dx = e.clientX - M.x, dy = e.clientY - M.y;
+    if (!M.on){ if (Math.hypot(dx, dy) < 4) return; M.on = true; B.classList.add("jv-drag"); }   /* a click stays a click */
+    B.scrollLeft = M.l - dx; B.scrollTop = M.t - dy; });
+  addEventListener("pointerup", () => { if (M){ PT.drag = M.on; M = null; B.classList.remove("jv-drag"); } });   /* a drag doesn't drop a measuring point */
+  d.addEventListener("keydown", e => { if (!mode() || e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
+    const z = {"+": 1.6, "=": 1.6, "-": 1 / 1.6, "_": 1 / 1.6, "0": 0}[e.key]; if (z === undefined) return; e.preventDefault();
+    glide(z ? now() * z : 1, ...mid0()); });
   B.addEventListener("scroll", () => { if (mode() === "pdf"){ pvNum(); pvSoon(); } }, {passive: true});
   ["gesturestart", "gesturechange"].forEach(k => B.addEventListener(k, e => e.preventDefault()));   /* iPhone: don't zoom the whole page instead */
   addEventListener("resize", () => { if (!d.open) return; if (mode() === "img") jzFit(); else if (mode() === "pdf"){ pvZoom(PV.z); } });
   $("jv-send").addEventListener("click", () => $("jf-share").click());
-  d.addEventListener("close", () => { pvStop(); B.innerHTML = ""; if (JV) URL.revokeObjectURL(JV); JV = null; }); }
+  /* the "closed" notice arrives a moment after Close: if the viewer was opened again in between, it belongs to the old file */
+  d.addEventListener("close", () => { if (d.open) return; pvStop(); ptReset(); B.querySelectorAll("canvas").forEach(pvFree); B.innerHTML = ""; if (JV) URL.revokeObjectURL(JV); JV = null; }); }
 $("jf-share").addEventListener("click", async () => { const c = JF.cur; if (!c) return;
   const f = new File([c.blob], c.kind === "photo" ? c.name.replace(/\.[^.]*$/, "") + ".jpg" : c.name, {type: jvPDF(c) ? "application/pdf" : c.type || c.blob.type || ""});
   try { if (navigator.canShare && navigator.canShare({files: [f]})){ await navigator.share({files: [f]}); return; } } catch(e){ if (e && e.name === "AbortError") return; }
@@ -2076,13 +2222,16 @@ $("jf-del").addEventListener("click", async () => { const c = JF.cur; if (!c || 
 
 /* ---- Mark up: arrows, circles, freehand and text drawn on a COPY of a job photo. The original stays untouched, so a proof
    photo keeps its stamp and fingerprint. Marks get a dark edge so they show on drywall, dirt or sky. */
-const MK = {img: null, src: null, url: null, shapes: [], cur: null, tool: "arrow", col: "#ff1a1a", raf: 0};
+const MK = {img: null, src: null, url: null, shapes: [], cur: null, tool: "arrow", col: "#ff1a1a", raf: 0, layer: null, ver: 0, lv: -1};
 const mkCv = () => $("mk-cv");
 const mkW = () => { const c = mkCv(); return Math.max(3, Math.round(Math.max(c.width, c.height) / 130)); };
 function mkShape(x, sh){
   const w = sh.w; x.lineCap = "round"; x.lineJoin = "round";
   const stroke = path => { x.strokeStyle = "rgba(0,0,0,.7)"; x.lineWidth = w + Math.max(2, w * .7); path(); x.stroke(); x.strokeStyle = sh.col; x.lineWidth = w; path(); x.stroke(); };
-  if (sh.t === "pen") stroke(() => { x.beginPath(); sh.p.forEach(([a, b], i) => i ? x.lineTo(a, b) : x.moveTo(a, b)); if (sh.p.length === 1) x.lineTo(sh.p[0][0] + .1, sh.p[0][1]); });
+  if (sh.t === "pen") stroke(() => { const P = sh.p, n = P.length; x.beginPath(); x.moveTo(P[0][0], P[0][1]);
+    if (n === 1) x.lineTo(P[0][0] + .1, P[0][1]);
+    else if (n === 2) x.lineTo(P[1][0], P[1][1]);
+    else { for (let i = 1; i < n - 1; i++) x.quadraticCurveTo(P[i][0], P[i][1], (P[i][0] + P[i + 1][0]) / 2, (P[i][1] + P[i + 1][1]) / 2); x.lineTo(P[n - 1][0], P[n - 1][1]); } });   /* a smooth curve through your finger's path, not a string of straight bits */
   else if (sh.t === "circle"){ const rx = Math.abs(sh.b[0] - sh.a[0]) / 2, ry = Math.abs(sh.b[1] - sh.a[1]) / 2;
     stroke(() => { x.beginPath(); x.ellipse((sh.a[0] + sh.b[0]) / 2, (sh.a[1] + sh.b[1]) / 2, Math.max(rx, 1), Math.max(ry, 1), 0, 0, Math.PI * 2); }); }
   else if (sh.t === "arrow"){ const [x0, y0] = sh.a, [x1, y1] = sh.b, an = Math.atan2(y1 - y0, x1 - x0), h = Math.min(Math.hypot(x1 - x0, y1 - y0) * .45, w * 5);
@@ -2090,12 +2239,17 @@ function mkShape(x, sh){
   else if (sh.t === "text"){ const fs = sh.w * 6; x.font = `700 ${fs}px system-ui, -apple-system, sans-serif`; x.textBaseline = "middle";
     x.lineWidth = Math.max(3, fs / 5); x.strokeStyle = "rgba(0,0,0,.9)"; x.strokeText(sh.s, sh.a[0], sh.a[1]); x.fillStyle = sh.col; x.fillText(sh.s, sh.a[0], sh.a[1]); }
 }
+/* the photo and the finished marks are drawn once into a layer; each frame while you draw is that layer plus the mark in
+   progress, so drawing stays quick however many marks are on the photo */
 function mkDraw(){ MK.raf = 0; const c = mkCv(), x = c.getContext("2d"); if (!MK.img) return;
-  x.drawImage(MK.img, 0, 0, c.width, c.height); MK.shapes.forEach(sh => mkShape(x, sh)); if (MK.cur) mkShape(x, MK.cur); }
+  let L = MK.layer; if (!L) L = MK.layer = document.createElement("canvas");
+  if (MK.lv !== MK.ver || L.width !== c.width || L.height !== c.height){ L.width = c.width; L.height = c.height; const lx = L.getContext("2d");
+    lx.drawImage(MK.img, 0, 0, L.width, L.height); MK.shapes.forEach(sh => mkShape(lx, sh)); MK.lv = MK.ver; }
+  x.drawImage(L, 0, 0); if (MK.cur) mkShape(x, MK.cur); }
 function mkFit(){ const c = mkCv(), w = c.parentElement; if (!MK.img || !w) return;
   const k = Math.min(w.clientWidth / c.width, w.clientHeight / c.height); if (!(k > 0)) return;
   c.style.width = Math.floor(c.width * k) + "px"; c.style.height = Math.floor(c.height * k) + "px"; }
-const mkSoon = () => { if (!MK.raf) MK.raf = requestAnimationFrame(mkDraw); };
+const mkSoon = () => { if (!MK.raf) MK.raf = (typeof FPS !== "undefined" && FPS.raw || requestAnimationFrame)(mkDraw); };   /* follows your finger: never held back by the just-for-fun frame-rate cap */
 const mkPt = e => { const c = mkCv(), r = c.getBoundingClientRect(); return [(e.clientX - r.left) * c.width / r.width, (e.clientY - r.top) * c.height / r.height]; };
 async function mkOpen(){
   const f = JF.cur; if (!f || f.kind !== "photo" || !f.blob) return;
@@ -2104,13 +2258,13 @@ async function mkOpen(){
   catch(e){ URL.revokeObjectURL(url); toast("Couldn't open that photo for markup."); return; }
   const c = mkCv(), k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
   c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
-  Object.assign(MK, {img, src: f, url, shapes: [], cur: null, tool: "arrow"});   /* every time: Arrow, so a tap always does something */
+  Object.assign(MK, {img, src: f, url, shapes: [], cur: null, tool: "arrow", ver: MK.ver + 1});   /* every time: Arrow, so a tap always does something */
   const dlg = $("mk-dlg"); dlg.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.tool === "arrow"))); $("mk-txt-l").hidden = true; $("mk-txt").value = "";
   $("jf-dlg").close(); dlg.showModal(); mkDraw(); mkFit(); requestAnimationFrame(mkFit);
 }
 function mkClose(ask){
   if (ask && MK.shapes.length && !jbAsk("Throw away these marks? The photo stays as it was.")) return false;
-  MK.shapes = []; MK.cur = null; $("mk-dlg").close(); return true;
+  MK.shapes = []; MK.cur = null; MK.ver++; $("mk-dlg").close(); return true;
 }
 async function mkSave(){
   const src = MK.src; if (!src) return; if (!MK.shapes.length){ toast("Add a mark first: arrow, circle, draw or text."); return; }
@@ -2133,21 +2287,28 @@ async function mkSave(){
   dlg.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.tool){ MK.tool = b.dataset.tool; dlg.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); tl.hidden = MK.tool !== "text"; mkFit(); }
     else if (b.dataset.col){ MK.col = b.dataset.col; dlg.querySelectorAll("[data-col]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); }
-    else if (b.id === "mk-undo"){ MK.shapes.pop(); mkDraw(); }
+    else if (b.id === "mk-undo"){ MK.shapes.pop(); MK.ver++; mkDraw(); }
     else if (b.id === "mk-save") mkSave();
     else if (b.id === "mk-cancel" || b.id === "mk-x") mkClose(true); });
   dlg.addEventListener("cancel", e => { e.preventDefault(); mkClose(true); });   /* Esc / back: same question as Cancel */
-  dlg.addEventListener("close", () => { if (MK.url) URL.revokeObjectURL(MK.url); Object.assign(MK, {img: null, url: null, cur: null}); jbReseat(); });
+  dlg.addEventListener("close", () => { if (MK.url) URL.revokeObjectURL(MK.url); Object.assign(MK, {img: null, url: null, cur: null});
+    if (MK.layer){ MK.layer.width = MK.layer.height = 0; } cv.width = cv.height = 0; MK.lv = -1; jbReseat(); });   /* give the photo's memory back right away (iPhone counts it until then) */
   cv.addEventListener("pointerdown", e => { if (!MK.img || !e.isPrimary || MK.cur) return; e.preventDefault(); const p = mkPt(e), w = mkW();
     if (MK.tool === "text"){ const t = $("mk-txt").value.trim(); if (!t){ toast("Type your label in the box above first, then tap where it goes."); $("mk-txt").focus(); return; }
       const x = cv.getContext("2d"); x.font = `700 ${w * 6}px system-ui, -apple-system, sans-serif`; const tw = x.measureText(t).width;
-      MK.shapes.push({t: "text", s: t, a: [Math.max(4, Math.min(p[0], cv.width - tw - 4)), Math.max(w * 4, Math.min(p[1], cv.height - w * 4))], col: MK.col, w});
+      MK.shapes.push({t: "text", s: t, a: [Math.max(4, Math.min(p[0], cv.width - tw - 4)), Math.max(w * 4, Math.min(p[1], cv.height - w * 4))], col: MK.col, w}); MK.ver++;
       $("mk-txt").value = ""; $("mk-txt").blur(); mkDraw(); return; }
     try { cv.setPointerCapture(e.pointerId); } catch(err){}
     MK.cur = MK.tool === "pen" ? {t: "pen", p: [p], col: MK.col, w} : {t: MK.tool, a: p, b: p, col: MK.col, w}; mkSoon(); });
-  cv.addEventListener("pointermove", e => { if (!MK.cur || !e.isPrimary) return; e.preventDefault(); const p = mkPt(e); if (MK.cur.t === "pen") MK.cur.p.push(p); else MK.cur.b = p; mkSoon(); });
+  cv.addEventListener("pointermove", e => { if (!MK.cur || !e.isPrimary) return; e.preventDefault();
+    if (MK.cur.t !== "pen"){ MK.cur.b = mkPt(e); mkSoon(); return; }
+    /* every in-between spot the finger or Pencil passed (phones report more than one per screen refresh), skipping repeats */
+    const r = cv.getBoundingClientRect(), kx = cv.width / r.width, ky = cv.height / r.height, P = MK.cur.p, gap = MK.cur.w / 4;
+    (e.getCoalescedEvents && e.getCoalescedEvents().length ? e.getCoalescedEvents() : [e]).forEach(v => { const q = [(v.clientX - r.left) * kx, (v.clientY - r.top) * ky], l = P[P.length - 1];
+      if (Math.hypot(q[0] - l[0], q[1] - l[1]) >= gap) P.push(q); });
+    mkSoon(); });
   const up = () => { const s = MK.cur; if (!s) return; MK.cur = null;
-    if (s.t === "pen" || Math.hypot(s.b[0] - s.a[0], s.b[1] - s.a[1]) > s.w * 3) MK.shapes.push(s); mkDraw(); };
+    if (s.t === "pen" || Math.hypot(s.b[0] - s.a[0], s.b[1] - s.a[1]) > s.w * 3){ MK.shapes.push(s); MK.ver++; } mkDraw(); };
   cv.addEventListener("pointerup", e => { if (e.isPrimary) up(); }); cv.addEventListener("pointercancel", e => { if (e.isPrimary) up(); });
   cv.addEventListener("contextmenu", e => e.preventDefault());   /* long press: no "Save image" menu over your drawing */
   addEventListener("resize", () => { if (dlg.open) mkFit(); }); if (window.visualViewport) visualViewport.addEventListener("resize", () => { if (dlg.open) mkFit(); });
@@ -2196,7 +2357,7 @@ const jbLastBk = () => { const lb = +store.get("jpb-lastbk", 0);
   return (lb ? `Last backup: <b>${jbAgo(lb)}</b>. ` : "<b>No backup yet.</b> ") + "One file with your jobs, people, notes, settings, photos and files. Save it to iCloud Drive or Files so it's off this phone: deleting the app from the Home Screen deletes everything in it."; };
 async function jfPack(){
   let L = []; try { L = await jfAll(); } catch(e){}
-  const man = L.map(f => ({id: f.id, job: f.job, s: f.s, jobName: (j0 => j0 ? jbName(j0) : "")(jbD.jobs.find(x => x.id === f.job)), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb, del: f.del || 0, proof: f.proof || null, ed: f.ed || 0,
+  const man = L.map(f => ({id: f.id, job: f.job, s: f.s, jobName: (j0 => j0 ? jbName(j0) : "")(jbD.jobs.find(x => x.id === f.job)), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb, del: f.del || 0, proof: f.proof || null, ed: f.ed || 0, pscale: f.pscale || null,
     path: `files/${f.id}-${String(f.name).replace(/[^\w.\- ]+/g, "_").slice(-60)}`}));
   const zip = await jfZip([{name: "handbook-backup.json", blob: new Blob([bkDump()], {type: "application/json"})},
     {name: "manifest.json", blob: new Blob([JSON.stringify({app: "utah-plumbers-handbook-files", v: 1, made: new Date().toISOString(), files: man})])},
@@ -2238,7 +2399,7 @@ async function jfRestoreZ(z, merge){
   for (const f of m.files){ const x = z[f.path]; if (!x || !/^[\w-]+$/.test(String(f.id))) continue;
     if (merge){ const cur = await jfTx("readonly", s => s.get(f.id)).catch(() => null); if (cur && (cur.del || (+cur.ed || +cur.t || 0) >= (+f.ed || +f.t || 0))) continue; }
     if (f.thumb && !jfThumbOk(f.thumb)) f.thumb = "";
-    await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, +f.ed ? {ed: +f.ed} : {}, f.s ? {s: f.s} : {}, f.del ? {del: f.del} : {}, f.proof && typeof f.proof === "object" ? {proof: f.proof} : {})); n++; }
+    await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, +f.ed ? {ed: +f.ed} : {}, f.s ? {s: f.s} : {}, f.del ? {del: f.del} : {}, f.proof && typeof f.proof === "object" ? {proof: f.proof} : {}, f.pscale && typeof f.pscale === "object" ? {pscale: ptScaleRead(f)} : {})); n++; }   /* a plan's saved scale comes back too, checked */
   return n;
 }
 /* takes the new all-in-one .zip, an older photos-only .zip, or a Settings .json backup */
@@ -2328,7 +2489,7 @@ function jbMerge(o){
     return [...m.values()]; };
   const inc = A(o.jobs).map(cl), theirT = isO(o.tpl) ? o.tpl : {};
   JB_STG.forEach(([k]) => { if (!window.jbTplMine(k) && Array.isArray(theirT[k]) && theirT[k].length) jbTplSet(k, theirT[k]); });
-  { const keep = jbD.tpl; JB_STG.forEach(([k]) => { const T = Array.isArray(theirT[k]) && theirT[k].length ? theirT[k].map(x => String(x).trim()).filter(Boolean) : JB_TPL[k](), M = jbTpl(k);
+  { const keep = jbD.tpl; JB_STG.forEach(([k]) => { const T = Array.isArray(theirT[k]) && theirT[k].length ? theirT[k].filter(x => typeof x === "string" || typeof x === "number").map(x => String(x).trim()).filter(Boolean) : JB_TPL[k](), M = jbTpl(k);
       if (JSON.stringify(T) === JSON.stringify(M)) return; jbD.tpl = Object.assign({}, keep, {[k]: T}); inc.forEach(x => jbFreeze(x, k, M)); jbD.tpl = keep; }); }
   const outP = new Map(); [...jbD.jobs, ...inc].forEach(x => (Array.isArray(x.pplOut) ? x.pplOut : []).forEach(id => { if (!outP.has(x.id)) outP.set(x.id, new Set()); outP.get(x.id).add(String(id)); }));
   jbD.jobs = byId(jbD.jobs, inc, ["log", "insp", "hrs", "punch", "ppl", "act"]);
@@ -2352,7 +2513,7 @@ function jbMerge(o){
   jbD.jobs.forEach(j => { if (!Array.isArray(j.xs)) j.xs = []; });
   r.add = [...ids()].filter(id => !before.has(id)).length;   /* counted after deletions, so a job deleted here isn't "new" */
   const now = Date.now(); jbD.jobs.forEach(j => { if (!before.has(j.id)) j.seen = Math.max(+j.seen || 0, now); });   /* new on this phone: not straight to Archived */
-  [...jbD.people, ...jbD.builders, ...jbD.subs].forEach(p => { if (!Array.isArray(p.log)) p.log = []; if (typeof p.draft !== "string") p.draft = ""; p.log.forEach(e => { if (e && e.pin !== true) delete e.pin; }); });
+  [...jbD.people, ...jbD.builders, ...jbD.subs].forEach(p => { ["n", "role", "co", "ph", "em"].forEach(f => { if (f in p && typeof p[f] !== "string") p[f] = typeof p[f] === "number" ? String(p[f]) : ""; });   /* odd backup: text fields stay text */ if (!Array.isArray(p.log)) p.log = []; if (typeof p.draft !== "string") p.draft = ""; p.log.forEach(e => { if (e && e.pin !== true) delete e.pin; }); });
   return r;
 }
 
@@ -2423,5 +2584,6 @@ try { if (window.wxFollowJob) wxFollowJob(); } catch(e){}   /* Weather opened be
 try { const mj = $("mt-jobs"), ma = $("mt-ans"); if (mj && ma) mj.innerHTML = window.jbHrsJobs(+ma.dataset.h || 0); if (typeof tlDraw === "function") tlDraw(); } catch(e){}   /* Time card and Test log can hand things to jobs now */   /* Inspect's checklist now reads the shared lists */
 jbBinPurge(false);   /* past 30 days: gone for good */
 jbDraw(); try { homeDraw(); } catch(e){}
+try { if (typeof drawNums === "function") drawNums(); } catch(e){}
 } catch(e){ const b = document.getElementById("jb-body"); if (b){ b.innerHTML = '<p class="note flag">My jobs hit an error: ' + String(e && e.message || e).replace(/</g, "&lt;") + '. Your jobs are still saved on this phone. Download them so they\'re safe, then send the file and this message to Deklan.</p><div class="set-btns jb-top"><button type="button" class="btn" id="jb-rescue">Download my jobs data</button></div>';
   const r = document.getElementById("jb-rescue"); if (r) r.addEventListener("click", () => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([localStorage.getItem("jpb-jobs") || ""], {type: "application/json"})); a.download = "handbook-jobs-rescue.json"; document.body.appendChild(a); a.click(); a.remove(); }); } if (window.console) console.error(e); }

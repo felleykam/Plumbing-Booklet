@@ -59,7 +59,7 @@ Jt=2451545+Js+0.0053*Math.sin(M*R)-0.0069*Math.sin(2*l*R),d=Math.asin(Math.sin(l
 if(c<=-1){day=true;continue}if(c>=1)continue;var w=Math.acos(c)/R/360,a=(Jt-w-2440587.5)*864e5,b=(Jt+w-2440587.5)*864e5;
 if(now>=a&&now<b)day=true;if(a>now&&a<next)next=a;if(b>now&&b<next)next=b}return{day:day,next:next}};
 window.jpbAuto=function(){var p=null;try{p=JSON.parse(localStorage.getItem("jpb-wx-place"))}catch(e){}
-var ok=p&&isFinite(p.lat)&&isFinite(p.lon);return window.jpbDaylight(Date.now(),ok?+p.lat:40.761,ok?+p.lon:-111.891)};
+var re=function(v){return v!=null&&v!==""&&isFinite(v)},ok=p&&re(p.lat)&&re(p.lon);return window.jpbDaylight(Date.now(),ok?+p.lat:40.761,ok?+p.lon:-111.891)};
 var t;try{t=JSON.parse(localStorage.getItem("jpb-theme"))}catch(e){}
 var P0;try{P0=JSON.parse(localStorage.getItem("jpb-prefs"))||{}}catch(e){P0={}}
 /* Sun or Night: the phone's own dark-mode setting by default; "daylight" follows dawn and dusk where you are */
@@ -223,6 +223,8 @@ body.searching .where-go,body.mixed .where-go{display:block;grid-column:1 / -1;j
 .t .k{font-family:var(--mono);font-size:14px;font-weight:600;white-space:nowrap;width:1%}
 .t .n,.t.num td:not(:first-child){font-family:var(--mono);font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .t.wrap .n{white-space:normal}
+#mn-rows .mn-from{font-size:14px;color:var(--muted);text-transform:none;letter-spacing:0;padding-top:14px}
+#ci-d table{table-layout:fixed;width:100%}#ci-d th,#ci-d td{overflow-wrap:anywhere;white-space:normal}#ci-d thead th:first-child{width:34%}
 .sub{color:var(--muted);font-size:15px}
 .t .yes{color:var(--ok);font-weight:800;font-size:18px} .t .no{color:var(--danger);font-weight:800;font-size:18px}
 .t.num td.sub{font-family:var(--body);white-space:normal}
@@ -551,8 +553,11 @@ label.jb-chk input{width:26px;height:26px;flex:none}
 .jr-chips{margin:6px 0}
 .jv-wrap{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;background:#111;display:flex}
 .jv-wrap img{display:block;margin:auto;max-width:100%;max-height:100%;object-fit:contain}
-.jv-wrap.jv-img{touch-action:pan-x pan-y}.jv-wrap.jv-img img{max-width:none;max-height:none;flex:none;-webkit-user-drag:none}
+.jv-wrap.jv-img{touch-action:pan-x pan-y}@media (pointer:fine){.jv-wrap.jv-img,.jv-wrap.jv-pdfv{cursor:grab}}.jv-wrap.jv-drag{cursor:grabbing!important;user-select:none}.jv-wrap.jv-img img{max-width:none;max-height:none;flex:none;-webkit-user-drag:none}
 #fps-meter{position:fixed;top:calc(env(safe-area-inset-top) + 2px);left:2px;z-index:2147483000;pointer-events:none;font:700 12px/1.2 var(--mono);background:rgba(0,0,0,.8);color:#c8ff00;padding:2px 6px;border-radius:4px;font-variant-numeric:tabular-nums}
+.pv-bar{padding:6px 8px;border-bottom:1px solid var(--rule);display:grid;gap:6px}.pv-panel{display:grid;gap:6px}.pv-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.pv-row input{flex:1 1 160px;min-width:0}.pv-row .btn{min-width:44px}.pv-st{margin:0;font-size:14px;font-weight:700;min-height:1.2em}.pv-st small{font-weight:400;display:block;opacity:.85}.pv-all{font-size:14px}.pv-scd>summary{font-size:14px;font-weight:700;cursor:pointer;padding:4px 0}.pv-scd[open]>summary{margin-bottom:6px}.pv-scd>.pv-row+.pv-row,.pv-scd>.pv-row+.pv-all{margin-top:6px}.pv-big{font-size:22px;font-weight:800}
+.pv-ov{position:absolute;z-index:2;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}.pv-hit{fill:rgba(255,214,0,.45);stroke:#c79c00;vector-effect:non-scaling-stroke;stroke-width:1}.pv-hit.on{fill:rgba(255,120,0,.45);stroke:#ff3d00;stroke-width:3}.pv-ml{stroke:#ff1a1a;stroke-width:3;vector-effect:non-scaling-stroke;stroke-linecap:round}.pv-ml.cal{stroke:#0a7cff}.pv-mp{fill:#fff;stroke:#ff1a1a;stroke-width:2;vector-effect:non-scaling-stroke}.pv-mp.cal{stroke:#0a7cff}
+.jv-wrap.jv-meas{cursor:crosshair}
 .jv-wrap.jv-pdfv{display:block;background:#3a3f44;touch-action:pan-x pan-y}.jv-pdfv .jv-msg{margin:40px auto}
 .pv-pages{position:relative;box-sizing:border-box;padding:8px}.pv-pg{position:relative;margin:0 0 8px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.5);overflow:hidden}.pv-pg:last-child{margin-bottom:0}.pv-base{display:block;width:100%;height:100%}.pv-det{position:absolute;display:block}
 .jv-msg{margin:auto;padding:16px;color:#fff;text-align:center;font-weight:700}
@@ -1386,9 +1391,15 @@ details.fold > summary{cursor:pointer;padding:10px 12px;min-height:48px;font-fam
 .res-bar button{appearance:none;font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;min-height:44px;padding:2px 12px;border:var(--bw) solid var(--acc,var(--ctl));border-radius:var(--r);background:var(--sheet);color:var(--ink);cursor:pointer}
 .res-bar button[aria-pressed="true"]{background:var(--acc);color:var(--sheet)}
 .more-list{display:grid;gap:10px;padding:12px 0}
-.more-list button{appearance:none;text-align:left;display:flex;flex-direction:column;gap:2px;padding:10px 14px;min-height:64px;border:var(--bw) solid var(--edge);border-left:10px solid var(--acc,var(--ink));border-radius:var(--r);background:var(--sheet);color:var(--ink);font:inherit;cursor:pointer}
+.more-list > button,.more-main{appearance:none;text-align:left;display:flex;flex-direction:column;gap:2px;padding:10px 14px;min-height:64px;border:var(--bw) solid var(--edge);border-left:10px solid var(--acc,var(--ink));border-radius:var(--r);background:var(--sheet);color:var(--ink);font:inherit;cursor:pointer}
 .more-list b{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.04em;text-transform:uppercase}
 .more-list span{font-size:16px;color:var(--muted)}
+/* a section with its pages as chips: one tap from More lands on the page */
+.more-item{display:flex;flex-direction:column;border:var(--bw) solid var(--edge);border-left:10px solid var(--acc,var(--ink));border-radius:var(--r);background:var(--sheet)}
+.more-item > .more-main{border:0;border-radius:var(--r) var(--r) 0 0;min-height:52px;padding-bottom:4px;background:none}
+.more-subs{display:flex;flex-wrap:wrap;gap:8px;padding:2px 12px 12px}
+.more-subs button{appearance:none;min-height:44px;padding:6px 12px;border:2px solid var(--edge);border-radius:999px;background:var(--paper,var(--sheet));color:var(--ink);font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.more-subs button[aria-current="page"]{background:var(--ink);color:var(--sheet)}
 .qr-box{background:#fff;padding:12px;border-radius:var(--r);width:max-content;max-width:100%;margin:0 auto;min-height:60px;display:grid;place-items:center}
 .qr-box svg{display:block;width:220px;height:220px}
 .qr-url{text-align:center;font-family:var(--mono);overflow-wrap:anywhere}
@@ -1444,6 +1455,18 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   <div class="set-btns jf-btns"><button type="button" class="btn" id="jf-mark" hidden>✏ Mark up</button><button type="button" class="btn" id="jf-share">Save to Photos / send</button><button type="button" class="btn ghost" id="jf-open">Open full screen</button><button type="button" class="del" id="jf-del">Delete</button></div>
 </dialog>
 <dialog id="jv-dlg" class="mk-dlg jv-dlg" aria-labelledby="jv-title"><div class="jf-top"><b id="jv-title">File</b><button type="button" class="jb-x" id="jv-x" aria-label="Close">✕</button></div>
+  <div class="pv-bar" id="pv-bar" hidden>
+    <div class="mk-row" role="group" aria-label="Plan tools"><button type="button" data-pvt="find" aria-pressed="false">🔎 Find</button><button type="button" data-pvt="measure" aria-pressed="false">📏 Measure</button></div>
+    <div id="pv-find" class="pv-panel" hidden><div class="pv-row"><input id="pv-q" type="search" enterkeyhint="search" autocomplete="off" maxlength="60" aria-label="Find in plans" placeholder="Find: WH, P-3, cleanout, hose bib"><button type="button" class="btn ghost" id="pv-prev" aria-label="Previous match">‹</button><button type="button" class="btn ghost" id="pv-next" aria-label="Next match">›</button></div><p class="pv-st" id="pv-fst" aria-live="polite"></p></div>
+    <div id="pv-meas" class="pv-panel" hidden>
+      <p class="pv-st" id="pv-mst" aria-live="polite"></p>
+      <details class="pv-scd" id="pv-scd"><summary id="pv-scs">Scale</summary>
+      <div class="pv-row"><button type="button" class="btn ghost" id="pv-cal">Set scale from a dimension</button><label class="sel"><select id="pv-ps" aria-label="Or pick the printed scale"><option value="">Printed scale…</option><optgroup label="Architect"><option value="96">1/8" = 1'-0"</option><option value="64">3/16" = 1'-0"</option><option value="48">1/4" = 1'-0"</option><option value="32">3/8" = 1'-0"</option><option value="24">1/2" = 1'-0"</option><option value="16">3/4" = 1'-0"</option><option value="12">1" = 1'-0"</option></optgroup><optgroup label="Engineer"><option value="120">1" = 10'</option><option value="240">1" = 20'</option><option value="360">1" = 30'</option><option value="480">1" = 40'</option><option value="600">1" = 50'</option><option value="720">1" = 60'</option></optgroup></select></label></div>
+      <div class="pv-row" id="pv-calrow" hidden><input id="pv-calv" type="text" inputmode="text" autocomplete="off" aria-label="How long that line really is, tape style; a plain number is inches" placeholder="Real length: 12' 6 (a plain number is inches)"><button type="button" class="btn" id="pv-calok">Set</button></div>
+      <label class="jb-chk pv-all"><input type="checkbox" id="pv-all"><span>Use this scale for every sheet that doesn't have its own</span></label>
+      </details>
+    </div>
+  </div>
   <div class="jv-wrap" id="jv-body"></div>
   <p class="note jv-note" id="jv-note" hidden></p>
   <div class="mk-btns"><button type="button" class="btn ghost" id="jv-zoom" hidden>Zoom in</button><button type="button" class="btn ghost" id="jv-send">Open in another app</button><button type="button" class="btn" id="jv-close">Close</button></div>
@@ -2391,7 +2414,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td>24×36</td><td>12×18</td><td>50%</td><td>True half size: a ¼" plan reads at ⅛".</td></tr>
         <tr><td>22×34</td><td>11×17</td><td>50%</td><td>Also true half size.</td></tr>
         <tr class="hit"><td>24×36</td><td>11×17 "fit"</td><td>≈ 46%</td><td>Matches <b>no</b> scale on your ruler. Calibrate.</td></tr>
-        <tr><td>Any PDF</td><td>Phone, tablet</td><td>?</td><td>Zoom changes the size. Calibrate in the PDF app.</td></tr>
+        <tr><td>Any PDF</td><td>Phone, tablet</td><td>?</td><td>Zoom changes the size, so a ruler on the glass is useless. Add the PDF to a job in <b>My jobs</b>, open it, tap <b>Measure</b> and set the scale from a written dimension (or the printed scale); it reads any length you tap, at any zoom.</td></tr>
       </tbody></table></div>
     <p class="note">Answers are estimates: a ¹⁄₃₂" slip on paper is 1½" real at ¼" scale. The written dimension always wins over anything you scale.</p>
       <details class="more fold"><summary>How to read a plan scale</summary>
@@ -2993,7 +3016,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>Vent sizing &amp; terminals</h2><small>2021 IRC P31 · 2021 IPC ch. 9 · Utah</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Vent size</th><td>At least ½ the drain it serves, never under 1¼". Over 40 ft developed length: go up one size.</td></tr>
+        <tr><th>Vent size</th><td>Use the <b>Vent size</b> card just below: it sizes stack vents and every other vent, with the rule it comes from.</td></tr>
         <tr><th>Through roof</th><td><b>Houses (IRC P3103.1.1):</b> at least 6" above the roof or 6" above expected snow, whichever is greater. <span class="badge ut">UT</span> Other buildings (Utah IPC 903.1.1): <b>12"</b>. Run at least 12", and 6" above the expected snow where that's higher. Deep-snow areas like Park City: confirm locally.</td></tr>
         <tr><th><span class="badge ut">UT</span>Through wall</th><td>Ends at least 12" out from the wall with the elbow pointing down (Utah IRC P3101.4 / IPC 903.7).</td></tr>
         <tr><th>Near openings</th><td>Not directly under a door, openable window or air intake. Within 10 ft of one, end at least 2 ft above its top (IRC P3103.5; IPC 903.5 says 3 ft).</td></tr>
@@ -4773,48 +4796,12 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
   </section>
   <section data-sec="utah" data-kw="city inspection schedule provo spanish fork springville herriman lehi saratoga springs eagle mountain west jordan south jordan park city salt lake county msd utah county orem american fork vineyard highland lindon alpine santaquin cedar fort salem cedar hills payson mapleton bluffdale riverton draper">
     <div class="sec-head"><h2>City inspections</h2><small>How each city books them</small></div>
-    <div class="x"><table class="t">
+    <p class="note">Your city: <b>Look up a city</b> above. To compare the cities you work in, open the list. It's built from the same city list, so the two never disagree.</p>
+    <details class="more" id="ci-d"><summary>Every city side by side</summary>
+    <div class="x"><table class="t wrap">
       <thead><tr><th>City</th><th>How to book · what's different</th></tr></thead>
-      <tbody>
-        <tr><th colspan="2">Utah County</th></tr>
-        <tr><td><b>Eagle Mountain</b></td><td>Email <a href="mailto:buildinginspections@eaglemountain.gov">buildinginspections@eaglemountain.gov</a><div class="sub">Include the permit number. No confirmation email back = you're not on the schedule. First come, first served. Order: underground plumbing → 4-way → a separate <b>frost-protection insulation</b> inspection → final. Final needs the meter set: lid at grade, setter 20" ±2" below the lid, nothing within 5 ft; $50 re-final if it isn't.</div></td></tr>
-        <tr><td><b>Lehi</b></td><td><span class="pn">385-201-1035</span><div class="sub">Phone only: no voicemail, email or online booking. 24 hr notice. Lists a 30" minimum frost line. Not-ready re-inspections get a fee. Sewer lateral: 2% minimum slope to the property line, inspected before backfill. One culinary and one PI connection per lot.</div></td></tr>
-        <tr><td><b>Provo</b></td><td><a href="https://www.provo.gov/1019/Schedule-Building-Inspection" target="_blank" rel="noopener">Schedule an inspection ↗</a><div class="sub">Booking is through the city's self-service portal. Design frost depth 30" (Provo design criteria).</div></td></tr>
-        <tr><td><b>Saratoga Springs</b></td><td>Email <a href="mailto:buildinginspectionrequest@saratogasprings-ut.gov">buildinginspectionrequest@saratogasprings-ut.gov</a> or <span class="pn">801-766-6507</span> x120<div class="sub">One business day ahead: by 5 pm Mon–Thu, 4 pm Fri. No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test set).</div></td></tr>
-        <tr><td><b>Spanish Fork</b></td><td><a href="https://www.spanishfork.gov/living-in-our-community/building/building-permits-inspections/" target="_blank" rel="noopener">CitizenServe portal ↗</a> · help <span class="pn">801-804-4540</span><div class="sub">24 hr ahead. Ready by 8 am the day of, or a $93 re-inspection fee. Underground plumbing and water/sewer laterals inspected before cover; gas pressure test in that stage; rough plumbing on the 4-way; shower pan inspection with framing.</div></td></tr>
-        <tr><td><b>Springville</b></td><td><a href="https://www.springvilleutah.gov/community-development/wp-content/uploads/sites/5/2025/06/My-City-Inspector-Directions.pdf" target="_blank" rel="noopener">City Inspect ↗</a> · building <span class="pn">801-489-2704</span><div class="sub">Booked online in AM/PM blocks once the permit is issued; some inspections wait on earlier ones. Frost depth 30". Secondary-water switch-over inspection, $50.</div></td></tr>
-        <tr><td><b>Orem</b></td><td>Inspection line <span class="pn">801-229-7060</span><div class="sub">Have the address, permit number, inspection type and building type ready. Underground (plumbing tested), rough (roof, doors and windows in, shear already approved), final. "Before covering anything, call." Building Safety, 56 N State St, Ste 105.</div></td></tr>
-        <tr><td><b>American Fork</b></td><td><a href="https://americanfork.cityinspect.com/login" target="_blank" rel="noopener">City Inspect portal ↗</a> · city <span class="pn">801-763-3000</span><div class="sub">The city runs permits through City Inspect; we couldn't confirm the inspection booking steps online. Ask your super.</div></td></tr>
-        <tr><td><b>Vineyard</b></td><td><a href="https://vineyard.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-226-1929</span><div class="sub">Voicemail requests are NOT honored, and no same-day inspections. Inspections M–F 8–5 (the office closes Friday at noon: confirm Friday PMs).</div></td></tr>
-        <tr><td><b>Highland</b></td><td><a href="https://highland.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-772-4516</span><div class="sub">Scheduled Mon–Thu 8–5; office closed Fridays (inspections by appointment). Underground plumbing and the sewer connection are separate inspections.</div></td></tr>
-        <tr><td><b>Lindon</b></td><td><span class="pn">801-785-7687</span> · <a href="mailto:building@lindon.gov">building@lindon.gov</a><div class="sub">Booking method isn't posted online; call the building office.</div></td></tr>
-        <tr><td><b>Alpine</b></td><td>Inspection line <span class="pn">801-756-0208</span><div class="sub">Office 801-756-6347, M–F 8–3. Every structure needs a permit, whatever its size.</div></td></tr>
-        <tr><td><b>Santaquin</b></td><td><span class="pn">801-754-1011</span> (phone only)<div class="sub">At least 24 hr ahead during office hours (M–Th 9–5, Fri 9–1). Monday inspections: call by 1 pm Friday. Ready by 8 am or a $65 re-inspection fee (check or cash).</div></td></tr>
-        <tr><td><b>Cedar Fort</b></td><td>Online request form on the town site<div class="sub">At least 2 full business days ahead. Not scheduled until the town confirms; no confirmation in 24 hr, call <span class="pn">801-768-2147</span> x5. Sub-rough plumbing, water connection, septic and rough are separate inspections.</div></td></tr>
-        <tr><td><b>Unincorporated Utah County</b></td><td><span class="pn">801-851-8342</span> · <a href="mailto:shaunal@utahcounty.gov">shaunal@utahcounty.gov</a><div class="sub">At least 3 days' notice, before the work is covered. County building is on the 2024 IPC; frost depth 30". 51 S University Ave, Ste 117, Provo.</div></td></tr>
-        <tr><td><b>Salem · Cedar Hills · Payson · Mapleton</b></td><td><span class="sub">Booking details aren't posted where we could read them. Salem city office <span class="pn">801-423-2770</span>; Cedar Hills <span class="pn">801-785-9668</span>. Payson and Mapleton: call the city building office.</span></td></tr>
-        <tr><th colspan="2">Salt Lake &amp; Summit</th></tr>
-        <tr><td><b>Bluffdale</b></td><td><span class="pn">801-849-9425</span> · 801-849-9414 · 801-849-9424<div class="sub">Call by 3:30 pm the business day before. Voicemail is fine: give name, phone, inspection type, date, permit number and address. They don't call back to confirm. A 4-way with power needs the Rocky Mountain Power work order number.</div></td></tr>
-        <tr><td><b>Riverton</b></td><td><span class="pn">801-208-3138</span> before 1 pm<div class="sub"><a href="mailto:building@rivertonutah.gov">building@rivertonutah.gov</a> · City Hall Room 105, 12830 S Redwood Rd · M–F 8–5.</div></td></tr>
-        <tr><td><b>Draper</b></td><td><a href="https://draper.onlama.com" target="_blank" rel="noopener">Online portal ↗</a> only<div class="sub">Inspections card → View Inspections → "I'm Ready." No same-day inspections, and the time isn't guaranteed. Don't call the inspector before 8:30 am that day. Building office 801-576-6399.</div></td></tr>
-        <tr><td><b>Herriman</b></td><td><span class="pn">801-446-5327</span><div class="sub">Call one working day ahead, before 4 pm. Subrough: 10 ft water or 5 psi, 15 min. Gas 5 psi, 15 min. Shower pan water test. Separate secondary-water connection inspection. Meter is on the Public Works final.</div></td></tr>
-        <tr><td><b>West Jordan</b></td><td><span class="pn">801-569-5050</span><div class="sub">Building dept: inspection requirements and status. Permit Center M–F 8–5.</div></td></tr>
-        <tr><td><b>South Jordan</b></td><td><a href="https://cityview.southjordanutah.gov/cityviewportal" target="_blank" rel="noopener">CityView portal ↗</a><div class="sub">Permits and inspections online.</div></td></tr>
-        <tr><td><b>Park City</b></td><td><span class="pn">435-615-5101</span><div class="sub">Book in the City Inspect app by 3 pm for next day. AM 8–12, PM 12–4. Plans + permit on paper on site. Deep snow: confirm vent height.</div></td></tr>
-        <tr><td><b>Unincorporated SL County</b></td><td><a href="https://msd.utah.gov/205/Building-Permits-Inspections" target="_blank" rel="noopener">MSD permits &amp; inspections ↗</a><div><span class="pn">385-910-5830</span> <a href="mailto:inspections@msd.utah.gov">inspections@msd.utah.gov</a></div><div class="sub">Greater Salt Lake Municipal Services District (Kearns, Magna, Copperton, etc.). Inspection hotline or email before 3 pm for next business day.</div></td></tr>
-        <tr><th colspan="2">Davis, Weber, Cache &amp; Washington</th></tr>
-        <tr><td><b>Layton</b></td><td><span class="pn">801-336-3760</span> or the online permit portal<div class="sub">M–F 8–5.</div></td></tr>
-        <tr><td><b>Farmington</b></td><td><span class="pn">801-882-8954</span><div class="sub">24 hr notice; fills 1–2 days out. Storm water and grading booked separately (801-939-9286).</div></td></tr>
-        <tr><td><b>Unincorporated Weber County</b></td><td><span class="pn">801-399-8770</span><div class="sub">Done within 3 business days; AM 8:30–12 or PM 12–4.</div></td></tr>
-        <tr><td><b>Ogden</b></td><td><a href="https://www.ogdencity.gov/183/Building-Permits-Inspections" target="_blank" rel="noopener">City building page ↗</a><div class="sub">Booking steps not confirmed.</div></td></tr>
-        <tr><td><b>Logan</b></td><td><span class="pn">435-716-9030</span><div class="sub">24 hr notice; slots 9–11 and 1:30–3:30.</div></td></tr>
-        <tr><td><b>Unincorporated Cache County</b></td><td><span class="pn">435-755-1650</span>, press 1<div class="sub">By 4 pm the business day before; ready by 8 am.</div></td></tr>
-        <tr><td><b>St. George</b></td><td><a href="https://stg.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a> · building <span class="pn">435-627-4100</span><div class="sub">Booking steps not spelled out online: call.</div></td></tr>
-        <tr><td><b>Washington City</b></td><td><a href="https://washington.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a> · <span class="pn">435-656-6326</span><div class="sub">By 5 pm for the next business day.</div></td></tr>
-        <tr><th colspan="2">Salt Lake City</th></tr>
-        <tr><td><b>Salt Lake City</b></td><td><span class="sub">See <b>Contacts → Call → Utilities &amp; state lines</b>.</span></td></tr>
-      </tbody></table></div>
-    <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct 2026; your super's schedule and the city site win. Look any town up in <b>Inspect → Cities → Look up a city</b>.</p>
+      <tbody id="ci-rows"></tbody></table></div></details>
+    <p class="note">Every city: permit card and approved plans on site, and the system <b>under test when the inspector shows up</b>. Checked Oct–Nov 2026; your super's schedule and the city site win. Towns nobody has checked yet are left out: look them up above.</p>
   </section>
   <section data-sec="utah" data-kw="secondary water pressurized irrigation pi purple non-potable cross connection culinary sprinkler green box meter rp backflow dual source rpz reduced pressure swing joint">
     <div class="sec-head"><h2>Secondary water (PI)</h2><small>Very Utah</small></div>
@@ -4930,17 +4917,17 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
       </tbody></table></div></div>
 
   </section>
-  <section data-sec="emergency" data-kw="stuck help who do i call problem what now frozen meter no water sewer backup spill backflow code question part id i-joist injury unsafe paid wages license hours">
+  <section data-sec="emergency" data-kw="stuck help who do i call problem what now frozen meter no water sewer backup spill backflow code question part id i-joist injury unsafe paid wages license hours deq incidents ddw drinking water division cross connection tester national response center icc code council">
     <div class="sec-head"><h2>Problem? First call</h2><small>Problem → first call</small></div>
     <div class="x"><table class="t wrap">
       <thead><tr><th>When…</th><th>Call first</th></tr></thead>
       <tbody>
         <tr><td><b>You smell gas</b> or hit a gas line</td><td>Get out. From outside: <span class="pn">911</span> or Enbridge <span class="pn">1-800-767-1689</span><div class="sub">Then: your super. Don't go back in.</div></td></tr>
-        <tr><td><b>No water at the setter</b>, frozen or leaking meter, main break</td><td>The city's water department: <b>Inspect → Cities → Look up a city</b><div class="sub">Then: your super. SLC: <span class="pn">801-483-6700</span> (24 hr)</div></td></tr>
+        <tr><td><b>No water at the setter</b>, frozen or leaking meter, main break</td><td>The city's water department: <b>Inspect → Cities → Look up a city</b><div class="sub">Then: your super.</div></td></tr>
         <tr><td><b>Sewer backing up</b> from the main or the lateral at the main</td><td>The city or sewer district: <b>Inspect → Cities → Look up a city</b><div class="sub">Then: your super, before you dig</div></td></tr>
         <tr><td><b>Drinking water may be contaminated</b> (backflow event)</td><td>The city's water department<div class="sub">Then: Division of Drinking Water <span class="pn">801-536-4200</span> (business hours)</div></td></tr>
         <tr><td><b>Spill</b> (fuel, glycol, sewage) into a storm drain, ditch or creek</td><td>DEQ 24-hr incidents <span class="pn">801-536-4123</span><div class="sub">Then: Big or dangerous: <span class="pn">911</span>. Some need the National Response Center <span class="pn">1-800-424-8802</span></div></td></tr>
-        <tr><td><b>Backflow tester</b> or cross-connection question</td><td>DDW cross-connection program <span class="pn">385-600-3378</span><div class="sub">Then: The water system's own backflow program</div></td></tr>
+        <tr><td><b>Backflow tester</b> or cross-connection question</td><td>DDW cross-connection program <span class="pn">385-600-3378</span><div class="sub">Certified testers: <a href="https://deq.utah.gov/drinking-water/cross-connection-control-backflow-prevention" target="_blank" rel="noopener">DDW tester lookup ↗</a>. Then: the water system's own backflow program.</div></td></tr>
         <tr><td><b>Code question</b></td><td>Your journeyman or super, then the city inspector or plans examiner (<b>Inspect → Cities → Look up a city</b>)<div class="sub">Then: Only the local building official can rule. ICC <span class="pn">1-888-422-7233</span> sells the books.</div></td></tr>
         <tr><td><b>Part ID</b>, error code, warranty</td><td>The maker's tech line: <b>Contacts → Tech lines</b><div class="sub">Then: Photo the rating plate first (model + serial)</div></td></tr>
         <tr><td><b>Hole through an I-joist</b>, LVL or truss</td><td>Joist maker: Weyerhaeuser <span class="pn">1-888-453-8358</span> · BCI <span class="pn">1-800-232-0788</span><div class="sub">Then: Trusses: never cut. The super gets the truss engineer.</div></td></tr>
@@ -4949,13 +4936,13 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
         <tr><td><b>Chemical</b> in eyes, on skin, or fumes</td><td>Poison Control <span class="pn">1-800-222-1222</span><div class="sub">Then: Read the can's first-aid label to them</div></td></tr>
         <tr><td><b>Site feels unsafe</b> (trench, fall, electrical)</td><td>Your super<div class="sub">Then: UOSH <span class="pn">1-800-530-5090</span></div></td></tr>
         <tr><td><b>Pay</b> is short or late</td><td>Your employer's office<div class="sub">Then: Labor Commission wage claims <span class="pn">801-530-6801</span></div></td></tr>
-        <tr><td><b>Hours or license</b> question</td><td>MTECH or your sponsor<div class="sub">Then: DOPL <span class="pn">801-530-6628</span></div></td></tr>
+        <tr><td><b>Hours or license</b> question</td><td>MTECH or your sponsor<div class="sub">Then: DOPL, in <b>Utilities &amp; state lines</b> below</div></td></tr>
       </tbody></table></div>
     <p class="note">The first call is almost always your journeyman or super: they know the job, the city and the inspector. Save their numbers in <b>My numbers</b>.</p>
   </section>
   <section data-sec="emergency" data-kw="my numbers save add super journeyman inspector cell phone contact">
     <div class="sec-head"><h2>My numbers</h2><small>Saved on this phone</small></div>
-    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you want the numbers you call most in one place: your super, your journeyman, the inspector's cell, a city's after-hours water line.</p><p><b>How:</b> type who it is and the number, then Add. Numbers are tappable, stay on this phone and go in your backup.</p></div></details>
+    <details class="explain"><summary>What is this? When do I use it?</summary><div><p><b>Use it when</b> you want the numbers you call most in one place: your super, your journeyman, the inspector's cell, a city's after-hours water line.</p><p><b>How:</b> type who it is and the number, then Add. Numbers are tappable, stay on this phone and go in your backup. People in <b>My jobs</b> who have a number (your lead, super, inspector) show up here on their own, so you don't type them twice.</p></div></details>
     <div class="calc">
       <label for="mn-name"><span>Who</span><input id="mn-name" type="text" maxlength="40" autocomplete="off" placeholder="Super, inspector…"></label>
       <label for="mn-num"><span>Number</span><input id="mn-num" type="tel" inputmode="tel" maxlength="24" autocomplete="off" placeholder="801-555-0100"></label>
@@ -4963,26 +4950,20 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     </div>
     <div class="x"><table class="t"><tbody id="mn-rows"></tbody></table></div>
   </section>
-  <section data-sec="emergency" data-kw="blue stakes bluestakes 811 inspections enbridge dopl utility state deq ddw drinking water cross connection backflow environmental spill incident water quality labor commission icc code council salt lake public utilities cuwcd central utah water">
+  <section data-sec="emergency" data-kw="blue stakes bluestakes 811 enbridge gas service meter dopl utility state deq main water quality labor commission workers comp cuwcd central utah water">
     <div class="sec-head"><h2>Utilities &amp; state lines</h2><small>Tap to call · hold to copy</small></div>
     <div class="x"><table class="t">
       <tbody>
         <tr><th><a href="https://www.bluestakes.org/" target="_blank" rel="noopener">Blue Stakes ↗</a></th><td><span class="pn">811</span> <span class="pn">801-208-2100</span><div class="sub">48 business hours before digging (clock starts 8 am the next business day, so plan on 3 business days), max 14 days ahead. Ticket good 21 days. Marks only to the meter, so private lines may not be marked.</div></td></tr>
-        <tr><th><a href="https://www.slc.gov/buildingservices/building-inspections/" target="_blank" rel="noopener">SLC inspections ↗</a></th><td><span class="pn">801-535-7224</span><div class="sub">Mon–Fri 7 am–3:30 pm. To schedule: SLC Building Inspections app, the online portal or <span class="pn">801-535-6000</span> (automated); next-day requests by 3 pm. Other cities have their own line.</div></td></tr>
         <tr><th><a href="https://www.enbridgegas.com/utwyid/start-stop-service/construction-services/construction-services-contacts" target="_blank" rel="noopener">Enbridge Gas ↗</a></th><td>Service <span class="pn">1-800-323-5517</span><div class="sub">Formerly Dominion / Questar. New service and meters: Construction Services. Gas leak: see Emergency above.</div></td></tr>
         <tr><th><a href="https://commerce.utah.gov/dopl/plumbing/" target="_blank" rel="noopener">DOPL ↗</a></th><td><span class="pn">801-530-6628</span><div class="sub">Licenses, renewals, exam approval.</div></td></tr>
       
-        <tr><th>DEQ incidents</th><td><span class="pn">801-536-4123</span><div class="sub">24 hr. Spills and environmental incidents. Life or property at risk: 911.</div></td></tr>
-        <tr><th>Drinking Water (DDW)</th><td><span class="pn">801-536-4200</span><div class="sub">Drinking water events, business hours.</div></td></tr>
-        <tr><th>Cross-connection</th><td><span class="pn">385-600-3378</span><div class="sub">DDW backflow program: certified testers and program administrators. Tester lookup on the <a href="https://deq.utah.gov/drinking-water/cross-connection-control-backflow-prevention" target="_blank" rel="noopener">DDW page ↗</a>.</div></td></tr>
         <tr><th>Water Quality</th><td><span class="pn">801-536-4300</span><div class="sub">Releases that could reach streams, canals or groundwater.</div></td></tr>
         <tr><th>DEQ main</th><td><span class="pn">801-536-4000</span><div class="sub">M–F 8a–5p.</div></td></tr>
-        <tr><th>National Response Center</th><td><span class="pn">1-800-424-8802</span><div class="sub">Federal spill reporting, for the incidents that require it.</div></td></tr>
-        <tr><th>Labor Commission</th><td><span class="pn">801-530-6800</span><div class="sub">Main line: workers' comp, wage claims, UOSH. Imminent danger: <span class="pn">801-530-6901</span>.</div></td></tr>
-        <tr><th>ICC</th><td><span class="pn">1-888-422-7233</span><div class="sub">1-888-ICC-SAFE, press 0. Code books, certification exams. customersuccess@iccsafe.org</div></td></tr>
-        <tr><th>SLC Public Utilities</th><td><span class="pn">801-483-6700</span><div class="sub">24-hr dispatch: water main, sewer, storm drain trouble in Salt Lake City. Customer service <span class="pn">801-483-6900</span>, M–F 8a–5p.</div></td></tr>
+        <tr><th>Labor Commission</th><td><span class="pn">801-530-6800</span><div class="sub">Main line: workers' comp, wage claims, UOSH. Imminent danger or a serious injury: the UOSH lines in <b>Emergency</b> above.</div></td></tr>
         <tr><th>Central Utah Water</th><td><span class="pn">801-226-7100</span><div class="sub">Orem HQ. Wholesale water to many Utah County cities; for a house, call the city first.</div></td></tr>
       </tbody></table></div>
+    <p class="note">Spills, drinking water, backflow testers and the ICC are in <b>Problem? First call</b> above, next to when to call them. A city's inspection and water lines: <b>Inspect → Cities → Look up a city</b>.</p>
   </section>
   <section data-sec="houses" data-kw="supply house store counter parts ferguson mountainland peterson great western winsupply winnelson bj plumbing ewing irrigation showroom union ua local 140 uphca orem lehi american fork sandy salt lake murray spanish fork west jordan heber utah county saratoga springs">
     <div class="sec-head"><h2>Supply houses &amp; contacts</h2><small>Within ~50 mi of Saratoga Springs · tap to call</small></div>
@@ -5552,6 +5533,10 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 26, 2026 · One copy of everything, stage checklists</th><td><b>Stage checklists:</b> My jobs → <b>Stage checklists</b> (on the jobs list, or Jobs settings) has one list for each stage: Underground, Top-out (rough-in), Gas, Finish and Final. Every new job starts with the same lists. Change one there before you make the job, one line per item. Jobs you already have keep their lists and checks, and one odd job can still be changed with Edit on its checklist. <b>No more double copies:</b> Inspect → Cities → City inspections is now built from the same city list as Look up a city, so the two can't disagree (the old copy had Cedar Hills' old line; it books through Sunrise Engineering, 800-560-6151). It's folded under "Every city side by side" and now covers every checked town. Contacts → Call: Utilities &amp; state lines no longer repeats the numbers in Problem? First call. <b>My numbers</b> shows the people in My jobs who have a number, so you don't type a super twice. Calc → Plans → Scale a plan now points PDFs to the Measure tool. Build → Vents: the terminals card points to Vent size instead of repeating it. <b>Sturdier:</b> odd saved data (a number where a name goes, a broken checklist) is cleaned up on open.</td></tr>
+        <tr><th>Nov 26, 2026 · Faster to open, fewer taps</th><td><b>More:</b> each section now lists its pages, so one tap lands you right on Cities, Weather, Jobs, Glossary and the rest (the page you're on is filled in). Tap the section's name to go back to the page you were last on there. <b>Jobs:</b> a <b>Recent</b> row at the top of the list has the 4 jobs you opened or changed last, one tap each. <b>Opening the book</b> does less work before you can tap: the glossary sorts about 3× faster, drawing colours are read once instead of one at a time, and a few spots that made the phone measure the whole page at start-up now wait until it's on screen. In testing on a slowed-down phone, the app was ready to tap about a quarter sooner.</td></tr>
+        <tr><th>Nov 25, 2026 · Measure &amp; Find on plans</th><td><b>New in the plan viewer: 📏 Measure.</b> Set a sheet's scale once (tap both ends of a dimension printed on the sheet and type its length, or pick the printed scale like 1/4" = 1'-0"), then tap any two points for the length. Every measurement shows its ± for the zoom you're at (zoom in for closer); a tap on a phone screen is only so exact. Setting the scale from a dimension is the most reliable, and it works on shrunk copies; a printed scale is only right on a full-size sheet, and the app tells you the sheet's size so you can check. The scale is saved with the PDF (and in the photos &amp; files backup). <b>🔎 Find</b> searches the words in a plan set (WH, P-3, cleanout, hose bib), highlights every match, including sideways text, and steps through them sheet by sheet. Scanned plans have no words to search, and the app says so. Both checked against hand-worked answers: a 40' 0" line sets the scale, then a line 3" long on paper measures 12' 0".</td></tr>
+        <tr><th>Nov 25, 2026 · Smoother photos &amp; plans, polish</th><td><b>Plans:</b> the viewer now gives back the phone's drawing memory as it goes and when you close it. On iPhone, plans could otherwise go blank after opening several (Safari stops drawing past its limit). Pages near where you're looking draw first; when you scroll fast, ones you've passed no longer hold you up. Zoomed in, the sharp close-up covers a bit more than the screen, so small pans stay sharp without redrawing. Turning the phone while zoomed keeps everything lined up. <b>Fixed:</b> opening a file right after closing one could leave the viewer blank. <b>Markup:</b> drawing stays quick however many marks are on the photo; freehand lines are smooth curves and catch every movement of your finger or Apple Pencil; the frame-rate setting no longer slows drawing. <b>Photos</b> the phone can't read now say so instead of showing nothing. <b>On a computer:</b> drag with the mouse to move around a zoomed photo or sheet, and press + / − / 0 to zoom in, out, or back to fit. A big plan set counts its pages while it opens. <b>Fixed:</b> two rare cases where a missing location or switch time could read as 0 in the follow-daylight theme. Every calculator was checked with blank boxes: each says what to type instead of showing a made-up answer. <b>Fixed (weather):</b> when the forecast service left a day's value blank, the app could count it as 0°F, showing a false freezing badge on a job, an extra freezing night in Week ahead, or a false freeze warning on an inspection.</td></tr>
         <tr><th>Nov 24, 2026 · Error &amp; jitter pass, frame rate</th><td><b>Checked the whole book for errors and jumpy screens</b>: every page on a phone and a computer screen, 2,087 typed entries (including junk like letters in number boxes), every fold, all 29 themes in light and dark with each font setting, the Jobs screens, the weather page while the forecast loads, and scrolling every page frame by frame. No errors turned up. <b>Fixed:</b> on a slow connection the text could jump when the fonts arrived late. The fonts now ship with the app, so they're there before the first screen draws, work offline from the very first launch, and the book no longer contacts Google at all. <b>New, just for fun:</b> Settings → Behavior → <i>Frame rate</i> (Auto, 60, 30 or 15) caps how often the book redraws its own moving parts (the 3D rough-in view, splashes, drawing plan PDFs), and <i>Show the frame counter</i> puts a live fps number in the corner. Scrolling and pinch-zoom stay at full speed. At 15, plan PDFs take longer to sharpen.</td></tr>
         <tr><th>Nov 24, 2026 · Smoother zoom</th><td><b>Pinch-zoom on plans and photos is smooth now.</b> While your fingers are down the picture just slides and scales (no redrawing, so it keeps up with your fingers), then it sharpens a moment after you let go. Double-tap and Zoom in / Fit to screen glide instead of jumping. A quick swipe or flick can't set off a double-tap zoom by mistake anymore, and zooming out keeps the sheet centered.</td></tr>
         <tr><th>Nov 24, 2026 · The app draws PDFs</th><td><b>Plan PDFs now open right inside the app on every phone, iPad and computer</b>: every page stacked, page count at the bottom, pinch or double-tap to zoom (up to 12×), one finger to move around. Zoomed in, the part on screen is drawn again, so plan lines and small print stay sharp at any zoom. It works with no signal and reads scanned sheets too. This replaces this morning's "Open in the iPhone's PDF viewer" button. The viewer is PDF.js from Mozilla; it's saved once (about 2 MB on the phone) and kept through app updates, so updates don't download it again. Credit in Terms.</td></tr>
@@ -6433,8 +6418,9 @@ const ftInTxt = ft => fmtFtIn(ft * 12);   /* fmtFtIn rounds once, to the Setting
 const nf = (x, d=3) => isFinite(x) ? Math.abs(x) >= 1e9 ? x.toExponential(3) : (x !== 0 && Math.abs(x) < 0.01 ? (+x.toPrecision(4)).toString() : Math.abs(x) >= 1000 ? x.toLocaleString(undefined,{maximumFractionDigits:1}) : (+x.toFixed(d)).toString()) : "—";
 /* CSS variables for drawings, cached per look: reading computed style 40 times a redraw forced style passes. The cache resets when theme, skin, vest or text size changes. */
 let cssSig = "", cssMemo = {};
+const CSSV_ALL = ["--d-bg","--d-cut","--d-cut-lbl","--d-dim","--d-fit","--d-grid","--d-pipe","--d-rise","--d-roll","--d-run","--d-text","--d-tru","--danger","--g-calc","--g-parts","--hi","--hv","--ink","--muted","--ok","--rule","--sheet"];
 const cssv = n => { const d = document.documentElement, s = (d.dataset.theme || "") + (d.dataset.skin || "") + (d.dataset.vest || "") + d.style.cssText;
-  if (s !== cssSig){ cssSig = s; cssMemo = {}; }
+  if (s !== cssSig){ cssSig = s; cssMemo = {}; const cs = getComputedStyle(d); CSSV_ALL.forEach(k => cssMemo[k] = cs.getPropertyValue(k).trim()); }   /* one style pass for every colour the drawings use */
   return cssMemo[n] ??= getComputedStyle(d).getPropertyValue(n).trim(); };
 /* light up the pressed button in a button group: press("#ro-mode", b => b.dataset.mode === m). Takes a selector (every match) or an element. */
 const press = (box, on) => (typeof box === "string" ? document.querySelectorAll(box + " button") : box.querySelectorAll("button")).forEach(b => b.setAttribute("aria-pressed", String(on(b))));
@@ -6924,7 +6910,7 @@ const GLOSS = [
   ["Backfeed","elec","Power pushed from a generator back into a panel and out onto the utility lines. Kills lineworkers. Use a transfer switch."],
   ["Transfer switch","elec","Switch an electrician installs so a generator can power a panel without connecting to the utility at the same time."]
 ];
-GLOSS.sort((a,b) => a[0].localeCompare(b[0], undefined, {sensitivity:"base", numeric:true}));
+{ const C = new Intl.Collator(undefined, {sensitivity:"base", numeric:true}); GLOSS.sort((a,b) => C.compare(a[0], b[0])); }   /* one collator: same order as localeCompare, far faster on first open */
 const GCAT = Object.fromEntries(GLOSS_CATS);
 $("gloss").innerHTML = GLOSS.map(([t,c,d]) => `<tr data-cat="${c}" data-search="${esc((t+" "+d+" "+GCAT[c]).toLowerCase())}"><th>${esc(t)}<div class="sub">${esc(GCAT[c])}</div></th><td>${esc(d)}</td></tr>`).join("");
 /* fact file: [card, topic, fact, source key]. Sources checked Oct 2026; study-guide sources say so in their label. */
@@ -7222,7 +7208,7 @@ const FPS = (() => { const raw = window.requestAnimationFrame.bind(window), rawX
       if (show && !mOn){ if (!meter){ meter = document.createElement("div"); meter.id = "fps-meter"; meter.setAttribute("aria-hidden", "true"); document.body.appendChild(meter); }
         meter.hidden = false; meter.textContent = "… fps"; mOn = true; mFrames = 0; mT = 0; requestAnimationFrame(mTick); }
       else if (!show && mOn){ mOn = false; meter.hidden = true; } },
-    get cap(){ return cap; }}; })();
+    get cap(){ return cap; }, raw}; })();   /* raw: the uncapped frame, for drawing that follows your finger (markup) */
 { const s = store.get("jpb-nav", null);
   if (PREFS.start !== "last" && GROUPS[PREFS.start]) nav = {group: PREFS.start, sub: GROUPS[PREFS.start][0][0]};
   else if (s && GROUPS[s.group] && GROUPS[s.group].some(([k]) => k === s.sub)) nav = s; }
@@ -7460,7 +7446,7 @@ $("q").addEventListener("input", () => {
    "tears away": the rubber-band bounce (stopped in CSS with overscroll-behavior), the keyboard (bar hidden while typing,
    re-seated after), and pinch-zoom (bar moved and scaled onto the visible area). visualViewport says where the screen really is. */
 { const navEl = document.querySelector("nav.tabs"), vv = window.visualViewport, mq = matchMedia("(max-width:759px)");
-  let raf = 0, normH = 0, lastPoke = 0, lastSnap = "", tries = 0, lastW = innerWidth, vpT = 0;
+  let raf = 0, normH = 0, lastPoke = 0, lastSnap = "", tries = 0, lastW = 0, vpT = 0;   /* lastW is read on the first glue, not at load (reading it at load forces a layout) */
   const VP0 = (document.querySelector('meta[name="viewport"]') || {getAttribute: () => ""}).getAttribute("content");   /* the viewport line as shipped */
   const settle = () => {   /* the app's page can't scroll, so iOS never re-measures on its own: give it one tiny scroll */
     const H = document.documentElement, b = document.body;
@@ -7490,7 +7476,7 @@ $("q").addEventListener("input", () => {
       /* Seen on an iPhone (Nov 2026): after the keyboard, iOS shrinks the app by the status bar's height (852 → 793) and
          draws nothing below that, so moving the bar down only cuts it off. Leave the bar where iOS draws, and ask iOS to
          re-measure: let the page scroll 1 px and back, the way it settles itself after a scroll. */
-      if (innerWidth !== lastW){ lastW = innerWidth; normH = 0; }   /* turned sideways and back: forget the old height */
+      if (lastW && innerWidth !== lastW) normH = 0; lastW = innerWidth;   /* turned sideways and back: forget the old height */
       const short = SHELL && !typing() ? normH - innerHeight : 0, gap = typing() || SHELL ? 0 : dy;   /* home-screen app: never slide the bar (it gets cut off) */
       if (gap > 0.5 && gap < 320) navEl.style.transform = `translate3d(0,${gap.toFixed(1)}px,0)`; else navEl.style.transform = "translateZ(0)";
       if (SCR) SCR.style.bottom = "";
@@ -7531,11 +7517,20 @@ $("q").addEventListener("input", () => {
    link inside the book still opens them. */
 const TAB_DEF = {calc:"bar", rough:"bar", mech:"bar", trim:"bar", inspect:"more", contacts:"more", site:"more", learn:"more", mine:"more"};
 const tabMode = g => TAB_DEF[g] ? (["bar","more","off"].includes(PREFS.tabs[g]) ? PREFS.tabs[g] : TAB_DEF[g]) : "bar";
+/* More: each section gets its pages as chips, built from GROUPS so they never drift. Tap the name for the page you were
+   last on there, or a chip to land straight on that page (one tap fewer than opening the section and then its sub-tab). */
+document.querySelectorAll("#more-list > button[data-group]").forEach(b => {
+  const g = b.dataset.group, w = document.createElement("div");
+  w.className = "more-item"; w.dataset.group = w.dataset.g = g; b.classList.add("more-main"); b.removeAttribute("data-g");
+  const sp = b.querySelector("span"); if (sp) sp.remove();
+  b.replaceWith(w); w.append(b);
+  if (GROUPS[g].length > 1) w.insertAdjacentHTML("beforeend", `<div class="more-subs" role="group" aria-label="${GNAME[g]} pages">${GROUPS[g].map(([s, t]) => `<button type="button" data-group="${g}" data-sub="${s}">${esc(t)}</button>`).join("")}</div>`);
+});
 function tabsApply(){
   const order = Object.keys(TAB_DEF);
   MORE_G = order.filter(g => tabMode(g) === "more");
   document.querySelectorAll("nav.tabs button[data-group]").forEach(b => { const g = b.dataset.group; if (!TAB_DEF[g]) return; const m = tabMode(g); b.classList.toggle("wide-tab", m !== "bar"); b.hidden = m === "off"; });
-  document.querySelectorAll("#more-list button[data-group]").forEach(b => { b.hidden = tabMode(b.dataset.group) !== "more"; });
+  document.querySelectorAll("#more-list .more-item").forEach(b => { b.hidden = tabMode(b.dataset.group) !== "more"; });
   document.querySelectorAll("[data-go]").forEach(b => { const off = tabMode(b.dataset.go.split("|")[0]) === "off"; if (off){ b.hidden = true; b.dataset.tabOff = "1"; } else if (b.dataset.tabOff){ b.hidden = false; delete b.dataset.tabOff; } });
   document.documentElement.style.setProperty("--bar-n", 2 + order.filter(g => tabMode(g) === "bar").length);
   if (tabMode(nav.group) === "off") nav = {group: "home", sub: "home"};
@@ -7642,7 +7637,8 @@ const SEE = [["Water heater install","Circuits, wire & bonding"],["Water heater 
   ["Altitude derate","Altitude settings"],["Drains, vents & cleanouts","Venting rules"],["Tests & inspections","Test log"],["Utah's IRC amendments","2021 IPC quick reference"],["Gas piping & venting","Gas piping"],
   ["Water heaters","Water heater install"],["Mech room","Mech room map"],["Fixture & trim installs","Trim-out: rest of the house"],["Pipe, fittings & joints","Joint tricks"],["Safety facts","Jobsite safety"],
   ["Utah water rules & more","Utah water"],["Compression & flare","Thread types"],["Expansion tank size","Mech room trouble"]];
-{ const byT = t => SECTIONS.find(s => s.querySelector("h2").textContent.trim() === t), links = new Map();
+{ const T = new Map(); SECTIONS.forEach(s => { const t = s.querySelector("h2").textContent.trim(); if (!T.has(t)) T.set(t, s); });
+  const byT = t => T.get(t), links = new Map();
   SEE.forEach(([a, b]) => { const A = byT(a), B = byT(b); if (!A || !B) return; [[A, B], [B, A]].forEach(([x, y]) => { if (!links.has(x)) links.set(x, []); if (!links.get(x).includes(y)) links.get(x).push(y); }); });
   links.forEach((ys, x) => x.insertAdjacentHTML("beforeend", `<p class="note see-also"><b class="see-k">See also</b> ${ys.map(y => `<button type="button" class="linkish" data-see="${y.dataset.pid}">${esc(y.querySelector("h2").textContent)} <span aria-hidden="true">›</span></button>`).join(" ")}</p>`));
   document.addEventListener("click", e => { const b = e.target.closest("[data-see]"); if (!b) return; const s = SECTIONS.find(x => x.dataset.pid === b.dataset.see); if (s) jumpToSec(s); });
@@ -7665,7 +7661,7 @@ function themeLabel(){
   const dark = document.documentElement.dataset.theme === "dark", name = dark ? "Night" : "Sun", d = daylight();
   const tip = themeHold && themeHold.until > Date.now() + 2*864e5 ? `${name}, pinned in Settings (gear). Tap for ${dark ? "Sun" : "Night"}.`
     : themeHold ? `${name}, your pick until ${clock(themeHold.until)}. Then it follows daylight again. Tap for ${dark ? "Sun" : "Night"}.`
-    : PREFS.light === "daylight" ? `${name}, following daylight${isFinite(d.next) ? `: ${dark ? "Sun" : "Night"} at ${clock(d.next)}` : ""}. Tap for ${dark ? "Sun" : "Night"}.`
+    : PREFS.light === "daylight" ? `${name}, following daylight${d.next != null && isFinite(d.next) ? `: ${dark ? "Sun" : "Night"} at ${clock(d.next)}` : ""}. Tap for ${dark ? "Sun" : "Night"}.`
     : `${name}, following your phone's dark mode. Tap for ${dark ? "Sun" : "Night"}.`;
   $("theme-lbl").textContent = name; $("theme-btn").title = tip; $("theme-btn").setAttribute("aria-label", "Color mode: " + tip);
 }
@@ -7673,7 +7669,7 @@ $("theme-btn").addEventListener("click", () => {
   if (PREFS.skin === "night"){ toast("Night shift theme stays dark. Switch themes in <b>Settings</b>.", 2600); return; }
   const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark", d = daylight();
   if (themeHold && themeHold.until >= 8.64e15 - 1) themeHold = {look: next, until: 8.64e15};   /* pinned in Settings: stay pinned, just flip */
-  else if (PREFS.light === "daylight") themeHold = next === (d.day ? "light" : "dark") ? null : {look: next, until: isFinite(d.next) ? d.next : Date.now() + 12*3600e3};
+  else if (PREFS.light === "daylight") themeHold = next === (d.day ? "light" : "dark") ? null : {look: next, until: d.next != null && isFinite(d.next) ? d.next : Date.now() + 12*3600e3};
   else themeHold = next === (phoneDark.matches ? "dark" : "light") ? null : {look: next, until: Date.now() + 12*3600e3};
   store.set("jpb-theme", themeHold); themeNow(); themeLabel(); redrawArt(); say(next === "dark" ? "Night colors" : "Sun colors");
 });
@@ -7693,7 +7689,8 @@ function prefApply(){
   FPS.set(PREFS.fps, !!PREFS.fpsShow);
   $("tip").classList.toggle("pref-off", !PREFS.tip);
   $("code-jump").hidden = !PREFS.chip;
-  const k = getComputedStyle(ROOT).getPropertyValue("--k").trim(); const m = document.querySelector('meta[name="theme-color"]'); if (m && k) m.content = k;
+  /* status-bar colour: read after the next paint, so opening the app doesn't wait on a style pass */
+  if (!prefApply.t) prefApply.t = requestAnimationFrame(() => { prefApply.t = 0; const k = getComputedStyle(ROOT).getPropertyValue("--k").trim(); const m = document.querySelector('meta[name="theme-color"]'); if (m && k) m.content = k; });
 }
 let wakeLock = null;
 async function wakeSet(){
@@ -7707,7 +7704,7 @@ function lookDraw(){
   const mode = themeHold && themeHold.until >= PIN - 1 ? themeHold.look : (PREFS.light || "phone"), night = PREFS.skin === "night";
   $("look-light").querySelectorAll("button").forEach(b => { b.setAttribute("aria-pressed", String(!night && b.dataset.l === mode)); b.disabled = night; });
   const d = daylight();
-  $("look-light-note").textContent = night ? "Night shift is always dark. Pick another theme to use Sun." : mode === "phone" ? "Follows your phone's dark-mode setting. The sun/moon button flips it for a while." : mode === "daylight" ? `Follows daylight where you are${isFinite(d.next) ? `: switches at ${clock(d.next)}` : ""}. The sun/moon button flips it until the next dawn or dusk.` : `Stays ${mode === "light" ? "Sun" : "Night"} until you pick Phone or Daylight.`;
+  $("look-light-note").textContent = night ? "Night shift is always dark. Pick another theme to use Sun." : mode === "phone" ? "Follows your phone's dark-mode setting. The sun/moon button flips it for a while." : mode === "daylight" ? `Follows daylight where you are${d.next != null && isFinite(d.next) ? `: switches at ${clock(d.next)}` : ""}. The sun/moon button flips it until the next dawn or dusk.` : `Stays ${mode === "light" ? "Sun" : "Night"} until you pick Phone or Daylight.`;
   const vest = ROOT.dataset.vest || "lime";
   press($("look-vest"), b => b.dataset.v === vest);
   $("vest-row").hidden = (PREFS.skin || "hivis") !== "hivis";
@@ -7953,16 +7950,17 @@ $("copy-link").addEventListener("click", () => copyText(BOOK_URL, "Link copied."
 
 $("look").addEventListener("click", e => { if (e.target === $("look")) lookOpen(false); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") ["look","more","setup"].forEach(n => { if (sheetOn(n)) sheet(n, false); }); });
-$("more-btn").addEventListener("click", () => sheet("more", !sheetOn("more")));
+$("more-btn").addEventListener("click", () => { document.querySelectorAll("#more-list .more-subs button").forEach(c => { if (c.dataset.group === nav.group && c.dataset.sub === nav.sub) c.setAttribute("aria-current", "page"); else c.removeAttribute("aria-current"); }); sheet("more", !sheetOn("more")); });
 $("more-close").addEventListener("click", () => sheet("more", false));
 $("more-list").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   SHEETS.more(false);   /* swap the More step for the tab, so Back from the tab skips the sheet */
   if (b.dataset.act === "settings" || b.dataset.act === "share"){ try { history.replaceState(Object.assign({}, history.state || {}, {sheet: ""}), ""); } catch(err){} sheet("look", true);
     if (b.dataset.act === "share") setTimeout(() => $("set-share").scrollIntoView({block: "start"}), 60); return; }
-  if (histOk && history.state && history.state.sheet === "more"){ restoring = true; nav = {group: b.dataset.group, sub: GROUPS[b.dataset.group][0][0]}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrTo({top:0}); placeRemember(); restoring = false;
+  const g = b.dataset.group, sub = b.dataset.sub || lastSub(g);
+  if (histOk && history.state && history.state.sheet === "more"){ restoring = true; nav = {group: g, sub}; $("q").value = ""; saveNav(); drawSubs(); apply(); scrTo({top:0}); placeRemember(); restoring = false;
     try { history.replaceState({g: nav.group, s: nav.sub, q: ""}, "", navHash()); } catch(err){} }
-  else go(b.dataset.group);
+  else go(g, sub);
 });
 prefApply(); wakeSet(); lookDraw();
 
@@ -7974,12 +7972,12 @@ document.querySelectorAll("table.cards").forEach(t => {
 
 /* ---------- 5 toolbar: tucks away scrolling down on phones, back on any scroll up ---------- */
 (() => {
-  let lastY = scrY(), ticking = false, tucked = false;
+  let lastY = null, ticking = false, tucked = false;   /* read on the first scroll, not at load */
   const setTuck = on => { if (on === tucked) return; tucked = on; tools.style.top = on ? -(tools.offsetHeight + 4) + "px" : ""; };
   SCR_EV.addEventListener("scroll", () => {
     if (ticking) return; ticking = true;
     requestAnimationFrame(() => {
-      const y = scrY(), down = y > lastY + 4, up = y < lastY - 4;
+      const y = scrY(); if (lastY === null) lastY = y; const down = y > lastY + 4, up = y < lastY - 4;
       tools.classList.toggle("stuck", y > 40);
       const busy = tools.contains(document.activeElement) || document.querySelector(".ro-stage.big");
       if (innerWidth < 760 && down && y > 300 && !busy) setTuck(true);
@@ -9572,25 +9570,25 @@ const CITIES = [
   {id:"cf", n:"Cedar Fort", book:'Online request form on the town site, 2 full business days ahead. Not booked until the town confirms; nothing in 24 hr, call <span class="pn">801-768-2147</span> x5.', pi:"Ask the town.", h:GAP("Not confirmed: test it."), f:FROST_UC, notes:"Septic and water connection are their own inspections."},
   {id:"em", n:"Eagle Mountain", book:"Email buildinginspections@eaglemountain.gov with the permit number. No confirmation email back = not on the schedule. First come, first served.", pi:"Yes. Separate trench from the water service (no sharing).", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Eagle Mountain Building Design Criteria, rev. 7/2026 · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"",
     notes:"Order: underground → 4-way → frost-protection insulation → final. Final needs the meter set: lid at grade, setter 20\" ±2\" below the lid, nothing within 5 ft; $50 re-final if not."},
-  {id:"hi", n:"Highland", book:'<a href="https://highland.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-772-4516</span>. Scheduled Mon–Thu 8–5; office closed Fridays.', pi:"Ask the city.", h:"11.4 gpg", f:FROST_UC, notes:"Underground plumbing and the sewer connection are separate inspections."},
+  {id:"hi", n:"Highland", book:'<a href="https://highland.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-772-4516</span>. Scheduled Mon–Thu 8–5; office closed Fridays (inspections by appointment).', pi:"Ask the city.", h:"11.4 gpg", f:FROST_UC, notes:"Underground plumbing and the sewer connection are separate inspections."},
   {id:"le", n:"Lehi", book:'<span class="pn">385-201-1035</span> Phone only: no voicemail, email or online booking. 24 hr notice.', pi:"Yes. One culinary and one PI connection per lot; connections off by Oct 15.", h:"≈9 gpg", f:"Frost line 30\" min (Lehi Building & Inspections page · checked Nov 2026), so service ≈36\".",
     notes:"Sewer lateral 2% minimum to the property line, inspected before backfill. Not ready = re-inspection fee."},
   {id:"li", n:"Lindon", book:'Building &amp; Inspection <span class="pn">801-785-7687</span>, building@lindon.gov. ' + GAP("Booking method not posted: call."), pi:"Ask the city.", h:"6.9 gpg", f:FROST_UC},
-  {id:"or", n:"Orem", book:'Inspection line <span class="pn">801-229-7060</span>. Have the address, permit number, inspection type and building type ready.', pi:"No citywide PI.", h:"8.2 gpg", f:"Frost line 30\" (Orem Current Adopted Codes page, frost line depth 30\" · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"", notes:"Underground plumbing is tested at the underground inspection. Rough needs the roof, doors and windows in and shear approved."},
+  {id:"or", n:"Orem", book:'Inspection line <span class="pn">801-229-7060</span>. Have the address, permit number, inspection type and building type ready. Call before covering anything.', pi:"No citywide PI.", h:"8.2 gpg", f:"Frost line 30\" (Orem Current Adopted Codes page, frost line depth 30\" · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"", notes:"Underground plumbing is tested at the underground inspection. Rough needs the roof, doors and windows in and shear approved."},
   {id:"sq", n:"Santaquin", book:'<span class="pn">801-754-1011</span>, phone only, 24 hr ahead in office hours (M–Th 9–5, Fri 9–1). Monday inspections: call by 1 pm Friday.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_UC, notes:"Ready by 8 am or a $65 re-inspection fee."},
-  {id:"uc", n:"Unincorporated Utah County", book:'<span class="pn">801-851-8342</span> or shaunal@utahcounty.gov, 3 days\' notice.', pi:"Ask the water provider.", h:GAP("Depends on the water source."), f:"30\" (county), so service ≈36\".", notes:"County building is on the 2024 IPC."},
-  {id:"vi", n:"Vineyard", book:'<a href="https://vineyard.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-226-1929</span>. Voicemail requests not honored; no same-day.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Vineyard design criteria sheet · checked Nov 2026), so service ≈36\"."},
+  {id:"uc", n:"Unincorporated Utah County", book:'<span class="pn">801-851-8342</span> or shaunal@utahcounty.gov, 3 days\' notice, before the work is covered.', pi:"Ask the water provider.", h:GAP("Depends on the water source."), f:"30\" (county), so service ≈36\".", notes:"County building is on the 2024 IPC."},
+  {id:"vi", n:"Vineyard", book:'<a href="https://vineyard.cityinspect.com/login" target="_blank" rel="noopener">City Inspect ↗</a> or <span class="pn">801-226-1929</span>. Voicemail requests not honored; no same-day. Inspections M–F 8–5; the office closes Friday at noon, so confirm Friday PMs.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Vineyard design criteria sheet · checked Nov 2026), so service ≈36\"."},
   {id:"pr", n:"Provo", book:'<a href="https://www.provo.gov/1019/Schedule-Building-Inspection" target="_blank" rel="noopener">Schedule online ↗</a> through the city\'s self-service portal.', pi:"Ask the city.", h:"10–15 gpg", f:"30\" design (Provo design criteria), so service ≈36\".",
     notes:"Design temps 13°F winter, 95°F summer; elevation 4,491 ft."},
   {id:"ss", n:"Saratoga Springs", book:'Email buildinginspectionrequest@saratogasprings-ut.gov or <span class="pn">801-766-6507</span> x120. One business day ahead: by 5 pm Mon–Thu, 4 pm Fri.', pi:"Yes. Green box near the property line, usually a 1\" ball valve. Drained the week of Oct 15.", h:"5.6 gpg", f:"Frost line 30\" (Saratoga Springs Design Criteria page · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"",
     notes:"No 4-way on Fridays. Separate ground plumbing, walkout drain and sewer lateral inspections (lateral with a water test)."},
   {id:"sf", n:"Spanish Fork", book:'<a href="https://www.spanishfork.gov/living-in-our-community/building/building-permits-inspections/" target="_blank" rel="noopener">CitizenServe portal ↗</a>, 24 hr ahead. Help: <span class="pn">801-804-4540</span>', pi:"Yes.", h:GAP("Not confirmed: test it."), f:"Frost line 30\" (Spanish Fork design criteria, frost depth 30\" · checked Nov 2026), so water service at least 36\" deep: 6\" below frost, IRC P2603.5.", frost:"30\"",
     notes:"Ready by 8 am the day of, or a $93 re-inspection fee. Underground plumbing and laterals inspected before cover, with the gas test. Rough plumbing on the 4-way; shower pan with framing."},
-  {id:"sv", n:"Springville", book:'<a href="https://www.springvilleutah.gov/community-development/wp-content/uploads/sites/5/2025/06/My-City-Inspector-Directions.pdf" target="_blank" rel="noopener">City Inspect ↗</a>, AM/PM blocks after the permit is issued. Building: <span class="pn">801-489-2704</span>', pi:"Yes. Purple PE, purple tape ≈12\" above, tracer wire, 30\" cover, green IRRIGATION box. 40–125 psi by lot elevation. $50 switch-over inspection.", h:GAP("Not confirmed: test it."), f:"Frost depth 30\" (Springville design criteria handouts, 2026 · checked Nov 2026), so service ≈36\"."},
+  {id:"sv", n:"Springville", book:'<a href="https://www.springvilleutah.gov/community-development/wp-content/uploads/sites/5/2025/06/My-City-Inspector-Directions.pdf" target="_blank" rel="noopener">City Inspect ↗</a>, AM/PM blocks after the permit is issued; some inspections wait on earlier ones. Building: <span class="pn">801-489-2704</span>', pi:"Yes. Purple PE, purple tape ≈12\" above, tracer wire, 30\" cover, green IRRIGATION box. 40–125 psi by lot elevation. $50 switch-over inspection.", h:GAP("Not confirmed: test it."), f:"Frost depth 30\" (Springville design criteria handouts, 2026 · checked Nov 2026), so service ≈36\"."},
   ["Salt Lake & Summit"],
-  {id:"bl", n:"Bluffdale", book:'<span class="pn">801-849-9425</span> (or -9414, -9424) by 3:30 pm the business day before. Voicemail OK; they don\'t call back to confirm.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL, notes:"A 4-way with power needs the Rocky Mountain Power work order number."},
-  {id:"dr", n:"Draper", book:'<a href="https://draper.onlama.com" target="_blank" rel="noopener">Online portal ↗</a> only: Inspections → "I\'m Ready." No same-day. Don\'t call the inspector before 8:30 am.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
-  {id:"ri", n:"Riverton", book:'<span class="pn">801-208-3138</span> before 1 pm. building@rivertonutah.gov.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
+  {id:"bl", n:"Bluffdale", book:'<span class="pn">801-849-9425</span> (or -9414, -9424) by 3:30 pm the business day before. Voicemail OK: give your name, phone, inspection type, date, permit number and address. They don\'t call back to confirm.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL, notes:"A 4-way with power needs the Rocky Mountain Power work order number."},
+  {id:"dr", n:"Draper", book:'<a href="https://draper.onlama.com" target="_blank" rel="noopener">Online portal ↗</a> only: Inspections → "I\'m Ready." No same-day, and the time isn\'t guaranteed. Don\'t call the inspector before 8:30 am. Building office <span class="pn">801-576-6399</span>.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
+  {id:"ri", n:"Riverton", book:'<span class="pn">801-208-3138</span> before 1 pm. building@rivertonutah.gov. Office M–F 8–5.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
   {id:"he", n:"Herriman", book:'<span class="pn">801-446-5327</span> One working day ahead, before 4 pm.', pi:"Yes. Separate secondary-water connection inspection.", h:GAP("Not confirmed: test it."), f:FROST_SL,
     notes:"Subrough: 10 ft water or 5 psi, 15 min. Gas 5 psi, 15 min. Shower pan water test. Meter is on the Public Works final."},
   {id:"sj", n:"South Jordan", book:'<a href="https://cityview.southjordanutah.gov/cityviewportal" target="_blank" rel="noopener">CityView portal ↗</a>: permits and inspections online.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:FROST_SL},
@@ -9606,7 +9604,7 @@ const CITIES = [
   {id:"wc", n:"Unincorporated Weber County", book:'<span class="pn">801-399-8770</span>. Done within 3 business days, AM 8:30–12 or PM 12–4.', pi:"Ask the water provider.", h:GAP("Depends on the water provider."), f:GAP("Not confirmed: get it from the city.")},
   {id:"lo", n:"Logan", book:'<span class="pn">435-716-9030</span>, 24 hr notice. Slots 9–11 and 1:30–3:30.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:GAP("Not confirmed: get it from the city.")},
   {id:"cc", n:"Unincorporated Cache County", book:'<span class="pn">435-755-1650</span>, press 1, by 4 pm the business day before. Ready by 8 am.', pi:"Ask the water provider.", h:GAP("Depends on the water provider."), f:GAP("Not confirmed: get it from the city.")},
-  {id:"sg", n:"St. George", book:'<a href="https://stg.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a>. Building <span class="pn">435-627-4100</span>.', pi:"Ask the city.", h:"Set softeners 13–24 gpg (city).", f:GAP("Not confirmed: get it from the city."), notes:"Hot, hard water: scale builds fast in heaters and tankless units."},
+  {id:"sg", n:"St. George", book:'<a href="https://stg.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a>. Building <span class="pn">435-627-4100</span>. Booking steps aren\'t spelled out online: call.', pi:"Ask the city.", h:"Set softeners 13–24 gpg (city).", f:GAP("Not confirmed: get it from the city."), notes:"Hot, hard water: scale builds fast in heaters and tankless units."},
   {id:"wa", n:"Washington City", book:'<a href="https://washington.cityinspect.com" target="_blank" rel="noopener">CityInspect ↗</a> by 5 pm for the next business day. <span class="pn">435-656-6326</span>.', pi:"Ask the city.", h:GAP("Not confirmed: test it."), f:GAP("Not confirmed: get it from the city.")}
 ];
 /* Every other Utah city and town, so the picker is complete: [name, elevation in feet] by county, from the table in
@@ -9658,6 +9656,14 @@ try { localStorage.removeItem("jpb-city"); } catch(e){}
 const CITY_OPTS = `<option value="">Pick a city…</option>` + CITIES.reduce((G, c) => { if (Array.isArray(c)) G.push([c[0], []]); else if (G.length) G[G.length - 1][1].push(c); return G; }, [])
   .map(([g, L]) => `<optgroup label="${esc(g)}">${L.slice().sort((a, b) => (/^Unincorporated/.test(a.n) - /^Unincorporated/.test(b.n)) || a.n.localeCompare(b.n)).map(c => `<option value="${c.id}">${esc(c.n)}</option>`).join("")}</optgroup>`).join("");
 $("mc-pick").innerHTML = CITY_OPTS;
+/* City inspections: the side-by-side table comes from CITIES too (it used to be a hand-kept copy that drifted). Towns still on the
+   "not checked" default are left out; a county header shows only if a town under it has something. */
+{ const unchecked = c => /^<span class="mc-gap">Not checked yet/.test(c.book || ""), generic = /^Same statewide code as every Utah city/;
+  let rows = "", head = "";
+  CITIES.forEach(c => { if (Array.isArray(c)){ head = `<tr><th colspan="2">${esc(c[0])}</th></tr>`; return; }
+    if (!c.book || unchecked(c)) return;
+    rows += head + `<tr><td><b>${esc(c.n)}</b></td><td>${c.book}${c.notes && !generic.test(c.notes) ? `<div class="sub">${esc(c.notes)}</div>` : ""}</td></tr>`; head = ""; });
+  $("ci-rows").innerHTML = rows; bindPn($("ci-rows")); }
 function drawCity(){
   $("mc-pick").value = myCity;
   const c = cityById(myCity);
@@ -9681,11 +9687,18 @@ drawCity();
 
 /* ---------- my numbers: the super, the journeyman, the inspector's cell. Saved on this phone only. ---------- */
 let myNums = (a => Array.isArray(a) ? a.filter(x => x && typeof x.name === "string" && typeof x.num === "string").slice(0, 60) : [])(store.get("jpb-mynums", []));
+/* People from My jobs who have a number show here too (read-only), so a super or inspector never has to be typed twice.
+   Skipped when the same number is already saved above. Redrawn by jobs.js after a save, only when that list changed. */
 function drawNums(){
-  $("mn-rows").innerHTML = myNums.length ? myNums.map((x,i) => `<tr><th>${esc(x.name)}</th><td><span class="pn">${esc(x.num)}</span></td><td class="mn-x"><button type="button" class="linkish" data-del="${i}" aria-label="Remove ${esc(x.name)}">Remove</button></td></tr>`).join("")
-    : `<tr><td class="sub">Nothing saved yet. Start with your super, your journeyman, the inspector's cell and the city's after-hours water line.</td></tr>`;
+  const dig = v => String(v || "").replace(/\D/g, ""), mine = new Set(myNums.map(x => dig(x.num)));
+  const ppl = (window.jbPeople ? jbPeople() : []).filter(p => p && dig(p.ph).length >= 7 && !mine.has(dig(p.ph))).sort((a, b) => String(a.n).localeCompare(String(b.n)));
+  const sig = JSON.stringify([myNums, ppl.map(p => [p.n, p.role, p.co, p.ph])]); if (sig === drawNums.sig) return; drawNums.sig = sig;
+  const saved = myNums.length || !ppl.length ? myNums.length ? myNums.map((x,i) => `<tr><th>${esc(x.name)}</th><td><span class="pn">${esc(x.num)}</span></td><td class="mn-x"><button type="button" class="linkish" data-del="${i}" aria-label="Remove ${esc(x.name)}">Remove</button></td></tr>`).join("")
+    : `<tr><td class="sub">Nothing saved yet. Start with your super, your journeyman, the inspector's cell and the city's after-hours water line.</td></tr>` : "";
+  $("mn-rows").innerHTML = saved + (ppl.length ? `<tr><th colspan="3" class="mn-from">From My jobs · edit them there</th></tr>` + ppl.map(p => `<tr><th>${esc(p.n || "(no name)")}${p.role || p.co ? `<div class="sub">${esc([p.role, p.co].filter(Boolean).join(" · "))}</div>` : ""}</th><td><span class="pn">${esc(p.ph)}</span></td><td></td></tr>`).join("") : "");
   bindPn($("mn-rows")); IDX = null;
 }
+
 $("mn-add").addEventListener("click", () => {
   const name = $("mn-name").value.trim(), num = $("mn-num").value.trim();
   if (!name || num.replace(/\D/g, "").length < 3){ say("Add a name and a number first"); (name ? $("mn-num") : $("mn-name")).focus(); return; }
@@ -11173,6 +11186,9 @@ const WX = (() => {
   /* ---- helpers ---- */
   const D = t => new Date(typeof t === "number" ? t * 1000 : t);   /* Open-Meteo unix seconds: exact instants, any phone time zone */
   const r0 = x => (x == null || !isFinite(x)) ? "—" : Math.round(x);
+  /* a real number: the forecast sends null for a value it doesn't have, and null counts as 0 in a "32 or below" check, which
+     would call a missing low a freezing one */
+  const num = v => typeof v === "number" && isFinite(v);
   const fmtT = d => d.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
   const short = d => fmtT(d).replace(/:00/, "").replace(/\s?([AP])M/i, (m, a) => a.toLowerCase());   /* 10:30p, 11p */
   const fmtH = d => d.toLocaleTimeString([], {hour:"numeric"});
@@ -11458,17 +11474,18 @@ const WX = (() => {
       if (!d || !d.time) return;
       const N = d.time.length, nm = (t, i) => i === 0 ? (om.src === "nws" && new Date().getHours() >= 14 ? "Rest of today" : "Today") : D(typeof t === "number" ? t + 43200 : t + "T12:00").toLocaleDateString([], {weekday:"short", month:"numeric", day:"numeric"});
       $("wx-days").innerHTML = d.time.map((t, i) => { const pr = dIn("precipitation_sum", i), sn = dIn("snowfall_sum", i);
-        return `<tr${d.temperature_2m_min[i] <= 32 ? ' class="frz"' : ""}><td>${nm(t, i)}</td><td class="wx-lh">${r0(d.temperature_2m_min[i])}–${r0(d.temperature_2m_max[i])}°</td><td>${r0(d.precipitation_probability_max[i])}%${pr != null && pr >= 0.01 ? ` · ${in2(pr)}` : ""}${sn != null && sn >= 0.05 ? ` · ❄ ${in2(sn, 1)}` : ""}</td><td>${d.wind_gusts_10m_max[i] == null ? "—" : r0(d.wind_gusts_10m_max[i]) + " mph"}</td><td class="sub">${WMO(d.weather_code[i])}</td></tr>`; }).join("");
+        return `<tr${num(d.temperature_2m_min[i]) && d.temperature_2m_min[i] <= 32 ? ' class="frz"' : ""}><td>${nm(t, i)}</td><td class="wx-lh">${r0(d.temperature_2m_min[i])}–${r0(d.temperature_2m_max[i])}°</td><td>${r0(d.precipitation_probability_max[i])}%${pr != null && pr >= 0.01 ? ` · ${in2(pr)}` : ""}${sn != null && sn >= 0.05 ? ` · ❄ ${in2(sn, 1)}` : ""}</td><td>${d.wind_gusts_10m_max[i] == null ? "—" : r0(d.wind_gusts_10m_max[i]) + " mph"}</td><td class="sub">${WMO(d.weather_code[i])}</td></tr>`; }).join("");
       /* the week in totals: what falls, how many days it falls on, how many nights freeze, the coldest and warmest */
       const I = [...Array(N).keys()], has = k => I.some(i => dIn(k, i) != null), sum = k => I.reduce((n, i) => n + (dIn(k, i) || 0), 0);
       const wet = I.filter(i => (dIn("precipitation_sum", i) || 0) >= 0.01).length, snowD = I.filter(i => (dIn("snowfall_sum", i) || 0) >= 0.05).length, likely = I.filter(i => d.precipitation_probability_max[i] >= 50).length;
-      const frz = I.filter(i => d.temperature_2m_min[i] <= 32), lo = I.reduce((a, i) => d.temperature_2m_min[i] < d.temperature_2m_min[a] ? i : a, 0), hi = I.reduce((a, i) => d.temperature_2m_max[i] > d.temperature_2m_max[a] ? i : a, 0);
-      const gs = I.filter(i => d.wind_gusts_10m_max[i] != null), gmax = gs.length ? gs.reduce((a, i) => d.wind_gusts_10m_max[i] > d.wind_gusts_10m_max[a] ? i : a) : null, wind = gs.filter(i => d.wind_gusts_10m_max[i] >= 25).length;
+      const mins = I.filter(i => num(d.temperature_2m_min[i])), maxs = I.filter(i => num(d.temperature_2m_max[i]));
+      const frz = mins.filter(i => d.temperature_2m_min[i] <= 32), lo = mins.reduce((a, i) => d.temperature_2m_min[i] < d.temperature_2m_min[a] ? i : a, mins[0]), hi = maxs.reduce((a, i) => d.temperature_2m_max[i] > d.temperature_2m_max[a] ? i : a, maxs[0]);
+      const gs = I.filter(i => num(d.wind_gusts_10m_max[i])), gmax = gs.length ? gs.reduce((a, i) => d.wind_gusts_10m_max[i] > d.wind_gusts_10m_max[a] ? i : a) : null, wind = gs.filter(i => d.wind_gusts_10m_max[i] >= 25).length;
       const rows = has("precipitation_sum") ? [["Rain &amp; snow, as water", in2(sum("precipitation_sum")), `${wet} of ${N} days get some (0.01" or more)${likely ? ` · ${likely} at 50% or higher` : ""}. Snow counts here melted down to water.`]]
         : [["Rain &amp; snow", `${likely} of ${N} days`, "50% chance or higher. The backup forecast (National Weather Service) has no totals."]];
       if (has("snowfall_sum")) rows.push(["Snow", sum("snowfall_sum") >= 0.05 ? in2(sum("snowfall_sum"), 1) : "None", snowD ? `On ${snowD} day${snowD === 1 ? "" : "s"}: what piles up, before it settles or melts` : "No snow in the forecast"]);
       rows.push(["Freezing nights", `${frz.length} of ${N}`, frz.length ? `Coldest ${r0(d.temperature_2m_min[lo])}°F ${nm(d.time[lo], lo)}. Don't leave a water test or water in test caps outside the heated space overnight.` : "No night at or below 32°F"]);
-      rows.push(["Warmest", `${r0(d.temperature_2m_max[hi])}°F`, nm(d.time[hi], hi)]);
+      if (hi != null) rows.push(["Warmest", `${r0(d.temperature_2m_max[hi])}°F`, nm(d.time[hi], hi)]);
       if (gmax != null) rows.push(["Windiest", `${r0(d.wind_gusts_10m_max[gmax])} mph`, `${nm(d.time[gmax], gmax)}${wind ? ` · ${wind} day${wind === 1 ? "" : "s"} with gusts of 25 mph or more` : ""}`]);
       $("wx-wkt").innerHTML = rows.map(([a, b, c]) => `<tr><th>${a}</th><td class="big">${b}</td><td class="sub">${c}</td></tr>`).join("");
       $("wx-wk").textContent = `${has("precipitation_sum") ? in2(sum("precipitation_sum")) + " wet" : likely + " wet days"}${has("snowfall_sum") && sum("snowfall_sum") >= 0.05 ? ` · ${in2(sum("snowfall_sum"), 1)} snow` : ""} · ${frz.length} freezing night${frz.length === 1 ? "" : "s"}`;
@@ -11582,7 +11599,7 @@ const WX = (() => {
   }
   const jw = n => { const d = n && JW.d[n]; return d && Date.now() - JW.t < 12 * 3600e3 ? d : null; };   /* older than 12 h: no badge rather than an old one */
   const jwCalls = d0 => { const d = {}; ["lo", "pop", "g", "c"].forEach(k => d[k] = (d0[k] || []).slice(0, 2));   /* badges: today and tomorrow */
-    const lo = Math.min(...d.lo.filter(isFinite)), pop = Math.max(...d.pop.filter(isFinite)), g = Math.max(...d.g.filter(isFinite)), out = [];
+    const lo = Math.min(...d.lo.filter(num)), pop = Math.max(...d.pop.filter(num)), g = Math.max(...d.g.filter(num)), out = [];
     if (d.c.some(c => [95, 96, 99].includes(c))) out.push(["⚡", "Thunderstorms possible"]);
     if (d.c.some(c => [56, 57, 66, 67].includes(c))) out.push(["🧊", "Freezing rain"]);
     if (lo <= 32) out.push([`❄ ${r0(lo)}°`, `Freezing: low ${r0(lo)}°F`]);
@@ -11605,8 +11622,8 @@ const WX = (() => {
         fc = `${esc(v.town)}: ${r0(lo)}–${r0(w.hi[i])}°F · rain ${r0(pop)}%${pr >= 0.01 ? ` (${pr.toFixed(2)}")` : ""}${sn >= 0.05 ? ` · ❄ ${sn.toFixed(1)}"` : ""}${g != null ? ` · gusts ${r0(g)} mph` : ""}`;
         if ([95, 96, 99].includes(c)) call.push("⚡ Thunderstorms possible: plan around the inspector's window.");
         if ([56, 57, 66, 67].includes(c)) call.push("🧊 Freezing rain: icy steps, ladders and truck beds.");
-        if (lo <= 32) call.push(`❄ Low ${r0(lo)}°F that day: a water test set the night before can freeze outside the heated space. Ask your inspector which test they'll take in the cold.`);
-        if (pop >= 50 || pr >= 0.1) call.push(v.k === "under" ? "🌧 Wet: cap open pipe, keep the trench from filling, and check the inspection is still on." : "🌧 Wet: cover open pipe ends and anything you've glued.");
+        if (num(lo) && lo <= 32) call.push(`❄ Low ${r0(lo)}°F that day: a water test set the night before can freeze outside the heated space. Ask your inspector which test they'll take in the cold.`);
+        if (num(pop) && pop >= 50 || num(pr) && pr >= 0.1) call.push(v.k === "under" ? "🌧 Wet: cap open pipe, keep the trench from filling, and check the inspection is still on." : "🌧 Wet: cover open pipe ends and anything you've glued.");
         if (!call.length) call.push("Nothing in the forecast to plan around."); }
       return `<tr><th>${esc(day)}<div class="sub">${esc(v.what)}</div></th><td><button type="button" class="linkish" data-wxgo="${esc(v.jid)}">${esc(v.job)} ›</button><div class="sub">${fc}</div>${call.length ? `<div class="sub">${call.map(esc).join("<br>")}</div>` : ""}</td></tr>`; }).join(""); }
   document.addEventListener("click", e => { const b = e.target.closest("[data-wxgo]"); if (b && window.jbGoJobId) jbGoJobId(b.dataset.wxgo); });
@@ -11708,7 +11725,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-24d";
+var BUILD = "handbook-2026-11-26b";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
