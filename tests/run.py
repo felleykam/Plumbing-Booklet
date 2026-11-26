@@ -617,6 +617,23 @@ with sync_playwright() as pw:
     check(pre == [{"n": "Owner's suite", "f": ["Freestanding tub", "Tub filler", "Shower valve"]}, {"n": "Garage", "f": ["Hose bibb", "Floor drain"]}, {"n": "Badnamex", "f": ["A"]}], f"presets save one per line, cleaned up ({pre})")
     check(pg.evaluate("[...document.querySelectorAll('#jb-rpre-h ~ *, body')].length > 0") and not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors" + (f": {pg.errs}" if pg.errs else ""))
     ctx.close()
+
+    # ---------- 15. cleanup pass: exact reference fractions, renamed card, folded history ----------
+    print("15. Cleanup: reference fractions stay exact, take-offs go in exact, renamed card keeps pins")
+    ctx, pg = fresh(); ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-setup','1');localStorage.setItem('jpb-takeoffs',JSON.stringify([['Test 90','1 5/16']]));localStorage.setItem('jpb-pins',JSON.stringify(['vents:vent-sizing-and-terminals']))}")
+    open_book(pg)
+    fr = pg.evaluate("[...document.querySelectorAll('#frac b')].map(b => b.textContent)")
+    check(fr[:4] == ['1/16"', '1/8"', '3/16"', '1/4"'] and fr[-1] == '1"' and len(fr) == 16, f"the 16ths table shows every 16th, not rounded to the answer setting ({fr[:4]})")
+    chip = pg.evaluate("(document.querySelector('#cl-chips button') || {}).textContent || ''")
+    check(chip.endswith('1 5/16"'), f"a saved 1 5/16\" take-off shows exact on its chip ({chip})")
+    pg.evaluate("location.hash = '#calc/layout'"); pg.wait_for_timeout(300)
+    pg.evaluate("document.querySelector('#cl-chips button').click()"); pg.wait_for_timeout(200)
+    check(pg.evaluate("CLV.a.c") == "1 5/16", f"tapping it puts 1 5/16 in the box, not a rounded 1 1/4 or 1 3/8 ({pg.evaluate('CLV.a.c')})")
+    check(pg.evaluate("toFracX(1.3125)") == '1 5/16"' and pg.evaluate("toFracX(2.1)") == '2.1"' and pg.evaluate("toFracX(-0.5)") == '-1/2"' and pg.evaluate("toFracX(0)") == '0"', "exact fraction helper: 1 5/16, 2.1 (no tape fraction), -1/2, 0")
+    check(pg.evaluate("PINS.has('vents:vent-terminals')") and pg.evaluate("[...document.querySelectorAll('h2')].some(h => h.textContent.trim() === 'Vent terminals')"), "Vent sizing & terminals is now Vent terminals, and its pin followed")
+    check(pg.evaluate("document.querySelectorAll('section h2')") is not None and pg.evaluate("(() => { const s = [...document.querySelectorAll('section')].find(x => x.querySelector('h2') && x.querySelector('h2').textContent.trim() === \"What's new\"); return [s.querySelector('table tbody').rows.length, !document.getElementById('news-older').open]; })()") == [5, True], "What's new shows the latest 5; older changes fold away")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
     br.close()
 
 print(f"\n{'ALL PASSED' if not FAILS else str(len(FAILS)) + ' FAILED'}")
