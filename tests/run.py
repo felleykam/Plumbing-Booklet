@@ -216,7 +216,7 @@ with sync_playwright() as pw:
         w1 = pg.evaluate(W); det = pg.evaluate("[...document.querySelectorAll('.pv-det')].map(c => [c.width, c.height, c.clientWidth])")
         scr = pg.evaluate("[document.getElementById('jv-body').clientWidth, document.getElementById('jv-body').clientHeight, devicePixelRatio]")
         check(abs(w1 / w0 - 2.5) < 0.02, f"double-tap zooms the sheet to 2.5× ({w0} → {w1} px wide)")
-        check(bool(det) and all(d[0] <= scr[0] * scr[2] + 2 and d[1] <= scr[1] * scr[2] + 2 for d in det), f"zoomed in, the part on screen is drawn again sharp, no bigger than the screen ({det})")
+        check(bool(det) and all(d[0] * d[1] <= 6e6 + 1 and d[0] >= min(d[2], scr[0]) * scr[2] - 2 for d in det), f"zoomed in, the part on screen is drawn again sharp, with a small margin, inside the 6 MP close-up budget ({det})")
         pg.click("#jv-zoom"); pg.wait_for_timeout(500)
         check(abs(pg.evaluate(W) - w0) < 1 and not pg.evaluate("document.querySelectorAll('.pv-det').length"), "Fit to screen puts the sheet back")
         pg.click("#jv-close"); pg.wait_for_timeout(300)
@@ -341,7 +341,7 @@ with sync_playwright() as pw:
     print("8. Weather: week totals add up, inspections get their town's day")
     import datetime, urllib.parse as up
     today = datetime.date.today(); DAY = lambda n: (today + datetime.timedelta(days=n)).isoformat(); NOW = int(datetime.datetime.now().timestamp())
-    LO, HI, POP = [30, 28, 35, 40, 25, 33, 38], [45, 44, 50, 55, 40, 47, 52], [10, 20, 70, 5, 60, 0, 30]
+    LO, HI, POP = [30, 28, 35, 40, 25, None, 38], [45, 44, 50, 55, 40, None, 52], [10, 20, 70, 5, 60, None, 30]   # day 6 blank, as the service sometimes sends: must not count as freezing (null reads as 0)
     PR, SN = [0, 0, 0.31, 0, 0.12, 0, 0.02], [0, 0, 0, 0, 3.5, 0, 0]   # rain in inches; snow sent in cm on purpose: 3.5 cm = 1.38"
     def daily(unix):
         t = [NOW + 86400 * i if unix else DAY(i) for i in range(7)]
@@ -360,7 +360,7 @@ with sync_playwright() as pw:
     ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-jobs',%s);localStorage.setItem('jpb-wx-place',JSON.stringify({name:'Lehi',sub:'',lat:40.39,lon:-111.85,src:'town',at:Date.now()}))}" % json.dumps(json.dumps(wj)))
     open_book(pg); pg.evaluate("location.hash='#site/wxnow'"); pg.wait_for_timeout(2500)
     wk = pg.evaluate("document.getElementById('wx-wk').textContent")
-    check('0.45" wet' in wk and '1.4" snow' in wk and "3 freezing nights" in wk, f"week: 0.31 + 0.12 + 0.02 = 0.45\" wet; 3.5 cm = 1.4\" snow; lows of 30, 28, 25 = 3 freezing nights (got {wk!r})")
+    check('0.45" wet' in wk and '1.4" snow' in wk and "3 freezing nights" in wk, f"week: 0.31 + 0.12 + 0.02 = 0.45\" wet; 3.5 cm = 1.4\" snow; lows of 30, 28, 25 = 3 freezing nights, and the blank day isn't one (got {wk!r})")
     wkt = pg.evaluate("document.getElementById('wx-wkt').innerText")
     check("3 of 7 days" in wkt and "Coldest 25" in wkt and "55°F" in wkt and "30 mph" in wkt, "week box: 3 wet days, coldest 25°F, warmest 55°F, windiest 30 mph")
     ins = pg.evaluate("document.getElementById('wx-insp-h').hidden ? '' : document.getElementById('wx-insp').innerText")
@@ -387,6 +387,55 @@ with sync_playwright() as pw:
     pg.evaluate("() => { PREFS.fps = ''; PREFS.fpsShow = false; savePrefs(); prefApply(); }")
     check(pg.evaluate(RATE) >= 50 and pg.evaluate("document.getElementById('fps-meter').hidden"), "back to Auto: full rate, counter hidden")
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors with fonts and frame rate" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+
+    # ---------- 10. files that break, fast taps, memory, markup ----------
+    print("10. Bad files, fast reopen, memory given back, quick markup")
+    import os, shutil, subprocess
+    tmp = tempfile.mkdtemp(); P = lambda n: os.path.join(tmp, n)
+    open(P("corrupt.pdf"), "wb").write(os.urandom(5000)); open(P("empty.pdf"), "wb").close(); open(P("broken.jpg"), "wb").write(os.urandom(3000))
+    plans3 = P("plans.pdf"); mkplans(plans3, 3)
+    locked = shutil.which("qpdf") and subprocess.run(["qpdf", "--encrypt", "pw", "pw", "256", "--", plans3, P("locked.pdf")]).returncode == 0
+    ctx, pg = fresh(); ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(dict(one, peeked=1))))
+    open_book(pg); pg.evaluate("location.hash='#mine/jobs'"); pg.wait_for_timeout(300); pg.evaluate("document.querySelector('.jb-list .jb-row, .jb-list [data-open]').click()"); pg.wait_for_timeout(500)
+    def add(sel, path):
+        have = {x[0] for x in pg.evaluate(ALL)}; pg.set_input_files(sel, path); pg.wait_for_timeout(900)
+        new = [x[0] for x in pg.evaluate(ALL) if x[0] not in have]; return new[0] if new else None
+    def card(fid):
+        for d in ("jv", "jf"): pg.evaluate(f"document.getElementById('{d}-dlg').open && document.getElementById('{d}-close').click()")
+        pg.wait_for_timeout(150); pg.evaluate("id => document.querySelector(`[data-v='${id}']`).click()", fid)
+        for _ in range(40):
+            if pg.evaluate("document.getElementById('jf-dlg').open"): break
+            pg.wait_for_timeout(50)
+        pg.wait_for_timeout(150)
+    def body(fid, wait=2500): card(fid); pg.click("#jf-open"); pg.wait_for_timeout(wait); return pg.evaluate("document.getElementById('jv-body').innerText")
+    ids = {k: add("#jf-fi", P(k + ".pdf")) for k in ["corrupt", "empty", "plans"] + (["locked"] if locked else [])}; ids["broken"] = add("#jf-ph", P("broken.jpg"))
+    check("couldn't draw this PDF" in body(ids["corrupt"]) and "couldn't draw this PDF" in body(ids["empty"]), "a broken or empty PDF says so (with Open in another app), no crash")
+    if locked: check("has a password" in body(ids["locked"]), "a password-protected PDF says it has a password")
+    else: print("  (skipped the password PDF check: qpdf isn't installed here)")
+    check("can't be shown in the app" in body(ids["broken"], 1200), "a photo the phone can't read says so instead of a blank screen")
+    card(ids["plans"]); pg.evaluate("document.getElementById('jf-open').click(); document.getElementById('jv-close').click(); document.getElementById('jf-open').click(); document.getElementById('jv-close').click(); document.getElementById('jf-open').click()"); pg.wait_for_timeout(2500)
+    check(pg.evaluate("document.getElementById('jv-dlg').open && document.querySelectorAll('.pv-pg').length === 3"), "open, close, open fast: the viewer shows the plans (a late 'closed' notice doesn't wipe them)")
+    bx = pg.locator("#jv-body").bounding_box(); pg.mouse.dblclick(bx["x"] + 150, bx["y"] + 100); pg.wait_for_timeout(1700)
+    pg.evaluate("(() => { window.__mk = 0; const o = document.createElement.bind(document); document.createElement = (t, ...a) => { if (String(t).toLowerCase() === 'canvas') window.__mk++; return o(t, ...a); }; })()")
+    pg.evaluate("document.getElementById('jv-body').scrollLeft += 15"); pg.wait_for_timeout(700)
+    check(pg.evaluate("window.__mk") == 0, "zoomed in, a small pan doesn't redraw (the sharp close-up has a margin)")
+    for _ in range(6): pg.evaluate("document.getElementById('jv-close').click()"); pg.wait_for_timeout(60); pg.click("#jf-open"); pg.wait_for_timeout(600)
+    pg.evaluate("document.getElementById('jv-close').click()"); pg.wait_for_timeout(300)
+    left = pg.evaluate("[...document.querySelectorAll('#jv-body canvas, .pv-pg canvas')].reduce((n, c) => n + c.width * c.height, 0)")
+    check(left == 0, f"after 6 opens and a close, the viewer holds no canvas memory (iPhone blanks pages past its limit) ({left} px left)")
+    # markup: the work per frame doesn't grow with the number of marks
+    pid = add("#jf-ph", tp); card(pid); pg.click("#jf-mark"); pg.wait_for_timeout(500); pg.evaluate("document.querySelector('#mk-dlg [data-tool=pen]').click()")
+    DRAW = """async (n) => { const cv = document.getElementById('mk-cv'), r = cv.getBoundingClientRect(), E = (k, x, y) => cv.dispatchEvent(new PointerEvent(k, {pointerId: 1, isPrimary: true, clientX: x, clientY: y, bubbles: true, cancelable: true}));
+      for (let s = 0; s < n; s++){ const y = r.top + 10 + (s % 20) * 8; E('pointerdown', r.left + 10, y); for (let i = 1; i <= 15; i++) E('pointermove', r.left + 10 + i * 6, y + (i % 3)); E('pointerup', r.left + 100, y); }
+      const C = CanvasRenderingContext2D.prototype, o = C.stroke; let k = 0; C.stroke = function(...a){ k++; return o.apply(this, a); };
+      const f = () => new Promise(ok => requestAnimationFrame(() => requestAnimationFrame(ok)));
+      E('pointerdown', r.left + 20, r.top + 20); await f(); k = 0; E('pointermove', r.left + 60, r.top + 30); await f(); const per = k; E('pointerup', r.left + 60, r.top + 30); await f(); C.stroke = o; return per; }"""
+    few = pg.evaluate(DRAW, 2); many = pg.evaluate(DRAW, 40)
+    check(few == many and many <= 4, f"markup: drawing one stroke costs the same with 2 or 42 marks on the photo ({few} vs {many} strokes per frame)")
+    pg.evaluate("document.getElementById('mk-undo').click()"); pg.on("dialog", lambda d: d.accept()); pg.evaluate("document.getElementById('mk-save').click()"); pg.wait_for_timeout(1500)
+    check(pg.evaluate("!document.getElementById('mk-dlg').open && document.getElementById('mk-cv').width === 0"), "saving the marked-up copy closes markup and gives its memory back")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors with bad files, fast taps or markup" + (f": {pg.errs}" if pg.errs else ""))
     br.close()
 
 print(f"\n{'ALL PASSED' if not FAILS else str(len(FAILS)) + ' FAILED'}")

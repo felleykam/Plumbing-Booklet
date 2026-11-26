@@ -5552,6 +5552,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
+        <tr><th>Nov 25, 2026 · Smoother photos &amp; plans</th><td><b>Plans:</b> the viewer now gives back the phone's drawing memory as it goes and when you close it. On iPhone, plans could otherwise go blank after opening several (Safari stops drawing past its limit). Pages near where you're looking draw first; when you scroll fast, ones you've passed no longer hold you up. Zoomed in, the sharp close-up covers a bit more than the screen, so small pans stay sharp without redrawing. Turning the phone while zoomed keeps everything lined up. <b>Fixed:</b> opening a file right after closing one could leave the viewer blank. <b>Markup:</b> drawing stays quick however many marks are on the photo; freehand lines are smooth curves and catch every movement of your finger or Apple Pencil; the frame-rate setting no longer slows drawing. <b>Photos</b> the phone can't read now say so instead of showing nothing. <b>Fixed (weather):</b> when the forecast service left a day's value blank, the app could count it as 0°F, showing a false freezing badge on a job, an extra freezing night in Week ahead, or a false freeze warning on an inspection.</td></tr>
         <tr><th>Nov 24, 2026 · Error &amp; jitter pass, frame rate</th><td><b>Checked the whole book for errors and jumpy screens</b>: every page on a phone and a computer screen, 2,087 typed entries (including junk like letters in number boxes), every fold, all 29 themes in light and dark with each font setting, the Jobs screens, the weather page while the forecast loads, and scrolling every page frame by frame. No errors turned up. <b>Fixed:</b> on a slow connection the text could jump when the fonts arrived late. The fonts now ship with the app, so they're there before the first screen draws, work offline from the very first launch, and the book no longer contacts Google at all. <b>New, just for fun:</b> Settings → Behavior → <i>Frame rate</i> (Auto, 60, 30 or 15) caps how often the book redraws its own moving parts (the 3D rough-in view, splashes, drawing plan PDFs), and <i>Show the frame counter</i> puts a live fps number in the corner. Scrolling and pinch-zoom stay at full speed. At 15, plan PDFs take longer to sharpen.</td></tr>
         <tr><th>Nov 24, 2026 · Smoother zoom</th><td><b>Pinch-zoom on plans and photos is smooth now.</b> While your fingers are down the picture just slides and scales (no redrawing, so it keeps up with your fingers), then it sharpens a moment after you let go. Double-tap and Zoom in / Fit to screen glide instead of jumping. A quick swipe or flick can't set off a double-tap zoom by mistake anymore, and zooming out keeps the sheet centered.</td></tr>
         <tr><th>Nov 24, 2026 · The app draws PDFs</th><td><b>Plan PDFs now open right inside the app on every phone, iPad and computer</b>: every page stacked, page count at the bottom, pinch or double-tap to zoom (up to 12×), one finger to move around. Zoomed in, the part on screen is drawn again, so plan lines and small print stay sharp at any zoom. It works with no signal and reads scanned sheets too. This replaces this morning's "Open in the iPhone's PDF viewer" button. The viewer is PDF.js from Mozilla; it's saved once (about 2 MB on the phone) and kept through app updates, so updates don't download it again. Credit in Terms.</td></tr>
@@ -7222,7 +7223,7 @@ const FPS = (() => { const raw = window.requestAnimationFrame.bind(window), rawX
       if (show && !mOn){ if (!meter){ meter = document.createElement("div"); meter.id = "fps-meter"; meter.setAttribute("aria-hidden", "true"); document.body.appendChild(meter); }
         meter.hidden = false; meter.textContent = "… fps"; mOn = true; mFrames = 0; mT = 0; requestAnimationFrame(mTick); }
       else if (!show && mOn){ mOn = false; meter.hidden = true; } },
-    get cap(){ return cap; }}; })();
+    get cap(){ return cap; }, raw}; })();   /* raw: the uncapped frame, for drawing that follows your finger (markup) */
 { const s = store.get("jpb-nav", null);
   if (PREFS.start !== "last" && GROUPS[PREFS.start]) nav = {group: PREFS.start, sub: GROUPS[PREFS.start][0][0]};
   else if (s && GROUPS[s.group] && GROUPS[s.group].some(([k]) => k === s.sub)) nav = s; }
@@ -11173,6 +11174,9 @@ const WX = (() => {
   /* ---- helpers ---- */
   const D = t => new Date(typeof t === "number" ? t * 1000 : t);   /* Open-Meteo unix seconds: exact instants, any phone time zone */
   const r0 = x => (x == null || !isFinite(x)) ? "—" : Math.round(x);
+  /* a real number: the forecast sends null for a value it doesn't have, and null counts as 0 in a "32 or below" check, which
+     would call a missing low a freezing one */
+  const num = v => typeof v === "number" && isFinite(v);
   const fmtT = d => d.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
   const short = d => fmtT(d).replace(/:00/, "").replace(/\s?([AP])M/i, (m, a) => a.toLowerCase());   /* 10:30p, 11p */
   const fmtH = d => d.toLocaleTimeString([], {hour:"numeric"});
@@ -11458,17 +11462,18 @@ const WX = (() => {
       if (!d || !d.time) return;
       const N = d.time.length, nm = (t, i) => i === 0 ? (om.src === "nws" && new Date().getHours() >= 14 ? "Rest of today" : "Today") : D(typeof t === "number" ? t + 43200 : t + "T12:00").toLocaleDateString([], {weekday:"short", month:"numeric", day:"numeric"});
       $("wx-days").innerHTML = d.time.map((t, i) => { const pr = dIn("precipitation_sum", i), sn = dIn("snowfall_sum", i);
-        return `<tr${d.temperature_2m_min[i] <= 32 ? ' class="frz"' : ""}><td>${nm(t, i)}</td><td class="wx-lh">${r0(d.temperature_2m_min[i])}–${r0(d.temperature_2m_max[i])}°</td><td>${r0(d.precipitation_probability_max[i])}%${pr != null && pr >= 0.01 ? ` · ${in2(pr)}` : ""}${sn != null && sn >= 0.05 ? ` · ❄ ${in2(sn, 1)}` : ""}</td><td>${d.wind_gusts_10m_max[i] == null ? "—" : r0(d.wind_gusts_10m_max[i]) + " mph"}</td><td class="sub">${WMO(d.weather_code[i])}</td></tr>`; }).join("");
+        return `<tr${num(d.temperature_2m_min[i]) && d.temperature_2m_min[i] <= 32 ? ' class="frz"' : ""}><td>${nm(t, i)}</td><td class="wx-lh">${r0(d.temperature_2m_min[i])}–${r0(d.temperature_2m_max[i])}°</td><td>${r0(d.precipitation_probability_max[i])}%${pr != null && pr >= 0.01 ? ` · ${in2(pr)}` : ""}${sn != null && sn >= 0.05 ? ` · ❄ ${in2(sn, 1)}` : ""}</td><td>${d.wind_gusts_10m_max[i] == null ? "—" : r0(d.wind_gusts_10m_max[i]) + " mph"}</td><td class="sub">${WMO(d.weather_code[i])}</td></tr>`; }).join("");
       /* the week in totals: what falls, how many days it falls on, how many nights freeze, the coldest and warmest */
       const I = [...Array(N).keys()], has = k => I.some(i => dIn(k, i) != null), sum = k => I.reduce((n, i) => n + (dIn(k, i) || 0), 0);
       const wet = I.filter(i => (dIn("precipitation_sum", i) || 0) >= 0.01).length, snowD = I.filter(i => (dIn("snowfall_sum", i) || 0) >= 0.05).length, likely = I.filter(i => d.precipitation_probability_max[i] >= 50).length;
-      const frz = I.filter(i => d.temperature_2m_min[i] <= 32), lo = I.reduce((a, i) => d.temperature_2m_min[i] < d.temperature_2m_min[a] ? i : a, 0), hi = I.reduce((a, i) => d.temperature_2m_max[i] > d.temperature_2m_max[a] ? i : a, 0);
-      const gs = I.filter(i => d.wind_gusts_10m_max[i] != null), gmax = gs.length ? gs.reduce((a, i) => d.wind_gusts_10m_max[i] > d.wind_gusts_10m_max[a] ? i : a) : null, wind = gs.filter(i => d.wind_gusts_10m_max[i] >= 25).length;
+      const mins = I.filter(i => num(d.temperature_2m_min[i])), maxs = I.filter(i => num(d.temperature_2m_max[i]));
+      const frz = mins.filter(i => d.temperature_2m_min[i] <= 32), lo = mins.reduce((a, i) => d.temperature_2m_min[i] < d.temperature_2m_min[a] ? i : a, mins[0]), hi = maxs.reduce((a, i) => d.temperature_2m_max[i] > d.temperature_2m_max[a] ? i : a, maxs[0]);
+      const gs = I.filter(i => num(d.wind_gusts_10m_max[i])), gmax = gs.length ? gs.reduce((a, i) => d.wind_gusts_10m_max[i] > d.wind_gusts_10m_max[a] ? i : a) : null, wind = gs.filter(i => d.wind_gusts_10m_max[i] >= 25).length;
       const rows = has("precipitation_sum") ? [["Rain &amp; snow, as water", in2(sum("precipitation_sum")), `${wet} of ${N} days get some (0.01" or more)${likely ? ` · ${likely} at 50% or higher` : ""}. Snow counts here melted down to water.`]]
         : [["Rain &amp; snow", `${likely} of ${N} days`, "50% chance or higher. The backup forecast (National Weather Service) has no totals."]];
       if (has("snowfall_sum")) rows.push(["Snow", sum("snowfall_sum") >= 0.05 ? in2(sum("snowfall_sum"), 1) : "None", snowD ? `On ${snowD} day${snowD === 1 ? "" : "s"}: what piles up, before it settles or melts` : "No snow in the forecast"]);
       rows.push(["Freezing nights", `${frz.length} of ${N}`, frz.length ? `Coldest ${r0(d.temperature_2m_min[lo])}°F ${nm(d.time[lo], lo)}. Don't leave a water test or water in test caps outside the heated space overnight.` : "No night at or below 32°F"]);
-      rows.push(["Warmest", `${r0(d.temperature_2m_max[hi])}°F`, nm(d.time[hi], hi)]);
+      if (hi != null) rows.push(["Warmest", `${r0(d.temperature_2m_max[hi])}°F`, nm(d.time[hi], hi)]);
       if (gmax != null) rows.push(["Windiest", `${r0(d.wind_gusts_10m_max[gmax])} mph`, `${nm(d.time[gmax], gmax)}${wind ? ` · ${wind} day${wind === 1 ? "" : "s"} with gusts of 25 mph or more` : ""}`]);
       $("wx-wkt").innerHTML = rows.map(([a, b, c]) => `<tr><th>${a}</th><td class="big">${b}</td><td class="sub">${c}</td></tr>`).join("");
       $("wx-wk").textContent = `${has("precipitation_sum") ? in2(sum("precipitation_sum")) + " wet" : likely + " wet days"}${has("snowfall_sum") && sum("snowfall_sum") >= 0.05 ? ` · ${in2(sum("snowfall_sum"), 1)} snow` : ""} · ${frz.length} freezing night${frz.length === 1 ? "" : "s"}`;
@@ -11582,7 +11587,7 @@ const WX = (() => {
   }
   const jw = n => { const d = n && JW.d[n]; return d && Date.now() - JW.t < 12 * 3600e3 ? d : null; };   /* older than 12 h: no badge rather than an old one */
   const jwCalls = d0 => { const d = {}; ["lo", "pop", "g", "c"].forEach(k => d[k] = (d0[k] || []).slice(0, 2));   /* badges: today and tomorrow */
-    const lo = Math.min(...d.lo.filter(isFinite)), pop = Math.max(...d.pop.filter(isFinite)), g = Math.max(...d.g.filter(isFinite)), out = [];
+    const lo = Math.min(...d.lo.filter(num)), pop = Math.max(...d.pop.filter(num)), g = Math.max(...d.g.filter(num)), out = [];
     if (d.c.some(c => [95, 96, 99].includes(c))) out.push(["⚡", "Thunderstorms possible"]);
     if (d.c.some(c => [56, 57, 66, 67].includes(c))) out.push(["🧊", "Freezing rain"]);
     if (lo <= 32) out.push([`❄ ${r0(lo)}°`, `Freezing: low ${r0(lo)}°F`]);
@@ -11605,8 +11610,8 @@ const WX = (() => {
         fc = `${esc(v.town)}: ${r0(lo)}–${r0(w.hi[i])}°F · rain ${r0(pop)}%${pr >= 0.01 ? ` (${pr.toFixed(2)}")` : ""}${sn >= 0.05 ? ` · ❄ ${sn.toFixed(1)}"` : ""}${g != null ? ` · gusts ${r0(g)} mph` : ""}`;
         if ([95, 96, 99].includes(c)) call.push("⚡ Thunderstorms possible: plan around the inspector's window.");
         if ([56, 57, 66, 67].includes(c)) call.push("🧊 Freezing rain: icy steps, ladders and truck beds.");
-        if (lo <= 32) call.push(`❄ Low ${r0(lo)}°F that day: a water test set the night before can freeze outside the heated space. Ask your inspector which test they'll take in the cold.`);
-        if (pop >= 50 || pr >= 0.1) call.push(v.k === "under" ? "🌧 Wet: cap open pipe, keep the trench from filling, and check the inspection is still on." : "🌧 Wet: cover open pipe ends and anything you've glued.");
+        if (num(lo) && lo <= 32) call.push(`❄ Low ${r0(lo)}°F that day: a water test set the night before can freeze outside the heated space. Ask your inspector which test they'll take in the cold.`);
+        if (num(pop) && pop >= 50 || num(pr) && pr >= 0.1) call.push(v.k === "under" ? "🌧 Wet: cap open pipe, keep the trench from filling, and check the inspection is still on." : "🌧 Wet: cover open pipe ends and anything you've glued.");
         if (!call.length) call.push("Nothing in the forecast to plan around."); }
       return `<tr><th>${esc(day)}<div class="sub">${esc(v.what)}</div></th><td><button type="button" class="linkish" data-wxgo="${esc(v.jid)}">${esc(v.job)} ›</button><div class="sub">${fc}</div>${call.length ? `<div class="sub">${call.map(esc).join("<br>")}</div>` : ""}</td></tr>`; }).join(""); }
   document.addEventListener("click", e => { const b = e.target.closest("[data-wxgo]"); if (b && window.jbGoJobId) jbGoJobId(b.dataset.wxgo); });
@@ -11708,7 +11713,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-24d";
+var BUILD = "handbook-2026-11-25a";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);

@@ -1942,9 +1942,15 @@ const PDFJS = "vendor/pdfjs-6.5.438/", pvURL = f => new URL(PDFJS + f, location.
 let pvLibP = null;
 const pvLib = () => pvLibP || (pvLibP = import(pvURL("pdf.min.mjs")).then(L => { L.GlobalWorkerOptions.workerSrc = pvURL("pdf.worker.min.mjs"); return L; }, e => { pvLibP = null; throw e; }));
 const PV = {doc: null, task: null, pg: [], z: 1, fw: 0, tok: 0, t: 0, q: [], busy: 0, hold: 0};
-const PV_GAP = 8, PV_BASE_PX = 4e6, pvDPR = () => Math.min(3, window.devicePixelRatio || 1);
+/* memory: iPhone Safari stops drawing ANY canvas once all of them together pass its limit (a few hundred MB), and a canvas
+   that's merely thrown away still counts until the phone gets round to cleaning up. So every canvas this viewer drops is
+   shrunk to nothing on the spot (pvFree), drawn pages are kept to a budget (nearest first), and a close-up never passes
+   PV_DET_PX. */
+const PV_GAP = 8, PV_BASE_PX = 4e6, PV_BUDGET_PX = 24e6, PV_DET_PX = 6e6, pvDPR = () => Math.min(3, window.devicePixelRatio || 1);
+const pvFree = cv => { if (cv){ cv.width = cv.height = 0; } };
+const pvCancel = t => { if (t) try { t.cancel(); } catch(e){} };
 function pvStop(){ PV.tok++; clearTimeout(PV.t); PV.q = []; PV.busy = 0;
-  PV.pg.forEach(p => [p.bt, p.dt].forEach(t => { if (t) try { t.cancel(); } catch(e){} })); PV.pg = [];
+  PV.pg.forEach(p => { pvCancel(p.bt); pvCancel(p.dt); pvFree(p.base); p.el && p.el.querySelectorAll("canvas").forEach(pvFree); }); PV.pg = [];
   if (PV.task) PV.task.destroy().catch(() => {}); PV.task = null; PV.doc = null; }
 async function pvOpen(c){ pvStop(); const tok = PV.tok, B = $("jv-body"), N = $("jv-note");
   B.classList.add("jv-pdfv"); B.innerHTML = `<p class="jv-msg">Opening the PDF…</p>`;
@@ -1952,54 +1958,65 @@ async function pvOpen(c){ pvStop(); const tok = PV.tok, B = $("jv-body"), N = $(
     PV.task = L.getDocument({data, isEvalSupported: false, enableXfa: false, useSystemFonts: true, wasmUrl: pvURL("wasm/")});
     const doc = await PV.task.promise; if (tok !== PV.tok) return; PV.doc = doc;
     for (let n = 1; n <= doc.numPages; n++){ const p = await doc.getPage(n); if (tok !== PV.tok) return; const v = p.getViewport({scale: 1}); PV.pg.push({n, p, w: v.width, h: v.height}); }
-    B.innerHTML = `<div class="pv-pages">${PV.pg.map(p => `<div class="pv-pg" role="img" aria-label="Page ${p.n} of ${PV.pg.length}"><canvas class="pv-base"></canvas></div>`).join("")}</div>`;
+    B.innerHTML = `<div class="pv-pages">${PV.pg.map(p => `<div class="pv-pg" role="img" aria-label="Page ${p.n} of ${PV.pg.length}"><canvas class="pv-base" width="0" height="0"></canvas></div>`).join("")}</div>`;
     B.querySelectorAll(".pv-pg").forEach((el, i) => { PV.pg[i].el = el; PV.pg[i].base = el.firstChild; });
     PV.z = 1; pvLay(); B.scrollTop = B.scrollLeft = 0; $("jv-zoom").hidden = false; N.hidden = false; pvNum(); pvSoon(0); }
   catch(e){ if (tok !== PV.tok) return;
     B.innerHTML = `<p class="jv-msg">${e && e.name === "PasswordException" ? "This PDF has a password, so the app can't open it." : !pvLibP ? "The PDF viewer hasn't been saved to this phone yet. Open the app once with signal, then try again." : "The app couldn't draw this PDF."}<br>Tap <b>Open in another app</b>.</p>`; } }
 /* every page the screen's width times the zoom, in proportion */
-function pvLay(f = 1){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (!W) return;
+function pvLay(){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (!W) return;
   PV.fw = Math.max(100, B.clientWidth - PV_GAP * 2); const cw = PV.fw * PV.z; W.style.width = cw + PV_GAP * 2 + "px";
-  PV.pg.forEach(p => { p.cw = cw; p.ch = cw * p.h / p.w; p.el.style.width = cw + "px"; p.el.style.height = p.ch + "px"; p.dk = "";
-    if (p.dt) try { p.dt.cancel(); } catch(e){}
-    /* a sharp close-up belongs to one zoom: stretch the old one to fit until the new one is drawn, so nothing flashes blurry */
-    p.el.querySelectorAll(".pv-det").forEach(x => { const st = x.style; ["left", "top", "width", "height"].forEach(k => st[k] = parseFloat(st[k]) * f + "px"); }); }); }
+  PV.pg.forEach(p => { const k = p.cw ? cw / p.cw : 1;   /* how much this page grew or shrank: a zoom, or the phone turned */
+    p.cw = cw; p.ch = cw * p.h / p.w; p.el.style.width = cw + "px"; p.el.style.height = p.ch + "px"; pvCancel(p.dt); p.dt = null; p.dp = null;
+    if (Math.abs(k - 1) < 1e-6) return;
+    /* a sharp close-up belongs to one size: stretch the old one to fit until the new one is drawn, so nothing flashes blurry */
+    p.el.querySelectorAll(".pv-det").forEach(x => { const st = x.style; ["left", "top", "width", "height"].forEach(n => st[n] = parseFloat(st[n]) * k + "px"); }); p.dr = null; }); }
 /* fingers on the screen: no drawing at all (it would eat the frames the pinch needs); let go: draw again */
-function pvHold(on){ PV.hold = on ? 1 : 0; if (on){ clearTimeout(PV.t); PV.pg.forEach(p => { if (p.dt) try { p.dt.cancel(); } catch(e){} p.dk = ""; }); } else pvSoon(60); }
+function pvHold(on){ PV.hold = on ? 1 : 0; if (on){ clearTimeout(PV.t); PV.pg.forEach(p => { pvCancel(p.dt); p.dt = null; p.dp = null; }); } else pvSoon(60); }
 function pvZoom(s, cx, cy){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (!W) return;
   s = Math.min(12, Math.max(1, s)); cx = cx == null ? B.clientWidth / 2 : cx; cy = cy == null ? B.clientHeight / 2 : cy;
   const fx = (B.scrollLeft + cx) / W.offsetWidth, fy = (B.scrollTop + cy) / W.offsetHeight, f = s / PV.z;   /* the spot under your fingers stays put */
-  PV.z = s; pvLay(f); B.scrollLeft = fx * W.offsetWidth - cx; B.scrollTop = fy * W.offsetHeight - cy;
+  PV.z = s; pvLay(); B.scrollLeft = fx * W.offsetWidth - cx; B.scrollTop = fy * W.offsetHeight - cy;
   $("jv-zoom").textContent = s > 1.01 ? "Fit to screen" : "Zoom in"; pvSoon(); }
 const pvSoon = (ms = 140) => { clearTimeout(PV.t); PV.t = setTimeout(pvDraw, ms); };
 function pvNum(){ const B = $("jv-body"), mid = B.scrollTop + B.clientHeight * .3, n = PV.pg.length; if (!n) return;   /* the page in the top third: what you're reading */
   const p = B.scrollTop + B.clientHeight >= B.scrollHeight - 2 && B.scrollTop > 0 ? PV.pg[n - 1] : PV.pg.find(p => p.el.offsetTop + p.ch >= mid) || PV.pg[n - 1];
   $("jv-note").textContent = `${n > 1 ? `Page ${p.n} of ${n} · ` : ""}pinch or double-tap to zoom`; }
 function pvDraw(){ const B = $("jv-body"); if (!PV.doc || PV.hold || !B.querySelector(".pv-pages")) return;
-  const H = B.clientHeight, top = B.scrollTop, bot = top + H, left = B.scrollLeft, right = left + B.clientWidth;
-  PV.pg.forEach(p => { const y0 = p.el.offsetTop, y1 = y0 + p.ch;
-    if (y1 > top - 1.5 * H && y0 < bot + 1.5 * H){ if (!p.ok && !p.inQ){ p.inQ = 1; PV.q.push(p); } }
-    else if (p.ok && (y1 < top - 4 * H || y0 > bot + 4 * H)){ p.base.width = p.base.height = 0; p.ok = false; }   /* far away: let the memory go */
-    const vis = y1 > top && y0 < bot;
-    if (!vis || PV.z <= 1.05){ if (p.dt) try { p.dt.cancel(); } catch(e){} p.dk = ""; p.el.querySelectorAll(".pv-det").forEach(x => x.remove()); }
+  const H = B.clientHeight, top = B.scrollTop, bot = top + H, left = B.scrollLeft, right = left + B.clientWidth, mid = top + H / 2;
+  const away = p => Math.max(0, p.el.offsetTop - mid, mid - p.el.offsetTop - p.ch);   /* how far a page is from the middle of the screen */
+  /* pages to draw: on screen or within a screen and a half, nearest first; pages left behind drop out of the line */
+  PV.q = PV.pg.filter(p => !p.ok && p.el.offsetTop + p.ch > top - 1.5 * H && p.el.offsetTop < bot + 1.5 * H).sort((a, b) => away(a) - away(b));
+  /* drawn pages: farther than three screens let go; then the farthest go until the rest fit the budget */
+  let used = 0; PV.pg.filter(p => p.ok).sort((a, b) => away(a) - away(b)).forEach(p => {
+    const px = p.base.width * p.base.height;
+    if (away(p) > 3 * H || used + px > PV_BUDGET_PX){ pvFree(p.base); p.ok = false; } else used += px; });
+  PV.pg.forEach(p => { const y0 = p.el.offsetTop, vis = y0 + p.ch > top && y0 < bot;
+    if (!vis || PV.z <= 1.05){ pvCancel(p.dt); p.dt = null; p.dp = null; p.dr = null; p.el.querySelectorAll(".pv-det").forEach(x => { pvFree(x); x.remove(); }); }
     else pvDet(p, Math.max(0, left - p.el.offsetLeft), Math.max(0, top - y0), Math.min(p.cw, right - p.el.offsetLeft), Math.min(p.ch, bot - y0)); });
   pvRun(); }
-/* a page to fit the screen, one at a time so a big plan set doesn't choke the phone */
-async function pvRun(){ if (PV.busy || PV.hold) return; const tok = PV.tok, p = PV.q.shift(); if (!p) return; PV.busy = 1;
-  try { const k = Math.min(PV.fw * pvDPR() / p.w, Math.sqrt(PV_BASE_PX / (p.w * p.h))), v = p.p.getViewport({scale: k}), cv = document.createElement("canvas");
+/* a page to fit the screen, one at a time, so a big plan set doesn't choke the phone */
+async function pvRun(){ if (PV.busy || PV.hold) return; const tok = PV.tok, p = PV.q.shift(); if (!p) return; if (p.ok) return pvRun(); PV.busy = 1;
+  let cv = null;
+  try { const k = Math.min(PV.fw * pvDPR() / p.w, Math.sqrt(PV_BASE_PX / (p.w * p.h))), v = p.p.getViewport({scale: k}); cv = document.createElement("canvas");
     cv.width = Math.floor(v.width); cv.height = Math.floor(v.height); p.bt = p.p.render({canvas: cv, viewport: v, background: "#fff"}); await p.bt.promise;
-    if (tok === PV.tok){ cv.className = "pv-base"; p.base.replaceWith(cv); p.base = cv; p.ok = true; } }
+    if (tok === PV.tok && p.el.isConnected){ cv.className = "pv-base"; const old = p.base; old.replaceWith(cv); pvFree(old); p.base = cv; p.ok = true; cv = null; } }
   catch(e){}
-  p.inQ = 0; p.bt = null; if (tok === PV.tok){ PV.busy = 0; setTimeout(pvRun, 0); } }   /* a breath between pages for your fingers */
-/* zoomed in: the part of this page on screen, drawn again sharp at this zoom */
-async function pvDet(p, x0, y0, x1, y1){ const w = x1 - x0, h = y1 - y0; if (w < 4 || h < 4) return;
-  const key = [PV.z, x0, y0, w, h].map(v => Math.round(v)).join(); if (p.dk === key) return; p.dk = key; if (p.dt) try { p.dt.cancel(); } catch(e){}
-  const dpr = pvDPR(), v = p.p.getViewport({scale: p.cw / p.w * dpr}), cv = document.createElement("canvas"); cv.width = Math.ceil(w * dpr); cv.height = Math.ceil(h * dpr);
-  const t = p.p.render({canvas: cv, viewport: v, transform: [1, 0, 0, 1, -x0 * dpr, -y0 * dpr], background: "#fff"}); p.dt = t;
-  try { await t.promise; } catch(e){ return; }
-  if (p.dk !== key || !p.el.isConnected) return; p.dt = null;
-  cv.className = "pv-det"; cv.style.cssText = `left:${x0}px;top:${y0}px;width:${w}px;height:${h}px`;
-  p.el.querySelectorAll(".pv-det").forEach(x => x.remove()); p.el.appendChild(cv); }
+  pvFree(cv); p.bt = null; if (tok === PV.tok){ PV.busy = 0; setTimeout(pvRun, 0); } }   /* a breath between pages for your fingers */
+/* zoomed in: the part of the page on screen, plus a margin so small pans stay sharp, drawn again at this zoom. While what's
+   on screen is still inside the last close-up, nothing is redrawn. */
+async function pvDet(p, x0, y0, x1, y1){ if (x1 - x0 < 4 || y1 - y0 < 4) return;
+  const z = PV.z, inside = r => r && r.z === z && r.x0 <= x0 + 1 && r.y0 <= y0 + 1 && r.x1 >= x1 - 1 && r.y1 >= y1 - 1;
+  if (inside(p.dr) || inside(p.dp)) return;
+  const dpr = pvDPR(), w = x1 - x0, h = y1 - y0, k = Math.max(1, Math.min(1.6, Math.sqrt(PV_DET_PX / (w * h * dpr * dpr)))), mx = w * (k - 1) / 2, my = h * (k - 1) / 2;
+  const r = {z, x0: Math.max(0, x0 - mx), y0: Math.max(0, y0 - my), x1: Math.min(p.cw, x1 + mx), y1: Math.min(p.ch, y1 + my)}, rw = r.x1 - r.x0, rh = r.y1 - r.y0;
+  pvCancel(p.dt); p.dp = r;
+  const v = p.p.getViewport({scale: p.cw / p.w * dpr}), cv = document.createElement("canvas"); cv.width = Math.ceil(rw * dpr); cv.height = Math.ceil(rh * dpr);
+  const t = p.p.render({canvas: cv, viewport: v, transform: [1, 0, 0, 1, -r.x0 * dpr, -r.y0 * dpr], background: "#fff"}); p.dt = t;
+  try { await t.promise; } catch(e){ pvFree(cv); return; }
+  if (p.dp !== r || !p.el.isConnected){ pvFree(cv); return; } p.dt = null; p.dp = null; p.dr = r;
+  cv.className = "pv-det"; cv.style.cssText = `left:${r.x0}px;top:${r.y0}px;width:${rw}px;height:${rh}px`;
+  p.el.querySelectorAll(".pv-det").forEach(x => { pvFree(x); x.remove(); }); p.el.appendChild(cv); }
 
 $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.blob) return;
   const pdf = jvPDF(c), img = c.kind === "photo" || /^image\//.test(c.type || "");
@@ -2007,7 +2024,9 @@ $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.bl
   const B = $("jv-body"), N = $("jv-note"), Z = $("jv-zoom"); B.className = "jv-wrap"; N.hidden = true; Z.hidden = true; Z.textContent = "Zoom in";
   $("jv-title").textContent = img ? (c.proof ? "Proof photo" : "Photo") : c.name || "File";
   if (img){ JV = URL.createObjectURL(c.blob); JZ.s = 1; JZ.w = 0; B.classList.add("jv-img"); B.innerHTML = `<img src="${JV}" alt="${c.proof ? "Proof photo" : "Job photo"}" draggable="false">`;
-    B.querySelector("img").addEventListener("load", jzFit); Z.hidden = false; N.textContent = "Pinch or double-tap to zoom."; N.hidden = false; }
+    const im = B.querySelector("img"); im.addEventListener("load", jzFit);
+    im.addEventListener("error", () => { B.classList.remove("jv-img"); Z.hidden = true; N.hidden = true; B.innerHTML = `<p class="jv-msg">This photo can't be shown in the app (it may be a kind this phone or browser can't read).<br>Tap <b>Open in another app</b>.</p>`; });
+    Z.hidden = false; N.textContent = "Pinch or double-tap to zoom."; N.hidden = false; }
   else if (pdf) pvOpen(c);
   else B.innerHTML = `<p class="jv-msg">This kind of file can't be shown in the app.<br>Tap <b>Open in another app</b>.</p>`;
   $("jv-dlg").showModal(); });
@@ -2029,7 +2048,7 @@ $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.bl
     g.mx = mx; g.my = my; g.el.style.transform = `translate(${mx - g.r.left - g.ux * w}px,${my - g.r.top - g.uy * h}px) scale(${f})`; };
   const gEnd = g => { const el = g.el; el.style.transition = el.style.transform = el.style.willChange = "";
     if (mode() === "img"){ const i = el; JZ.s = g.s; i.style.width = JZ.w * g.s + "px"; i.style.height = JZ.h * g.s + "px"; }
-    else { const f = g.s / PV.z; PV.z = g.s; pvLay(f); }
+    else { PV.z = g.s; pvLay(); }
     const r = el.getBoundingClientRect(); B.scrollLeft += r.left + g.ux * r.width - g.mx; B.scrollTop += r.top + g.uy * r.height - g.my;
     $("jv-zoom").textContent = g.s > 1.01 ? "Fit to screen" : "Zoom in"; if (mode() === "pdf"){ pvHold(false); pvNum(); } };
   let ANIM = null;
@@ -2063,7 +2082,8 @@ $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.bl
   ["gesturestart", "gesturechange"].forEach(k => B.addEventListener(k, e => e.preventDefault()));   /* iPhone: don't zoom the whole page instead */
   addEventListener("resize", () => { if (!d.open) return; if (mode() === "img") jzFit(); else if (mode() === "pdf"){ pvZoom(PV.z); } });
   $("jv-send").addEventListener("click", () => $("jf-share").click());
-  d.addEventListener("close", () => { pvStop(); B.innerHTML = ""; if (JV) URL.revokeObjectURL(JV); JV = null; }); }
+  /* the "closed" notice arrives a moment after Close: if the viewer was opened again in between, it belongs to the old file */
+  d.addEventListener("close", () => { if (d.open) return; pvStop(); B.querySelectorAll("canvas").forEach(pvFree); B.innerHTML = ""; if (JV) URL.revokeObjectURL(JV); JV = null; }); }
 $("jf-share").addEventListener("click", async () => { const c = JF.cur; if (!c) return;
   const f = new File([c.blob], c.kind === "photo" ? c.name.replace(/\.[^.]*$/, "") + ".jpg" : c.name, {type: jvPDF(c) ? "application/pdf" : c.type || c.blob.type || ""});
   try { if (navigator.canShare && navigator.canShare({files: [f]})){ await navigator.share({files: [f]}); return; } } catch(e){ if (e && e.name === "AbortError") return; }
@@ -2076,13 +2096,16 @@ $("jf-del").addEventListener("click", async () => { const c = JF.cur; if (!c || 
 
 /* ---- Mark up: arrows, circles, freehand and text drawn on a COPY of a job photo. The original stays untouched, so a proof
    photo keeps its stamp and fingerprint. Marks get a dark edge so they show on drywall, dirt or sky. */
-const MK = {img: null, src: null, url: null, shapes: [], cur: null, tool: "arrow", col: "#ff1a1a", raf: 0};
+const MK = {img: null, src: null, url: null, shapes: [], cur: null, tool: "arrow", col: "#ff1a1a", raf: 0, layer: null, ver: 0, lv: -1};
 const mkCv = () => $("mk-cv");
 const mkW = () => { const c = mkCv(); return Math.max(3, Math.round(Math.max(c.width, c.height) / 130)); };
 function mkShape(x, sh){
   const w = sh.w; x.lineCap = "round"; x.lineJoin = "round";
   const stroke = path => { x.strokeStyle = "rgba(0,0,0,.7)"; x.lineWidth = w + Math.max(2, w * .7); path(); x.stroke(); x.strokeStyle = sh.col; x.lineWidth = w; path(); x.stroke(); };
-  if (sh.t === "pen") stroke(() => { x.beginPath(); sh.p.forEach(([a, b], i) => i ? x.lineTo(a, b) : x.moveTo(a, b)); if (sh.p.length === 1) x.lineTo(sh.p[0][0] + .1, sh.p[0][1]); });
+  if (sh.t === "pen") stroke(() => { const P = sh.p, n = P.length; x.beginPath(); x.moveTo(P[0][0], P[0][1]);
+    if (n === 1) x.lineTo(P[0][0] + .1, P[0][1]);
+    else if (n === 2) x.lineTo(P[1][0], P[1][1]);
+    else { for (let i = 1; i < n - 1; i++) x.quadraticCurveTo(P[i][0], P[i][1], (P[i][0] + P[i + 1][0]) / 2, (P[i][1] + P[i + 1][1]) / 2); x.lineTo(P[n - 1][0], P[n - 1][1]); } });   /* a smooth curve through your finger's path, not a string of straight bits */
   else if (sh.t === "circle"){ const rx = Math.abs(sh.b[0] - sh.a[0]) / 2, ry = Math.abs(sh.b[1] - sh.a[1]) / 2;
     stroke(() => { x.beginPath(); x.ellipse((sh.a[0] + sh.b[0]) / 2, (sh.a[1] + sh.b[1]) / 2, Math.max(rx, 1), Math.max(ry, 1), 0, 0, Math.PI * 2); }); }
   else if (sh.t === "arrow"){ const [x0, y0] = sh.a, [x1, y1] = sh.b, an = Math.atan2(y1 - y0, x1 - x0), h = Math.min(Math.hypot(x1 - x0, y1 - y0) * .45, w * 5);
@@ -2090,12 +2113,17 @@ function mkShape(x, sh){
   else if (sh.t === "text"){ const fs = sh.w * 6; x.font = `700 ${fs}px system-ui, -apple-system, sans-serif`; x.textBaseline = "middle";
     x.lineWidth = Math.max(3, fs / 5); x.strokeStyle = "rgba(0,0,0,.9)"; x.strokeText(sh.s, sh.a[0], sh.a[1]); x.fillStyle = sh.col; x.fillText(sh.s, sh.a[0], sh.a[1]); }
 }
+/* the photo and the finished marks are drawn once into a layer; each frame while you draw is that layer plus the mark in
+   progress, so drawing stays quick however many marks are on the photo */
 function mkDraw(){ MK.raf = 0; const c = mkCv(), x = c.getContext("2d"); if (!MK.img) return;
-  x.drawImage(MK.img, 0, 0, c.width, c.height); MK.shapes.forEach(sh => mkShape(x, sh)); if (MK.cur) mkShape(x, MK.cur); }
+  let L = MK.layer; if (!L) L = MK.layer = document.createElement("canvas");
+  if (MK.lv !== MK.ver || L.width !== c.width || L.height !== c.height){ L.width = c.width; L.height = c.height; const lx = L.getContext("2d");
+    lx.drawImage(MK.img, 0, 0, L.width, L.height); MK.shapes.forEach(sh => mkShape(lx, sh)); MK.lv = MK.ver; }
+  x.drawImage(L, 0, 0); if (MK.cur) mkShape(x, MK.cur); }
 function mkFit(){ const c = mkCv(), w = c.parentElement; if (!MK.img || !w) return;
   const k = Math.min(w.clientWidth / c.width, w.clientHeight / c.height); if (!(k > 0)) return;
   c.style.width = Math.floor(c.width * k) + "px"; c.style.height = Math.floor(c.height * k) + "px"; }
-const mkSoon = () => { if (!MK.raf) MK.raf = requestAnimationFrame(mkDraw); };
+const mkSoon = () => { if (!MK.raf) MK.raf = (typeof FPS !== "undefined" && FPS.raw || requestAnimationFrame)(mkDraw); };   /* follows your finger: never held back by the just-for-fun frame-rate cap */
 const mkPt = e => { const c = mkCv(), r = c.getBoundingClientRect(); return [(e.clientX - r.left) * c.width / r.width, (e.clientY - r.top) * c.height / r.height]; };
 async function mkOpen(){
   const f = JF.cur; if (!f || f.kind !== "photo" || !f.blob) return;
@@ -2104,13 +2132,13 @@ async function mkOpen(){
   catch(e){ URL.revokeObjectURL(url); toast("Couldn't open that photo for markup."); return; }
   const c = mkCv(), k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
   c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
-  Object.assign(MK, {img, src: f, url, shapes: [], cur: null, tool: "arrow"});   /* every time: Arrow, so a tap always does something */
+  Object.assign(MK, {img, src: f, url, shapes: [], cur: null, tool: "arrow", ver: MK.ver + 1});   /* every time: Arrow, so a tap always does something */
   const dlg = $("mk-dlg"); dlg.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.tool === "arrow"))); $("mk-txt-l").hidden = true; $("mk-txt").value = "";
   $("jf-dlg").close(); dlg.showModal(); mkDraw(); mkFit(); requestAnimationFrame(mkFit);
 }
 function mkClose(ask){
   if (ask && MK.shapes.length && !jbAsk("Throw away these marks? The photo stays as it was.")) return false;
-  MK.shapes = []; MK.cur = null; $("mk-dlg").close(); return true;
+  MK.shapes = []; MK.cur = null; MK.ver++; $("mk-dlg").close(); return true;
 }
 async function mkSave(){
   const src = MK.src; if (!src) return; if (!MK.shapes.length){ toast("Add a mark first: arrow, circle, draw or text."); return; }
@@ -2133,21 +2161,28 @@ async function mkSave(){
   dlg.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.tool){ MK.tool = b.dataset.tool; dlg.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); tl.hidden = MK.tool !== "text"; mkFit(); }
     else if (b.dataset.col){ MK.col = b.dataset.col; dlg.querySelectorAll("[data-col]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); }
-    else if (b.id === "mk-undo"){ MK.shapes.pop(); mkDraw(); }
+    else if (b.id === "mk-undo"){ MK.shapes.pop(); MK.ver++; mkDraw(); }
     else if (b.id === "mk-save") mkSave();
     else if (b.id === "mk-cancel" || b.id === "mk-x") mkClose(true); });
   dlg.addEventListener("cancel", e => { e.preventDefault(); mkClose(true); });   /* Esc / back: same question as Cancel */
-  dlg.addEventListener("close", () => { if (MK.url) URL.revokeObjectURL(MK.url); Object.assign(MK, {img: null, url: null, cur: null}); jbReseat(); });
+  dlg.addEventListener("close", () => { if (MK.url) URL.revokeObjectURL(MK.url); Object.assign(MK, {img: null, url: null, cur: null});
+    if (MK.layer){ MK.layer.width = MK.layer.height = 0; } cv.width = cv.height = 0; MK.lv = -1; jbReseat(); });   /* give the photo's memory back right away (iPhone counts it until then) */
   cv.addEventListener("pointerdown", e => { if (!MK.img || !e.isPrimary || MK.cur) return; e.preventDefault(); const p = mkPt(e), w = mkW();
     if (MK.tool === "text"){ const t = $("mk-txt").value.trim(); if (!t){ toast("Type your label in the box above first, then tap where it goes."); $("mk-txt").focus(); return; }
       const x = cv.getContext("2d"); x.font = `700 ${w * 6}px system-ui, -apple-system, sans-serif`; const tw = x.measureText(t).width;
-      MK.shapes.push({t: "text", s: t, a: [Math.max(4, Math.min(p[0], cv.width - tw - 4)), Math.max(w * 4, Math.min(p[1], cv.height - w * 4))], col: MK.col, w});
+      MK.shapes.push({t: "text", s: t, a: [Math.max(4, Math.min(p[0], cv.width - tw - 4)), Math.max(w * 4, Math.min(p[1], cv.height - w * 4))], col: MK.col, w}); MK.ver++;
       $("mk-txt").value = ""; $("mk-txt").blur(); mkDraw(); return; }
     try { cv.setPointerCapture(e.pointerId); } catch(err){}
     MK.cur = MK.tool === "pen" ? {t: "pen", p: [p], col: MK.col, w} : {t: MK.tool, a: p, b: p, col: MK.col, w}; mkSoon(); });
-  cv.addEventListener("pointermove", e => { if (!MK.cur || !e.isPrimary) return; e.preventDefault(); const p = mkPt(e); if (MK.cur.t === "pen") MK.cur.p.push(p); else MK.cur.b = p; mkSoon(); });
+  cv.addEventListener("pointermove", e => { if (!MK.cur || !e.isPrimary) return; e.preventDefault();
+    if (MK.cur.t !== "pen"){ MK.cur.b = mkPt(e); mkSoon(); return; }
+    /* every in-between spot the finger or Pencil passed (phones report more than one per screen refresh), skipping repeats */
+    const r = cv.getBoundingClientRect(), kx = cv.width / r.width, ky = cv.height / r.height, P = MK.cur.p, gap = MK.cur.w / 4;
+    (e.getCoalescedEvents && e.getCoalescedEvents().length ? e.getCoalescedEvents() : [e]).forEach(v => { const q = [(v.clientX - r.left) * kx, (v.clientY - r.top) * ky], l = P[P.length - 1];
+      if (Math.hypot(q[0] - l[0], q[1] - l[1]) >= gap) P.push(q); });
+    mkSoon(); });
   const up = () => { const s = MK.cur; if (!s) return; MK.cur = null;
-    if (s.t === "pen" || Math.hypot(s.b[0] - s.a[0], s.b[1] - s.a[1]) > s.w * 3) MK.shapes.push(s); mkDraw(); };
+    if (s.t === "pen" || Math.hypot(s.b[0] - s.a[0], s.b[1] - s.a[1]) > s.w * 3){ MK.shapes.push(s); MK.ver++; } mkDraw(); };
   cv.addEventListener("pointerup", e => { if (e.isPrimary) up(); }); cv.addEventListener("pointercancel", e => { if (e.isPrimary) up(); });
   cv.addEventListener("contextmenu", e => e.preventDefault());   /* long press: no "Save image" menu over your drawing */
   addEventListener("resize", () => { if (dlg.open) mkFit(); }); if (window.visualViewport) visualViewport.addEventListener("resize", () => { if (dlg.open) mkFit(); });
