@@ -92,7 +92,9 @@ def hostile(tag): return '<img src=x onerror="window.PWN=(window.PWN||[]).concat
 with sync_playwright() as pw:
     br = pw.chromium.launch()
     def fresh(**kw):
-        ctx = br.new_context(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True, service_workers="block", **kw)
+        o = dict(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True, service_workers="block")
+        if kw.get("viewport", {}).get("width", 0) > 900: o.update(is_mobile=False, has_touch=False)   # a computer screen: mouse, no touch
+        o.update(kw); ctx = br.new_context(**o)
         ctx.route("**/*", serve)
         pg = ctx.new_page(); pg.errs = []; pg.on("pageerror", lambda e: pg.errs.append(str(e)[:160]))
         return ctx, pg
@@ -436,6 +438,18 @@ with sync_playwright() as pw:
     pg.evaluate("document.getElementById('mk-undo').click()"); pg.on("dialog", lambda d: d.accept()); pg.evaluate("document.getElementById('mk-save').click()"); pg.wait_for_timeout(1500)
     check(pg.evaluate("!document.getElementById('mk-dlg').open && document.getElementById('mk-cv').width === 0"), "saving the marked-up copy closes markup and gives its memory back")
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors with bad files, fast taps or markup" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+    # computer: + / − / 0 zoom, and dragging with the mouse moves a zoomed sheet
+    ctx, pg = fresh(viewport={"width": 1280, "height": 800}); ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(dict(one, peeked=1))))
+    open_book(pg); pg.evaluate("location.hash='#mine/jobs'"); pg.wait_for_timeout(300); pg.evaluate("document.querySelector('.jb-list .jb-row, .jb-list [data-open]').click()"); pg.wait_for_timeout(500)
+    pid = add("#jf-fi", plans3); card(pid); pg.click("#jf-open"); pg.wait_for_timeout(2500)
+    W = "document.querySelector('.pv-pg').clientWidth"; w0 = pg.evaluate(W); pg.keyboard.press("+"); pg.wait_for_timeout(500); w1 = pg.evaluate(W)
+    check(abs(w1 / w0 - 1.6) < 0.02, f"computer: + zooms in 1.6× ({w0} → {w1} px)")
+    SC = "[document.getElementById('jv-body').scrollLeft, document.getElementById('jv-body').scrollTop]"; s0 = pg.evaluate(SC); bx = pg.locator("#jv-body").bounding_box()
+    pg.mouse.move(bx["x"] + 600, bx["y"] + 300); pg.mouse.down(); pg.mouse.move(bx["x"] + 500, bx["y"] + 250, steps=6); pg.mouse.up(); s1 = pg.evaluate(SC)
+    check(abs(s1[0] - s0[0] - 100) <= 1 and abs(s1[1] - s0[1] - 50) <= 1, f"computer: dragging with the mouse moves the sheet with it ({s0} → {s1})")
+    pg.keyboard.press("0"); pg.wait_for_timeout(500); check(pg.evaluate(W) == w0, "computer: 0 fits it back to the screen")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors with mouse and keys" + (f": {pg.errs}" if pg.errs else ""))
     br.close()
 
 print(f"\n{'ALL PASSED' if not FAILS else str(len(FAILS)) + ' FAILED'}")

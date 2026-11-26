@@ -1957,7 +1957,9 @@ async function pvOpen(c){ pvStop(); const tok = PV.tok, B = $("jv-body"), N = $(
   try { const L = await pvLib(), data = new Uint8Array(await c.blob.arrayBuffer()); if (tok !== PV.tok) return;
     PV.task = L.getDocument({data, isEvalSupported: false, enableXfa: false, useSystemFonts: true, wasmUrl: pvURL("wasm/")});
     const doc = await PV.task.promise; if (tok !== PV.tok) return; PV.doc = doc;
-    for (let n = 1; n <= doc.numPages; n++){ const p = await doc.getPage(n); if (tok !== PV.tok) return; const v = p.getViewport({scale: 1}); PV.pg.push({n, p, w: v.width, h: v.height}); }
+    const msg = B.querySelector(".jv-msg");
+    for (let n = 1; n <= doc.numPages; n++){ const p = await doc.getPage(n); if (tok !== PV.tok) return; const v = p.getViewport({scale: 1}); PV.pg.push({n, p, w: v.width, h: v.height});
+      if (msg && n % 10 === 0) msg.textContent = `Opening the PDF… page ${n} of ${doc.numPages}`; }   /* a big plan set: show it's moving */
     B.innerHTML = `<div class="pv-pages">${PV.pg.map(p => `<div class="pv-pg" role="img" aria-label="Page ${p.n} of ${PV.pg.length}"><canvas class="pv-base" width="0" height="0"></canvas></div>`).join("")}</div>`;
     B.querySelectorAll(".pv-pg").forEach((el, i) => { PV.pg[i].el = el; PV.pg[i].base = el.firstChild; });
     PV.z = 1; pvLay(); B.scrollTop = B.scrollLeft = 0; $("jv-zoom").hidden = false; N.hidden = false; pvNum(); pvSoon(0); }
@@ -2078,6 +2080,16 @@ $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.bl
   B.addEventListener("wheel", e => { if (!e.ctrlKey || !mode()) return; e.preventDefault(); if (ANIM) return;
     if (!W) W = gBegin(e.clientX, e.clientY); if (!W) return; gMove(W, W.s * Math.exp(-e.deltaY / 150), W.mx, W.my);
     clearTimeout(wt); wt = setTimeout(() => { if (W){ gEnd(W); W = null; } }, 160); }, {passive: false});
+  /* computer: drag with the mouse to move around a zoomed photo or sheet, and + / − / 0 on the keyboard to zoom */
+  let M = null;
+  B.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse" || e.button !== 0 || !mode() || ANIM) return; M = {x: e.clientX, y: e.clientY, l: B.scrollLeft, t: B.scrollTop, on: false}; });
+  addEventListener("pointermove", e => { if (!M) return; const dx = e.clientX - M.x, dy = e.clientY - M.y;
+    if (!M.on){ if (Math.hypot(dx, dy) < 4) return; M.on = true; B.classList.add("jv-drag"); }   /* a click stays a click */
+    B.scrollLeft = M.l - dx; B.scrollTop = M.t - dy; });
+  addEventListener("pointerup", () => { if (M){ M = null; B.classList.remove("jv-drag"); } });
+  d.addEventListener("keydown", e => { if (!mode() || e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
+    const z = {"+": 1.6, "=": 1.6, "-": 1 / 1.6, "_": 1 / 1.6, "0": 0}[e.key]; if (z === undefined) return; e.preventDefault();
+    glide(z ? now() * z : 1, ...mid0()); });
   B.addEventListener("scroll", () => { if (mode() === "pdf"){ pvNum(); pvSoon(); } }, {passive: true});
   ["gesturestart", "gesturechange"].forEach(k => B.addEventListener(k, e => e.preventDefault()));   /* iPhone: don't zoom the whole page instead */
   addEventListener("resize", () => { if (!d.open) return; if (mode() === "img") jzFit(); else if (mode() === "pdf"){ pvZoom(PV.z); } });

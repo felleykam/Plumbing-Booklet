@@ -59,7 +59,7 @@ Jt=2451545+Js+0.0053*Math.sin(M*R)-0.0069*Math.sin(2*l*R),d=Math.asin(Math.sin(l
 if(c<=-1){day=true;continue}if(c>=1)continue;var w=Math.acos(c)/R/360,a=(Jt-w-2440587.5)*864e5,b=(Jt+w-2440587.5)*864e5;
 if(now>=a&&now<b)day=true;if(a>now&&a<next)next=a;if(b>now&&b<next)next=b}return{day:day,next:next}};
 window.jpbAuto=function(){var p=null;try{p=JSON.parse(localStorage.getItem("jpb-wx-place"))}catch(e){}
-var ok=p&&isFinite(p.lat)&&isFinite(p.lon);return window.jpbDaylight(Date.now(),ok?+p.lat:40.761,ok?+p.lon:-111.891)};
+var re=function(v){return v!=null&&v!==""&&isFinite(v)},ok=p&&re(p.lat)&&re(p.lon);return window.jpbDaylight(Date.now(),ok?+p.lat:40.761,ok?+p.lon:-111.891)};
 var t;try{t=JSON.parse(localStorage.getItem("jpb-theme"))}catch(e){}
 var P0;try{P0=JSON.parse(localStorage.getItem("jpb-prefs"))||{}}catch(e){P0={}}
 /* Sun or Night: the phone's own dark-mode setting by default; "daylight" follows dawn and dusk where you are */
@@ -551,7 +551,7 @@ label.jb-chk input{width:26px;height:26px;flex:none}
 .jr-chips{margin:6px 0}
 .jv-wrap{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;background:#111;display:flex}
 .jv-wrap img{display:block;margin:auto;max-width:100%;max-height:100%;object-fit:contain}
-.jv-wrap.jv-img{touch-action:pan-x pan-y}.jv-wrap.jv-img img{max-width:none;max-height:none;flex:none;-webkit-user-drag:none}
+.jv-wrap.jv-img{touch-action:pan-x pan-y}@media (pointer:fine){.jv-wrap.jv-img,.jv-wrap.jv-pdfv{cursor:grab}}.jv-wrap.jv-drag{cursor:grabbing!important;user-select:none}.jv-wrap.jv-img img{max-width:none;max-height:none;flex:none;-webkit-user-drag:none}
 #fps-meter{position:fixed;top:calc(env(safe-area-inset-top) + 2px);left:2px;z-index:2147483000;pointer-events:none;font:700 12px/1.2 var(--mono);background:rgba(0,0,0,.8);color:#c8ff00;padding:2px 6px;border-radius:4px;font-variant-numeric:tabular-nums}
 .jv-wrap.jv-pdfv{display:block;background:#3a3f44;touch-action:pan-x pan-y}.jv-pdfv .jv-msg{margin:40px auto}
 .pv-pages{position:relative;box-sizing:border-box;padding:8px}.pv-pg{position:relative;margin:0 0 8px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.5);overflow:hidden}.pv-pg:last-child{margin-bottom:0}.pv-base{display:block;width:100%;height:100%}.pv-det{position:absolute;display:block}
@@ -5552,7 +5552,7 @@ td.shop-cell{background:color-mix(in srgb,var(--hv) 16%,var(--sheet))}
     <div class="sec-head"><h2>What's new</h2><small>Newest first · fixes are listed too</small></div>
     <div class="x"><table class="t">
       <tbody>
-        <tr><th>Nov 25, 2026 · Smoother photos &amp; plans</th><td><b>Plans:</b> the viewer now gives back the phone's drawing memory as it goes and when you close it. On iPhone, plans could otherwise go blank after opening several (Safari stops drawing past its limit). Pages near where you're looking draw first; when you scroll fast, ones you've passed no longer hold you up. Zoomed in, the sharp close-up covers a bit more than the screen, so small pans stay sharp without redrawing. Turning the phone while zoomed keeps everything lined up. <b>Fixed:</b> opening a file right after closing one could leave the viewer blank. <b>Markup:</b> drawing stays quick however many marks are on the photo; freehand lines are smooth curves and catch every movement of your finger or Apple Pencil; the frame-rate setting no longer slows drawing. <b>Photos</b> the phone can't read now say so instead of showing nothing. <b>Fixed (weather):</b> when the forecast service left a day's value blank, the app could count it as 0°F, showing a false freezing badge on a job, an extra freezing night in Week ahead, or a false freeze warning on an inspection.</td></tr>
+        <tr><th>Nov 25, 2026 · Smoother photos &amp; plans, polish</th><td><b>Plans:</b> the viewer now gives back the phone's drawing memory as it goes and when you close it. On iPhone, plans could otherwise go blank after opening several (Safari stops drawing past its limit). Pages near where you're looking draw first; when you scroll fast, ones you've passed no longer hold you up. Zoomed in, the sharp close-up covers a bit more than the screen, so small pans stay sharp without redrawing. Turning the phone while zoomed keeps everything lined up. <b>Fixed:</b> opening a file right after closing one could leave the viewer blank. <b>Markup:</b> drawing stays quick however many marks are on the photo; freehand lines are smooth curves and catch every movement of your finger or Apple Pencil; the frame-rate setting no longer slows drawing. <b>Photos</b> the phone can't read now say so instead of showing nothing. <b>On a computer:</b> drag with the mouse to move around a zoomed photo or sheet, and press + / − / 0 to zoom in, out, or back to fit. A big plan set counts its pages while it opens. <b>Fixed:</b> two rare cases where a missing location or switch time could read as 0 in the follow-daylight theme. Every calculator was checked with blank boxes: each says what to type instead of showing a made-up answer. <b>Fixed (weather):</b> when the forecast service left a day's value blank, the app could count it as 0°F, showing a false freezing badge on a job, an extra freezing night in Week ahead, or a false freeze warning on an inspection.</td></tr>
         <tr><th>Nov 24, 2026 · Error &amp; jitter pass, frame rate</th><td><b>Checked the whole book for errors and jumpy screens</b>: every page on a phone and a computer screen, 2,087 typed entries (including junk like letters in number boxes), every fold, all 29 themes in light and dark with each font setting, the Jobs screens, the weather page while the forecast loads, and scrolling every page frame by frame. No errors turned up. <b>Fixed:</b> on a slow connection the text could jump when the fonts arrived late. The fonts now ship with the app, so they're there before the first screen draws, work offline from the very first launch, and the book no longer contacts Google at all. <b>New, just for fun:</b> Settings → Behavior → <i>Frame rate</i> (Auto, 60, 30 or 15) caps how often the book redraws its own moving parts (the 3D rough-in view, splashes, drawing plan PDFs), and <i>Show the frame counter</i> puts a live fps number in the corner. Scrolling and pinch-zoom stay at full speed. At 15, plan PDFs take longer to sharpen.</td></tr>
         <tr><th>Nov 24, 2026 · Smoother zoom</th><td><b>Pinch-zoom on plans and photos is smooth now.</b> While your fingers are down the picture just slides and scales (no redrawing, so it keeps up with your fingers), then it sharpens a moment after you let go. Double-tap and Zoom in / Fit to screen glide instead of jumping. A quick swipe or flick can't set off a double-tap zoom by mistake anymore, and zooming out keeps the sheet centered.</td></tr>
         <tr><th>Nov 24, 2026 · The app draws PDFs</th><td><b>Plan PDFs now open right inside the app on every phone, iPad and computer</b>: every page stacked, page count at the bottom, pinch or double-tap to zoom (up to 12×), one finger to move around. Zoomed in, the part on screen is drawn again, so plan lines and small print stay sharp at any zoom. It works with no signal and reads scanned sheets too. This replaces this morning's "Open in the iPhone's PDF viewer" button. The viewer is PDF.js from Mozilla; it's saved once (about 2 MB on the phone) and kept through app updates, so updates don't download it again. Credit in Terms.</td></tr>
@@ -7666,7 +7666,7 @@ function themeLabel(){
   const dark = document.documentElement.dataset.theme === "dark", name = dark ? "Night" : "Sun", d = daylight();
   const tip = themeHold && themeHold.until > Date.now() + 2*864e5 ? `${name}, pinned in Settings (gear). Tap for ${dark ? "Sun" : "Night"}.`
     : themeHold ? `${name}, your pick until ${clock(themeHold.until)}. Then it follows daylight again. Tap for ${dark ? "Sun" : "Night"}.`
-    : PREFS.light === "daylight" ? `${name}, following daylight${isFinite(d.next) ? `: ${dark ? "Sun" : "Night"} at ${clock(d.next)}` : ""}. Tap for ${dark ? "Sun" : "Night"}.`
+    : PREFS.light === "daylight" ? `${name}, following daylight${d.next != null && isFinite(d.next) ? `: ${dark ? "Sun" : "Night"} at ${clock(d.next)}` : ""}. Tap for ${dark ? "Sun" : "Night"}.`
     : `${name}, following your phone's dark mode. Tap for ${dark ? "Sun" : "Night"}.`;
   $("theme-lbl").textContent = name; $("theme-btn").title = tip; $("theme-btn").setAttribute("aria-label", "Color mode: " + tip);
 }
@@ -7674,7 +7674,7 @@ $("theme-btn").addEventListener("click", () => {
   if (PREFS.skin === "night"){ toast("Night shift theme stays dark. Switch themes in <b>Settings</b>.", 2600); return; }
   const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark", d = daylight();
   if (themeHold && themeHold.until >= 8.64e15 - 1) themeHold = {look: next, until: 8.64e15};   /* pinned in Settings: stay pinned, just flip */
-  else if (PREFS.light === "daylight") themeHold = next === (d.day ? "light" : "dark") ? null : {look: next, until: isFinite(d.next) ? d.next : Date.now() + 12*3600e3};
+  else if (PREFS.light === "daylight") themeHold = next === (d.day ? "light" : "dark") ? null : {look: next, until: d.next != null && isFinite(d.next) ? d.next : Date.now() + 12*3600e3};
   else themeHold = next === (phoneDark.matches ? "dark" : "light") ? null : {look: next, until: Date.now() + 12*3600e3};
   store.set("jpb-theme", themeHold); themeNow(); themeLabel(); redrawArt(); say(next === "dark" ? "Night colors" : "Sun colors");
 });
@@ -7708,7 +7708,7 @@ function lookDraw(){
   const mode = themeHold && themeHold.until >= PIN - 1 ? themeHold.look : (PREFS.light || "phone"), night = PREFS.skin === "night";
   $("look-light").querySelectorAll("button").forEach(b => { b.setAttribute("aria-pressed", String(!night && b.dataset.l === mode)); b.disabled = night; });
   const d = daylight();
-  $("look-light-note").textContent = night ? "Night shift is always dark. Pick another theme to use Sun." : mode === "phone" ? "Follows your phone's dark-mode setting. The sun/moon button flips it for a while." : mode === "daylight" ? `Follows daylight where you are${isFinite(d.next) ? `: switches at ${clock(d.next)}` : ""}. The sun/moon button flips it until the next dawn or dusk.` : `Stays ${mode === "light" ? "Sun" : "Night"} until you pick Phone or Daylight.`;
+  $("look-light-note").textContent = night ? "Night shift is always dark. Pick another theme to use Sun." : mode === "phone" ? "Follows your phone's dark-mode setting. The sun/moon button flips it for a while." : mode === "daylight" ? `Follows daylight where you are${d.next != null && isFinite(d.next) ? `: switches at ${clock(d.next)}` : ""}. The sun/moon button flips it until the next dawn or dusk.` : `Stays ${mode === "light" ? "Sun" : "Night"} until you pick Phone or Daylight.`;
   const vest = ROOT.dataset.vest || "lime";
   press($("look-vest"), b => b.dataset.v === vest);
   $("vest-row").hidden = (PREFS.skin || "hivis") !== "hivis";
@@ -11713,7 +11713,7 @@ window.wxRender = WX.render;
 </script>
 <script>
 /* offline app: save the book on this device (GitHub Pages / home-screen install) */
-var BUILD = "handbook-2026-11-25a";
+var BUILD = "handbook-2026-11-25b";
 /* My jobs lives in jobs.js, loaded under this build's number so a phone never pairs a new book with an old tracker;
    sw.js saves the same name for offline. */
 (function(){ var s = document.createElement("script"); s.src = "jobs.js?v=" + encodeURIComponent(BUILD);
