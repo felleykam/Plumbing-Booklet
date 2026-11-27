@@ -62,6 +62,11 @@ CALCS = [
  ("calc/grade", [("sl-run","40'"),("sl-pitch","0.25")], "sl-ans", "10\" fall", "40 ft × ¼\""),
  ("calc/grade", [("sl-run","480\""),("sl-pitch","0.125")], "sl-ans", "5\" fall", "480\" = 40 ft × ⅛\""),
  ("calc/grade", [("sl-run","-10")], "sl-ans", "Enter a run", "negative run is refused"),
+ ("calc/grade", [("sl-run","6 1/2"),("sl-pitch","0.25")], "sl-ans", "1 5/8\" fall", "feet box: 6 1/2 = 6.5 ft × ¼\" = 1.625\""),
+ ("calc/grade", [("sl-run","6-1/2"),("sl-pitch","0.25")], "sl-ans", "1 5/8\" fall", "feet box: 6-1/2 is feet too"),
+ ("calc/water", [("h-ft","8 1/2")], "h-ans", "3.68 psi", "feet box: 8.5 ft × 0.433 = 3.68"),
+ ("calc/water", [("p-size","4"),("p-len","25 1/2"),("p-gpm","2")], "p-ans", "0.47 gal", "feet box: 25.5 ft of ¾ PEX, 0.7854 × 0.671² × 306 ÷ 231 = 0.468"),
+ ("calc/sizing", [("gl-len","45 1/2")], "gl-col", "50", "gas: 45 1/2 ft uses the 50 ft column (was read as 3.8 ft)"),
  ("calc/grade", [("lr-start","4.52"),("lr-slope","0.25"),("lr-dist","20'")], "lr-ans", "4.94", "4.52 ft + 5\" (0.417 ft)"),
  ("calc/water", [("h-ft","10")], "h-ans", "4.33 psi", "10 ft × 0.433"),
  ("calc/water", [("v-pipe","1"),("v-gpm","5")], "v-ans", "3.31", "5 × 0.4085 ÷ 0.785²"),
@@ -632,6 +637,40 @@ with sync_playwright() as pw:
     check(pg.evaluate("toFracX(1.3125)") == '1 5/16"' and pg.evaluate("toFracX(2.1)") == '2.1"' and pg.evaluate("toFracX(-0.5)") == '-1/2"' and pg.evaluate("toFracX(0)") == '0"', "exact fraction helper: 1 5/16, 2.1 (no tape fraction), -1/2, 0")
     check(pg.evaluate("PINS.has('vents:vent-terminals')") and pg.evaluate("[...document.querySelectorAll('h2')].some(h => h.textContent.trim() === 'Vent terminals')"), "Vent sizing & terminals is now Vent terminals, and its pin followed")
     check(pg.evaluate("document.querySelectorAll('section h2')") is not None and pg.evaluate("(() => { const s = [...document.querySelectorAll('section')].find(x => x.querySelector('h2') && x.querySelector('h2').textContent.trim() === \"What's new\"); return [s.querySelector('table tbody').rows.length, !document.getElementById('news-older').open]; })()") == [5, True], "What's new shows the latest 5; older changes fold away")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+
+    print("17. Batch A fixes (Nov 27)")
+    ctx, pg = fresh(); ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-setup','1')}")
+    open_book(pg)
+    pg.evaluate("location.hash='#calc/units'"); pg.wait_for_timeout(100)
+    pg.evaluate("document.querySelector('#c-kind [data-kind=length]').click()"); pg.wait_for_timeout(50)
+    def conv(v, frm):
+        pg.evaluate("([v,f])=>{const s=document.getElementById('c-from');s.value=f;s.dispatchEvent(new Event('change',{bubbles:true}));const i=document.getElementById('c-val');i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}))}", [v, frm]); pg.wait_for_timeout(30)
+        return pg.evaluate("document.getElementById('c-out').innerText.replace(/\\s+/g,' ')")
+    check("12.7" in conv("1/2", "in"), "converter: 1/2 in = 12.7 mm (was 25.4)")
+    check("88.9" in conv("3 1/2", "in"), "converter: 3 1/2 in = 88.9 mm")
+    check("66" in conv("5'6", "ft") and "5.5" in conv("5'6", "in"), "converter: 5'6 = 66 in / 5.5 ft")
+    check("Type a number" in conv("abc", "in"), "converter: junk warns")
+    pg.evaluate("location.hash='#calc/grade'"); pg.wait_for_timeout(100)
+    pg.evaluate("document.querySelector('[data-sl=grade]').click()"); pg.wait_for_timeout(30)
+    pg.evaluate("()=>{for(const [i,v] of [['sl-run','20'],['sl-fall','4']]){const e=document.getElementById(i);e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}))}}"); pg.wait_for_timeout(30)
+    t = pg.evaluate("document.getElementById('sl-ans').innerText")
+    check("a bit under" in t and "⅛" in t, f"check the grade: 4\" over 20 ft = 0.2\"/ft says 'about ¼, a bit under' ({t[:80]})")
+    pg.evaluate("document.querySelector('[data-sl=fall]').click()")
+    pg.evaluate("location.hash='#calc/math'"); pg.wait_for_timeout(100)
+    pg.evaluate("document.querySelector('#ms-mode [data-ms=pct]').click()"); pg.wait_for_timeout(30)
+    pg.evaluate("()=>{const i=document.getElementById('ms-v');i.value='2';i.dispatchEvent(new Event('input',{bubbles:true}))}"); pg.wait_for_timeout(30)
+    t = pg.evaluate("document.getElementById('ms-out').textContent")
+    check("a bit under" in t and "under ¼" in t, f"slope converter: 2% says it's under ¼\"/ft (0.24) ({t[:90]})")
+    pg.evaluate("location.hash='#calc/layout'"); pg.wait_for_timeout(100)
+    pg.evaluate("()=>{writeIn('ro-to', 1.71875); const r=document.getElementById('ro-rise');r.value='20';document.getElementById('ro-rise-f').value='0';document.getElementById('ro-ang').value='45';r.dispatchEvent(new Event('input',{bubbles:true}))}"); pg.wait_for_timeout(50)
+    check(pg.evaluate("document.getElementById('ro-to').value") == "1 23/32" and "24 7/8" in pg.evaluate("document.getElementById('ro-cut').textContent"), "offset: a 1 23/32 take-off goes in exact; cut 28.284 − 3.4375 = 24.847 → 24 7/8")
+    pg.evaluate("setCode('irc21')"); pg.wait_for_timeout(50)
+    irc = pg.evaluate("[FIX[BAR][1], FIX[FLOOR][1], FIX[SHOWER][3], document.getElementById('dfu-'+BAR).closest('tr').cells[1].textContent]")
+    pg.evaluate("setCode('ipc21')"); pg.wait_for_timeout(50)
+    ipc = pg.evaluate("[FIX[BAR][1], FIX[FLOOR][1], FIX[SHOWER][3]]")
+    check(irc == [1, 0, 2, "1"] and ipc == [2, 2, 1.5], f"DFU counter: IRC bar sink 1, floor drain 0, shower trap 2; IPC 2, 2, 1½ ({irc} / {ipc})")
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors" + (f": {pg.errs}" if pg.errs else ""))
     ctx.close()
 
