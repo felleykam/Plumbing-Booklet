@@ -44,6 +44,8 @@ const jbSave = noCount => { clearTimeout(jbT); if (window.RESTORING) return; JB_
   IDX = null; try { homeDraw(); } catch(e){} };
 const jbBytes = () => { try { return (localStorage.getItem("jpb-jobs") || "").length; } catch(e){ return 0; } };
 const jbId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+/* a drawing surface done with: shrink it to nothing now. iPhone Safari counts canvas memory until then and, past its cap, draws new photos, previews and markup blank */
+const jfFree = c => { if (c){ try { c.width = c.height = 0; } catch(e){} } };
 const jbDay = (n = new Date()) => new Date(n - n.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
 const jbWk = s => { const x = new Date(s + "T12:00:00"); x.setDate(x.getDate() - (x.getDay() + 6) % 7); return jbDay(x); };   /* weeks start Monday */
 const jbNice = s => { const x = new Date(s + "T12:00:00"); return !s || isNaN(x) ? esc(s || "") : x.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}); };
@@ -485,7 +487,7 @@ async function jfPSPreview(){ const im = $("jf-psprev"); if (!im) return; const 
   const band = jfStampLayout(W, jfStampLines(P, ps), ps), on = band.on && band.h < H * .6; c.width = W; c.height = H + (on ? 0 : band.h); const x = c.getContext("2d");
   const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, "#c9b79c"); g.addColorStop(1, "#8f8270"); x.fillStyle = g; x.fillRect(0, 0, W, H);   /* a stand-in wall: studs and a pipe */
   x.fillStyle = "#d8c39a"; for (let i = 60; i < W; i += 180) x.fillRect(i, 0, 40, H); x.fillStyle = "#9aa3ab"; x.fillRect(0, H * .45, W, 34); x.fillStyle = "#e33"; x.fillRect(W * .62, 0, 26, H);
-  jfStampDraw(x, W, on ? H - band.h : H, band); im.src = c.toDataURL("image/jpeg", .8); }
+  jfStampDraw(x, W, on ? H - band.h : H, band); im.src = c.toDataURL("image/jpeg", .8); jfFree(c); }
 /* job report settings (the job's Report section, and Jobs settings → Job reports): which parts go in, photo size, what each
    proof photo's caption shows, a line of your own, and print page breaks. A part left out is named at the bottom of the report. */
 const JB_RS0 = {sec: {head: 1, stages: 1, rooms: 1, insp: 1, hrs: 1, punch: 1, notes: 1, hist: 1, proof: 1, photos: 1, files: 1, act: 1}, ph: "l", oph: 0, cap: {desc: 1, gps: 1, tech: 1, fp: 1}, by: 1, title: "", pb: 0};
@@ -1647,16 +1649,24 @@ $("home-body").addEventListener("click", e => { const b = e.target.closest("[dat
 
 /* ---- photos & files: IndexedDB */
 let jfDbP = null;
+/* iPhone can drop this connection while the app sits in the background ("connection lost"), and every photo after that
+   comes up blank until the app is closed. So: forget a closed connection, reopen, and retry a failed read or save once.
+   An open that never answers gives up after 10 s instead of leaving "Saving…" up forever. */
+const JF_LOST = /UnknownError|InvalidStateError|TransactionInactiveError/;
 const jfDb = () => jfDbP || (jfDbP = new Promise((ok, no) => {
-  const r = indexedDB.open("jpb-files", 1);
+  let r; try { r = indexedDB.open("jpb-files", 1); } catch(e){ jfDbP = null; no(e); return; }
+  const to = setTimeout(() => { jfDbP = null; no(new Error("Photo storage didn't open")); }, 10000);
   r.onupgradeneeded = () => r.result.createObjectStore("files", {keyPath: "id"}).createIndex("job", "job");
-  r.onsuccess = () => ok(r.result); r.onerror = () => { jfDbP = null; no(r.error); };
+  r.onsuccess = () => { clearTimeout(to); const db = r.result; db.onclose = () => { jfDbP = null; }; db.onversionchange = () => { try { db.close(); } catch(e){} jfDbP = null; }; ok(db); };
+  r.onerror = () => { clearTimeout(to); jfDbP = null; no(r.error); };
 }));
-const jfTx = (mode, fn) => jfDb().then(db => new Promise((ok, no) => {
-  const t = db.transaction("files", mode), r = fn(t.objectStore("files")); let out;
+const jfTx = (mode, fn, again = true) => jfDb().then(db => new Promise((ok, no) => {
+  let t; try { t = db.transaction("files", mode); } catch(e){ jfDbP = null; no(e); return; }
+  const r = fn(t.objectStore("files")); let out;
   if (r) r.onsuccess = () => { out = r.result; };
-  t.oncomplete = () => ok(out); t.onerror = () => no(t.error); t.onabort = () => no(t.error);
-}));
+  const bad = () => { const er = t.error; if (er && JF_LOST.test(er.name)) jfDbP = null; no(er); };
+  t.oncomplete = () => ok(out); t.onerror = bad; t.onabort = bad;
+})).catch(e => { if (again && e && JF_LOST.test(e.name || "")){ jfDbP = null; return jfTx(mode, fn, false); } throw e; });
 const jfAll = job => jfTx("readonly", s => job ? s.index("job").getAll(job) : s.getAll());
 const jfPut = rec => jfTx("readwrite", s => s.put(rec));
 const jfDel = id => jfTx("readwrite", s => s.delete(id));
@@ -1710,7 +1720,7 @@ async function jfImg(file, stamp){
       const on = band && band.on && band.h < H * .6;   /* "on the photo" only when the stamp leaves most of the picture clear */
       c.width = W; c.height = H + (band && !on ? band.h : 0);
       const ctx = c.getContext("2d"); ctx.drawImage(img, 0, 0, W, H); if (band) jfStampDraw(ctx, W, on ? H - band.h : H, band);
-      c.toBlob(b => b ? ok(b) : no(new Error("encode")), "image/jpeg", q); });
+      c.toBlob(b => { jfFree(c); b ? ok(b) : no(new Error("encode")); }, "image/jpeg", q); });
     const big = await draw(1600, stamp ? .86 : .82, stamp), small = await draw(240, .7);
     const thumb = await new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = no; r.readAsDataURL(small); });
     return {big, thumb};
@@ -1852,7 +1862,7 @@ async function jbReport(j0, only){
   const PMAX = {l: 0, m: 1400, s: 800}[RS.ph], pic = async (b, max) => { if (!max) return dataUrl(b);
     let u = ""; try { u = URL.createObjectURL(b); const i = await new Promise((ok, no) => { const x = new Image(); x.onload = () => ok(x); x.onerror = no; x.src = u; });
       const k = max / Math.max(i.naturalWidth, i.naturalHeight); if (!(k < 1)) return dataUrl(b);
-      const c = document.createElement("canvas"); c.width = Math.round(i.naturalWidth * k); c.height = Math.round(i.naturalHeight * k); c.getContext("2d").drawImage(i, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", .85); }
+      const c = document.createElement("canvas"); c.width = Math.round(i.naturalWidth * k); c.height = Math.round(i.naturalHeight * k); c.getContext("2d").drawImage(i, 0, 0, c.width, c.height); const d = c.toDataURL("image/jpeg", .85); jfFree(c); return d; }
     catch(e){ return dataUrl(b); } finally { if (u) URL.revokeObjectURL(u); } };
   const proofs = files.filter(f => f.kind === "photo" && f.proof), others = files.filter(f => f.kind === "photo" && !f.proof), docs = files.filter(f => f.kind !== "photo");
   const num = new Map(proofs.map((f, i) => [f.id, i + 1])), pn = id => id && num.has(id) ? ` <span class="m">· proof photo #${num.get(id)}</span>` : "";
@@ -1925,7 +1935,7 @@ async function jfCard(f){
     L.forEach((t, i) => ctx.fillText(t, pad * 2 + kw, y + i * lh)); y += L.length * lh + Math.round(fs * .6); });
   ctx.fillStyle = "#9a9a9a"; ctx.font = `500 ${Math.round(fs * .8)}px -apple-system, system-ui, sans-serif`;
   ctx.fillText("Made with the Utah Plumbers Handbook © Deklan Patrick Kelley." + (P.hash && jfPS().card.fp ? " Check the fingerprint against the stamped photo." : ""), pad, c.height - foot);
-  const blob = await new Promise((ok, no) => c.toBlob(b => b ? ok(b) : no(new Error("encode")), "image/jpeg", .9));
+  const blob = await new Promise((ok, no) => c.toBlob(b => { jfFree(c); b ? ok(b) : no(new Error("encode")); }, "image/jpeg", .9));
   return new File([blob], (f.name || "proof.jpg").replace(/^proof-/, "proof-card-").replace(/\.[^.]*$/, "") + ".jpg", {type: "image/jpeg"});
 }
 document.addEventListener("click", async e => { const btn = e.target.closest("#jf-card"); if (!btn) return; const f = JF.cur; if (!f || !f.proof) return;
@@ -2312,7 +2322,7 @@ async function mkSave(){
     const sm = document.createElement("canvas"), k = 240 / Math.max(c.width, c.height);
     sm.width = Math.max(1, Math.round(c.width * k)); sm.height = Math.max(1, Math.round(c.height * k)); sm.getContext("2d").drawImage(c, 0, 0, sm.width, sm.height);
     const rec = {id: jbId(), job: src.job, kind: "photo", name: String(src.name || "photo").replace(/\.[^.]*$/, "") + "-marked.jpg", type: "image/jpeg",
-      blob: big, thumb: sm.toDataURL("image/jpeg", .7), note: src.note || "", t: Date.now(), from: src.id};
+      blob: big, thumb: (d => (jfFree(sm), d))(sm.toDataURL("image/jpeg", .7)), note: src.note || "", t: Date.now(), from: src.id};
     if (src.s) rec.s = src.s;
     await jfPut(rec);
     const j = jbD.jobs.find(x => x.id === src.job); if (j){ jbAct(j, "✏ Marked up a photo", rec.s); jbBump(j); jbSave(); }
