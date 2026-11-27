@@ -2298,7 +2298,7 @@ async function mkOpen(){
   c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
   Object.assign(MK, {img, src: f, url, shapes: [], cur: null, tool: "arrow", ver: MK.ver + 1});   /* every time: Arrow, so a tap always does something */
   const dlg = $("mk-dlg"); dlg.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.tool === "arrow"))); $("mk-txt-l").hidden = true; $("mk-txt").value = "";
-  $("jf-dlg").close(); dlg.showModal(); mkDraw(); mkFit(); requestAnimationFrame(mkFit);
+  dlg.showModal(); $("jf-dlg").close(); mkDraw(); mkFit(); requestAnimationFrame(mkFit);   /* Mark up opens first, so closing the photo can't nudge the screen under it */
 }
 function mkClose(ask){
   if (ask && MK.shapes.length && !jbAsk("Throw away these marks? The photo stays as it was.")) return false;
