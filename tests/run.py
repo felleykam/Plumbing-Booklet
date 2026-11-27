@@ -486,6 +486,27 @@ with sync_playwright() as pw:
     n0 = pg.evaluate("document.querySelectorAll('.pv-mp').length"); sp = spot(1, 1500, 1000)
     pg.mouse.move(*sp); pg.mouse.down(); pg.mouse.move(sp[0] - 80, sp[1] - 40, steps=5); pg.mouse.up(); pg.wait_for_timeout(200)
     check(pg.evaluate("document.querySelectorAll('.pv-mp').length") == n0, "dragging the sheet in Measure doesn't drop a point")
+    # Pipe run: 12' over, then 12' down at 1/4" = 1'-0" (216 units each) = 24' 0" by hand
+    pg.click("[data-pvm=run]"); pg.wait_for_timeout(150); top0 = pg.evaluate("document.getElementById('jv-body').getBoundingClientRect().top")
+    a = spot(1, 396, 492); pts = [spot(1, 288, 600, False), spot(1, 504, 600, False), spot(1, 504, 384, False)]
+    for q in pts: pg.mouse.click(*q); pg.wait_for_timeout(150)
+    t = pg.evaluate(MST); v, u = inches(t.split("±")[0]), inches(t.split("±")[1].replace("up to", ""))
+    check(abs(v - 288) <= u and "2 legs" in t and "rounded up 24 ft" in t, f"pipe run: 12' + 12' = 24' 0\" by hand: got {t[:60]}")
+    check(pg.evaluate("document.getElementById('jv-body').getBoundingClientRect().top") == top0, "the sheet doesn't move while you tap a pipe run")
+    pg.click("#pv-undo"); pg.wait_for_timeout(150); t = pg.evaluate(MST)
+    check(abs(inches(t.split("±")[0]) - 144) <= 3 and "1 leg" in t, f"Undo point drops the last leg: 12' 0\" ({t[:30]})")
+    pg.click("#pv-clr"); pg.click("[data-pvm=line]"); pg.wait_for_timeout(150)
+    # Pins: drop one with a note; it's saved with the PDF; delete and Undo
+    pg.click("[data-pvt=pins]"); pg.wait_for_timeout(150); pg.mouse.click(*spot(1, 1000, 1000)); pg.wait_for_timeout(150)
+    pg.fill("#pv-pinv", "Stub-out 8 in left of center"); pg.click("#pv-pinok"); pg.wait_for_timeout(500)
+    saved = pg.evaluate("id=>new Promise(ok=>{const r=indexedDB.open('jpb-files',1);r.onsuccess=()=>{const q=r.result.transaction('files').objectStore('files').get(id);q.onsuccess=()=>ok((q.result.pins||[]).map(x=>x.t))}})", tid)
+    check(pg.evaluate("document.querySelectorAll('.pv-pin').length") == 1 and saved == ["Stub-out 8 in left of center"], f"a pin with its note shows on the sheet and is saved with the PDF ({saved})")
+    pg.evaluate("document.getElementById('pv-pind').open=true"); pg.click("#pv-pinl [data-pin]"); pg.wait_for_timeout(150); pg.click("#pv-pindel"); pg.wait_for_timeout(200)
+    gone = pg.evaluate("document.querySelectorAll('.pv-pin').length"); pg.click("#pv-pinundo"); pg.wait_for_timeout(200)
+    check(gone == 0 and pg.evaluate("document.querySelectorAll('.pv-pin').length") == 1, "Delete takes the pin off, Undo puts it back")
+    pg.click("[data-pvt=pins]"); pg.wait_for_timeout(150)
+    check(pg.evaluate("document.querySelectorAll('.pv-pin').length") == 1, "pins stay on the plan with Pins off")
+    pg.click("[data-pvt=measure]"); pg.wait_for_timeout(150)
     pg.click("[data-pvt=find]"); pg.wait_for_timeout(200); FST = "document.getElementById('pv-fst').textContent"
     check(pg.evaluate("document.querySelectorAll('.pv-m').length") == 0, "switching to Find clears the measuring marks")
     pg.fill("#pv-q", "wh"); pg.press("#pv-q", "Enter"); pg.wait_for_timeout(800)
