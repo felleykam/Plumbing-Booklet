@@ -7505,7 +7505,7 @@ function alts(t){
   return out;
 }
 /* recent places and searches, for Home */
-const RECENT = {places: (a => Array.isArray(a) ? a : [])(store.get("jpb-recent", [])), qs: (a => Array.isArray(a) ? a : [])(store.get("jpb-recent-q", [])), cards: (a => Array.isArray(a) ? a : [])(store.get("jpb-recent-c", []))};
+const RECENT = {places: (a => Array.isArray(a) ? a.filter(x => typeof x === "string") : [])(store.get("jpb-recent", [])), qs: (a => Array.isArray(a) ? a.filter(x => typeof x === "string") : [])(store.get("jpb-recent-q", [])), cards: (a => Array.isArray(a) ? a.filter(x => typeof x === "string") : [])(store.get("jpb-recent-c", []))};   /* one odd saved item can't break Home */
 function cardRemember(sec){
   const p = sec.dataset.pid; if (!p || sec.dataset.g === "home" || sec.dataset.g === "mine") return;
   RECENT.cards = [p, ...RECENT.cards.filter(x => x !== p)].slice(0, 6); store.set("jpb-recent-c", RECENT.cards);
@@ -7894,7 +7894,10 @@ const bkSay = (t, cls) => { const s = $("bk-status"); s.textContent = t; s.class
    Keys: "d:YYYY-MM-DD" for the daily ones (last 7 kept), "undo" for the one made before a restore or rollback. Not photos. */
 const SNAP = window.SNAP = (() => {
   let dbp = null;
-  const db = () => dbp || (dbp = new Promise((ok, no) => { const r = indexedDB.open("jpb-snap", 1); r.onupgradeneeded = () => r.result.createObjectStore("s", {keyPath: "k"}); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); }));
+  /* like photo storage: an open that never answers (iPhone) gives up after 10 s, so a restore doesn't hang waiting on its safety copy */
+  const db = () => dbp || (dbp = new Promise((ok, no) => { let r; try { r = indexedDB.open("jpb-snap", 1); } catch(e){ dbp = null; no(e); return; }
+    const to = setTimeout(() => { dbp = null; no(new Error("Safety copies didn't open")); }, 10000);
+    r.onupgradeneeded = () => r.result.createObjectStore("s", {keyPath: "k"}); r.onsuccess = () => { clearTimeout(to); const d = r.result; d.onclose = () => { dbp = null; }; ok(d); }; r.onerror = () => { clearTimeout(to); dbp = null; no(r.error); }; }));
   const tx = (mode, fn) => db().then(d => new Promise((ok, no) => { const t = d.transaction("s", mode), q = fn(t.objectStore("s")); t.oncomplete = () => ok(q && q.result); t.onerror = () => no(t.error); }));
   const jobsIn = dump => { try { return JSON.parse(JSON.parse(dump).data["jpb-jobs"] || "{}").jobs.length || 0; } catch(e){ return 0; } };
   const put = k => { const dump = bkDump(); return tx("readwrite", s => s.put({k, at: Date.now(), dump, n: jobsIn(dump)})); };
@@ -7910,10 +7913,15 @@ setTimeout(() => SNAP.daily(), 5000);
 /* put a dump back: everything waits (no saves) while the page reloads */
 /* "Replace everything": keys the backup doesn't have go too (so a newer list can't linger), except the backup reminder and the
    What's new dot. jpb-fresh tells My jobs to count every job as just opened, so an older backup doesn't land in Archived. */
-window.bkApply = d => { window.RESTORING = true; const keep = ["jpb-lastbk", "jpb-news"];
-  try { Object.keys(localStorage).filter(k => k.startsWith("jpb-") && !keep.includes(k) && typeof d[k] !== "string").forEach(k => localStorage.removeItem(k)); } catch(e){}
-  Object.keys(d).filter(k => k.startsWith("jpb-") && typeof d[k] === "string").forEach(k => { try { localStorage.setItem(k, d[k]); } catch(e){} });
-  try { localStorage.setItem("jpb-fresh", "1"); } catch(e){} };
+/* returns false (and puts everything back as it was) when the backup's jobs don't fit on the phone, instead of saying "Restored" */
+window.bkApply = d => { window.RESTORING = true; const keep = ["jpb-lastbk", "jpb-news"], was = {};
+  try { Object.keys(localStorage).filter(k => k.startsWith("jpb-")).forEach(k => { was[k] = localStorage.getItem(k); }); } catch(e){}
+  try { Object.keys(localStorage).filter(k => k.startsWith("jpb-") && !keep.includes(k) && !k.startsWith("jpb-jobs-unreadable") && typeof d[k] !== "string").forEach(k => localStorage.removeItem(k)); } catch(e){}
+  const bad = []; Object.keys(d).filter(k => k.startsWith("jpb-") && typeof d[k] === "string").forEach(k => { try { localStorage.setItem(k, d[k]); } catch(e){ bad.push(k); } });
+  if (bad.includes("jpb-jobs")){ try { Object.keys(localStorage).filter(k => k.startsWith("jpb-")).forEach(k => localStorage.removeItem(k)); Object.keys(was).forEach(k => localStorage.setItem(k, was[k])); } catch(e){}
+    window.RESTORING = false; return false; }
+  try { localStorage.setItem("jpb-fresh", "1"); } catch(e){} return true; };
+const BK_FULL = "That backup's jobs don't fit in this phone's storage, so nothing changed. Free up space (delete old photos or finished jobs), then try again.";
 async function snapDraw(){
   const el = $("snap-list"); if (!el) return; let L;
   try { L = await SNAP.all(); } catch(e){ el.innerHTML = '<p class="sample">Safety copies don\'t work in this browser.</p>'; return; }
@@ -7930,7 +7938,7 @@ $("snap-list").addEventListener("click", async e => { const b = e.target.closest
   const ok = confirm(`${what}? Jobs, people, notes and settings go back to how they were then (${x.n} job${x.n === 1 ? "" : "s"}). Photos and files aren't touched. What's on the phone now is saved first, so you can undo this too.`);
   if (window.navReseat) navReseat(); if (!ok) return;
   try { await SNAP.put("undo"); } catch(e2){}
-  bkApply(d); bkSay("Done. Reloading…", "good"); setTimeout(() => location.reload(), 600);
+  if (!bkApply(d)) return bkSay(BK_FULL, "err"); bkSay("Done. Reloading…", "good"); setTimeout(() => location.reload(), 600);
 });
 /* Locked backups: AES-256-GCM, key from the password with PBKDF2-SHA-256 (600,000 rounds). Saved as .json so every file picker takes it. */
 const LOCK = window.LOCK = (() => {
@@ -7979,7 +7987,7 @@ $("bk-file").addEventListener("change", async () => {
     const when = j.saved ? new Date(j.saved).toLocaleDateString(undefined, {month: "short", day: "numeric", year: "numeric"}) : "an unknown date";
     if (!confirm(`Replace everything on this phone with the backup from ${when}? It has ${n} job${n === 1 ? "" : "s"}. Anything added since then will be gone.${!n && have ? ` This backup has no jobs, so the ${have} job${have === 1 ? "" : "s"} on this phone will be removed.` : ""}`)){ $("bk-file").value = ""; if (window.navReseat) navReseat(); return; }
     try { await SNAP.put("undo"); } catch(e){}
-    bkApply(d); bkSay(`Restored ${keys.length} items. Reloading…`, "good"); setTimeout(() => location.reload(), 900);
+    if (!bkApply(d)) return bkSay(BK_FULL, "err"); bkSay(`Restored ${keys.length} items. Reloading…`, "good"); setTimeout(() => location.reload(), 900);
   } catch(e){ bkSay("That file isn't a Handbook backup.", "err"); }
   $("bk-file").value = "";
 });
@@ -9318,6 +9326,7 @@ const PF_PIPES = [["Cu L ½\"", 0.545, 150, 1, 2], ["Cu L ¾\"", 0.785, 150, 2, 
 const PF_NEED = [["Shower or tub with a pressure-balance / thermostatic valve", 20], ["Lav, sink, plain shower, hose bibb", 8], ["Toilet, tank type", 20], ["Dishwasher, washer", 8]];
 const hwPsi100 = (gpm, id, C) => 452 * Math.pow(gpm, 1.852) / (Math.pow(C, 1.852) * Math.pow(id, 4.8704));   /* psi lost per 100 ft */
 let PF = store.get("jpb-pf", null);
+if (Array.isArray(PF)) PF = PF.filter(r => r && typeof r === "object" && !Array.isArray(r));   /* one odd saved row can't stop the whole app */
 if (!Array.isArray(PF) || !PF.length) PF = [{p: 4, l: "40'", q: "6", e: "3", t: "1"}, {p: 3, l: "25'", q: "2.5", e: "4", t: "0"}];
 { const ftOnly = s => /^\d+(\.\d+)?$/.test(String(s ?? "").trim());   /* saves from before tape-style input were plain feet */
   if (!store.get("jpb-pf-in", false) && Array.isArray(PF)){ PF.forEach(r => { if (r && ftOnly(r.l)) r.l = String(r.l).trim() + "'"; }); store.set("jpb-pf", PF); store.set("jpb-pf-in", true); } }
@@ -10867,7 +10876,7 @@ $("tape-clear").addEventListener("click", () => { if (!TAPE.length || !confirm("
 tapeDraw();
 
 /* ---------- test log: start a test, come back, log it with the leak-or-cold verdict ---------- */
-{ let run = store.get("jpb-tl-run", null), log = (a => Array.isArray(a) ? a.slice(0, 40) : [])(store.get("jpb-tl", [])), pick = -1;
+{ let run = store.get("jpb-tl-run", null), log = (a => Array.isArray(a) ? a.filter(x => x && typeof x === "object" && !Array.isArray(x)).slice(0, 40) : [])(store.get("jpb-tl", [])), pick = -1;
   const when = t => new Date(t).toLocaleString([], {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
   const span = ms => { const m = Math.round(ms / 60000); return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`; };
   const text = x => [`${x.type}${x.where ? " · " + x.where : ""}`, `Start ${x.start ? when(x.start) : "—"}: ${x.p} psi, pipe ${x.t1}°F`,

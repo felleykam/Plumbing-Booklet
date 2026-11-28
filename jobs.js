@@ -4,8 +4,10 @@
    linked from jobs and from notes with [[Name]]. Jobs and people live in jpb-jobs (in Settings → Download backup); photos
    and files live in IndexedDB "jpb-files" with their own zip backup. Own script block, all inside try. */
 try {
+let JB_LOCK = "";   /* set when saving jobs now could overwrite something: their saved copy didn't read, or another window changed them */
 const jbD = (x => { if (x && typeof x === "object" && Array.isArray(x.jobs)) return x;
-  try { const raw = localStorage.getItem("jpb-jobs"); if (raw && raw !== "null") localStorage.setItem("jpb-jobs-unreadable", raw); } catch(e){}   /* never overwrite what we couldn't read */
+  try { const raw = localStorage.getItem("jpb-jobs"); if (raw && raw !== "null"){ JB_LOCK = "unreadable";   /* never overwrite what we couldn't read, even if setting a copy aside fails (storage full) */
+    const old = localStorage.getItem("jpb-jobs-unreadable"); if (old !== raw) localStorage.setItem(old ? "jpb-jobs-unreadable-" + Date.now() : "jpb-jobs-unreadable", raw); } } catch(e){}
   return {jobs: [], goal: 8000, before: 0}; })(store.get("jpb-jobs", null));
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}   /* ask iOS not to clear this app's storage when the phone is low on space */
 if (!Array.isArray(jbD.people)) jbD.people = []; if (!Array.isArray(jbD.builders)) jbD.builders = []; if (!Array.isArray(jbD.subs)) jbD.subs = [];
@@ -34,9 +36,23 @@ const jbNat = (a, b) => jbName(a).localeCompare(jbName(b), undefined, {numeric: 
 const JB_RES = {booked: "Booked", pass: "Pass", partial: "Partial", fail: "Fail"};
 const JB_ST = {open: "Open", hold: "On hold", done: "Done"};
 let jbT, jfNT, jbDirty = false;
+const JB_REV = "jpb-jobs-rev", jbRevGet = () => { try { return +localStorage.getItem(JB_REV) || 0; } catch(e){ return 0; } };
+let jbRev = jbRevGet();
+{ const flush = () => { if (jbT){ clearTimeout(jbT); jbT = 0; try { jbSave(); } catch(e){} } if (jfNT && JF.noteFlush){ clearTimeout(jfNT); jfNT = 0; try { JF.noteFlush(); } catch(e){} } };
+  document.addEventListener("visibilitychange", () => { if (document.hidden) flush(); }); window.addEventListener("pagehide", flush); }   /* swiping the app away mid-typing used to lose the last half second */
+let jbLockT = 0;
+function jbLockSay(){ if (Date.now() - jbLockT < 20000) return; jbLockT = Date.now(); const why = JB_LOCK === "unreadable" ? "<b>Your saved jobs couldn't be read</b>, so nothing new saves until you restore a backup (Settings → Backup &amp; reset). A copy of what was there is set aside."
+    : "<b>My jobs changed in another window or tab.</b> Changes here won't save, so the other window's work isn't wiped.";
+  toast(`${why} <button type="button" class="linkish" data-jb-reload>Reload</button>`, 15000); }
+document.addEventListener("click", e => { if (e.target.closest && e.target.closest("[data-jb-reload]")) location.reload(); });
+window.addEventListener("storage", e => { if ((e.key === "jpb-jobs" || e.key === JB_REV || e.key === null) && !JB_LOCK){ JB_LOCK = "other"; jbLockSay(); } });
+/* the one place jobs get written: refuses when locked, and moves the revision on so another open window knows */
+function jbWrite(){ if (JB_LOCK){ jbLockSay(); return false; }
+  if (jbRevGet() !== jbRev){ JB_LOCK = "other"; jbLockSay(); return false; }
+  localStorage.setItem("jpb-jobs", JSON.stringify(jbD)); jbRev++; try { localStorage.setItem(JB_REV, String(jbRev)); } catch(e){} return true; }
 let jbFull = false, jbFullT = 0;
 const jbSave = noCount => { clearTimeout(jbT); if (window.RESTORING) return; JB_IX = null; JB_AC = new WeakMap(); let ok = true; noCount = noCount === true && !jbDirty; jbDirty = false;   /* true: not a change (just opened a job), so it doesn't push toward the backup reminder */
-  try { localStorage.setItem("jpb-jobs", JSON.stringify(jbD)); } catch(e){ ok = false; }
+  try { if (!jbWrite()) return; } catch(e){ ok = false; }
   try { if (typeof drawNums === "function") drawNums(); } catch(e){}   /* Contacts → My numbers lists job people too */
   if (!ok && (!jbFull || Date.now() - jbFullT > 6e4)){ jbFullT = Date.now();   /* after this tap's own "Added" message, so that one can't cover it; again each minute it stays full */
     setTimeout(() => toast("<b>Jobs didn't save:</b> this phone's space for them is full. Back up (Settings → Backup &amp; reset → Back up everything), then delete finished jobs.", 9000), 0); }
@@ -149,7 +165,7 @@ function jbClean(){
     .filter(p => p.n && !seen.has(p.n.toLowerCase()) && seen.add(p.n.toLowerCase())).slice(0, 30); if (!jbD.rpre.length) delete jbD.rpre; }   /* your room presets, if any */
   jbD.rules = str(jbD.rules); jbD.jnFull = jbD.jnFull === true; if (jbD.hrsOn !== true) delete jbD.hrsOn; if (jbD.proof != null && (typeof jbD.proof !== "object" || Array.isArray(jbD.proof))) delete jbD.proof; if (jbD.rep != null && !isO(jbD.rep)) delete jbD.rep;   /* read through jfPS(), which keeps only known values */ if (jbD.peeked !== 1) delete jbD.peeked; if (!["new", "stage", "tag", "day"].includes(jbD.jnView)) delete jbD.jnView;
   if (jbD.tpl != null && !isO(jbD.tpl)) jbD.tpl = {}; if (jbD.tpl) Object.keys(jbD.tpl).forEach(k => { if (!JB_SNAME[k] || !Array.isArray(jbD.tpl[k])) delete jbD.tpl[k]; else jbD.tpl[k] = [...new Set(jbD.tpl[k].filter(x => typeof x === "string" || typeof x === "number").map(str).filter(Boolean))]; });   /* words only, each once */
-  jbD.subs.forEach(x => { if (!JB_ICONS.includes(x.icon)) x.icon = ""; });
+  jbD.subs = Array.isArray(jbD.subs) ? jbD.subs.filter(isO) : []; jbD.subs.forEach(x => { if (!JB_ICONS.includes(x.icon)) x.icon = ""; });   /* a null sub can't crash My jobs */
   ['stageCol', 'tagCol'].forEach(k => { const o = isO(jbD[k]) ? jbD[k] : {}; jbD[k] = {}; Object.keys(o).forEach(x => { if (JB_PAL.includes(o[x])) jbD[k][x] = o[x]; }); });
   ["people", "builders", "subs"].forEach(k => { jbD[k] = arrO(jbD[k]); const seen = new Set(); jbD[k].forEach(x => { x.id = jbSafeId(x.id); if (seen.has(x.id)) x.id = jbId(); seen.add(x.id); x.n = str(x.n); }); });
   { const seen = new Set(); jbD.jobs.forEach(j => { j.id = jbSafeId(j.id); if (seen.has(j.id)) j.id = jbId(); seen.add(j.id); }); }
@@ -157,8 +173,9 @@ function jbClean(){
     j.id = jbSafeId(j.id); ["name", "a", "who", "city", "draft"].forEach(k => { j[k] = str(j[k]); });
     if (!Array.isArray(j.log)){ j.log = str(j.note).trim() ? [{id: jbId(), d: jbDay(new Date(+j.t || Date.now())), at: +j.t || Date.now(), b: str(j.note)}] : []; delete j.note; }
     ["log", "insp", "hrs", "punch", "ppl", "act"].forEach(k => { j[k] = arrO(j[k]); j[k].forEach(x => { x.id = jbSafeId(x.id); }); });
+    if (!(+j.made > 1e12)) j.made = +j.t > 1e12 ? +j.t : Date.now(); if (!(+j.t > 1e12)) j.t = j.made;   /* no "changed NaN days ago" */
     j.log.forEach(e => { e.b = str(e.b); e.d = str(e.d) || jbDay(); if (typeof e.at !== "number") e.at = 0; if (e.pin !== true) delete e.pin; });
-    j.hrs = j.hrs.filter(h => +h.h > 0 && +h.h <= 24); j.hrs.forEach(h => { h.h = +h.h; h.d = str(h.d) || jbDay(); h.n = str(h.n); });
+    j.hrs = j.hrs.filter(h => +h.h > 0 && +h.h <= 24); j.hrs.forEach(h => { h.h = +h.h; h.d = /^\d{4}-\d{2}-\d{2}$/.test(str(h.d)) && !isNaN(new Date(h.d + "T12:00")) ? h.d : jbDay(); h.n = str(h.n); });   /* a date that isn't real ("2026-13-45", 5) can't crash My jobs */
     j.insp.forEach(i => { i.d = str(i.d); if (!JB_RES[i.r]) i.r = "booked"; ["who", "n", "k"].forEach(k => { i[k] = str(i[k]); }); });
     j.punch.forEach(x => { x.t = str(x.t); x.done = !!x.done; if (typeof x.ph !== "string") delete x.ph; });
     j.act.forEach(e => { e.t = str(e.t); if (typeof e.at !== "number") e.at = 0; });
@@ -1466,7 +1483,7 @@ B.addEventListener("input", e => { const t = e.target, j = jbCur(), p = JB.perso
   if (t.id === "jb-rules"){ jbD.rules = t.value; clearTimeout(jbT); jbDirty = true; jbT = setTimeout(jbSave, 500); return; }
   if (t.id === "jb-q"){ JB.q = t.value; const r = $("jb-res"), m = $("jb-main"), fq = t.value.trim(); if (r) r.innerHTML = fq ? jbFindHtml(fq) : ""; if (m) m.hidden = !!fq; return; }
   if (t.id === "jn-new"){ const pv = $("jn-prev"); if (pv){ pv.hidden = !jnHasMarks(t.value); pv.innerHTML = '<p class="jn-prevh">Preview: how it\'ll be saved</p>' + jnMd(jnTidy(t.value), "prev"); }
-    const o = jnOwner(); if (o){ o.draft = t.value; clearTimeout(jbT); jbT = setTimeout(() => store.set("jpb-jobs", jbD), 500); } } });   /* a half-written note survives leaving the page */
+    const o = jnOwner(); if (o){ o.draft = t.value; clearTimeout(jbT); jbT = setTimeout(() => { jbT = 0; try { jbWrite(); } catch(e){} }, 500); } } });   /* a half-written note survives leaving the page */
 B.addEventListener("change", e => { const t = e.target, j = jbCur(), p = JB.person && pById(JB.person), st = j && j.stages[JB.stage], en = eCur();
   if (en && t.dataset.ef){ const k = t.dataset.ef; if (k === "bld"){ const b = eGet("bld", t.value); en.bld = b ? b.id : ""; } else en[k] = t.value.trim(); if (k !== "n" || en.n) jbTouch(en); return; }
   if (j && t.dataset.je){ const k = t.dataset.je, x = eGet(k, t.value); j[k] = x ? x.id : ""; jbAct(j, `✎ ${k === "bld" ? "Builder" : "Subdivision"}: ${x ? x.n : "none"}`);
@@ -1978,7 +1995,7 @@ async function jfView(id){
 function jfNoteLog(c){ if (!c || (c.note || "") === (JF.noteWas || "")) return; const oj = jbD.jobs.find(x => x.id === c.job); if (!oj) return;
   const t = `✎ ${c.proof ? "Proof photo" : c.kind === "photo" ? "Photo" : "File"} description ${JF.noteWas ? "changed" : "added"}: "${String(c.note || "").trim().slice(0, 80)}"`;
   if (JF.noteAct && (oj.act || []).includes(JF.noteAct)) JF.noteAct.t = t; else { jbAct(oj, t, c.s); JF.noteAct = oj.act[oj.act.length - 1]; } jbSave(); }
-$("jf-note").addEventListener("input", () => { const c = JF.cur; if (!c) return; if (JF.card){ JF.card = null; const cb = $("jf-card"); if (cb) cb.textContent = "Save proof card"; } c.note = $("jf-note").value; c.ed = Date.now(); clearTimeout(jfNT); jfNT = setTimeout(() => { jfPut(c).catch(() => {}); jfNoteLog(c); }, 400); });
+$("jf-note").addEventListener("input", () => { const c = JF.cur; if (!c) return; if (JF.card){ JF.card = null; const cb = $("jf-card"); if (cb) cb.textContent = "Save proof card"; } c.note = $("jf-note").value; c.ed = Date.now(); clearTimeout(jfNT); JF.noteFlush = () => { JF.noteFlush = null; jfPut(c).catch(() => {}); jfNoteLog(c); }; jfNT = setTimeout(() => { jfNT = 0; JF.noteFlush && JF.noteFlush(); }, 400); });
 $("jf-close").addEventListener("click", () => $("jf-dlg").close());
 $("jf-dlg").addEventListener("change", e => { const c = JF.cur; if (!c || e.target.id !== "jf-s" || !JB_SNAME[e.target.value] || e.target.value === c.s) return;
   const oj = jbD.jobs.find(x => x.id === c.job), was = c.s; c.s = e.target.value; c.ed = Date.now(); jfPut(c).catch(() => {}); jbReseat();
@@ -2140,7 +2157,7 @@ function ptScaleRead(c){ const o = c && c.pscale, ok = e => e && typeof e === "o
   return {pages, all: ok(o && o.all)}; }
 const ptScale = p => PT.sc && (PT.sc.pages[p.n] || PT.sc.all) || null;
 function ptSaveScale(p, k, how){ const e = {k, how}; PT.sc.pages[p.n] = e; if ($("pv-all").checked) PT.sc.all = e;
-  const f = PT.file; if (!f) return; f.pscale = {pages: PT.sc.pages, all: PT.sc.all}; jfPut(f).catch(() => toast("Couldn't save the scale with the PDF (the phone may be out of space). It works until you close the plans.", 4000)); }
+  const f = PT.file; if (!f) return; f.pscale = {pages: PT.sc.pages, all: PT.sc.all}; f.ed = Date.now(); jfPut(f).catch(() => toast("Couldn't save the scale with the PDF (the phone may be out of space). It works until you close the plans.", 4000)); }
 const ptIn = x => typeof fmtFtIn === "function" ? fmtFtIn(x) : x.toFixed(2) + '"';
 /* Pipe run: tap the start, each turn and the end of a pipe route; the length adds up as you go */
 const ptRunLen = m => { let d = 0; for (let i = 1; i < m.pts.length; i++) d += Math.hypot(m.pts[i][0] - m.pts[i - 1][0], m.pts[i][1] - m.pts[i - 1][1]); return d; };
@@ -2186,7 +2203,7 @@ function ptCalSet(){ const m = PT.m, v = typeof tapeIn === "function" ? tapeIn($
 function ptPinsRead(c){ const L = c && Array.isArray(c.pins) ? c.pins : [];
   return L.filter(x => x && typeof x === "object" && /^\d{1,4}$/.test(String(x.n)) && isFinite(+x.x) && isFinite(+x.y)).slice(0, 500)
     .map(x => ({id: String(x.id || jbId()).slice(0, 24), n: +x.n, x: +x.x, y: +x.y, t: String(x.t == null ? "" : x.t).slice(0, 200), at: +x.at || 0})); }
-function ptPinsSave(){ const f = PT.file; if (!f) return; f.pins = PT.pins.map(x => Object.assign({}, x)); jfPut(f).catch(() => toast("Couldn't save the pin (the phone may be out of space). It stays until you close the plans.", 4000)); }
+function ptPinsSave(){ const f = PT.file; if (!f) return; f.pins = PT.pins.map(x => Object.assign({}, x)); f.ed = Date.now(); jfPut(f).catch(() => toast("Couldn't save the pin (the phone may be out of space). It stays until you close the plans.", 4000)); }
 function ptPinsDraw(){ ptClear("pv-pin"); if (!PT.file) return;
   PT.pins.concat(PT.pinNew ? [Object.assign({id: "", nw: 1}, PT.pinNew)] : []).forEach(pin => { const p = PV.pg.find(g => g.n === pin.n); if (!p || !p.el || !p.cw) return;
     const o = ptOv(p), k = p.w / p.cw, g = ptEl("g", {class: "pv-pin" + (pin.nw ? " new" : "") + (PT.pinSel && PT.pinSel === pin.id ? " sel" : "")});
@@ -2510,7 +2527,12 @@ async function jfRestoreZ(z, merge){
   const m = JSON.parse(new TextDecoder().decode(z["manifest.json"])); if (!m || m.app !== "utah-plumbers-handbook-files" || !Array.isArray(m.files)) return 0;
   let n = 0;
   for (const f of m.files){ const x = z[f.path]; if (!x || !/^[\w-]+$/.test(String(f.id))) continue;
-    if (merge){ const cur = await jfTx("readonly", s => s.get(f.id)).catch(() => null); if (cur && (cur.del || (+cur.ed || +cur.t || 0) >= (+f.ed || +f.t || 0))) continue; }
+    if (merge){ const cur = await jfTx("readonly", s => s.get(f.id)).catch(() => null);
+      if (cur && !cur.del && Array.isArray(f.pins) && f.pins.length){   /* pins dropped on either phone are kept, matched by id */
+        const have = new Set((cur.pins || []).map(p => p && p.id)), add = ptPinsRead(f).filter(p => !have.has(p.id));
+        if (add.length){ cur.pins = ptPinsRead(cur).concat(add); await jfPut(cur).catch(() => {}); } }
+      if (cur && (cur.del || (+cur.ed || +cur.t || 0) >= (+f.ed || +f.t || 0))) continue;
+      if (cur && Array.isArray(cur.pins) && cur.pins.length){ const have = new Set((f.pins || []).map(p => p && p.id)); f.pins = ptPinsRead(f).concat(ptPinsRead(cur).filter(p => !have.has(p.id))); } }
     if (f.thumb && !jfThumbOk(f.thumb)) f.thumb = "";
     await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, +f.ed ? {ed: +f.ed} : {}, f.s ? {s: f.s} : {}, f.del ? {del: f.del} : {}, f.proof && typeof f.proof === "object" ? {proof: f.proof} : {}, f.pscale && typeof f.pscale === "object" ? {pscale: ptScaleRead(f)} : {}, Array.isArray(f.pins) ? {pins: ptPinsRead(f)} : {})); n++; }   /* a plan's saved scale comes back too, checked */
   return n;
@@ -2550,7 +2572,7 @@ async function jbRestoreAll(file, sayId, merge){
       : `Add the ${photos} photos & files from this backup?`)){ const r = $("jb-restore"); if (r) r.value = ""; return; }
     if (keys.length) try { await SNAP.put("undo"); } catch(e){}   /* so this restore can be undone: Settings → Backup &amp; reset → Safety copies */
     if (z && photos) await jfRestoreZ(z);
-    if (keys.length){ bkApply(d); jfSay("Restored. Reloading…", "good"); setTimeout(() => location.reload(), 900); }
+    if (keys.length){ if (!bkApply(d)) return jfSay(typeof BK_FULL === "string" ? BK_FULL : "That backup doesn't fit on this phone, so nothing changed.", "err"); jfSay("Restored. Reloading…", "good"); setTimeout(() => location.reload(), 900); }
     else { jfSay(`Restored ${photos} photos & files.`, "good"); jfUse(); }
   } catch(e){ jfSay("That isn't a backup from this app.", "err"); }
   clear();
@@ -2591,21 +2613,27 @@ function jbMerge(o){
   const isO = x => !!x && typeof x === "object" && !Array.isArray(x), A = a => Array.isArray(a) ? a.filter(x => isO(x) && x.id) : [], cl = x => JSON.parse(JSON.stringify(x));
   const r = {add: 0, upd: 0}, ids = () => new Set([...jbD.jobs, ...jbD.people, ...jbD.builders, ...jbD.subs].map(x => x.id)), before = ids();
   const when = e => Math.max(+e.ed || 0, +e.tk || 0, +e.at || 0, +e.add || 0);
-  const byId = (mine, theirs, inner) => { const m = new Map(mine.map(x => [x.id, x]));
+  /* checklist ticks and added items from both copies are kept; a stage's status, dates and the job's fields come from the newer copy */
+  const stMerge = (keep, other) => { if (!isO(keep.stages) || !isO(other.stages)) return;
+    Object.keys(other.stages).forEach(k => { const a = keep.stages[k], b = other.stages[k]; if (!isO(b)) return; if (!isO(a)){ keep.stages[k] = cl(b); return; }
+      a.done = [...new Set([...(Array.isArray(a.done) ? a.done : []), ...(Array.isArray(b.done) ? b.done : [])].filter(x => typeof x === "string"))];
+      if (isO(b.doneAt)){ a.doneAt = isO(a.doneAt) ? a.doneAt : {}; Object.keys(b.doneAt).forEach(t => { if (+b.doneAt[t] > (+a.doneAt[t] || 0)) a.doneAt[t] = b.doneAt[t]; }); }
+      const E = new Map(A(a.extra).map(e => [e.id, e])); A(b.extra).forEach(e => { const c = E.get(e.id); if (!c) E.set(e.id, cl(e)); else if (e.done && !c.done){ c.done = true; c.at = e.at; } }); a.extra = [...E.values()]; }); };
+  const byId = (mine, theirs, inner, post) => { const m = new Map(mine.map(x => [x.id, x]));
     A(theirs).forEach(y => { const x = m.get(y.id);
       if (!x){ m.set(y.id, cl(y)); r.add++; return; }
       const newer = (+y.t || 0) > (+x.t || 0), keep = newer ? cl(y) : x, other = newer ? x : y;
       if (newer && JSON.stringify(x) !== JSON.stringify(y)) r.upd++;
       inner.forEach(k => { const L = new Map(A(keep[k]).map(e => [e.id, e]));
         A(other[k]).forEach(e => { const c = L.get(e.id); if (!c || when(e) > when(c)) L.set(e.id, cl(e)); }); keep[k] = [...L.values()]; });
-      m.set(y.id, keep); });
+      if (post) post(keep, other); m.set(y.id, keep); });
     return [...m.values()]; };
   const inc = A(o.jobs).map(cl), theirT = isO(o.tpl) ? o.tpl : {};
   JB_STG.forEach(([k]) => { if (!window.jbTplMine(k) && Array.isArray(theirT[k]) && theirT[k].length) jbTplSet(k, theirT[k]); });
   { const keep = jbD.tpl; JB_STG.forEach(([k]) => { const T = Array.isArray(theirT[k]) && theirT[k].length ? theirT[k].filter(x => typeof x === "string" || typeof x === "number").map(x => String(x).trim()).filter(Boolean) : JB_TPL[k](), M = jbTpl(k);
       if (JSON.stringify(T) === JSON.stringify(M)) return; jbD.tpl = Object.assign({}, keep, {[k]: T}); inc.forEach(x => jbFreeze(x, k, M)); jbD.tpl = keep; }); }
   const outP = new Map(); [...jbD.jobs, ...inc].forEach(x => (Array.isArray(x.pplOut) ? x.pplOut : []).forEach(id => { if (!outP.has(x.id)) outP.set(x.id, new Set()); outP.get(x.id).add(String(id)); }));
-  jbD.jobs = byId(jbD.jobs, inc, ["log", "insp", "hrs", "punch", "ppl", "act"]);
+  jbD.jobs = byId(jbD.jobs, inc, ["log", "insp", "hrs", "punch", "ppl", "act"], stMerge);
   jbD.jobs.forEach(x => { const s = outP.get(x.id); if (s){ x.pplOut = [...s]; x.ppl = (x.ppl || []).filter(p => !s.has(p.id)); } });   /* taken off on either phone: stays off */
   jbD.people = byId(jbD.people, o.people, ["log"]); jbD.builders = byId(jbD.builders, o.builders, ["log"]); jbD.subs = byId(jbD.subs, o.subs, ["log"]);
   jbBinOut(Array.isArray(o.binOut) ? o.binOut.filter(x => typeof x === "string") : []);   /* restored or emptied on either phone: done */
