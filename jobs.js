@@ -2033,7 +2033,7 @@ async function pvOpen(c){ pvStop(); const tok = PV.tok, B = $("jv-body"), N = $(
     B.innerHTML = `<div class="pv-pages">${PV.pg.map(p => `<div class="pv-pg" role="img" aria-label="Page ${p.n} of ${PV.pg.length}"><canvas class="pv-base" width="0" height="0"></canvas></div>`).join("")}</div>`;
     B.querySelectorAll(".pv-pg").forEach((el, i) => { PV.pg[i].el = el; PV.pg[i].base = el.firstChild; });
     PV.z = 1; pvLay(); B.scrollTop = B.scrollLeft = 0; $("jv-zoom").hidden = false; N.hidden = false; pvNum(); pvSoon(0);
-    PT.file = c; PT.sc = ptScaleRead(c); $("pv-bar").hidden = false; }
+    PT.file = c; PT.sc = ptScaleRead(c); PT.pins = ptPinsRead(c); ptPinsDraw(); $("pv-bar").hidden = false; }
   catch(e){ if (tok !== PV.tok) return;
     B.innerHTML = `<p class="jv-msg">${e && e.name === "PasswordException" ? "This PDF has a password, so the app can't open it." : !pvLibP ? "The PDF viewer hasn't been saved to this phone yet. Open the app once with signal, then try again." : "The app couldn't draw this PDF."}<br>Tap <b>Open in another app</b>.</p>`; } }
 /* every page the screen's width times the zoom, in proportion */
@@ -2044,7 +2044,7 @@ function pvLay(){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (
     if (Math.abs(k - 1) < 1e-6) return;
     /* a sharp close-up belongs to one size: stretch the old one to fit until the new one is drawn, so nothing flashes blurry */
     p.el.querySelectorAll(".pv-det").forEach(x => { const st = x.style; ["left", "top", "width", "height"].forEach(n => st[n] = parseFloat(st[n]) * k + "px"); }); p.dr = null; });
-  if (PT.m) ptMDraw(); }
+  if (PT.m) ptMDraw(); ptPinsDraw(); }
 /* fingers on the screen: no drawing at all (it would eat the frames the pinch needs); let go: draw again */
 function pvHold(on){ PV.hold = on ? 1 : 0; if (on){ clearTimeout(PV.t); PV.pg.forEach(p => { pvCancel(p.dt); p.dt = null; p.dp = null; }); } else pvSoon(60); }
 function pvZoom(s, cx, cy){ const B = $("jv-body"), W = B.querySelector(".pv-pages"); if (!W) return;
@@ -2094,7 +2094,7 @@ async function pvDet(p, x0, y0, x1, y1){ if (x1 - x0 < 4 || y1 - y0 < 4) return;
 
 /* ---- Plan tools: Find words, and Measure. Both draw on a see-through layer over each sheet that uses the sheet's own PDF
    units (1/72"), so highlights and lines stay put through any zoom. */
-const PT = {tool: "", file: null, sc: null, hits: [], hi: -1, q: "", run: 0, m: null, cal: false, drag: false};
+const PT = {tool: "", file: null, sc: null, hits: [], hi: -1, q: "", run: 0, m: null, cal: false, drag: false, mm: "line", pins: [], pinNew: null, pinSel: null, pinGone: null};
 const SVGNS = "http://www.w3.org/2000/svg";
 const ptEl = (t, a) => { const e = document.createElementNS(SVGNS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
 const ptOv = p => { let o = p.el.querySelector(".pv-ov"); if (!o){ o = ptEl("svg", {class: "pv-ov", viewBox: `0 0 ${p.w} ${p.h}`, preserveAspectRatio: "none", "aria-hidden": "true"}); p.el.appendChild(o); } return o; };
@@ -2134,22 +2134,35 @@ const ptScale = p => PT.sc && (PT.sc.pages[p.n] || PT.sc.all) || null;
 function ptSaveScale(p, k, how){ const e = {k, how}; PT.sc.pages[p.n] = e; if ($("pv-all").checked) PT.sc.all = e;
   const f = PT.file; if (!f) return; f.pscale = {pages: PT.sc.pages, all: PT.sc.all}; jfPut(f).catch(() => toast("Couldn't save the scale with the PDF (the phone may be out of space). It works until you close the plans.", 4000)); }
 const ptIn = x => typeof fmtFtIn === "function" ? fmtFtIn(x) : x.toFixed(2) + '"';
+/* Pipe run: tap the start, each turn and the end of a pipe route; the length adds up as you go */
+const ptRunLen = m => { let d = 0; for (let i = 1; i < m.pts.length; i++) d += Math.hypot(m.pts[i][0] - m.pts[i - 1][0], m.pts[i][1] - m.pts[i - 1][1]); return d; };
 function ptMSay(){ const st = $("pv-mst"), p = PT.m ? PT.m.p : ptPage(); if (!p) return; const sc = ptScale(p), sheet = `Sheet ${p.n}`;
+  $("pv-runrow").hidden = PT.mm !== "run" || PT.cal; $("pv-undo").disabled = $("pv-clr").disabled = !(PT.m && PT.m.pts);   /* the row stays put for all of Pipe run, so the sheet never jumps under your finger */
   /* the scale controls fold away once this sheet has a scale; they open by themselves when it needs one */
   $("pv-scs").textContent = sc ? `Scale: ${sc.how}` : `Sheet ${p.n}: set the scale`; $("pv-scd").open = PT.cal || !sc;
   if (PT.tool === "measure") pvNum();
   if (PT.cal){ st.innerHTML = PT.m && PT.m.b ? `How long is that blue line, really? Type it below.` : `${sheet}: tap both ends of a dimension you can read on the sheet. The longer it is, the closer your measurements will be.<small>Or pick the printed scale.</small>`; return; }
   if (!sc){ st.innerHTML = `${sheet} has no scale yet.<small>Set it from a dimension on the sheet (best), or pick the printed scale.</small>`; return; }
+  if (PT.mm === "run"){
+    if (!PT.m || !PT.m.pts){ st.innerHTML = `${sheet}: tap the start of the pipe, then each turn, then the end.`; return; }
+    const m = PT.m, n = m.pts.length; if (n < 2){ st.innerHTML = `Start set. Tap the next turn, or the end.`; return; }
+    const real = ptRunLen(m) * sc.k, u = 2 * m.p.w / m.p.cw * sc.k * (n - 1);   /* each leg ± two screen dots, added up: the worst case */
+    const shown = u >= 1 ? Math.round(real) : real, ft = Math.ceil(shown / 12 - 1e-6);   /* rounded up from what's shown: 24' 0" is 24 ft, 24' 1" is 25 */
+    const val = ptIn(shown), pm = u >= 1 ? `${Math.round(u)}"` : ptIn(u);
+    st.innerHTML = `<span class="pv-big">${esc(val)}</span> <small>${n - 1} leg${n === 2 ? "" : "s"} · ± up to ${esc(pm)} · rounded up <b>${ft} ft</b>, before fittings</small>`; return; }
   if (!PT.m || !PT.m.b){ st.innerHTML = `${sheet}: tap two points to measure.`; return; }
   const m = PT.m, d = Math.hypot(m.b[0] - m.a[0], m.b[1] - m.a[1]), real = d * sc.k, u = 2 * m.p.w / m.p.cw * sc.k;   /* two screen dots, in real inches */
   const val = u >= 1 ? ptIn(Math.round(real)) : ptIn(real), pm = u >= 1 ? `${Math.round(u)}"` : ptIn(u);
   st.innerHTML = `<span class="pv-big">${esc(val)}</span> <small>± ${esc(pm)} at this zoom${u >= 1 ? " (zoom in for closer)" : ""}. Tap again to start a new one.</small>`; }
 function ptMDraw(){ ptClear("pv-m"); const m = PT.m; if (!m) return; const o = ptOv(m.p), r = 5 * m.p.w / m.p.cw, cls = PT.cal ? " cal" : "";
+  if (m.pts){ if (m.pts.length > 1) o.appendChild(ptEl("polyline", {class: "pv-m pv-rl", points: m.pts.map(q => q.join(",")).join(" ")}));
+    m.pts.forEach(q => o.appendChild(ptEl("circle", {class: "pv-m pv-mp", cx: q[0], cy: q[1], r}))); return; }
   if (m.b) o.appendChild(ptEl("line", {class: "pv-m pv-ml" + cls, x1: m.a[0], y1: m.a[1], x2: m.b[0], y2: m.b[1]}));
   [m.a, m.b].filter(Boolean).forEach(q => o.appendChild(ptEl("circle", {class: "pv-m pv-mp" + cls, cx: q[0], cy: q[1], r}))); }
 function ptTap(cx, cy){ const p = PV.pg.find(p => { const r = p.el.getBoundingClientRect(); return cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom; }); if (!p) return;
   const r = p.el.getBoundingClientRect(), q = [(cx - r.left) / r.width * p.w, (cy - r.top) / r.height * p.h];
   if (!PT.cal && !ptScale(p)){ PT.m = null; ptMDraw(); ptCal(true, p); }   /* no scale on this sheet yet: this tap starts setting it */
+  if (!PT.cal && PT.mm === "run"){ if (!PT.m || !PT.m.pts || PT.m.p !== p) PT.m = {p, pts: [q]}; else if (PT.m.pts.length < 200) PT.m.pts.push(q); ptMDraw(); ptMSay(); return; }
   if (!PT.m || PT.m.b || PT.m.p !== p) PT.m = {p, a: q, b: null}; else PT.m.b = q;
   ptMDraw(); ptMSay();
   if (PT.cal && PT.m.b){ $("pv-calrow").hidden = false; const i = $("pv-calv"); i.value = ""; i.focus(); } }
@@ -2159,14 +2172,49 @@ function ptCalSet(){ const m = PT.m, v = typeof tapeIn === "function" ? tapeIn($
   if (!(v > 0) || !(d > 0)){ toast("Type the real length, tape style: 12' 6 or 150 (inches).", 2600); $("pv-calv").focus(); return; }
   ptSaveScale(m.p, v / d, `from a ${ptIn(v)} dimension on sheet ${m.p.n}`); $("pv-calv").blur(); PT.m = null; ptCal(false);
   toast(`Scale set: that line is ${esc(ptIn(v))}. Tap two points to measure.`, 2600); }   /* says back what it read, so 25 (inches) typed for 25 feet shows right away */
+/* Pins: a numbered pin on a sheet with your note ("stub-out 8 in left of center"). Saved with the PDF on this phone, and in
+   backups. They show whenever the plans are open; with Pins on, tap a spot to add one or a pin to change it. */
+function ptPinsRead(c){ const L = c && Array.isArray(c.pins) ? c.pins : [];
+  return L.filter(x => x && typeof x === "object" && /^\d{1,4}$/.test(String(x.n)) && isFinite(+x.x) && isFinite(+x.y)).slice(0, 500)
+    .map(x => ({id: String(x.id || jbId()).slice(0, 24), n: +x.n, x: +x.x, y: +x.y, t: String(x.t == null ? "" : x.t).slice(0, 200), at: +x.at || 0})); }
+function ptPinsSave(){ const f = PT.file; if (!f) return; f.pins = PT.pins.map(x => Object.assign({}, x)); jfPut(f).catch(() => toast("Couldn't save the pin (the phone may be out of space). It stays until you close the plans.", 4000)); }
+function ptPinsDraw(){ ptClear("pv-pin"); if (!PT.file) return;
+  PT.pins.concat(PT.pinNew ? [Object.assign({id: "", nw: 1}, PT.pinNew)] : []).forEach(pin => { const p = PV.pg.find(g => g.n === pin.n); if (!p || !p.el || !p.cw) return;
+    const o = ptOv(p), k = p.w / p.cw, g = ptEl("g", {class: "pv-pin" + (pin.nw ? " new" : "") + (PT.pinSel && PT.pinSel === pin.id ? " sel" : "")});
+    g.appendChild(ptEl("circle", {cx: pin.x, cy: pin.y, r: 12 * k})); const t = ptEl("text", {x: pin.x, y: pin.y, "font-size": 13 * k});
+    t.textContent = pin.nw ? "+" : String(PT.pins.indexOf(pin) + 1); g.appendChild(t); o.appendChild(g); }); }
+function ptPinUi(){ $("pv-pinrow").hidden = PT.tool !== "pins"; $("pv-pinok").disabled = !(PT.pinNew || PT.pinSel); $("pv-pindel").disabled = !PT.pinSel;
+  $("pv-pins-n").textContent = PT.pins.length ? `All pins (${PT.pins.length})` : "All pins (none yet)"; }
+function ptPinSay(extra){ const n = PT.pins.length; ptPinUi();
+  $("pv-pst").innerHTML = extra || (PT.pinNew ? "Type a note for this pin, then Save." : PT.pinSel ? "Change the note and Save, or Delete the pin."
+    : `Tap a spot on a sheet to drop a pin${n ? ", or tap a pin to change it" : ""}.<small>${n ? `${n} pin${n === 1 ? "" : "s"} on this PDF, saved on this phone` : "Pins save on this phone with the PDF, and go in backups."}</small>`); }
+function ptPinList(){ $("pv-pinl").innerHTML = PT.pins.map((x, i) => `<button type="button" data-pin="${esc(x.id)}"><b>📍${i + 1}</b>Sheet ${x.n} · ${esc(x.t)}</button>`).join(""); }
+function ptPinPick(id){ const pin = PT.pins.find(x => x.id === id); if (!pin) return; PT.pinSel = id; PT.pinNew = null; ptPinsDraw(); ptPinSay();
+  ptPinUi(); $("pv-pinv").value = pin.t; }
+function ptPinTap(cx, cy){ const p = PV.pg.find(p => { const r = p.el.getBoundingClientRect(); return cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom; }); if (!p) return;
+  const r = p.el.getBoundingClientRect(), q = [(cx - r.left) / r.width * p.w, (cy - r.top) / r.height * p.h], k = p.w / p.cw;
+  const hit = PT.pins.find(x => x.n === p.n && Math.hypot(x.x - q[0], x.y - q[1]) <= 18 * k);   /* a finger's width around a pin picks it */
+  if (hit){ ptPinPick(hit.id); return; }
+  if (PT.pins.length >= 500){ toast("This PDF has 500 pins: delete some first.", 3000); return; }
+  PT.pinSel = null; PT.pinNew = {n: p.n, x: q[0], y: q[1]}; ptPinsDraw(); ptPinSay();
+  ptPinUi(); const i = $("pv-pinv"); i.value = ""; i.focus(); }
+function ptPinOk(){ const v = $("pv-pinv").value.trim().slice(0, 200);
+  if (PT.pinNew){ if (!v){ toast("Type a note for the pin first.", 2000); $("pv-pinv").focus(); return; } PT.pins.push(Object.assign({id: jbId(), t: v, at: Date.now()}, PT.pinNew)); PT.pinNew = null; }
+  else { const pin = PT.pins.find(x => x.id === PT.pinSel); if (!pin) return; pin.t = v; }
+  PT.pinSel = null; $("pv-pinv").value = ""; $("pv-pinv").blur(); ptPinsSave(); ptPinsDraw(); ptPinList(); ptPinSay(); }
+function ptPinDel(){ const i = PT.pins.findIndex(x => x.id === PT.pinSel); if (i < 0) return;
+  PT.pinGone = {pin: PT.pins[i], i}; PT.pins.splice(i, 1); PT.pinSel = null; $("pv-pinv").value = ""; $("pv-pinv").blur();
+  ptPinsSave(); ptPinsDraw(); ptPinList(); ptPinSay(`Pin deleted. <button type="button" class="linkish" id="pv-pinundo">Undo</button>`); }
 function ptTool(t){ PT.tool = PT.tool === t ? "" : t; const B = $("jv-body");
   document.querySelectorAll("[data-pvt]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.pvt === PT.tool)));
-  $("pv-find").hidden = PT.tool !== "find"; $("pv-meas").hidden = PT.tool !== "measure"; B.classList.toggle("jv-meas", PT.tool === "measure");
+  $("pv-find").hidden = PT.tool !== "find"; $("pv-meas").hidden = PT.tool !== "measure"; $("pv-pins").hidden = PT.tool !== "pins"; B.classList.toggle("jv-meas", PT.tool === "measure" || PT.tool === "pins");
+  if (PT.tool !== "pins"){ PT.pinNew = null; PT.pinSel = null; $("pv-pinrow").hidden = true; ptPinsDraw(); } else { $("pv-pinv").value = ""; ptPinList(); ptPinSay(); }
   if (PT.tool !== "find"){ ptClear("pv-hit"); PT.hits = []; PT.run++; $("pv-fst").textContent = ""; } else { const q = $("pv-q"); q.focus(); if (q.value.trim()) ptFind(q.value); }
   if (PT.tool !== "measure"){ PT.m = null; PT.cal = false; $("pv-calrow").hidden = true; ptMDraw(); if (PV.doc) pvNum(); }
   else { $("pv-ps").value = ""; $("pv-all").checked = false; const p = ptPage(); if (p && !ptScale(p)) ptCal(true, p); else ptMSay(); } }
-function ptReset(){ PT.run++; Object.assign(PT, {tool: "", file: null, sc: null, hits: [], hi: -1, q: "", m: null, cal: false, drag: false});
-  $("pv-bar").hidden = true; $("pv-find").hidden = $("pv-meas").hidden = $("pv-calrow").hidden = true; $("pv-fst").textContent = $("pv-mst").textContent = "";
+function ptReset(){ PT.run++; Object.assign(PT, {tool: "", file: null, sc: null, hits: [], hi: -1, q: "", m: null, cal: false, drag: false, mm: "line", pins: [], pinNew: null, pinSel: null, pinGone: null});
+  $("pv-bar").hidden = true; $("pv-find").hidden = $("pv-meas").hidden = $("pv-calrow").hidden = $("pv-pins").hidden = $("pv-pinrow").hidden = $("pv-runrow").hidden = true; $("pv-fst").textContent = $("pv-mst").textContent = $("pv-pst").textContent = "";
+  document.querySelectorAll("[data-pvm]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.pvm === "line")));
   document.querySelectorAll("[data-pvt]").forEach(b => b.setAttribute("aria-pressed", "false")); $("jv-body").classList.remove("jv-meas"); }
 { $("pv-bar").addEventListener("click", e => { const b = e.target.closest("[data-pvt]"); if (b) ptTool(b.dataset.pvt); });
   $("pv-q").addEventListener("keydown", e => { if (e.key !== "Enter") return; e.preventDefault(); const q = e.target.value.trim(); if (q && q === PT.q && PT.hits.length) ptGo(PT.hi + (e.shiftKey ? -1 : 1)); else ptFind(q); });
@@ -2174,6 +2222,14 @@ function ptReset(){ PT.run++; Object.assign(PT, {tool: "", file: null, sc: null,
   $("pv-next").addEventListener("click", () => { const q = $("pv-q").value.trim(); if (q !== PT.q) ptFind(q); else ptGo(PT.hi + 1); });
   $("pv-prev").addEventListener("click", () => { const q = $("pv-q").value.trim(); if (q !== PT.q) ptFind(q); else ptGo(PT.hi - 1); });
   $("pv-cal").addEventListener("click", () => { PT.m = null; ptCal(true); });
+  $("pv-meas").addEventListener("click", e => { const b = e.target.closest("[data-pvm]"); if (b){ PT.mm = b.dataset.pvm; document.querySelectorAll("[data-pvm]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); if (!PT.cal) PT.m = null; ptMDraw(); ptMSay(); return; }
+    if (e.target.id === "pv-undo" && PT.m && PT.m.pts){ PT.m.pts.pop(); if (!PT.m.pts.length) PT.m = null; ptMDraw(); ptMSay(); }
+    if (e.target.id === "pv-clr"){ PT.m = null; ptMDraw(); ptMSay(); } });
+  $("pv-pins").addEventListener("click", e => { const b = e.target.closest("[data-pin]");
+    if (b){ const pin = PT.pins.find(x => x.id === b.dataset.pin), p = pin && PV.pg.find(g => g.n === pin.n); if (p) ptShow(p, pin.x, pin.y); ptPinPick(b.dataset.pin); return; }
+    if (e.target.id === "pv-pinok") ptPinOk(); else if (e.target.id === "pv-pindel") ptPinDel();
+    else if (e.target.id === "pv-pinundo" && PT.pinGone){ PT.pins.splice(Math.min(PT.pinGone.i, PT.pins.length), 0, PT.pinGone.pin); PT.pinGone = null; ptPinsSave(); ptPinsDraw(); ptPinList(); ptPinSay(); } });
+  $("pv-pinv").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); ptPinOk(); } });
   $("pv-calok").addEventListener("click", ptCalSet); $("pv-calv").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); ptCalSet(); } });
   $("pv-ps").addEventListener("change", e => { const R = +e.target.value, p = ptPage(); if (!(R > 0) || !p) return;
     ptSaveScale(p, R / 72, `printed ${e.target.selectedOptions[0].textContent} (only right on a full-size sheet)`);   /* R real inches per inch of paper; 72 PDF units to the inch */
@@ -2236,7 +2292,7 @@ $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.bl
     if (last && tap.at - last.at < 320 && Math.hypot(tap.x - last.x, tap.y - last.y) < 40){ e.preventDefault(); last = null; glide(now() > 1.01 ? 1 : 2.5, tap.x, tap.y); }
     else last = tap; };
   B.addEventListener("touchend", lift, {passive: false}); B.addEventListener("touchcancel", e => { if (P){ gEnd(P.g); P = null; } T = null; });
-  B.addEventListener("click", e => { if (PT.tool !== "measure" || mode() !== "pdf") return; if (PT.drag){ PT.drag = false; return; } ptTap(e.clientX, e.clientY); });
+  B.addEventListener("click", e => { if ((PT.tool !== "measure" && PT.tool !== "pins") || mode() !== "pdf") return; if (PT.drag){ PT.drag = false; return; } (PT.tool === "pins" ? ptPinTap : ptTap)(e.clientX, e.clientY); });
   B.addEventListener("dblclick", e => { if (PT.tool === "measure") return; if (mode()) glide(now() > 1.01 ? 1 : 2.5, e.clientX, e.clientY); });
   let W = null, wt = 0;
   B.addEventListener("wheel", e => { if (!e.ctrlKey || !mode()) return; e.preventDefault(); if (ANIM) return;
@@ -2405,7 +2461,7 @@ const jbLastBk = () => { const lb = +store.get("jpb-lastbk", 0);
   return (lb ? `Last backup: <b>${jbAgo(lb)}</b>. ` : "<b>No backup yet.</b> ") + "One file with your jobs, people, notes, settings, photos and files. Save it to iCloud Drive or Files so it's off this phone: deleting the app from the Home Screen deletes everything in it."; };
 async function jfPack(){
   let L = []; try { L = await jfAll(); } catch(e){}
-  const man = L.map(f => ({id: f.id, job: f.job, s: f.s, jobName: (j0 => j0 ? jbName(j0) : "")(jbD.jobs.find(x => x.id === f.job)), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb, del: f.del || 0, proof: f.proof || null, ed: f.ed || 0, pscale: f.pscale || null,
+  const man = L.map(f => ({id: f.id, job: f.job, s: f.s, jobName: (j0 => j0 ? jbName(j0) : "")(jbD.jobs.find(x => x.id === f.job)), kind: f.kind, name: f.name, type: f.type, note: f.note, t: f.t, thumb: f.thumb, del: f.del || 0, proof: f.proof || null, ed: f.ed || 0, pscale: f.pscale || null, pins: Array.isArray(f.pins) && f.pins.length ? f.pins : null,
     path: `files/${f.id}-${String(f.name).replace(/[^\w.\- ]+/g, "_").slice(-60)}`}));
   const zip = await jfZip([{name: "handbook-backup.json", blob: new Blob([bkDump()], {type: "application/json"})},
     {name: "manifest.json", blob: new Blob([JSON.stringify({app: "utah-plumbers-handbook-files", v: 1, made: new Date().toISOString(), files: man})])},
@@ -2447,7 +2503,7 @@ async function jfRestoreZ(z, merge){
   for (const f of m.files){ const x = z[f.path]; if (!x || !/^[\w-]+$/.test(String(f.id))) continue;
     if (merge){ const cur = await jfTx("readonly", s => s.get(f.id)).catch(() => null); if (cur && (cur.del || (+cur.ed || +cur.t || 0) >= (+f.ed || +f.t || 0))) continue; }
     if (f.thumb && !jfThumbOk(f.thumb)) f.thumb = "";
-    await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, +f.ed ? {ed: +f.ed} : {}, f.s ? {s: f.s} : {}, f.del ? {del: f.del} : {}, f.proof && typeof f.proof === "object" ? {proof: f.proof} : {}, f.pscale && typeof f.pscale === "object" ? {pscale: ptScaleRead(f)} : {})); n++; }   /* a plan's saved scale comes back too, checked */
+    await jfPut(Object.assign({id: f.id, job: f.job, kind: f.kind, name: f.name, type: f.type, blob: new Blob([x], {type: f.type}), thumb: f.thumb || "", note: f.note || "", t: f.t || Date.now()}, +f.ed ? {ed: +f.ed} : {}, f.s ? {s: f.s} : {}, f.del ? {del: f.del} : {}, f.proof && typeof f.proof === "object" ? {proof: f.proof} : {}, f.pscale && typeof f.pscale === "object" ? {pscale: ptScaleRead(f)} : {}, Array.isArray(f.pins) ? {pins: ptPinsRead(f)} : {})); n++; }   /* a plan's saved scale comes back too, checked */
   return n;
 }
 /* takes the new all-in-one .zip, an older photos-only .zip, or a Settings .json backup */
