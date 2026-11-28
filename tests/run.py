@@ -67,6 +67,11 @@ CALCS = [
  ("calc/water", [("h-ft","8 1/2")], "h-ans", "3.68 psi", "feet box: 8.5 ft × 0.433 = 3.68"),
  ("calc/water", [("p-size","4"),("p-len","25 1/2"),("p-gpm","2")], "p-ans", "0.47 gal", "feet box: 25.5 ft of ¾ PEX, 0.7854 × 0.671² × 306 ÷ 231 = 0.468"),
  ("calc/sizing", [("gl-len","45 1/2")], "gl-col", "50", "gas: 45 1/2 ft uses the 50 ft column (was read as 3.8 ft)"),
+ ("calc/sizing", [("gl-len","45 1/2'")], "gl-col", "50", "gas: 45 1/2' with a foot mark is 45.5 ft too"),
+ ("calc/grade", [("sl-run","5 1/2'"),("sl-pitch","0.25")], "sl-ans", "1 3/8\" fall", "feet box: 5 1/2' × ¼\" = 1.375\""),
+ ("calc/grade", [("lr-start","4 1/2"),("lr-slope","0.25"),("lr-dist","20")], "lr-ans", "4.92", "laser rod start 4 1/2 ft: 4.5 + 20 × 0.25 ÷ 12 = 4.917 ft"),
+ ("calc/math", [("mv-a","10 -5")], "mv-out", "2.5", "average keeps a minus after a space: (10 − 5) ÷ 2 = 2.5"),
+ ("calc/math", [("mv-a","62-58")], "mv-out", "60", "average: 62-58 is two readings, (62 + 58) ÷ 2 = 60"),
  ("calc/grade", [("lr-start","4.52"),("lr-slope","0.25"),("lr-dist","20'")], "lr-ans", "4.94", "4.52 ft + 5\" (0.417 ft)"),
  ("calc/water", [("h-ft","10")], "h-ans", "4.33 psi", "10 ft × 0.433"),
  ("calc/water", [("v-pipe","1"),("v-gpm","5")], "v-ans", "3.31", "5 × 0.4085 ÷ 0.785²"),
@@ -423,6 +428,11 @@ with sync_playwright() as pw:
     check("can't be shown in the app" in body(ids["broken"], 1200), "a photo the phone can't read says so instead of a blank screen")
     card(ids["plans"]); pg.evaluate("document.getElementById('jf-open').click(); document.getElementById('jv-close').click(); document.getElementById('jf-open').click(); document.getElementById('jv-close').click(); document.getElementById('jf-open').click()"); pg.wait_for_timeout(2500)
     check(pg.evaluate("document.getElementById('jv-dlg').open && document.querySelectorAll('.pv-pg').length === 3"), "open, close, open fast: the viewer shows the plans (a late 'closed' notice doesn't wipe them)")
+    # iPhone Safari can refuse to read a file copy the app is holding; reopening must read it fresh and retry, not need a reload
+    pg.evaluate("()=>{const A=Blob.prototype.arrayBuffer;window.FAILONCE=0;Blob.prototype.arrayBuffer=function(){if(window.FAILONCE){window.FAILONCE=0;return Promise.reject(new DOMException('no','NotReadableError'))}return A.call(this)}}")
+    for _ in range(2):
+        pg.evaluate("document.getElementById('jv-close').click(); window.FAILONCE=1"); pg.wait_for_timeout(100); pg.click("#jf-open"); pg.wait_for_timeout(1500)
+    check(pg.evaluate("document.querySelectorAll('#jv-body canvas.pv-base').length === 3 && !/couldn't draw/.test(document.getElementById('jv-body').innerText)"), "a refused read of the plan (iPhone Safari) is retried fresh: reopening still draws it, no reload needed")
     bx = pg.locator("#jv-body").bounding_box(); pg.mouse.dblclick(bx["x"] + 150, bx["y"] + 100); pg.wait_for_timeout(1700)
     pg.evaluate("(() => { window.__mk = 0; const o = document.createElement.bind(document); document.createElement = (t, ...a) => { if (String(t).toLowerCase() === 'canvas') window.__mk++; return o(t, ...a); }; })()")
     pg.evaluate("document.getElementById('jv-body').scrollLeft += 15"); pg.wait_for_timeout(700)
@@ -714,6 +724,32 @@ with sync_playwright() as pw:
     pg.evaluate("DBS.forEach(d=>{try{d.close()}catch(e){}})")
     pg.evaluate("document.querySelector('#jf-photos .jf-th').click()"); pg.wait_for_timeout(600)
     check(pg.evaluate("document.getElementById('jf-dlg').open"), "after another drop, a photo still opens")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+
+    print("19. Saved jobs are safe: two windows, closing mid-typing")
+    ctx, pg = fresh()
+    ctx.add_init_script("if(!localStorage.getItem('jpb-seeded')){localStorage.setItem('jpb-seeded','1');localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(one)))
+    open_book(pg); pg2 = ctx.new_page(); open_book(pg2); pg.wait_for_timeout(1200)
+    JOBS = "JSON.parse(localStorage.getItem('jpb-jobs')).jobs.map(j=>j.name)"
+    def edit(p, f, v, wait=800):
+        p.evaluate("location.hash='#mine/jobs'"); p.wait_for_timeout(300); p.evaluate("document.querySelector('.jb-list .jb-row, .jb-list [data-open]').click()"); p.wait_for_timeout(400)
+        p.evaluate("([f,v])=>{const i=[...document.querySelectorAll(`[data-f=${f}]`)].find(x=>x.offsetParent)||document.querySelector(`[data-f=${f}]`);i.focus();i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}))}", [f, v]); p.wait_for_timeout(wait)
+    edit(pg, "name", "Renamed in window A"); pg2.wait_for_timeout(900)
+    pg2.evaluate("location.hash='#mine/jobs'"); pg2.wait_for_timeout(400)
+    check(pg.evaluate(JOBS) == ["Renamed in window A"] and "Renamed in window A" in pg2.evaluate("document.getElementById('jb-body').innerText"), f"a change in one window shows up in the other open window, nothing lost ({pg.evaluate(JOBS)})")
+    def openjob(p):
+        p.evaluate("location.hash='#mine/jobs'"); p.wait_for_timeout(300); p.evaluate("document.querySelector('.jb-list .jb-row, .jb-list [data-open]').click()"); p.wait_for_timeout(400)
+    pg.evaluate("document.activeElement && document.activeElement.blur()"); pg.wait_for_timeout(1500); openjob(pg2); pg.wait_for_timeout(1500); pg.wait_for_load_state("load")   # opening a job saves, so idle window A quietly refreshes
+    pg2.bring_to_front(); pg2.evaluate("(()=>{const i=document.getElementById('js-lead');i.closest('details').open=true;i.focus();return document.activeElement===i})()")   # B is in the middle of typing
+    edit(pg, "name", "Saved in window A")           # A saves meanwhile
+    pg2.evaluate("(()=>{const i=document.activeElement;i.value='Stale from B';i.dispatchEvent(new Event('input',{bubbles:true}))})()"); pg2.wait_for_timeout(900)
+    check(pg.evaluate(JOBS) == ["Saved in window A"] and "another window" in pg2.evaluate("document.getElementById('toast').textContent"), f"both windows editing at once: the second can't wipe the first's saved work, and it says why ({pg.evaluate(JOBS)})")
+    pg2.close(); ctx.close()
+    ctx, pg = fresh()
+    ctx.add_init_script("if(!localStorage.getItem('jpb-seeded')){localStorage.setItem('jpb-seeded','1');localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(one)))
+    open_book(pg); edit(pg, "a", "999 S State", wait=30); pg.evaluate("window.dispatchEvent(new Event('pagehide'))")
+    check("999 S State" in pg.evaluate("localStorage.getItem('jpb-jobs')"), "typing saves right away when the app closes (no half-second loss)")
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors" + (f": {pg.errs}" if pg.errs else ""))
     ctx.close()
 
