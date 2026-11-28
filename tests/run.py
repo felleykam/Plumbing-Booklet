@@ -67,6 +67,11 @@ CALCS = [
  ("calc/water", [("h-ft","8 1/2")], "h-ans", "3.68 psi", "feet box: 8.5 ft × 0.433 = 3.68"),
  ("calc/water", [("p-size","4"),("p-len","25 1/2"),("p-gpm","2")], "p-ans", "0.47 gal", "feet box: 25.5 ft of ¾ PEX, 0.7854 × 0.671² × 306 ÷ 231 = 0.468"),
  ("calc/sizing", [("gl-len","45 1/2")], "gl-col", "50", "gas: 45 1/2 ft uses the 50 ft column (was read as 3.8 ft)"),
+ ("calc/sizing", [("gl-len","45 1/2'")], "gl-col", "50", "gas: 45 1/2' with a foot mark is 45.5 ft too"),
+ ("calc/grade", [("sl-run","5 1/2'"),("sl-pitch","0.25")], "sl-ans", "1 3/8\" fall", "feet box: 5 1/2' × ¼\" = 1.375\""),
+ ("calc/grade", [("lr-start","4 1/2"),("lr-slope","0.25"),("lr-dist","20")], "lr-ans", "4.92", "laser rod start 4 1/2 ft: 4.5 + 20 × 0.25 ÷ 12 = 4.917 ft"),
+ ("calc/math", [("mv-a","10 -5")], "mv-out", "2.5", "average keeps a minus after a space: (10 − 5) ÷ 2 = 2.5"),
+ ("calc/math", [("mv-a","62-58")], "mv-out", "60", "average: 62-58 is two readings, (62 + 58) ÷ 2 = 60"),
  ("calc/grade", [("lr-start","4.52"),("lr-slope","0.25"),("lr-dist","20'")], "lr-ans", "4.94", "4.52 ft + 5\" (0.417 ft)"),
  ("calc/water", [("h-ft","10")], "h-ans", "4.33 psi", "10 ft × 0.433"),
  ("calc/water", [("v-pipe","1"),("v-gpm","5")], "v-ans", "3.31", "5 × 0.4085 ÷ 0.785²"),
@@ -423,6 +428,11 @@ with sync_playwright() as pw:
     check("can't be shown in the app" in body(ids["broken"], 1200), "a photo the phone can't read says so instead of a blank screen")
     card(ids["plans"]); pg.evaluate("document.getElementById('jf-open').click(); document.getElementById('jv-close').click(); document.getElementById('jf-open').click(); document.getElementById('jv-close').click(); document.getElementById('jf-open').click()"); pg.wait_for_timeout(2500)
     check(pg.evaluate("document.getElementById('jv-dlg').open && document.querySelectorAll('.pv-pg').length === 3"), "open, close, open fast: the viewer shows the plans (a late 'closed' notice doesn't wipe them)")
+    # iPhone Safari can refuse to read a file copy the app is holding; reopening must read it fresh and retry, not need a reload
+    pg.evaluate("()=>{const A=Blob.prototype.arrayBuffer;window.FAILONCE=0;Blob.prototype.arrayBuffer=function(){if(window.FAILONCE){window.FAILONCE=0;return Promise.reject(new DOMException('no','NotReadableError'))}return A.call(this)}}")
+    for _ in range(2):
+        pg.evaluate("document.getElementById('jv-close').click(); window.FAILONCE=1"); pg.wait_for_timeout(100); pg.click("#jf-open"); pg.wait_for_timeout(1500)
+    check(pg.evaluate("document.querySelectorAll('#jv-body canvas.pv-base').length === 3 && !/couldn't draw/.test(document.getElementById('jv-body').innerText)"), "a refused read of the plan (iPhone Safari) is retried fresh: reopening still draws it, no reload needed")
     bx = pg.locator("#jv-body").bounding_box(); pg.mouse.dblclick(bx["x"] + 150, bx["y"] + 100); pg.wait_for_timeout(1700)
     pg.evaluate("(() => { window.__mk = 0; const o = document.createElement.bind(document); document.createElement = (t, ...a) => { if (String(t).toLowerCase() === 'canvas') window.__mk++; return o(t, ...a); }; })()")
     pg.evaluate("document.getElementById('jv-body').scrollLeft += 15"); pg.wait_for_timeout(700)

@@ -2022,9 +2022,17 @@ const pvCancel = t => { if (t) try { t.cancel(); } catch(e){} };
 function pvStop(){ PV.tok++; clearTimeout(PV.t); PV.q = []; PV.busy = 0;
   PV.pg.forEach(p => { pvCancel(p.bt); pvCancel(p.dt); pvFree(p.base); p.el && p.el.querySelectorAll("canvas").forEach(pvFree); }); PV.pg = [];
   if (PV.task) PV.task.destroy().catch(() => {}); PV.task = null; PV.doc = null; }
+/* the plan's bytes, read fresh from storage every time it opens. iPhone Safari can refuse to read a file copy the app is
+   still holding (more so after a pin or scale re-saved that record), and only a reload used to bring it back. */
+async function pvBytes(c){
+  const get = () => c.id ? jfTx("readonly", s => s.get(c.id)).catch(() => null) : Promise.resolve(null);
+  for (let i = 0; i < 2; i++){
+    const f = await get(); if (f && f.blob){ c.blob = f.blob; if (f.pins) c.pins = f.pins; if (f.pscale) c.pscale = f.pscale; }
+    try { return new Uint8Array(await c.blob.arrayBuffer()); } catch(e){ if (i) throw e; jfDbP = null; }   /* reconnect and read once more */
+  } }
 async function pvOpen(c){ pvStop(); const tok = PV.tok, B = $("jv-body"), N = $("jv-note");
   B.classList.add("jv-pdfv"); B.innerHTML = `<p class="jv-msg">Opening the PDF…</p>`;
-  try { const L = await pvLib(), data = new Uint8Array(await c.blob.arrayBuffer()); if (tok !== PV.tok) return;
+  try { const L = await pvLib(), data = await pvBytes(c); if (tok !== PV.tok) return;
     PV.L = L; PV.task = L.getDocument({data, isEvalSupported: false, enableXfa: false, useSystemFonts: true, wasmUrl: pvURL("wasm/")});
     const doc = await PV.task.promise; if (tok !== PV.tok) return; PV.doc = doc;
     const msg = B.querySelector(".jv-msg");
@@ -2139,7 +2147,7 @@ const ptRunLen = m => { let d = 0; for (let i = 1; i < m.pts.length; i++) d += M
 function ptMSay(){ const st = $("pv-mst"), p = PT.m ? PT.m.p : ptPage(); if (!p) return; const sc = ptScale(p), sheet = `Sheet ${p.n}`;
   $("pv-runrow").hidden = PT.mm !== "run" || PT.cal; $("pv-undo").disabled = $("pv-clr").disabled = !(PT.m && PT.m.pts);   /* the row stays put for all of Pipe run, so the sheet never jumps under your finger */
   /* the scale controls fold away once this sheet has a scale; they open by themselves when it needs one */
-  $("pv-scs").textContent = sc ? `Scale: ${sc.how}` : `Sheet ${p.n}: set the scale`; $("pv-scd").open = PT.cal || !sc;
+  $("pv-scs").textContent = sc ? `Scale: ${sc.how}` : `Sheet ${p.n}: set the scale`; if (!PT.tap || (PT.m && PT.m.b)) $("pv-scd").open = PT.cal || !sc;   /* never between the two taps of a line: opening it pushes the sheet down under the second tap */
   if (PT.tool === "measure") pvNum();
   if (PT.cal){ st.innerHTML = PT.m && PT.m.b ? `How long is that blue line, really? Type it below.` : `${sheet}: tap both ends of a dimension you can read on the sheet. The longer it is, the closer your measurements will be.<small>Or pick the printed scale.</small>`; return; }
   if (!sc){ st.innerHTML = `${sheet} has no scale yet.<small>Set it from a dimension on the sheet (best), or pick the printed scale.</small>`; return; }
@@ -2159,7 +2167,8 @@ function ptMDraw(){ ptClear("pv-m"); const m = PT.m; if (!m) return; const o = p
     m.pts.forEach(q => o.appendChild(ptEl("circle", {class: "pv-m pv-mp", cx: q[0], cy: q[1], r}))); return; }
   if (m.b) o.appendChild(ptEl("line", {class: "pv-m pv-ml" + cls, x1: m.a[0], y1: m.a[1], x2: m.b[0], y2: m.b[1]}));
   [m.a, m.b].filter(Boolean).forEach(q => o.appendChild(ptEl("circle", {class: "pv-m pv-mp" + cls, cx: q[0], cy: q[1], r}))); }
-function ptTap(cx, cy){ const p = PV.pg.find(p => { const r = p.el.getBoundingClientRect(); return cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom; }); if (!p) return;
+function ptTap(cx, cy){ PT.tap = true; try { ptTap1(cx, cy); } finally { PT.tap = false; } }
+function ptTap1(cx, cy){ const p = PV.pg.find(p => { const r = p.el.getBoundingClientRect(); return cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom; }); if (!p) return;
   const r = p.el.getBoundingClientRect(), q = [(cx - r.left) / r.width * p.w, (cy - r.top) / r.height * p.h];
   if (!PT.cal && !ptScale(p)){ PT.m = null; ptMDraw(); ptCal(true, p); }   /* no scale on this sheet yet: this tap starts setting it */
   if (!PT.cal && PT.mm === "run"){ if (!PT.m || !PT.m.pts || PT.m.p !== p) PT.m = {p, pts: [q]}; else if (PT.m.pts.length < 200) PT.m.pts.push(q); ptMDraw(); ptMSay(); return; }
