@@ -45,9 +45,16 @@ function jbLockSay(){ if (Date.now() - jbLockT < 20000) return; jbLockT = Date.n
     : "<b>My jobs changed in another window or tab.</b> Changes here won't save, so the other window's work isn't wiped.";
   toast(`${why} <button type="button" class="linkish" data-jb-reload>Reload</button>`, 15000); }
 document.addEventListener("click", e => { if (e.target.closest && e.target.closest("[data-jb-reload]")) location.reload(); });
-window.addEventListener("storage", e => { if ((e.key === "jpb-jobs" || e.key === JB_REV || e.key === null) && !JB_LOCK){ JB_LOCK = "other"; jbLockSay(); } });
+/* another window saved jobs: if nothing is half-typed here, pick up its copy (now, or when this window comes back to the front);
+   if this window is mid-edit too, stop saving here and say so, so neither window's work gets wiped */
+let JB_STALE = false;
+const jbEditing = () => { const a = document.activeElement; return !!jbT || !!(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.closest("#mine-jobs, .jb, .jb-body, dialog, [data-sec=jobs]")); };
+window.addEventListener("storage", e => { if (!(e.key === "jpb-jobs" || e.key === JB_REV || e.key === null) || JB_LOCK || window.RESTORING) return;
+  if (jbEditing()){ JB_LOCK = "other"; jbLockSay(); return; }
+  JB_STALE = true; if (!document.hidden) setTimeout(() => { if (JB_STALE && !jbEditing()) location.reload(); }, 300); });
+document.addEventListener("visibilitychange", () => { if (!document.hidden && JB_STALE && !JB_LOCK && !jbEditing()) location.reload(); });
 /* the one place jobs get written: refuses when locked, and moves the revision on so another open window knows */
-function jbWrite(){ if (JB_LOCK){ jbLockSay(); return false; }
+function jbWrite(){ if (JB_LOCK || JB_STALE){ if (JB_STALE && !JB_LOCK) JB_LOCK = "other"; jbLockSay(); return false; }
   if (jbRevGet() !== jbRev){ JB_LOCK = "other"; jbLockSay(); return false; }
   localStorage.setItem("jpb-jobs", JSON.stringify(jbD)); jbRev++; try { localStorage.setItem(JB_REV, String(jbRev)); } catch(e){} return true; }
 let jbFull = false, jbFullT = 0;

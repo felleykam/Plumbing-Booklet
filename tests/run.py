@@ -727,6 +727,32 @@ with sync_playwright() as pw:
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors" + (f": {pg.errs}" if pg.errs else ""))
     ctx.close()
 
+    print("19. Saved jobs are safe: two windows, closing mid-typing")
+    ctx, pg = fresh()
+    ctx.add_init_script("if(!localStorage.getItem('jpb-seeded')){localStorage.setItem('jpb-seeded','1');localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(one)))
+    open_book(pg); pg2 = ctx.new_page(); open_book(pg2); pg.wait_for_timeout(1200)
+    JOBS = "JSON.parse(localStorage.getItem('jpb-jobs')).jobs.map(j=>j.name)"
+    def edit(p, f, v, wait=800):
+        p.evaluate("location.hash='#mine/jobs'"); p.wait_for_timeout(300); p.evaluate("document.querySelector('.jb-list .jb-row, .jb-list [data-open]').click()"); p.wait_for_timeout(400)
+        p.evaluate("([f,v])=>{const i=[...document.querySelectorAll(`[data-f=${f}]`)].find(x=>x.offsetParent)||document.querySelector(`[data-f=${f}]`);i.focus();i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}))}", [f, v]); p.wait_for_timeout(wait)
+    edit(pg, "name", "Renamed in window A"); pg2.wait_for_timeout(900)
+    pg2.evaluate("location.hash='#mine/jobs'"); pg2.wait_for_timeout(400)
+    check(pg.evaluate(JOBS) == ["Renamed in window A"] and "Renamed in window A" in pg2.evaluate("document.getElementById('jb-body').innerText"), f"a change in one window shows up in the other open window, nothing lost ({pg.evaluate(JOBS)})")
+    def openjob(p):
+        p.evaluate("location.hash='#mine/jobs'"); p.wait_for_timeout(300); p.evaluate("document.querySelector('.jb-list .jb-row, .jb-list [data-open]').click()"); p.wait_for_timeout(400)
+    pg.evaluate("document.activeElement && document.activeElement.blur()"); pg.wait_for_timeout(1500); openjob(pg2); pg.wait_for_timeout(1500); pg.wait_for_load_state("load")   # opening a job saves, so idle window A quietly refreshes
+    pg2.bring_to_front(); pg2.evaluate("(()=>{const i=document.getElementById('js-lead');i.closest('details').open=true;i.focus();return document.activeElement===i})()")   # B is in the middle of typing
+    edit(pg, "name", "Saved in window A")           # A saves meanwhile
+    pg2.evaluate("(()=>{const i=document.activeElement;i.value='Stale from B';i.dispatchEvent(new Event('input',{bubbles:true}))})()"); pg2.wait_for_timeout(900)
+    check(pg.evaluate(JOBS) == ["Saved in window A"] and "another window" in pg2.evaluate("document.getElementById('toast').textContent"), f"both windows editing at once: the second can't wipe the first's saved work, and it says why ({pg.evaluate(JOBS)})")
+    pg2.close(); ctx.close()
+    ctx, pg = fresh()
+    ctx.add_init_script("if(!localStorage.getItem('jpb-seeded')){localStorage.setItem('jpb-seeded','1');localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(one)))
+    open_book(pg); edit(pg, "a", "999 S State", wait=30); pg.evaluate("window.dispatchEvent(new Event('pagehide'))")
+    check("999 S State" in pg.evaluate("localStorage.getItem('jpb-jobs')"), "typing saves right away when the app closes (no half-second loss)")
+    check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors" + (f": {pg.errs}" if pg.errs else ""))
+    ctx.close()
+
     print("16. IPC first")
     ctx, pg = fresh(); ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-setup','1')}")
     open_book(pg)
