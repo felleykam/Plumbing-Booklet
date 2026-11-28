@@ -406,7 +406,7 @@ with sync_playwright() as pw:
     import os, shutil, subprocess
     tmp = tempfile.mkdtemp(); P = lambda n: os.path.join(tmp, n)
     open(P("corrupt.pdf"), "wb").write(os.urandom(5000)); open(P("empty.pdf"), "wb").close(); open(P("broken.jpg"), "wb").write(os.urandom(3000))
-    plans3 = P("plans.pdf"); mkplans(plans3, 3)
+    plans3 = P("plans.pdf"); mkplans(plans3, 3); big = P("big.png"); png(big, 1600, 1200)
     locked = shutil.which("qpdf") and subprocess.run(["qpdf", "--encrypt", "pw", "pw", "256", "--", plans3, P("locked.pdf")]).returncode == 0
     ctx, pg = fresh(); ctx.add_init_script("if(!sessionStorage.s){sessionStorage.s=1;localStorage.setItem('jpb-jobs',%s)}" % json.dumps(json.dumps(dict(one, peeked=1))))
     open_book(pg); pg.evaluate("location.hash='#mine/jobs'"); pg.wait_for_timeout(300); pg.evaluate("document.querySelector('.jb-list .jb-row, .jb-list [data-open]').click()"); pg.wait_for_timeout(500)
@@ -452,6 +452,35 @@ with sync_playwright() as pw:
     check(few == many and many <= 4, f"markup: drawing one stroke costs the same with 2 or 42 marks on the photo ({few} vs {many} strokes per frame)")
     pg.evaluate("document.getElementById('mk-undo').click()"); pg.on("dialog", lambda d: d.accept()); pg.evaluate("document.getElementById('mk-save').click()"); pg.wait_for_timeout(1500)
     check(pg.evaluate("!document.getElementById('mk-dlg').open && document.getElementById('mk-cv').width === 0"), "saving the marked-up copy closes markup and gives its memory back")
+    # markup: every kind of mark, then pick one up later and fix it (move, recolor, thicker, delete), with undo and redo
+    pid = add("#jf-ph", tp); card(pid); pg.click("#jf-mark"); pg.wait_for_timeout(500)
+    SH = "JSON.parse(JSON.stringify(jpbMK.shapes))"; B = lambda: pg.locator("#mk-cv").bounding_box()
+    X = lambda f: B()["x"] + B()["width"] * f; Y = lambda f: B()["y"] + B()["height"] * f
+    def mdrag(tool, a, b, txt=None):
+        if tool: pg.click(f"#mk-dlg [data-tool={tool}]")
+        if txt is not None: pg.fill("#mk-txt", txt)
+        pg.mouse.move(X(a[0]), Y(a[1])); pg.mouse.down(); pg.mouse.move(X(b[0]), Y(b[1]), steps=5); pg.mouse.up(); pg.wait_for_timeout(60)
+    mdrag("arrow", (.1, .1), (.3, .3)); pg.click("[data-col='#22e04a']"); pg.click("[data-sz='1.7']"); mdrag("line", (.5, .1), (.9, .15))
+    pg.click("[data-col='#ff8a00']"); pg.click("[data-sz='0.6']"); mdrag("box", (.1, .5), (.35, .75)); pg.click("[data-col='#111111']"); pg.click("[data-sz='1']")
+    mdrag("dim", (.5, .55), (.9, .55), txt='8"'); mdrag("circle", (.55, .7), (.75, .9)); m = pg.evaluate(SH)
+    check([x["t"] for x in m] == ["arrow", "line", "box", "dim", "circle"] and m[1]["col"] == "#22e04a" and m[2]["w"] < m[0]["w"] < m[1]["w"] and m[3].get("s") == '8"', f"markup: arrow, line, box, dimension line with its label and circle, each in the color and thickness picked ({[(x['t'], x['col'], x['w']) for x in m]})")
+    a0 = m[2]["a"]; pg.click("#mk-dlg [data-tool=move]"); mdrag(None, (.1, .62), (.2, .42)); a1 = pg.evaluate(SH)[2]["a"]
+    check(abs(a1[0] - a0[0] - .1 * pg.evaluate("jpbMK.img && document.getElementById('mk-cv').width")) < 3 and pg.evaluate("jpbMK.sel") == 2 and pg.evaluate("!document.getElementById('mk-selrow').hidden"), f"Move: drag a mark you already drew to a new spot ({a0} → {a1})")
+    pg.click("[data-col='#ff1a1a']"); pg.click("[data-sz='1.7']"); b = pg.evaluate(SH)[2]
+    check(b["col"] == "#ff1a1a" and b["w"] == m[1]["w"], "with a mark picked, tapping a color or thickness changes that mark")
+    pg.click("#mk-undo"); pg.click("#mk-undo"); pg.click("#mk-undo"); u = pg.evaluate(SH)[2]; pg.click("#mk-redo"); r = pg.evaluate(SH)[2]
+    check(u["a"] == a0 and u["col"] == "#ff8a00" and r["a"] == a1 and r["col"] == "#ff8a00", "Undo steps back through recolor, thickness and the move; Redo puts the move back")
+    pg.mouse.click(X(.7), Y(.55)); picked = pg.evaluate("jpbMK.sel"); pg.click("#mk-del"); left = [x["t"] for x in pg.evaluate(SH)]
+    pg.click("#mk-undo"); back = [x["t"] for x in pg.evaluate(SH)]
+    check(picked == 3 and "dim" not in left and back == ["arrow", "line", "box", "dim", "circle"], f"tap a mark to pick it, Delete mark removes only that one, Undo brings it back ({left})")
+    pg.mouse.click(X(.97), Y(.03)); check(pg.evaluate("jpbMK.sel") == -1 and pg.evaluate("document.getElementById('mk-selrow').hidden"), "tapping empty photo picks nothing")
+    pg.click("#mk-save"); pg.wait_for_timeout(1200); check(pg.evaluate("!document.getElementById('mk-dlg').open"), "the fixed-up copy saves")
+    # photos zoom in further: up to 4 screen dots per photo dot, so a 1600 px photo goes past the old 8× stop
+    pid = add("#jf-ph", big); card(pid); pg.click("#jf-open"); pg.wait_for_timeout(900)
+    for _ in range(8): pg.evaluate("document.getElementById('jv-dlg').dispatchEvent(new KeyboardEvent('keydown', {key: '+', bubbles: true}))"); pg.wait_for_timeout(260)
+    zw = pg.evaluate("(() => { const i = document.querySelector('#jv-body img'); return [i.clientWidth, i.naturalWidth, document.getElementById('jv-body').clientWidth]; })()")
+    check(zw[0] / zw[2] > 8.5 and zw[0] / zw[2] <= 16.01, f"a photo zooms in past 8× (now {zw[0] / zw[2]:.1f}× the screen, {zw[1]} px photo), and stops at 16×")
+    pg.click("#jv-close"); pg.wait_for_timeout(200)
     check(not pg.errs and not pg.evaluate("window.jpbErrs.length"), "no script errors with bad files, fast taps or markup" + (f": {pg.errs}" if pg.errs else ""))
     ctx.close()
     # computer: + / − / 0 zoom, and dragging with the mouse moves a zoomed sheet

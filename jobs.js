@@ -2020,8 +2020,10 @@ const jvPDF = c => c.type === "application/pdf" || /\.pdf$/i.test(c.name || "");
 const JZ = {s: 1, w: 0, h: 0};
 const jzFit = () => { const B = $("jv-body"), i = B.querySelector("img"); if (!i || !i.naturalWidth) return;
   const k = Math.min(B.clientWidth / i.naturalWidth, B.clientHeight / i.naturalHeight); JZ.w = i.naturalWidth * k; JZ.h = i.naturalHeight * k; jzSet(JZ.s); };
+/* how far a photo zooms: until one dot of the photo is 4 dots on screen (at least 4×, at most 16×) */
+const jzMax = i => Math.max(4, Math.min(16, (i.naturalWidth / (JZ.w || 1)) * 4));
 function jzSet(s, cx, cy){ const B = $("jv-body"), i = B.querySelector("img"); if (!i || !JZ.w) return;
-  const old = JZ.s, max = Math.max(4, Math.min(12, (i.naturalWidth / JZ.w) * 2)); s = Math.min(max, Math.max(1, s)); JZ.s = s;
+  const old = JZ.s; s = Math.min(jzMax(i), Math.max(1, s)); JZ.s = s;
   cx = cx == null ? B.clientWidth / 2 : cx; cy = cy == null ? B.clientHeight / 2 : cy;
   const fx = (B.scrollLeft + cx) / (JZ.w * old), fy = (B.scrollTop + cy) / (JZ.h * old);   /* the spot under your fingers stays put */
   i.style.width = JZ.w * s + "px"; i.style.height = JZ.h * s + "px";
@@ -2289,7 +2291,7 @@ $("jf-open").addEventListener("click", () => { const c = JF.cur; if (!c || !c.bl
      smoothly). When they lift, the new size is laid out once and the sharp version drawn. The spot under your fingers stays
      put, and anything smaller than the screen sits centered. */
   const tgt = () => mode() === "img" ? B.querySelector("img") : B.querySelector(".pv-pages");
-  const cap = s => mode() === "img" ? (() => { const i = tgt(); return Math.min(Math.max(4, Math.min(12, (i.naturalWidth / (JZ.w || 1)) * 2)), Math.max(1, s)); })() : Math.min(12, Math.max(1, s));
+  const cap = s => mode() === "img" ? Math.min(jzMax(tgt()), Math.max(1, s)) : Math.min(12, Math.max(1, s));
   const gBegin = (mx, my) => { const el = tgt(); if (!el) return null; if (mode() === "pdf") pvHold(true);
     const r = el.getBoundingClientRect(); el.style.transformOrigin = "0 0"; el.style.willChange = "transform";
     return {el, r, b: B.getBoundingClientRect(), s0: now(), s: now(), ux: (mx - r.left) / r.width, uy: (my - r.top) / r.height, mx, my}; };
@@ -2357,37 +2359,88 @@ $("jf-del").addEventListener("click", async () => { const c = JF.cur; if (!c || 
   const bid = jbBin("file", {id: c.id, kind: c.kind, job: c.job, name: c.kind === "photo" ? (c.note || "Photo") : c.name}, lnk.length ? {links: lnk} : {}); jbSave();
   $("jf-dlg").close(); jfDraw(c.job); jbUndo(bid); });
 
-/* ---- Mark up: arrows, circles, freehand and text drawn on a COPY of a job photo. The original stays untouched, so a proof
-   photo keeps its stamp and fingerprint. Marks get a dark edge so they show on drywall, dirt or sky. */
-const MK = {img: null, src: null, url: null, shapes: [], cur: null, tool: "arrow", col: "#ff1a1a", raf: 0, layer: null, ver: 0, lv: -1};
+/* ---- Mark up: arrows, lines, circles, boxes, dimension lines, freehand and text drawn on a COPY of a job photo. The original
+   stays untouched, so a proof photo keeps its stamp and fingerprint. Marks get a dark edge so they show on drywall, dirt or sky
+   (a white edge for black marks). Every mark can be picked up later with Move: dragged, recolored, made thicker or thinner, or
+   deleted. Undo and Redo step through every change. */
+const MK = {img: null, src: null, url: null, shapes: [], cur: null, tool: "arrow", col: "#ff1a1a", sz: 1, sel: -1, drag: null, undo: [], redo: [], raf: 0, layer: null, ver: 0, lv: ""};
+const MK_LBL = {text: ["Type a label, then tap the photo where it goes", '3/4" stub, 8" left of center'], dim: ["Label for the dimension line (optional), then drag from end to end", '8" or 4\'-6"']};
+window.jpbMK = MK;   /* read by the checks in tests/run.py */
 const mkCv = () => $("mk-cv");
-const mkW = () => { const c = mkCv(); return Math.max(3, Math.round(Math.max(c.width, c.height) / 130)); };
+const mkW = () => { const c = mkCv(); return Math.max(2, Math.round(Math.max(c.width, c.height) / 130 * MK.sz)); };
+const mkFont = fs => `700 ${fs}px system-ui, -apple-system, sans-serif`;
+const mkEdge = col => /^#(000|111|1a1a1a|000000|111111)$/i.test(col) ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.7)";
+/* a dimension line's label: centered on the line, lifted off it so the line doesn't run through the words */
+const mkDimLbl = sh => { const [x0, y0] = sh.a, [x1, y1] = sh.b, fs = sh.w * 5, L = Math.hypot(x1 - x0, y1 - y0) || 1; let nx = -(y1 - y0) / L, ny = (x1 - x0) / L;
+  if (ny > 0 || (ny === 0 && nx > 0)){ nx = -nx; ny = -ny; }   /* lift it toward the top of the photo */
+  return {x: (x0 + x1) / 2 + nx * fs * .9, y: (y0 + y1) / 2 + ny * fs * .9, fs}; };
 function mkShape(x, sh){
-  const w = sh.w; x.lineCap = "round"; x.lineJoin = "round";
-  const stroke = path => { x.strokeStyle = "rgba(0,0,0,.7)"; x.lineWidth = w + Math.max(2, w * .7); path(); x.stroke(); x.strokeStyle = sh.col; x.lineWidth = w; path(); x.stroke(); };
+  const w = sh.w, edge = mkEdge(sh.col); x.lineCap = "round"; x.lineJoin = "round";
+  const stroke = path => { x.strokeStyle = edge; x.lineWidth = w + Math.max(2, w * .7); path(); x.stroke(); x.strokeStyle = sh.col; x.lineWidth = w; path(); x.stroke(); };
+  const words = (t, px, py, fs, mid) => { x.font = mkFont(fs); x.textBaseline = "middle"; x.textAlign = mid ? "center" : "left";
+    x.lineWidth = Math.max(3, fs / 5); x.strokeStyle = edge === "rgba(0,0,0,.7)" ? "rgba(0,0,0,.9)" : edge; x.strokeText(t, px, py); x.fillStyle = sh.col; x.fillText(t, px, py); x.textAlign = "left"; };
+  const head = (xa, ya, xb, yb, h) => { const an = Math.atan2(yb - ya, xb - xa); x.moveTo(xb - h * Math.cos(an - .5), yb - h * Math.sin(an - .5)); x.lineTo(xb, yb); x.lineTo(xb - h * Math.cos(an + .5), yb - h * Math.sin(an + .5)); };
   if (sh.t === "pen") stroke(() => { const P = sh.p, n = P.length; x.beginPath(); x.moveTo(P[0][0], P[0][1]);
     if (n === 1) x.lineTo(P[0][0] + .1, P[0][1]);
     else if (n === 2) x.lineTo(P[1][0], P[1][1]);
     else { for (let i = 1; i < n - 1; i++) x.quadraticCurveTo(P[i][0], P[i][1], (P[i][0] + P[i + 1][0]) / 2, (P[i][1] + P[i + 1][1]) / 2); x.lineTo(P[n - 1][0], P[n - 1][1]); } });   /* a smooth curve through your finger's path, not a string of straight bits */
   else if (sh.t === "circle"){ const rx = Math.abs(sh.b[0] - sh.a[0]) / 2, ry = Math.abs(sh.b[1] - sh.a[1]) / 2;
     stroke(() => { x.beginPath(); x.ellipse((sh.a[0] + sh.b[0]) / 2, (sh.a[1] + sh.b[1]) / 2, Math.max(rx, 1), Math.max(ry, 1), 0, 0, Math.PI * 2); }); }
-  else if (sh.t === "arrow"){ const [x0, y0] = sh.a, [x1, y1] = sh.b, an = Math.atan2(y1 - y0, x1 - x0), h = Math.min(Math.hypot(x1 - x0, y1 - y0) * .45, w * 5);
-    stroke(() => { x.beginPath(); x.moveTo(x0, y0); x.lineTo(x1, y1); x.moveTo(x1 - h * Math.cos(an - .5), y1 - h * Math.sin(an - .5)); x.lineTo(x1, y1); x.lineTo(x1 - h * Math.cos(an + .5), y1 - h * Math.sin(an + .5)); }); }
-  else if (sh.t === "text"){ const fs = sh.w * 6; x.font = `700 ${fs}px system-ui, -apple-system, sans-serif`; x.textBaseline = "middle";
-    x.lineWidth = Math.max(3, fs / 5); x.strokeStyle = "rgba(0,0,0,.9)"; x.strokeText(sh.s, sh.a[0], sh.a[1]); x.fillStyle = sh.col; x.fillText(sh.s, sh.a[0], sh.a[1]); }
+  else if (sh.t === "box") stroke(() => { x.beginPath(); x.rect(Math.min(sh.a[0], sh.b[0]), Math.min(sh.a[1], sh.b[1]), Math.abs(sh.b[0] - sh.a[0]), Math.abs(sh.b[1] - sh.a[1])); });
+  else if (sh.t === "line") stroke(() => { x.beginPath(); x.moveTo(sh.a[0], sh.a[1]); x.lineTo(sh.b[0], sh.b[1]); });
+  else if (sh.t === "arrow"){ const [x0, y0] = sh.a, [x1, y1] = sh.b, h = Math.min(Math.hypot(x1 - x0, y1 - y0) * .45, w * 5);
+    stroke(() => { x.beginPath(); x.moveTo(x0, y0); x.lineTo(x1, y1); head(x0, y0, x1, y1, h); }); }
+  else if (sh.t === "dim"){ const [x0, y0] = sh.a, [x1, y1] = sh.b, L = Math.hypot(x1 - x0, y1 - y0) || 1, h = Math.min(L * .3, w * 4), tk = w * 3, nx = -(y1 - y0) / L * tk, ny = (x1 - x0) / L * tk;
+    stroke(() => { x.beginPath(); x.moveTo(x0, y0); x.lineTo(x1, y1); head(x1, y1, x0, y0, h); head(x0, y0, x1, y1, h);
+      x.moveTo(x0 - nx, y0 - ny); x.lineTo(x0 + nx, y0 + ny); x.moveTo(x1 - nx, y1 - ny); x.lineTo(x1 + nx, y1 + ny); });   /* arrows both ends, and end ticks */
+    if (sh.s){ const l = mkDimLbl(sh); words(sh.s, l.x, l.y, l.fs, true); } }
+  else if (sh.t === "text") words(sh.s, sh.a[0], sh.a[1], sh.w * 6, false);
 }
+/* where a mark sits, for picking it up and for the outline around the picked one */
+function mkBox(sh){ const x = mkCv().getContext("2d");
+  if (sh.t === "text"){ const fs = sh.w * 6; x.font = mkFont(fs); const tw = x.measureText(sh.s).width; return [sh.a[0], sh.a[1] - fs * .6, sh.a[0] + tw, sh.a[1] + fs * .6]; }
+  const P = sh.t === "pen" ? sh.p : [sh.a, sh.b]; let B = [Infinity, Infinity, -Infinity, -Infinity];
+  P.forEach(q => { B = [Math.min(B[0], q[0]), Math.min(B[1], q[1]), Math.max(B[2], q[0]), Math.max(B[3], q[1])]; });
+  if (sh.t === "dim" && sh.s){ const l = mkDimLbl(sh); x.font = mkFont(l.fs); const tw = x.measureText(sh.s).width / 2;
+    B = [Math.min(B[0], l.x - tw), Math.min(B[1], l.y - l.fs * .6), Math.max(B[2], l.x + tw), Math.max(B[3], l.y + l.fs * .6)]; }
+  const m = sh.w; return [B[0] - m, B[1] - m, B[2] + m, B[3] + m]; }
+const mkSeg = (p, a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy, t = L ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L)) : 0;
+  return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); };
+/* the top mark under a finger: on or near its line (a fingertip's width), or anywhere inside a circle, box or label */
+function mkHit(p, tol){
+  for (let i = MK.shapes.length - 1; i >= 0; i--){ const sh = MK.shapes[i], t = tol + sh.w;
+    if (sh.t === "pen"){ const P = sh.p; if (P.length === 1 ? Math.hypot(p[0] - P[0][0], p[1] - P[0][1]) <= t : P.some((q, k) => k && mkSeg(p, P[k - 1], q) <= t)) return i; continue; }
+    if (sh.t === "line" || sh.t === "arrow" || sh.t === "dim"){ if (mkSeg(p, sh.a, sh.b) <= t) return i; if (sh.t !== "dim" || !sh.s) continue; }
+    const B = mkBox(sh); if (p[0] >= B[0] - tol && p[0] <= B[2] + tol && p[1] >= B[1] - tol && p[1] <= B[3] + tol) return i; }
+  return -1; }
+const mkShift = (sh, dx, dy) => { if (sh.p) sh.p = sh.p.map(q => [q[0] + dx, q[1] + dy]); if (sh.a) sh.a = [sh.a[0] + dx, sh.a[1] + dy]; if (sh.b) sh.b = [sh.b[0] + dx, sh.b[1] + dy]; };
+/* Undo / Redo: a copy of the marks before each change (marks are small, so 80 steps cost almost nothing) */
+const mkPush = () => { MK.undo.push(JSON.stringify(MK.shapes)); if (MK.undo.length > 80) MK.undo.shift(); MK.redo = []; mkBtns(); };
+function mkStep(back){ const from = back ? MK.undo : MK.redo, to = back ? MK.redo : MK.undo; if (!from.length) return;
+  to.push(JSON.stringify(MK.shapes)); MK.shapes = JSON.parse(from.pop()); MK.sel = -1; MK.ver++; mkBtns(); mkDraw(); }
+function mkBtns(){ const u = $("mk-undo"), r = $("mk-redo"), on = MK.sel >= 0 && MK.shapes[MK.sel];
+  if (u) u.disabled = !MK.undo.length; if (r) r.disabled = !MK.redo.length;
+  const sr = $("mk-selrow"); if (sr) sr.hidden = !on; }
+const mkPress = (k, v) => $("mk-dlg").querySelectorAll(`[data-${k}]`).forEach(x => x.setAttribute("aria-pressed", String(x.dataset[k] === String(v))));
 /* the photo and the finished marks are drawn once into a layer; each frame while you draw is that layer plus the mark in
-   progress, so drawing stays quick however many marks are on the photo */
+   progress (or the one you're moving), so drawing stays quick however many marks are on the photo */
 function mkDraw(){ MK.raf = 0; const c = mkCv(), x = c.getContext("2d"); if (!MK.img) return;
   let L = MK.layer; if (!L) L = MK.layer = document.createElement("canvas");
-  if (MK.lv !== MK.ver || L.width !== c.width || L.height !== c.height){ L.width = c.width; L.height = c.height; const lx = L.getContext("2d");
-    lx.drawImage(MK.img, 0, 0, L.width, L.height); MK.shapes.forEach(sh => mkShape(lx, sh)); MK.lv = MK.ver; }
-  x.drawImage(L, 0, 0); if (MK.cur) mkShape(x, MK.cur); }
+  const skip = MK.drag && MK.drag.moved ? MK.drag.i : -1, key = MK.ver + ":" + skip;
+  if (MK.lv !== key || L.width !== c.width || L.height !== c.height){ L.width = c.width; L.height = c.height; const lx = L.getContext("2d");
+    lx.drawImage(MK.img, 0, 0, L.width, L.height); MK.shapes.forEach((sh, i) => { if (i !== skip) mkShape(lx, sh); }); MK.lv = key; }
+  x.drawImage(L, 0, 0); if (skip >= 0) mkShape(x, MK.shapes[skip]); if (MK.cur) mkShape(x, MK.cur);
+  const s = MK.sel >= 0 && MK.shapes[MK.sel];
+  if (s && MK.tool === "move"){ const B = mkBox(s), d = Math.max(2, Math.round(c.width / 400));   /* the picked mark: a dashed outline, never saved */
+    x.save(); x.lineWidth = d * 2; x.setLineDash([d * 6, d * 4]); x.strokeStyle = "#000"; x.strokeRect(B[0], B[1], B[2] - B[0], B[3] - B[1]);
+    x.lineDashOffset = d * 5; x.strokeStyle = "#fff"; x.strokeRect(B[0], B[1], B[2] - B[0], B[3] - B[1]); x.restore(); } }
 function mkFit(){ const c = mkCv(), w = c.parentElement; if (!MK.img || !w) return;
   const k = Math.min(w.clientWidth / c.width, w.clientHeight / c.height); if (!(k > 0)) return;
   c.style.width = Math.floor(c.width * k) + "px"; c.style.height = Math.floor(c.height * k) + "px"; }
 const mkSoon = () => { if (!MK.raf) MK.raf = (typeof FPS !== "undefined" && FPS.raw || requestAnimationFrame)(mkDraw); };   /* follows your finger: never held back by the just-for-fun frame-rate cap */
 const mkPt = e => { const c = mkCv(), r = c.getBoundingClientRect(); return [(e.clientX - r.left) * c.width / r.width, (e.clientY - r.top) * c.height / r.height]; };
+function mkTool(t){ MK.tool = t; MK.sel = -1; mkPress("tool", t); const L = MK_LBL[t], tl = $("mk-txt-l"); tl.hidden = !L;
+  if (L){ tl.querySelector("span").textContent = L[0]; $("mk-txt").placeholder = L[1]; } mkBtns(); mkDraw(); mkFit(); }
 async function mkOpen(){
   const f = JF.cur; if (!f || f.kind !== "photo" || !f.blob) return;
   const url = URL.createObjectURL(f.blob); let img;
@@ -2395,17 +2448,17 @@ async function mkOpen(){
   catch(e){ URL.revokeObjectURL(url); toast("Couldn't open that photo for markup."); return; }
   const c = mkCv(), k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
   c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
-  Object.assign(MK, {img, src: f, url, shapes: [], cur: null, tool: "arrow", ver: MK.ver + 1});   /* every time: Arrow, so a tap always does something */
-  const dlg = $("mk-dlg"); dlg.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.tool === "arrow"))); $("mk-txt-l").hidden = true; $("mk-txt").value = "";
-  dlg.showModal(); $("jf-dlg").close(); mkDraw(); mkFit(); requestAnimationFrame(mkFit);   /* Mark up opens first, so closing the photo can't nudge the screen under it */
+  Object.assign(MK, {img, src: f, url, shapes: [], cur: null, sel: -1, drag: null, undo: [], redo: [], ver: MK.ver + 1});
+  const dlg = $("mk-dlg"); $("mk-txt").value = ""; mkPress("col", MK.col); mkPress("sz", MK.sz);
+  dlg.showModal(); $("jf-dlg").close(); mkTool("arrow"); mkDraw(); mkFit(); requestAnimationFrame(mkFit);   /* every time: Arrow, so a tap always does something. Mark up opens first, so closing the photo can't nudge the screen under it */
 }
 function mkClose(ask){
   if (ask && MK.shapes.length && !jbAsk("Throw away these marks? The photo stays as it was.")) return false;
-  MK.shapes = []; MK.cur = null; MK.ver++; $("mk-dlg").close(); return true;
+  MK.shapes = []; MK.cur = null; MK.sel = -1; MK.drag = null; MK.ver++; $("mk-dlg").close(); return true;
 }
 async function mkSave(){
-  const src = MK.src; if (!src) return; if (!MK.shapes.length){ toast("Add a mark first: arrow, circle, draw or text."); return; }
-  mkDraw(); const c = mkCv(), btn = $("mk-save"); btn.disabled = true;
+  const src = MK.src; if (!src) return; if (!MK.shapes.length){ toast("Add a mark first: arrow, line, circle, box, dimension, draw or text."); return; }
+  MK.sel = -1; mkDraw(); const c = mkCv(), btn = $("mk-save"); btn.disabled = true;   /* no picked-mark outline in the saved copy */
   try {
     const big = await new Promise((ok, no) => c.toBlob(b => b ? ok(b) : no(new Error("encode")), "image/jpeg", .85));
     const sm = document.createElement("canvas"), k = 240 / Math.max(c.width, c.height);
@@ -2419,33 +2472,44 @@ async function mkSave(){
   } catch(e){ toast("Couldn't save the marked-up copy: the phone may be out of space."); }
   finally { btn.disabled = false; }
 }
-{ const cv = mkCv(), dlg = $("mk-dlg"), tl = $("mk-txt-l");
+{ const cv = mkCv(), dlg = $("mk-dlg");
   $("jf-mark").addEventListener("click", mkOpen);
-  dlg.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.tool){ MK.tool = b.dataset.tool; dlg.querySelectorAll("[data-tool]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); tl.hidden = MK.tool !== "text"; mkFit(); }
-    else if (b.dataset.col){ MK.col = b.dataset.col; dlg.querySelectorAll("[data-col]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); }
-    else if (b.id === "mk-undo"){ MK.shapes.pop(); MK.ver++; mkDraw(); }
+  dlg.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const s = MK.sel >= 0 && MK.shapes[MK.sel];
+    if (b.dataset.tool) mkTool(b.dataset.tool);
+    else if (b.dataset.col){ MK.col = b.dataset.col; mkPress("col", MK.col); if (s && s.col !== MK.col){ mkPush(); s.col = MK.col; MK.ver++; mkDraw(); } }   /* with a mark picked: recolor it */
+    else if (b.dataset.sz){ MK.sz = +b.dataset.sz; mkPress("sz", MK.sz); if (s){ const w = mkW(); if (s.w !== w){ mkPush(); s.w = w; MK.ver++; mkDraw(); } } }
+    else if (b.id === "mk-undo") mkStep(true);
+    else if (b.id === "mk-redo") mkStep(false);
+    else if (b.id === "mk-del"){ if (s){ mkPush(); MK.shapes.splice(MK.sel, 1); MK.sel = -1; MK.ver++; mkBtns(); mkDraw(); } }
     else if (b.id === "mk-save") mkSave();
     else if (b.id === "mk-cancel" || b.id === "mk-x") mkClose(true); });
   dlg.addEventListener("cancel", e => { e.preventDefault(); mkClose(true); });   /* Esc / back: same question as Cancel */
-  dlg.addEventListener("close", () => { if (MK.url) URL.revokeObjectURL(MK.url); Object.assign(MK, {img: null, url: null, cur: null});
-    if (MK.layer){ MK.layer.width = MK.layer.height = 0; } cv.width = cv.height = 0; MK.lv = -1; jbReseat(); });   /* give the photo's memory back right away (iPhone counts it until then) */
-  cv.addEventListener("pointerdown", e => { if (!MK.img || !e.isPrimary || MK.cur) return; e.preventDefault(); const p = mkPt(e), w = mkW();
+  dlg.addEventListener("close", () => { if (MK.url) URL.revokeObjectURL(MK.url); Object.assign(MK, {img: null, url: null, cur: null, drag: null, undo: [], redo: []});
+    if (MK.layer){ MK.layer.width = MK.layer.height = 0; } cv.width = cv.height = 0; MK.lv = ""; jbReseat(); });   /* give the photo's memory back right away (iPhone counts it until then) */
+  cv.addEventListener("pointerdown", e => { if (!MK.img || !e.isPrimary || MK.cur || MK.drag) return; e.preventDefault(); const p = mkPt(e), w = mkW();
+    if (MK.tool === "move"){ const r = cv.getBoundingClientRect(), i = mkHit(p, 22 * cv.width / (r.width || 1));   /* a fingertip's reach, in photo dots */
+      MK.sel = i; if (i >= 0){ MK.drag = {i, last: p, moved: false}; try { cv.setPointerCapture(e.pointerId); } catch(err){} }
+      else toast("Tap right on a mark to pick it up.", 1500);
+      mkBtns(); mkDraw(); return; }
     if (MK.tool === "text"){ const t = $("mk-txt").value.trim(); if (!t){ toast("Type your label in the box above first, then tap where it goes."); $("mk-txt").focus(); return; }
-      const x = cv.getContext("2d"); x.font = `700 ${w * 6}px system-ui, -apple-system, sans-serif`; const tw = x.measureText(t).width;
-      MK.shapes.push({t: "text", s: t, a: [Math.max(4, Math.min(p[0], cv.width - tw - 4)), Math.max(w * 4, Math.min(p[1], cv.height - w * 4))], col: MK.col, w}); MK.ver++;
-      $("mk-txt").value = ""; $("mk-txt").blur(); mkDraw(); return; }
+      const x = cv.getContext("2d"); x.font = mkFont(w * 6); const tw = x.measureText(t).width;
+      mkPush(); MK.shapes.push({t: "text", s: t, a: [Math.max(4, Math.min(p[0], cv.width - tw - 4)), Math.max(w * 4, Math.min(p[1], cv.height - w * 4))], col: MK.col, w}); MK.ver++;
+      $("mk-txt").value = ""; $("mk-txt").blur(); mkBtns(); mkDraw(); return; }
     try { cv.setPointerCapture(e.pointerId); } catch(err){}
-    MK.cur = MK.tool === "pen" ? {t: "pen", p: [p], col: MK.col, w} : {t: MK.tool, a: p, b: p, col: MK.col, w}; mkSoon(); });
-  cv.addEventListener("pointermove", e => { if (!MK.cur || !e.isPrimary) return; e.preventDefault();
+    MK.cur = MK.tool === "pen" ? {t: "pen", p: [p], col: MK.col, w} : Object.assign({t: MK.tool, a: p, b: p, col: MK.col, w}, MK.tool === "dim" ? {s: $("mk-txt").value.trim()} : {}); mkSoon(); });
+  cv.addEventListener("pointermove", e => { if (!e.isPrimary) return;
+    if (MK.drag){ e.preventDefault(); const D = MK.drag, p = mkPt(e), dx = p[0] - D.last[0], dy = p[1] - D.last[1]; if (!dx && !dy) return;
+      if (!D.moved){ mkPush(); D.moved = true; } mkShift(MK.shapes[D.i], dx, dy); D.last = p; mkSoon(); return; }
+    if (!MK.cur) return; e.preventDefault();
     if (MK.cur.t !== "pen"){ MK.cur.b = mkPt(e); mkSoon(); return; }
     /* every in-between spot the finger or Pencil passed (phones report more than one per screen refresh), skipping repeats */
     const r = cv.getBoundingClientRect(), kx = cv.width / r.width, ky = cv.height / r.height, P = MK.cur.p, gap = MK.cur.w / 4;
     (e.getCoalescedEvents && e.getCoalescedEvents().length ? e.getCoalescedEvents() : [e]).forEach(v => { const q = [(v.clientX - r.left) * kx, (v.clientY - r.top) * ky], l = P[P.length - 1];
       if (Math.hypot(q[0] - l[0], q[1] - l[1]) >= gap) P.push(q); });
     mkSoon(); });
-  const up = () => { const s = MK.cur; if (!s) return; MK.cur = null;
-    if (s.t === "pen" || Math.hypot(s.b[0] - s.a[0], s.b[1] - s.a[1]) > s.w * 3){ MK.shapes.push(s); MK.ver++; } mkDraw(); };
+  const up = () => { if (MK.drag){ const D = MK.drag; MK.drag = null; if (D.moved) MK.ver++; mkDraw(); return; }
+    const s = MK.cur; if (!s) return; MK.cur = null;
+    if (s.t === "pen" || Math.hypot(s.b[0] - s.a[0], s.b[1] - s.a[1]) > s.w * 3){ mkPush(); MK.shapes.push(s); MK.ver++; if (s.t === "dim" && s.s) $("mk-txt").value = ""; } mkBtns(); mkDraw(); };
   cv.addEventListener("pointerup", e => { if (e.isPrimary) up(); }); cv.addEventListener("pointercancel", e => { if (e.isPrimary) up(); });
   cv.addEventListener("contextmenu", e => e.preventDefault());   /* long press: no "Save image" menu over your drawing */
   addEventListener("resize", () => { if (dlg.open) mkFit(); }); if (window.visualViewport) visualViewport.addEventListener("resize", () => { if (dlg.open) mkFit(); });
